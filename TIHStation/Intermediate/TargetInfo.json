@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "TIHStation",
+			"Path": "..\\Source\\TIHStation.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "TIHStationEditor",
+			"Path": "..\\Source\\TIHStationEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

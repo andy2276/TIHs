@@ -1,0 +1,10 @@
+{
+	"SourceFiles": [
+		"E:\\Projects_Rapid\\Project\\TIH\\20231011\\TIHStation\\Source\\TIHStation\\TIHStation.Build.cs",
+		"E:\\Projects_Rapid\\Project\\TIH\\20231011\\TIHStation\\Plugins\\TIHLibrary\\Source\\TIHLibrary\\TIHLibraryEntry.Build.cs",
+		"E:\\Projects_Rapid\\Project\\TIH\\20231011\\TIHStation\\Plugins\\TIHPakBox\\TIHHousingPak\\Source\\TIHHousingPak\\TIHHousingPak.Build.cs",
+		"E:\\Projects_Rapid\\Project\\TIH\\20231011\\TIHStation\\Source\\TIHStation.Target.cs",
+		"E:\\Projects_Rapid\\Project\\TIH\\20231011\\TIHStation\\Source\\TIHStationEditor.Target.cs"
+	],
+	"EngineVersion": "5.3.0"
+}

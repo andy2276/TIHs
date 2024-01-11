@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "TIHLibrary",
+	"Description": "this plugin is THI infrastructure module.",
+	"Category": "Other",
+	"CreatedBy": "vdjm",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "TIHLibraryEntry",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}

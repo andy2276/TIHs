@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\TIHStation.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\TIHStation.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\TIHStationEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\.vsconfig" />
+    <None Include="..\..\TIHStation.unrealvs" />
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Plugins">
+      <UniqueIdentifier>{BB38096A-B391-30DC-A0D4-4F3EA6B44507}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\TIHLibrary">
+      <UniqueIdentifier>{65185C81-1768-340F-BF28-95127B878B60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\TIHLibrary\Source">
+      <UniqueIdentifier>{4E20228D-AC12-3B8A-B412-C5EA16C3112C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\TIHLibrary\Source\TIHLibrary">
+      <UniqueIdentifier>{5ABBB280-BA9E-34FB-9FB5-19C17D270D7C}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\TIHLibraryEntry.Build.cs">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary</Filter>
+    </None>
+    <Filter Include="Plugins\TIHLibrary\Source\TIHLibrary\Private">
+      <UniqueIdentifier>{13058E4D-012A-386A-BFCB-97437FAFC804}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHGameInstance.cpp">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHLibraryEntry.cpp">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHStationCore.cpp">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
+    </ClCompile>
+    <Filter Include="Plugins\TIHLibrary\Source\TIHLibrary\Public">
+      <UniqueIdentifier>{EB8266E3-769F-3D5B-B5EF-13365F3A3ACD}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHGameInstance.h">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHLibraryEntry.h">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHStationCore.h">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
+    </ClInclude>
+    <None Include="..\..\Plugins\TIHLibrary\TIHLibrary.uplugin">
+      <Filter>Plugins\TIHLibrary</Filter>
+    </None>
+    <Filter Include="Plugins\TIHLibrary\Resources">
+      <UniqueIdentifier>{7807692F-5281-3E0B-B9F8-F8B5A9A2DE1D}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Plugins\TIHLibrary\Resources\Icon128.png">
+      <Filter>Plugins\TIHLibrary\Resources</Filter>
+    </None>
+    <Filter Include="Plugins\TIHPakBox">
+      <UniqueIdentifier>{0CE491A4-F837-3D56-939A-32F30AEF52B2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\TIHPakBox\TIHHousingPak">
+      <UniqueIdentifier>{E2D63CD2-CB10-30CC-BE3D-0E629F79486B}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Plugins\TIHPakBox\TIHHousingPak\TIHHousingPak.uplugin">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak</Filter>
+    </None>
+    <Filter Include="Plugins\TIHPakBox\TIHHousingPak\Resources">
+      <UniqueIdentifier>{8400FC15-ADF3-3881-AD51-88486192D5C4}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Resources\Icon128.png">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Resources</Filter>
+    </None>
+    <Filter Include="Plugins\TIHPakBox\TIHHousingPak\Source">
+      <UniqueIdentifier>{72A713AA-C31B-3F6D-8AAE-ED23F1DA7749}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak">
+      <UniqueIdentifier>{698DAB2D-AD05-34D2-8DD6-EF20E83C3F89}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\TIHHousingPak.Build.cs">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak</Filter>
+    </None>
+    <Filter Include="Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private">
+      <UniqueIdentifier>{9D2CF71A-40B5-32FD-B71E-4162A777DE17}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseBuilder.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseBuilderPawn.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseBuildPlayerController.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseCommander.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseMatter.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseMouseComponent.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseNode.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseNodeLinkComponent.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHousePawn.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHousePlayerController.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseStuff.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseStuffArray.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseStuffChildsComponent.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseStuffProcessor.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseTag.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseUserProcessor.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHousingPak.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHousingPakProcessor.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHTempLibrary.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
+    <Filter Include="Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public">
+      <UniqueIdentifier>{1A985A8A-FBEC-38E5-A33A-63BDDB7D14C8}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseBuilder.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseBuilderPawn.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseBuildPlayerController.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseCommander.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseMatter.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseMouseComponent.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseNode.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseNodeLinkComponent.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousePawn.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousePlayerController.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseStuff.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseStuffArray.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseStuffChildsComponent.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseStuffProcessor.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseTag.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseUserProcessor.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousingPak.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousingPakProcessor.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHTempLibrary.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <Filter Include="Source\TIHStation">
+      <UniqueIdentifier>{1B672A88-C2A8-3758-A189-EF0F4F3E52D8}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\TIHStation\TIHStation.Build.cs">
+      <Filter>Source\TIHStation</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\TIHStation\TIHStation.cpp">
+      <Filter>Source\TIHStation</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\TIHStation\TIHStation.h">
+      <Filter>Source\TIHStation</Filter>
+    </ClInclude>
+    <Filter Include="Source\TIHStation\Private">
+      <UniqueIdentifier>{C8CBDAA4-3C2A-3E36-A066-4089DFF64807}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\TIHStation\Private\TIHHouseNodeTest.cpp">
+      <Filter>Source\TIHStation\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TIHStation\Private\TIHTestPlayerControl.cpp">
+      <Filter>Source\TIHStation\Private</Filter>
+    </ClCompile>
+    <Filter Include="Source\TIHStation\Public">
+      <UniqueIdentifier>{26DD56B1-F1C8-3366-8319-0B68B5C38711}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Source\TIHStation\Public\TIHHouseNodeTest.h">
+      <Filter>Source\TIHStation\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TIHStation\Public\TIHTestPlayerControl.h">
+      <Filter>Source\TIHStation\Public</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
