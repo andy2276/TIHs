@@ -1,0 +1,4 @@
+{
+  "askBeforeMerging": true,
+  "template": "DevelopLog/Template/00TimeLogTemplate"
+}

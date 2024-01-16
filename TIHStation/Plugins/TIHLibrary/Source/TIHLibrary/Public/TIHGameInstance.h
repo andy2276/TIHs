@@ -18,6 +18,9 @@ class TIHLIBRARYENTRY_API UTIHGameInstance : public UGameInstance
 	
 public:
 	//FTIHDefaultStation* mTIHStation;
+
+
+private:
 	TUniquePtr<FTIHDefaultStation> mTIHStation;
 	//	여기에 TIHStationCore 가 들어갈것이다.
 	//	빠른접근을 위해서 내부의 기능들을 저장해놓을것이다.

@@ -3,6 +3,8 @@
 
 #include "TIHStationCore.h"
 #include "Engine/StreamableManager.h"
+#include "Components/Widget.h"
+
 
 #pragma region DefaultStation Functions
 /*
@@ -161,30 +163,27 @@ void FTIHCommander::TestSettingCommandList()
 
 TIHReturn64 FTIHCommander::ExecuteCommands()
 {
+	static TIHSETTING_CURRURNT_STATION* station = TIHSETTING_CURRURNT_STATION::SingleTone();
+
 	FUnionTIHCommandResult cmdResult;
-	//FTIHCommandList& cmdList = mCommandList;
-
-	FTIHDefaultStation* station = FTIHDefaultStation::SingleTone();
-
 	
-
 	while (mCommaderExecutionState.CheckExecuteCommanderLoop())
 	{
 		FTIHCommandBase* primitiveCmd = mCommandLists[mCurrCommandListIndex].GetCurrentCommand();
 		
 		const FTIHCommandMethod& cmdMethod = primitiveCmd->GetCommandMethod();
 
-		if((int8)ETIHCommandMethodProcessingProtocols::EStrategies == cmdMethod.CommandExecutionProtocol)
+		if((int8)ETIHCommandMethodProcessingProtocols::EStrategies == cmdMethod.CommandProcessingProtocol)
 		{
-			cmdResult.WholeData = ExecuteCommandStaticPolymorph(primitiveCmd);
+			cmdResult.WholeData = ExecuteCommandStaticPolymorphs(primitiveCmd);
 		}
-		else if((int8)ETIHCommandMethodProcessingProtocols::EDelegates == cmdMethod.CommandExecutionProtocol)
+		else if((int8)ETIHCommandMethodProcessingProtocols::EDelegates == cmdMethod.CommandProcessingProtocol)
 		{
 			/*
 				loopReValue = 커맨더 안에 있는 실행 델리게이트 실행
 			*/
 		}
-		else if((int8)ETIHCommandMethodProcessingProtocols::EMultiThreading == cmdMethod.CommandExecutionProtocol)
+		else if((int8)ETIHCommandMethodProcessingProtocols::EMultiThreading == cmdMethod.CommandProcessingProtocol)
 		{
 			/*
 				Runable 이 모여있는 거에 해당 델리게이트 실행
@@ -203,6 +202,10 @@ TIHReturn64 FTIHCommander::ExecuteCommands()
 			{
 				GetCommandExecutionState().StartCommanderLoop();
 			}
+			else	//	StopLoop
+			{
+				GetCommandExecutionState().StopCommaderLoop();
+			}
 			if ((int8)ETIHCommandResultBitMask::EOnPopFornt & cmdResult.ResultDetail.ProcessingResult0)
 			{
 				GetCommandList().PopFrontCommand();
@@ -214,17 +217,26 @@ TIHReturn64 FTIHCommander::ExecuteCommands()
 			if ((int8)ETIHCommandResultBitMask::EOnPopBack & cmdResult.ResultDetail.ProcessingResult0)
 			{
 				//GetCommandList().popBackCommand();
+				/*
+					이걸 지우고 다른걸 넣을까?
+					예를 들어서 커맨드 리스트를 다음에도 실행할것인지 같은거
+						이거는 사실 커맨드 리스트가 남아있는지 확인후 실행같은 느낌인데
+						음...
+						방향을 틀어서 일단은 무언가를 수정할 수 있게 만드는게 맞는거같다.
+						아니면 그냥 캐스팅할까?
+						아 컴포넌트에서 호출하면 되는거잖아.시발 이생각을 왜 못햇지?
+				*/
 			}
-			if ((int8)ETIHCommandResultBitMask::ECallingErrorFunction & cmdResult.ResultDetail.ProcessingResult0)
+			if ((int8)ETIHCommandResultBitMask::ECallingCompleteFunction & cmdResult.ResultDetail.ProcessingResult0)
 			{
 				CheckCallingCompleteFunctions(primitiveCmd);
 			}
-			if ((int8)ETIHCommandResultBitMask::ECallingCompleteFunction & cmdResult.ResultDetail.ProcessingResult0)
+			else if ((int8)ETIHCommandResultBitMask::ECallingErrorFunction & cmdResult.ResultDetail.ProcessingResult0)
 			{
 				CheckCallingErrorFunctions(primitiveCmd);
 			}
 		}
-	}
+	}//whileEnd
 	return cmdResult.WholeData;
 }
 
@@ -235,7 +247,44 @@ TIHReturn64 FTIHCommander::ExecuteCommandDirect(FTIHCommandBase* curCommand)
 	FTIHCommandHeader primitiveCmdHeader = curCommand->GetCommandHeader();
 	FTIHCommandMethod primitiveCmdMethod = curCommand->GetCommandMethod();
 
+	UStaticMeshComponent;
+	USkeletalMeshComponent* bbb;
+
 	
+
+	FTIHCommandFactory& factory = TIHSETTING_CURRURNT_STATION::SingleTone()->GetCommandFactory();
+	FTIHCommander& commander = TIHSETTING_CURRURNT_STATION::SingleTone()->GetCommander();
+
+	factory.BeginChainBuild();
+
+	//int16 linkedManagedObjectIndex = commander.
+	/*
+		
+
+
+
+	*/
+
+	factory.ChainBuildCommandHeader()
+		.SetProtocol((int8)ETIHCommandHeaderProtocols::ECreateAssignPool)
+		.SetProtocolOption(0)
+		.SetOption0(1)
+		.SetOption1(2);
+
+	factory.ChainBuildCommandMethod()
+		.SetCommandProcessingProtocol((int8)ETIHCommandMethodProcessingProtocols::EStrategies)
+		.SetCommandProgressionProtocol((int8)ETIHCommandMethodProgressionProtocols::ETickable)
+		.SetCompleteFunctorIndex(1);
+
+	factory.ChainBuildCommandData<FTIHCommandCreateAssignPoolDatas>()
+		.SetCreateType(1)
+		.SetDataType(1);
+
+	factory.EndChainBuild();
+	
+	UClass* a;
+	
+	UStaticMesh::StaticClass()
 
 	const uint8 TempProtocol[] =
 	{
@@ -249,8 +298,11 @@ TIHReturn64 FTIHCommander::ExecuteCommandDirect(FTIHCommandBase* curCommand)
 	
 	return reValue;
 }
-
-TIHReturn64 FTIHCommander::ExecuteCommandStaticPolymorph(FTIHCommandBase* primitiveCmd)
+/*!
+*	@brief StaticPolymorph 패턴 사용하여 커맨드를 실행하는것
+*	@detail 
+*/
+TIHReturn64 FTIHCommander::ExecuteCommandStaticPolymorphs(FTIHCommandBase* primitiveCmd)
 {
 	TIHReturn64 reValue = 0;
 
@@ -307,17 +359,19 @@ TIHReturn64 FTIHCommander::ExecuteCommandStaticPolymorph(FTIHCommandBase* primit
 
 	return reValue;
 }
-
+/*!
+*	@brief execute 결과를 처리하는 함수. 루프를 컨트롤 한다.
+*	@detail 
+*/
 TIHReturn64 FTIHCommander::SequenceCommand(TIHReturn64 result, FTIHCommandBase* primitiveCmd)
 {
-	
 	FUnionTIHCommandResult reValue;
 	reValue.WholeData = result;
 	reValue.ResultDetail.ProcessingResult1 = 0;
 
 	const FTIHCommandMethod& cmdMethod = primitiveCmd->GetCommandMethod();
 	
-	if ((int8)ETIHCommandMethodProgressionProtocols::EContinue == cmdMethod.CommandSequenceProtocol)
+	if ((int8)ETIHCommandMethodProgressionProtocols::EContinue == cmdMethod.CommandProgressionProtocol)
 	{
 		switch (reValue.ResultDetail.SimpleResult)
 		{
@@ -338,7 +392,7 @@ TIHReturn64 FTIHCommander::SequenceCommand(TIHReturn64 result, FTIHCommandBase* 
 			break;
 		}
 	}
-	else if ((int8)ETIHCommandMethodProgressionProtocols::ETickable == cmdMethod.CommandSequenceProtocol)
+	else if ((int8)ETIHCommandMethodProgressionProtocols::ETickable == cmdMethod.CommandProgressionProtocol)
 	{
 		switch (reValue.ResultDetail.SimpleResult)
 		{
@@ -359,7 +413,7 @@ TIHReturn64 FTIHCommander::SequenceCommand(TIHReturn64 result, FTIHCommandBase* 
 		}
 	
 	}
-	else if ((int8)ETIHCommandMethodProgressionProtocols::EReapeate == cmdMethod.CommandSequenceProtocol)
+	else if ((int8)ETIHCommandMethodProgressionProtocols::EReapeate == cmdMethod.CommandProgressionProtocol)
 	{
 		switch (reValue.ResultDetail.SimpleResult)
 		{
@@ -382,7 +436,7 @@ TIHReturn64 FTIHCommander::SequenceCommand(TIHReturn64 result, FTIHCommandBase* 
 			break;
 		}
 	}
-	else if ((int8)ETIHCommandMethodProgressionProtocols::EAsyncDonCare == cmdMethod.CommandSequenceProtocol)
+	else if ((int8)ETIHCommandMethodProgressionProtocols::EAsyncDonCare == cmdMethod.CommandProgressionProtocol)
 	{
 		reValue.ResultDetail.CommandResult0 = (int8)ETIHCommandResultBitMask::EAsyncTask;
 	}
@@ -393,26 +447,23 @@ TIHReturn64 FTIHCommander::CheckCallingCompleteFunctions(FTIHCommandBase* primit
 {
 	const FTIHCommandHeader cmdHeader = primitiveCmd->GetCommandHeader();
 	const FTIHCommandMethod cmdMethod = primitiveCmd->GetCommandMethod();
+	TIHReturn64 reValue = 0;
+	
+	int16 completIndex = cmdMethod.CompleteFunctorIndex;
+	bool validCheck =  (completIndex < mCompleteFunctions.Num())? 
+		mCompleteFunctions[completIndex].IsValidFunctor() :false;
 
-	if(-1 < cmdMethod.CommandCompleteIndex )
+	if(validCheck == true)
 	{
-		mCompleteFunctions[cmdMethod.CommandCompleteIndex].
-			//	여기에 함수 래퍼가 필요하다.
-			//	예를들어서 람다면 상관이 없는데, 람다가 아닌 객체를 넣은 맴버함수를 등록할거면
-			//	해당 맴버함수에 대한 정보가 있어야한다.
-			//	즉 매니지드 오브젝트의 인덱스가 필요하다는것이다.
-			//	근데 128개면 너무 적은데....
-	}
-	else
-	{
-
+		reValue = mCompleteFunctions[completIndex].GetFunction()(primitiveCmd);
 	}
 
-	return TIHReturn64();
+	return reValue;
 }
+
 TIHReturn64 FTIHCommander::CheckCallingErrorFunctions(FTIHCommandBase* primitiveCmd)
 {
-	return TIHReturn64();
+	return 0;
 }
 
 #pragma endregion	//Commander
@@ -484,6 +535,7 @@ TIHReturn64 FTIHCommandFactory::EndChainBuild()
 	{
 		currIndex += 1;
 	}
+	mCurrBuilderIndex = currIndex;
 
 	return reValue.WholeData;
 }
@@ -524,6 +576,7 @@ TIHReturn64 FTIHCommandFactory::AssignToArrayForCommandMetaData(FTIHChainBuilder
 {
 	FUnionTIHCommandFactoryResult reValue;
 	/*
+		이거는 없어져야할듯
 		1. 할당할 영역이 pooling 인지 혹은 realloc 인지확인
 		2
 
@@ -579,7 +632,14 @@ TIHReturn64 FTIHCommandFactory::PrevRegistCommand()
 	FUnionTIHCommandFactoryResult reValue;
 	FTIHCommandDataBoard::FUnionTIHDataBoardResult dataResult;
 	reValue.WholeData = 0;
-	FTIHDefaultStation& station = *FTIHDefaultStation::SingleTone();
+	
+	TIH_CURRURNT_STATION_CLASS& station = *TIH_CURRURNT_STATION_CLASS::SingleTone();
+
+	mGenerateHash.Add(FTIHCommandCreateAssignPool::TIHClassNameHash(), nullptr);
+	
+
+
+
 
 	BeginChainBuild();
 	/*
@@ -674,9 +734,6 @@ TIHReturn64 FTIHCommandFactory::InstantiateCommandsInMetaArray(FTIHCommander& co
 
 		FTIHCommandBase* cmdBase = nullptr;
 
-		cmdBase = new FTIHCommandCreateAssignPool();
-		CopyBuilderToCommand(cmdHeader, cmdMethod, cmdBase);
-
 		switch (cmdHeader.Protocol)
 		{
 		case (int8)ETIHCommandHeaderProtocols::ENotAssign:
@@ -684,44 +741,76 @@ TIHReturn64 FTIHCommandFactory::InstantiateCommandsInMetaArray(FTIHCommander& co
 		case (int8)ETIHCommandHeaderProtocols::ECreateAssignPool:
 		{
 			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommandCreateAssignPool, cmdBase);
-		}break;
+		}
+		break;
 		case (int8)ETIHCommandHeaderProtocols::ECreateNewAlloc:
 		{
 			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommandCreateNewAlloc, cmdBase);
-		}break;
+		}
+		break;
 		case (int8)ETIHCommandHeaderProtocols::EServerConnect:
 		{
-			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommandCreateAssignPool, cmdBase);
-		}break;
+			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommandServerConnect, cmdBase);
+		}
+		break;
 		case (int8)ETIHCommandHeaderProtocols::EServerSend:
 		{
-			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommandCreateAssignPool, cmdBase );
-		}break;
+			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommandServerSend, cmdBase );
+		}
+		break;
 		case (int8)ETIHCommandHeaderProtocols::EServerListen:
+		{
+			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommandServerListen, cmdBase);
+		}
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EServerDisConnect:
+		{
+			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommandServerDisConnect, cmdBase);
+		}
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EDeleteRejectPool:
+		{
+			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommandDeleteRejectPool, cmdBase);
+		}
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EDeleteDestory:
+		{
+			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommanEDeleteDestory, cmdBase);
+		}
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EModifyTransform:
+		{
+			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommandModifyTransform, cmdBase);
+		}
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EModifyValue:
+		{
+			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommandModifyValue, cmdBase);
+		}
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EInOutReadAndSave:
+		{
+			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommandInOutReadAndSave, cmdBase);
+		}
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EInOutWriteAndModify:
+		{
+			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommandInOutWriteAndModify, cmdBase);
+		}
 			break;
 		case (int8)ETIHCommandHeaderProtocols::ETestDelay:
 		{
 			TIHMACRO_CHAINBUILDER_COMMAND_CAST(FTIHCommandTestDelay, cmdBase);
-		}break;
+		}
+		break;
 		case (int8)ETIHCommandHeaderProtocols::MaxLength:
 			break;
 		default:
 			break;
 		}
+		cmdBase->SetCommandHeader(cmdHeader);
+		cmdBase->SetCommandMethod(cmdMethod);
+
 		cmdList.PushBackCommandPtr(cmdBase);
 	}
 	return reValue.WholeData;
@@ -839,6 +928,9 @@ TIHReturn64 FTIHCommanderStrategyTestDelay::ExecuteStrategy(FTIHCommandBase* cmd
 TIHReturn64 FTIHCommanderStrategyCreateAssignPool::ExecuteStrategy(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
+	
+	UObject* o;
+	
 
 	return reValue;
 }
@@ -976,3 +1068,45 @@ TIHReturn64 FTIHCommanderStrategyInOutWriteAndModify::ExecuteStrategy(FTIHComman
 }
 #pragma endregion
 
+TIHReturn64 FTIHManagedObjectPool::ReserveWholeObjectPool(int16 maxCount)
+{
+	/*
+	
+	*/
+}
+
+void FTIHManagedObjectPool::ReserveObjectPool(SIZE_T targetCls, int16 maxCount)
+{
+	/*
+		개별적인 영역확장을 위한것이다.
+		
+	*/
+	UObject* obje;
+
+	mWholeManagedObjectIndices[0] = new TTIHManagedObject<ATIHHouseBuilderPawn>();
+	
+}
+
+TIHReturn64 FTIHManagedObjectPool::LinkingUEObjectAndManagedObject(UObject* ueObj)
+{
+	int32 poolNum = mWholeManagedObjectIndices.Num();
+
+	AActor* act;
+	
+	AActor* isActor = Cast<AActor>(ueObj);
+	UWidget* isWidget = Cast<UWidget>(ueObj);
+
+	if(isActor != nullptr)
+	{
+		ParsingUEActorTagsForManagedObject(isActor);
+
+	}
+	else if(isWidget != nullptr)
+	{
+
+	}
+	else
+	{
+
+	}
+}

@@ -61,6 +61,25 @@ class	FTIHDefaultStation;
 	============================================================================================================================================================
 	============================================================================================================================================================
 */
+
+//	이거 나중에 맨처음 include 하는 곳에 넣어서 변경을 하자. 
+//어차피 헤더가 컴파일될때 변경이 될거니깐 reaverse oop 이거 패턴사용할거임. 
+//지금은 좀 나중에 일단 형태만
+#define TIHSETTING_STATION_IS_DEFAULT
+
+#ifdef TIHSETTING_STATION_IS_NOT_DEFAULT
+
+#define TIHSETTING_CURRURNT_STATION FTIHDefaultStation
+
+#else TIHSETTING_STATION_IS_DEFAULT
+
+#define TIHSETTING_CURRURNT_STATION FTIHDefaultStation
+
+#endif
+
+#define TIH_CURRURNT_STATION_CLASS \
+TIHSETTING_CURRURNT_STATION
+
 /*!
 *	@brief Type Traits 과 SFINAE 를 사용한 check 구조체 정의
 *	@detail CRTP 에서 함수가 정의되지 않았을경우 true 타입과 false 타입을 나누기 위한것
@@ -149,10 +168,53 @@ TIHMACRO_CHAINBUILDER_SETTER_BASE(*this,TIHTemplateType& , MemFuncName, MemberVa
 #define TIHMACRO_CHAINBUILDER_SETTER_AUTO( MemberVarName )\
 TIHMACRO_CHAINBUILDER_SETTER_BASE(*this,TIHTemplateType , MemberVarName, MemberVarName)
 
+#define TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME( MemFuncName, MemberVarName )\
+TIHMACRO_CHAINBUILDER_SETTER_BASE(*this,TIHTemplateType , MemFuncName, MemberVarName)
 
 #define TIHMACRO_CHAINBUILDER_COMMAND_CAST( castTemplateType, cmdTarget )\
 cmdTarget = new castTemplateType();\
 static_cast<castTemplateType*>(cmdBase)->SetCommandFeature(GetCastedBuildersCommandData< castTemplateType##Datas >())
+
+/*!
+*	@brief 간단한 해쉬
+*	@detail https://withhamit.tistory.com/401
+*/
+TIHReturn64 ClassNameHashImplement(const char* clsName)
+{
+	TIHReturn64 reValue = -1;
+	if(clsName != nullptr )
+	{
+		const int p = 53;
+		const int m = 1e9 + 9; // 10^9 +9 == 1'000`000`009 < 2`147`000`000 == int32 max
+
+		int hash_val = 0;
+		int pow_p = 1;
+
+		for (int i = 0; (clsName[i] != '\0' && clsName + i != nullptr); ++i)
+		{
+			hash_val = (hash_val + (clsName[i] - 'a' + 1) * pow_p) % m;
+			pow_p = (p + pow_p) % m;
+		}
+		reValue = hash_val;
+	}
+	return reValue;
+}
+
+#define TIHMACRO_CLASS_STATIC_NAME_HASH( thisClass )\
+public:\
+static TIHReturn64 TIHClassNameHash()\
+{ \
+static TIHReturn64 reValue = ClassNameHashImplement( #thisClass ); \
+return reValue; }
+
+
+#define TIHNACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION( thisClass )\
+TIHMACRO_CLASS_STATIC_NAME_HASH( thisClass )\
+static thisClass* GenerateManagedObjectComponentStaticPolymorph()\
+{\
+	return new thisClass();\
+}
+
 
 /*
 	============================================================================================================================================================
@@ -370,8 +432,8 @@ enum class ETIHCommandResultBitMask : int8
 	EOnNext = 1 << 2,
 	EOnPopFornt = 1 << 3,
 	EOnPopBack = 1 << 4,
-	ECallingErrorFunction = 1 << 5,
 	ECallingCompleteFunction = 1 << 6,
+	ECallingErrorFunction = 1 << 7,
 	EAsyncTask = -1 //이거 - 일거라 그냥 확인만 하면 됨.
 };
 
@@ -562,12 +624,6 @@ struct FTIHCommandHeader
 	UPROPERTY()
 	int8 Option1;
 
-	TIHMACRO_CHAINBUILDER_SETTER(Protocol);
-	TIHMACRO_CHAINBUILDER_SETTER(ProtocolOption);
-	TIHMACRO_CHAINBUILDER_SETTER(Option0);
-	TIHMACRO_CHAINBUILDER_SETTER(Option1);
-
-
 	void RefreshForReuse()
 	{
 		Protocol = (int8)ETIHCommandHeaderProtocols::ENotAssign;
@@ -575,6 +631,12 @@ struct FTIHCommandHeader
 		Option0 = 0;
 		Option1 = 0;
 	};
+
+	TIHMACRO_CHAINBUILDER_SETTER(Protocol);
+	TIHMACRO_CHAINBUILDER_SETTER(ProtocolOption);
+	TIHMACRO_CHAINBUILDER_SETTER(Option0);
+	TIHMACRO_CHAINBUILDER_SETTER(Option1);
+
 };
 
 
@@ -594,41 +656,39 @@ USTRUCT()
 struct FTIHCommandMethod
 {
 	GENERATED_BODY()
-	/*
-
-	*/
+	
 	UPROPERTY()
-	int8 CommandExecutionProtocol;			//	{Strategies,Delegates,MultiThreading}
+	int8 CommandProcessingProtocol;			//	{Strategies,Delegates,MultiThreading}
 	UPROPERTY()
-	int8 CommandSequenceProtocol;			//	{Continue,Reapeate,Async}
+	int8 CommandProgressionProtocol;			//	{Continue,Reapeate,Async}
 	UPROPERTY()
-	int8 CommandCompleteIndex;
-	UPROPERTY()
-	int8 CommandAdditionalInfoIndex;
+	int16 CompleteFunctorIndex;
+	
 
 	FTIHCommandMethod() :
-		CommandExecutionProtocol( (int8)ETIHCommandHeaderProtocols::ENotAssign ),
-		CommandCompleteIndex(-1),
-		CommandSequenceProtocol(-1),
-		CommandAdditionalInfoIndex(-1)
+		CommandProcessingProtocol( (int8)ETIHCommandHeaderProtocols::ENotAssign ),
+		CompleteFunctorIndex(-1),
+		CommandProgressionProtocol(-1)
+		
 	{
 	};
 	void RefreshForReuse()
 	{
-		CommandExecutionProtocol = (int8)ETIHCommandHeaderProtocols::ENotAssign;
-		CommandCompleteIndex = -1;
-		CommandSequenceProtocol = -1;
-		CommandAdditionalInfoIndex = -1;
+		CommandProcessingProtocol = (int8)ETIHCommandHeaderProtocols::ENotAssign;
+		CompleteFunctorIndex = -1;
+		CommandProgressionProtocol = -1;
 	};
 	
-	
-	TIHMACRO_CHAINBUILDER_SETTER(CommandExecutionProtocol);
-	TIHMACRO_CHAINBUILDER_SETTER(CommandCompleteIndex);
-	TIHMACRO_CHAINBUILDER_SETTER(CommandSequenceProtocol);
-	TIHMACRO_CHAINBUILDER_SETTER(CommandAdditionalInfoIndex);
-
-	
+	TIHMACRO_CHAINBUILDER_SETTER(CommandProcessingProtocol);
+	TIHMACRO_CHAINBUILDER_SETTER(CompleteFunctorIndex);
+	TIHMACRO_CHAINBUILDER_SETTER(CommandProgressionProtocol);
 };
+/*
+	command state 가 필요할까?
+	이게 있으면 좋은점
+		상태에 대한 추적이 가능하다
+		상태에 따른 다른 처리가 가능하다.
+*/
 
 class FTIHCommandMethodAdditionalManager
 {
@@ -726,8 +786,14 @@ public:
 	TIHMACRO_CHAINBUILDER_SETTER_FUNCNAME(CommandHeader,mCmdHeader);
 	TIHMACRO_CHAINBUILDER_SETTER_FUNCNAME(CommandMethod, mCmdMethod);
 
-	FTIHCommandBase() {};
+	template<typename TIHTemplateType>
+	TIHTemplateType* GenerateThisCastedClass()
+	{
+		return TIHTemplateType::GenerateThisClass();
+	}
 
+	FTIHCommandBase() 
+	{};
 	virtual ~FTIHCommandBase() = 0 
 	{}
 
@@ -1139,11 +1205,27 @@ TTIHCommand<TIHTemplateType>::TTIHCommand()
 {
 	
 }
+
+template<typename TIHTemplateType>
+TIHTemplateType* GenerateTemplateThisClass()
+{
+	return new TIHTemplateType();
+}
+
+#define TIHMACRO_CLASS_STATIC_GENERATE_THIS( thisClass )\
+static thisClass* GenerateThisClass(){ return GenerateTemplateThisClass<thisClass>(); }
+
+#define TIHMACRO_CLASS_STATIC_NAME_GENERATE_THIS( thisClass )\
+public:\
+TIHMACRO_CLASS_STATIC_NAME_HASH( thisClass );\
+TIHMACRO_CLASS_STATIC_GENERATE_THIS( thisClass )
+
 /*
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 													FTIHCommandTestDelayDatas
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
+
 USTRUCT()
 struct FTIHCommandTestDelayDatas
 {
@@ -1204,6 +1286,8 @@ struct FTIHCommandCreateAssignPoolDatas
 };
 class FTIHCommandCreateAssignPool : public TTIHCommand<FTIHCommandCreateAssignPoolDatas>
 {
+	TIHMACRO_CLASS_STATIC_NAME_GENERATE_THIS(FTIHCommandCreateAssignPool);
+
 public:
 	FTIHCommandCreateAssignPool();
 	virtual ~FTIHCommandCreateAssignPool();
@@ -1242,6 +1326,7 @@ struct FTIHCommandCreateNewAllocDatas
 };
 class FTIHCommandCreateNewAlloc : public TTIHCommand<FTIHCommandCreateNewAllocDatas>
 {
+	TIHMACRO_CLASS_STATIC_NAME_GENERATE_THIS(FTIHCommandCreateNewAlloc);
 public:
 	FTIHCommandCreateNewAlloc();
 	virtual ~FTIHCommandCreateNewAlloc();
@@ -1252,21 +1337,38 @@ public:
 													FTIHCommandServerConnect
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-
-class FTIHCommandServerConnect : public TTIHCommand<FTIHCommandCreateAssignPoolDatas>
+USTRUCT()
+struct FTIHCommandServerConnectDatas
 {
+	GENERATED_BODY()
+
+};
+class FTIHCommandServerConnect : public TTIHCommand<FTIHCommandServerConnectDatas>
+{
+	TIHMACRO_CLASS_STATIC_NAME_GENERATE_THIS(FTIHCommandServerConnect);
 public:
 	FTIHCommandServerConnect();
 	virtual ~FTIHCommandServerConnect();
 };
+
+
+
+
 
 /*
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 													FTIHCommandServerSend
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-class FTIHCommandServerSend : public TTIHCommand<FTIHCommandCreateAssignPoolDatas>
+USTRUCT()
+struct FTIHCommandServerSendDatas
 {
+	GENERATED_BODY()
+
+};
+class FTIHCommandServerSend : public TTIHCommand<FTIHCommandServerSendDatas>
+{
+	TIHMACRO_CLASS_STATIC_NAME_GENERATE_THIS(FTIHCommandServerSend);
 public:
 	FTIHCommandServerSend();
 	virtual ~FTIHCommandServerSend();
@@ -1277,9 +1379,15 @@ public:
 													FTIHCommandServerListen
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-
-class FTIHCommandServerListen : public TTIHCommand<FTIHCommandCreateAssignPoolDatas>
+USTRUCT()
+struct FTIHCommandServerListenDatas
 {
+	GENERATED_BODY()
+
+};
+class FTIHCommandServerListen : public TTIHCommand<FTIHCommandServerListenDatas>
+{
+	TIHMACRO_CLASS_STATIC_NAME_GENERATE_THIS(FTIHCommandServerListen);
 public:
 	FTIHCommandServerListen();
 	virtual ~FTIHCommandServerListen();
@@ -1290,9 +1398,15 @@ public:
 													FTIHCommandServerDisConnect
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-
-class FTIHCommandServerDisConnect : public TTIHCommand<FTIHCommandCreateAssignPoolDatas>
+USTRUCT()
+struct FTIHCommandServerDisConnectDatas
 {
+	GENERATED_BODY()
+
+};
+class FTIHCommandServerDisConnect : public TTIHCommand<FTIHCommandServerDisConnectDatas>
+{
+	TIHMACRO_CLASS_STATIC_NAME_GENERATE_THIS(FTIHCommandServerDisConnect);
 public:
 	FTIHCommandServerDisConnect();
 	virtual ~FTIHCommandServerDisConnect();
@@ -1303,9 +1417,15 @@ public:
 													FTIHCommandDeleteRejectPool
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-
-class FTIHCommandDeleteRejectPool : public TTIHCommand<FTIHCommandCreateAssignPoolDatas>
+USTRUCT()
+struct FTIHCommandDeleteRejectPoolDatas
 {
+	GENERATED_BODY()
+
+};
+class FTIHCommandDeleteRejectPool : public TTIHCommand<FTIHCommandDeleteRejectPoolDatas>
+{
+	TIHMACRO_CLASS_STATIC_NAME_GENERATE_THIS(FTIHCommandDeleteRejectPool);
 public:
 	FTIHCommandDeleteRejectPool();
 	virtual ~FTIHCommandDeleteRejectPool();
@@ -1316,9 +1436,15 @@ public:
 													FTIHCommanEDeleteDestory
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-
-class FTIHCommanEDeleteDestory : public TTIHCommand<FTIHCommandCreateAssignPoolDatas>
+USTRUCT()
+struct FTIHCommanEDeleteDestoryDatas
 {
+	GENERATED_BODY()
+
+};
+class FTIHCommanEDeleteDestory : public TTIHCommand<FTIHCommanEDeleteDestoryDatas>
+{
+	TIHMACRO_CLASS_STATIC_NAME_GENERATE_THIS(FTIHCommanEDeleteDestory);
 public:
 	FTIHCommanEDeleteDestory();
 	virtual ~FTIHCommanEDeleteDestory();
@@ -1329,9 +1455,15 @@ public:
 													FTIHCommandModifyTransform
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-
-class FTIHCommandModifyTransform : public TTIHCommand<FTIHCommandCreateAssignPoolDatas>
+USTRUCT()
+struct FTIHCommandModifyTransformDatas
 {
+	GENERATED_BODY()
+
+};
+class FTIHCommandModifyTransform : public TTIHCommand<FTIHCommandModifyTransformDatas>
+{
+	TIHMACRO_CLASS_STATIC_NAME_GENERATE_THIS(FTIHCommandModifyTransform);
 public:
 	FTIHCommandModifyTransform();
 	virtual ~FTIHCommandModifyTransform();
@@ -1342,9 +1474,15 @@ public:
 													FTIHCommandModifyValue
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-
-class FTIHCommandModifyValue : public TTIHCommand<FTIHCommandCreateAssignPoolDatas>
+USTRUCT()
+struct FTIHCommandModifyValueDatas
 {
+	GENERATED_BODY()
+
+};
+class FTIHCommandModifyValue : public TTIHCommand<FTIHCommandModifyValueDatas>
+{
+	TIHMACRO_CLASS_STATIC_NAME_GENERATE_THIS(FTIHCommandModifyValue);
 public:
 	FTIHCommandModifyValue();
 	virtual ~FTIHCommandModifyValue();
@@ -1355,9 +1493,15 @@ public:
 													FTIHCommandInOutReadAndSave
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-
-class FTIHCommandInOutReadAndSave : public TTIHCommand<FTIHCommandCreateAssignPoolDatas>
+USTRUCT()
+struct FTIHCommandInOutReadAndSaveDatas
 {
+	GENERATED_BODY()
+
+};
+class FTIHCommandInOutReadAndSave : public TTIHCommand<FTIHCommandInOutReadAndSaveDatas>
+{
+	TIHMACRO_CLASS_STATIC_NAME_GENERATE_THIS(FTIHCommandInOutReadAndSave);
 public:
 	FTIHCommandInOutReadAndSave();
 	virtual ~FTIHCommandInOutReadAndSave();
@@ -1368,9 +1512,15 @@ public:
 													FTIHCommandInOutWriteAndModify
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-
-class FTIHCommandInOutWriteAndModify : public TTIHCommand<FTIHCommandCreateAssignPoolDatas>
+USTRUCT()
+struct FTIHCommandInOutWriteAndModifyDatas
 {
+	GENERATED_BODY()
+
+};
+class FTIHCommandInOutWriteAndModify : public TTIHCommand<FTIHCommandInOutWriteAndModifyDatas>
+{
+	TIHMACRO_CLASS_STATIC_NAME_GENERATE_THIS(FTIHCommandInOutWriteAndModify);
 public:
 	FTIHCommandInOutWriteAndModify();
 	virtual ~FTIHCommandInOutWriteAndModify();
@@ -1691,6 +1841,9 @@ public:
 	{
 		return SetCommandMethodMetaDataBuilder().BeginChain();
 	}
+
+	
+
 	template<typename TIHTemplateCmdDataType >
 	TTIHChainBuilder<TIHTemplateCmdDataType>& SetCommandDataMetaDataBuilderTemplate()
 	{
@@ -1716,6 +1869,7 @@ public:
 
 		return *static_cast<TTIHChainBuilder<TIHTemplateCmdDataType>*>(mBuildersArray[mCurrBuilderIndex].CommandDataBuilder);
 	}
+
 	template<typename TIHTemplateCmdDataType >
 	TIHTemplateCmdDataType& ChainBuildCommandData()
 	{
@@ -1859,6 +2013,7 @@ protected:
 
 	TMap<uint32, FTIHChainBuilderPool> mCommandDataBuilderPool;
 	
+	TMap<TIHReturn64, FTIHCommandBase*> mGenerateHash;
 private:
 	//template<typename TIHTemplateCmdBuilder>
 	//TTIHChainBuilder<TIHTemplateCmdBuilder>& SetCommandBuilder(FTIHChainBuilderBase*& builderPtr)
@@ -2175,12 +2330,84 @@ private:
 
 
 };
+/*
+	선택이 어렵거든 표시를 해놓자
+	통일성을 고려해야한다면 고려하는 요소를 써놓자
+	일단 만들고 최적화 생각
+
+	이름 규약을 만들어놔야겠다
+*/
+enum class ETIHCommandFunctorProtocols
+{
+	EManagedObjectMemberFunction = 0,
+	ECommanderFunction,
+};
+enum class ETIHCommandFunctorProtocolOptions
+{
+	ECallingCompleteFunction = 0,
+	ECallingErrorFunction ,
+};
+
+
+USTRUCT()
+struct FTIHCommandFunctorHeader
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int8 Protocol;
+	UPROPERTY()
+	int8 ProtocolOption;
+
+	/*!
+	*	@brief 이거의 목적은 다용도이긴한데 일단 managedOBject 의 인덱스로 사용.
+	*	@detail 
+	*/
+	UPROPERTY()
+	int16 ReferenceIndex;	//	이게 16비트였나 기억이안남
+							//	참조할 영역이 managedOBject 또는 커맨드 내부에 있는 내부 콜백의 인덱스
+							//	이제 이걸 가지고 결정을 한 결과를 기록해놓으면 된다.
+};
+
+/*!
+*	@brief 
+*	@detail 
+*/
+template<typename TIHTemplateType>
+class TTIHCommandFunctorWrapper
+{
+public:
+	bool IsValidFunctor()
+	{
+		static FTIHCommander& commander = FTIHDefaultStation::SingleTone()->GetCommander();
+		static FTIHManagedObjectPool& objectPool = FTIHDefaultStation::SingleTone()->GetObjectPool();
+		bool reValue = false;
+		if((int8)ETIHCommandFunctorProtocols::EManagedObjectMemberFunction==mFunctorHeader.Protocol)
+		{
+			//	이걸 safety 하게 만들어야함
+			int32 objectRef = mFunctorHeader.ReferenceIndex;
+			reValue = objectPool.GetManagedObject(objectRef)->IsValidManagedTarget();
+		}
+		else if((int8)ETIHCommandFunctorProtocols::ECommanderFunction== mFunctorHeader.Protocol)
+		{
+
+		}
+		return reValue;
+	}
+	TFunction<TIHTemplateType>& GetFunction()
+	{
+		return mContents;
+	}
+private:
+	FTIHCommandFunctorHeader mFunctorHeader;
+	TFunction<TIHTemplateType> mContents;
+};
+
 
 /*!
 *	@brief 
 *	@detail https://benui.ca/unreal/tickable-object/
 */
-
 class FTIHCommandTickableScheduler : public FTickableGameObject
 {
 public:
@@ -2206,41 +2433,21 @@ private:
 	uint32 LastFrameNumberWeTicked = INDEX_NONE;
 };
 
+/*
+	============================================================================================================================================================
+	============================================================================================================================================================
+	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 
+																	Commander
+
+	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
+	============================================================================================================================================================
+	============================================================================================================================================================
+*/
 class FTIHCommander
 {
 public:
-	int32 mCurrentCommandListIndex;
-	int32 mCurrMainCmdListIndex;
-	TArray<FTIHCommandList> mCommandLists;
-
-	FTIHCommandShareBoard mShareBoard;
-	//TUniquePtr<FTIHCommandShareBoard> mShareBoard;
-
-	FTIHCommandResultBoard mResultBoard;
-
-	// cmd state 로 빼야함.
-	bool mIsCommandExecuteLoop; 
-	int32 mCurrCommandState;
-	int32 mCurrCommandListIndex;
-	int32 mCurrCommandQueueIndex;
-
-	FTIHCommandExecutionState mCommaderExecutionState;
-
-	FTIHCommanderStrategyTestDelay* mStrategyTestDelay;
-	FTIHCommanderStrategyCreateNewAlloc* mStrategyCreateNewAlloc;
-	FTIHCommanderStrategyCreateAssignPool* mStrategyCreateAssignPool;
-	FTIHCommanderStrategyServerConnect* mStrategyServerConnect;
-	FTIHCommanderStrategyServerSend* mStrategyServerSend;
-	FTIHCommanderStrategyServerListen* mStrategyServerListen;
-	FTIHCommanderStrategyServerDisConnect* mStrategyServerDisConnect;
-	FTIHCommanderStrategyDeleteRejectPool* mStrategyDeleteRejectPool;
-	FTIHCommanderStrategyDeleteDestory* mStrategyDeleteDestory;
-	FTIHCommanderStrategyModifyTransform* mStrategyModifyTransform;
-	FTIHCommanderStrategyModifyValue* mStrategyModifyValue;
-	FTIHCommanderStrategyInOutReadAndSave* mStrategyInOutReadAndSave;
-	FTIHCommanderStrategyInOutWriteAndModify* mStrategyInOutWriteAndModify;
-
+	
 	void TestSettingCommandList();
 
 	FTIHCommandExecutionState& GetCommandExecutionState()
@@ -2262,9 +2469,13 @@ public:
 		return target.ExecuteStrategy(cmdBase);
 	}
 	//
-	TArray<TFunction<TIHReturn64(FTIHCommandBase* )>> mCompleteFunctions;
 
-	TIHReturn64 ExecuteCommandStaticPolymorph(FTIHCommandBase* primitiveCmd);
+	//	이거 리절브 해야함.
+	TArray<TTIHCommandFunctorWrapper< TIHReturn64(FTIHCommandBase*) > > mCompleteFunctions;
+
+
+
+	TIHReturn64 ExecuteCommandStaticPolymorphs(FTIHCommandBase* primitiveCmd);
 	TIHReturn64 SequenceCommand(TIHReturn64 result,FTIHCommandBase* primitiveCmd);
 
 	/*!
@@ -2274,20 +2485,165 @@ public:
 	TIHReturn64 CheckCallingCompleteFunctions(FTIHCommandBase* primitiveCmd);
 
 	TIHReturn64 CheckCallingErrorFunctions(FTIHCommandBase* primitiveCmd);
+
+
+	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyTestDelay, mStrategyTestDelay);
+	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyCreateNewAlloc, mStrategyCreateNewAlloc);
+	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyCreateAssignPool, mStrategyCreateAssignPool);
+	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyServerConnect, mStrategyServerConnect);
+	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyServerSend, mStrategyServerSend);
+	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyServerListen, mStrategyServerListen);
+	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyServerDisConnect, mStrategyServerDisConnect);
+	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyDeleteRejectPool, mStrategyDeleteRejectPool);
+	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyDeleteDestory, mStrategyDeleteDestory);
+	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyModifyTransform, mStrategyModifyTransform);
+	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyModifyValue, mStrategyModifyValue);
+	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyInOutReadAndSave, mStrategyInOutReadAndSave);
+	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyInOutWriteAndModify, mStrategyInOutWriteAndModify);
+
+	decltype(auto) SetStrategyTestDelay(auto value)
+	{
+		SafeDeletePtr(mStrategyTestDelay);
+		mStrategyTestDelay = value;
+		return *this;
+	}
+	decltype(auto) SetStrategyCreateNewAlloc(auto value)
+	{
+		SafeDeletePtr(mStrategyCreateNewAlloc);
+		mStrategyCreateNewAlloc = value;
+		return *this;
+	}
+	decltype(auto) SetStrategyCreateAssignPool(auto value)
+	{
+		SafeDeletePtr(mStrategyCreateAssignPool);
+		mStrategyCreateAssignPool = value;
+		return *this;
+	}
+	decltype(auto) SetStrategyServerConnect(auto value)
+	{
+		SafeDeletePtr(mStrategyServerConnect);
+		mStrategyServerConnect = value;
+		return *this;
+	}
+	decltype(auto) SetStrategyServerSend(auto value)
+	{
+		SafeDeletePtr(mStrategyServerSend);
+		mStrategyServerSend = value;
+		return *this;
+	}
+	decltype(auto) SetStrategyServerListen(auto value)
+	{
+		SafeDeletePtr(mStrategyServerListen);
+		mStrategyServerListen = value;
+		return *this;
+	}
+	decltype(auto) SetStrategyServerDisConnect(auto value)
+	{
+		SafeDeletePtr(mStrategyServerDisConnect);
+		mStrategyServerDisConnect = value;
+		return *this;
+	}
+	decltype(auto) SetStrategyDeleteDestory(auto value)
+	{
+		SafeDeletePtr(mStrategyDeleteRejectPool);
+		mStrategyDeleteRejectPool = value;
+		return *this;
+	}
+	decltype(auto) SetStrategyModifyTransform(auto value)
+	{
+		SafeDeletePtr(mStrategyModifyTransform);
+		mStrategyModifyTransform = value;
+		return *this;
+	}
+	decltype(auto) SetStrategyModifyValue(auto value)
+	{
+		SafeDeletePtr(mStrategyModifyValue);
+		mStrategyModifyValue = value;
+		return *this;
+	}
+	decltype(auto) SetStrategyInOutReadAndSave(auto value)
+	{
+		SafeDeletePtr(mStrategyInOutReadAndSave);
+		mStrategyInOutReadAndSave = value;
+		return *this;
+	}
+	decltype(auto) SetStrategyInOutWriteAndModify(auto value)
+	{
+		SafeDeletePtr(mStrategyInOutWriteAndModify);
+		mStrategyInOutWriteAndModify = value;
+		return *this;
+	}
+
+
+	/*
+		
 	
+	
+	*/
+
+private:
+
+
+
+	int32 mCurrentCommandListIndex;
+	int32 mCurrMainCmdListIndex;
+	TArray<FTIHCommandList> mCommandLists;
+
+	FTIHCommandShareBoard mShareBoard;
+	//TUniquePtr<FTIHCommandShareBoard> mShareBoard;
+
+	FTIHCommandResultBoard mResultBoard;
+
+	// cmd state 로 빼야함.
+	bool mIsCommandExecuteLoop;
+	int32 mCurrCommandState;
+	int32 mCurrCommandListIndex;
+	int32 mCurrCommandQueueIndex;
+
+	FTIHCommandExecutionState mCommaderExecutionState;
+
+	FTIHCommanderStrategyTestDelay* mStrategyTestDelay;
+	FTIHCommanderStrategyCreateNewAlloc* mStrategyCreateNewAlloc;
+	FTIHCommanderStrategyCreateAssignPool* mStrategyCreateAssignPool;
+	FTIHCommanderStrategyServerConnect* mStrategyServerConnect;
+	FTIHCommanderStrategyServerSend* mStrategyServerSend;
+	FTIHCommanderStrategyServerListen* mStrategyServerListen;
+	FTIHCommanderStrategyServerDisConnect* mStrategyServerDisConnect;
+	FTIHCommanderStrategyDeleteRejectPool* mStrategyDeleteRejectPool;
+	FTIHCommanderStrategyDeleteDestory* mStrategyDeleteDestory;
+	FTIHCommanderStrategyModifyTransform* mStrategyModifyTransform;
+	FTIHCommanderStrategyModifyValue* mStrategyModifyValue;
+	FTIHCommanderStrategyInOutReadAndSave* mStrategyInOutReadAndSave;
+	FTIHCommanderStrategyInOutWriteAndModify* mStrategyInOutWriteAndModify;
 };
 
 
 
 #pragma endregion 
-//-------
+/*
+	============================================================================================================================================================
+	============================================================================================================================================================
+	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
+
+																	Managed Object
+
+	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
+	============================================================================================================================================================
+	============================================================================================================================================================
+*/
+class FTIHManagedObjectBase;
+template<typename TIHTemplateType = FTIHManagedObjectBase> class TTIHManagedObject;
+class FTIHManagedObjectComposite;
+class FTIHManagedObjectComponentBase;
+template<typename TIHTemplateType> class FTIHManagedObjectComponent;
+
 class FTIHManagedObjectComposite
 {
 public:
 	FTIHManagedObjectComposite() {};
 	virtual ~FTIHManagedObjectComposite() {};
 
-	FTIHManagedObjectComponent* operator[](int32 index)
+	FTIHManagedObjectComponentBase* operator[](int32 index)
 	{
 		if(-1 < index && index < mComponentArray.Num())
 		{
@@ -2295,7 +2651,8 @@ public:
 		}
 		return nullptr;
 	}
-	FTIHManagedObjectComponent* operator[](FName index)
+
+	FTIHManagedObjectComponentBase* operator[](FName index)
 	{
 		bool isContain = mComponentHash.Contains(index);
 		if(isContain == true)
@@ -2308,26 +2665,216 @@ public:
 			return nullptr;
 		}
 	}
-	template<typename TIHTemplateType>
-	TIHReturn64 AddComponet();
+
+	int32 GetComponentCount()
+	{
+		return mComponentArray.Num();
+	}
+	void PushBackComponent(FTIHManagedObjectComponentBase* ptr)
+	{
+		mComponentArray.Add(MakeUnique<FTIHManagedObjectComponentBase>(ptr));
+	}
 
 protected:
 	
 private:
 	TMap<FName, int32> mComponentHash;
-	TArray< TUniquePtr<FTIHManagedObjectComponent>> mComponentArray;
+	TArray< TUniquePtr<FTIHManagedObjectComponentBase>> mComponentArray;
 };
 
-class FTIHManagedObjectComponent : public FTIHManagedObjectComposite
+USTRUCT()
+struct FManagedObjectComponentHeader
 {
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int8 Protocol;//{staticMesh,material}어디에 사용되는지
+	UPROPERTY()
+	int8 ProtocolOption;
+	UPROPERTY()
+	int8 Padding0;
+	UPROPERTY()
+	int8 Padding1;
 
 };
+
+
+class FTIHManagedObjectComponentBase : public FTIHManagedObjectComposite
+{
+public:
+	const FManagedObjectComponentHeader GetComponentHeader()
+	{
+		return mComponentHeader;
+	}
+	
+
+private:
+	FManagedObjectComponentHeader mComponentHeader;
+};
+
 
 
 /*!
 *	@brief 
 *	@detail 
 */
+template<typename TIHTemplateType>
+class FTIHManagedObjectComponent : public FTIHManagedObjectComponentBase
+{
+public:
+	
+protected:
+	TArray<int32> mLinkedComponents;
+	TIHTemplateType* mTargetComponent;
+};
+
+
+class FTIHManagedObjectMovementComponent : public FTIHManagedObjectComponent<USceneComponent>
+{
+public:
+	TIHNACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION(FTIHManagedObjectMovementComponent);
+
+	FTIHManagedObjectMovementComponent& SetRelateTransform(const FTransform& trans)
+	{
+		mTargetComponent->SetRelativeTransform(trans);
+		return *this;
+	}
+	FTIHManagedObjectMovementComponent& SetWorldTransform(const const FTransform& trans)
+	{
+		mTargetComponent->SetWorldTransform(trans);
+		return *this;
+	}
+
+	FTIHManagedObjectMovementComponent& SetRelateLocation(const FVector& vect)
+	{
+		mTargetComponent->SetRelativeLocation(vect);
+		return *this;
+	}
+	FTIHManagedObjectMovementComponent& SetWorldLocation(const FVector& vect)
+	{
+		mTargetComponent->SetWorldLocation(vect);
+		return *this;
+	}
+
+	FTIHManagedObjectMovementComponent& SetRelateRotation(const FVector& vect)
+	{
+		mTargetComponent->SetRelativeRotation(vect.ToOrientationQuat());
+		return *this;
+	}
+	FTIHManagedObjectMovementComponent& SetWorldRotation(const FVector& vect)
+	{
+		mTargetComponent->SetWorldRotation(vect.ToOrientationQuat());
+		return *this;
+	}
+
+};
+
+class FTIHManagedObjectRenderComponent : public FTIHManagedObjectComponent<UMeshComponent>
+{
+public:
+	TIHNACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION(FTIHManagedObjectRenderComponent);
+
+	FTIHManagedObjectRenderComponent& SetStaticMesh(UStaticMesh* stMesh)
+	{
+		if(mStaticMesh != nullptr)
+		{
+			mStaticMesh->SetStaticMesh(stMesh);
+		}
+		return *this;
+	}
+	FTIHManagedObjectRenderComponent& SetSkeletalMesh(USkeletalMesh* skMesh)
+	{
+		if (mSkeletalMesh != nullptr)
+		{
+			mSkeletalMesh->SetSkeletalMesh(skMesh);
+		}
+		return *this;
+	}
+
+private:
+	UStaticMeshComponent* mStaticMesh;
+	USkeletalMeshComponent* mSkeletalMesh;
+};
+class FTIHManagedObjectAnimationComponent : public FTIHManagedObjectComponent<USkeletalMeshComponent>
+{
+public:
+	TIHNACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION(FTIHManagedObjectAnimationComponent);
+
+};
+
+
+/*!
+*	@brief 이거는 메테리얼에 사용될거임
+*	@detail 
+*/
+class FTIHManagedObjectPrettyComponent : public FTIHManagedObjectComponent<UMeshComponent>
+{
+public:
+	TIHNACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION(FTIHManagedObjectPrettyComponent);
+
+};
+
+
+
+
+
+enum class ETIHManagedObjectProtocols
+{
+	EStaticMesh,
+	ESkeletalMesh,
+	EUI,
+	ESound,
+	ESystem,
+	ECustom,
+};
+/*!
+*	@brief 여기에 들어갈것은 클래스 타입같은거임 그게 128개를 넘지는 않을거니깐 ㅎㅎ
+*	@detail 진짜 정안되면 -1 가지 쓰고 거기에 곱셈하지뭐 ㅎㅎ
+*/
+enum class ETIHManagedObjectProtocolOptions
+{
+	EEmpty
+};
+enum class ETIHManagedObjectComponentProtocols
+{
+	ENotUse = 0,
+};
+
+/*!
+*	@brief 
+*	@detail 
+*/
+USTRUCT()
+struct FTIHManagedObjectHeader
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int8 Protocol;//	objectType
+	UPROPERTY()
+	int8 ProtocolOption; // 뭐 해당 오브젝트의 이름같은거겠지
+	UPROPERTY()
+	int8 ComponentProtocol;
+	UPROPERTY()
+	int8 ComponentCount;
+};
+
+
+/*
+	아이디어
+	tag base 보다 더좋은건데 언리얼 오브젝트 즉 대부분 매쉬관련이겠지? 그것들의 태그를 읽고
+	그 태그에 맞는 정보로 컨버팅하는 파서를 만들어서 Header 를 기록하게 만들자
+
+	그럼 태그wrapper 는 없어도 무방해짐
+	그리고 상태. 이게 좀 문제인데 상태라 함은 추적을 해야함. 예를 들어 생성된 타이밍의 상태는 생성된상태고
+	한틱이 지나면 다시 돌아감
+	다행히도 actor 클래스를 상속받은게 있다면 해당 액터에서 이런 기초적인 작업을 해줄 수 잇다는건데
+	스스로 상태를 업데이트 하지만 그게 매번이루어지면 사실 의미가 좀 없음. 비 정기적이여야 한다는거임
+	비정기적인것은 상태를 추적하는데 나쁘지는 않지만 대상이 스스로 업데이트 해야하는 문제가 있음
+*/
+
+
+
 class FTIHManagedObjectBase
 {
 public:
@@ -2335,24 +2882,145 @@ public:
 	FTIHManagedObjectBase() {};
 	virtual ~FTIHManagedObjectBase() {};
 
-	FTIHState mObjectState;
-	FTIHTagWrapper mManagedTag;
-	FTIHManagedObjectComposite mManagedComposite;
+	virtual bool IsValidManagedTarget()
+	{
+		return false;
+	}
+
+	const FTIHManagedObjectHeader GetManagedObjectHeader()
+	{
+		return mManagedObjectHeader;
+	}
+	int32 GetComponentCount()
+	{
+		mManagedObjectHeader.ComponentCount = mManagedComposite.GetComponentCount();
+		return mManagedObjectHeader.ComponentCount;
+	}
+	FTIHManagedObjectComposite& GetComposite()
+	{
+		return mManagedComposite;
+	}
+
 private:
+	/*
+		여기에 뭘만들어야하냐면
+		해당 매니지드 오브젝트의 타입이 뭔지 같은 header 가 필요하다. 이게 사실 메타데이터였는데 헤더로 바뀜
+		태그 래퍼는 없앤다. 불만 없제.
+	*/
+	FTIHState mObjectState;	//	이거는 나중에
+	FTIHManagedObjectHeader mManagedObjectHeader;
+	FTIHManagedObjectComposite mManagedComposite;
+
+	int16 mParentIndex;
+	int16 mSelfIndex;
+
+	int8 mSiblingProtocol;
+	int8 mSiblingProtocolOption;
+	int16 mPadding;
+
+	TArray<int16> mSiblingIndices;
+	TArray<int16> mChildIndices;
+
+	SIZE_T mClassHashValue;
+
 };
 
+/*
+	이녀석이 중간재라 이걸 흠...타입을 들고오고 데이터를 들고와야하는데
+	공통으로 사용되는 녀석을 위에다 인터페이스 넣어놓고
+*/
+
 template<typename TIHTemplateType = FTIHManagedObjectBase>
-class TTIHManagedObject
+class TTIHManagedObject : public FTIHManagedObjectBase
 {
 public:
 	TTIHManagedObject() {};
 	virtual ~TTIHManagedObject() {};
-
-	TSharedPtr< TIHTemplateType> mManagedTarget;
-
+	
 	TSharedPtr< TIHTemplateType> GetManagedTarget()
 	{
 		return mManagedTarget;
+	}
+	/*!
+	*	@brief shaderPtr 안에 제대로 등록이 되었는지 확인하고 처리한다.
+	*	@detail 
+	*/
+	bool IsValidManagedTarget() override
+	{
+		return mManagedTarget->IsValid();
+	}
+
+	TIHReturn64 SetManagedTarget(TIHTemplateType* target)
+	{
+		mManagedTarget = MakeShared<TIHTemplateType>(target);
+		return 0;
+	}
+private:
+	TSharedPtr< TIHTemplateType> mManagedTarget;
+};
+
+USTRUCT()
+struct FTIHManangedObjectPoolStorageDatas
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int8 Protocol;//	range, separated
+	UPROPERTY()
+	int8 ProtocolOption;
+	UPROPERTY()
+	int16 RecentIndex;
+
+	UPROPERTY()
+	TArray<int16> Indecies;
+};
+
+
+struct FTIHManagedObjectGenerateMeta
+{
+	TArray<FName> GenerateTags;
+};
+
+
+
+class FTIHManagedObjectGenerateMethod
+{
+public:
+	template<typename TIHTemplateType>
+	FTIHManagedObjectComponentBase* GenerateManagedObjectComponentStaticPolymorph(TIHTemplateType value)
+	{
+		return value->GenerateManagedObjectComponentStaticPolymorph();
+	}
+
+	virtual TIHReturn64 RegistComponent(FTIHManagedObjectBase& target) = 0
+	{
+		FTIHManagedObjectGenerateMeta a;
+		a.GenerateTags.Add("pretty");
+		a.GenerateTags.Add("render");
+
+		FTIHManagedObjectPrettyComponent* pretty;
+		FTIHManagedObjectRenderComponent* render;
+		TMap<FName, FTIHManagedObjectComponentBase*> virtualComponentOriginData;
+		virtualComponentOriginData.Add("pretty", pretty);
+
+		
+		
+		//	이러면 오리지널용 데이터가 있어야한다는거네?
+		//	그러면 사전에 먼저 이걸 만들어줘야한다는거고?
+		//	예를들어서
+		/*
+			staticMesh 라는 테그를 가졌을경우
+				
+		
+		*/
+		/*
+			StaticMesh
+				FTIHManagedObjectPrettyComponent
+				FTIHManagedObjectRenderComponent
+		
+		*/
+
+		
 	}
 };
 
@@ -2366,13 +3034,44 @@ public:
 	FTIHManagedObjectPool() {};
 	~FTIHManagedObjectPool() {};
 
-	//	일단은 여기에 전부 넣고 나중에 생각한다.
-	TArray< FTIHManagedObjectBase*> mWholeManagedObjectIndices;
-	TArray<int32> mStaticMeshManagedObjectIndices;
-	TArray<int32> mSkeletalMeshManagedObjectstIndices;
-	TArray<int32> mUIManagedObjecttIndices;
+	TIHReturn64 ReserveWholeObjectPool(int16 maxCount);
+	void ReserveObjectPool(SIZE_T targetCls, int16 maxCount);
+	
+	TIHReturn64 LinkingUEObjectAndManagedObject(UObject* ueObj);
+
+	FTIHManagedObjectBase* GetManagedObject(int32 index);
+
+	TIHReturn64 ParsingUEActorTagsForManagedObject(AActor* actor);
+
+
+	TIHReturn64 PooledData();
+	/*
+		여기서 만들어줘야하나....그냥 연결만 하고싶은데...
+		Factory 통해서 만들까?
+		관리기능이 있는것은 통제하에 있어야하고 아닌것들은 알빠아니다.
+
+		하여튼 여기에는 그냥 가공되어 만들어진 FTIHManagedObjectBase* 만들어온다. 불만없제
+
+		아 그리고 시발 타입id 확인후에 그거 재사용가능하도록 하는게 필요하다.
+		그니깐 할당이 되어있긴한데 만약 staticOBject 의 mesh 만 변경가능한거면 우짬? 그게 필요한거아님?
+	*/
+
+	template<typename TIHTemplateType>
+	TIHTemplateType GenerateComponentStaticPolymorph()
+	{
+		
+
+
+	}
 	
 protected:
+	//	일단은 여기에 전부 넣고 나중에 생각한다.
+	TArray< FTIHManagedObjectBase*> mWholeManagedObjectIndices;
+	TMap<FName, SIZE_T> mClassHash;//	같은것끼리 묶기위한 해쉬
+	TMap<SIZE_T, FTIHManangedObjectPoolStorageDatas> mPoolingDatas;//이거는 sizeT 가 배치되어진 영역에 데이터가 얼마나 남았나를 확인할때 사용
+
+	TMap<TIHReturn64,
+	
 
 private:
 
@@ -2538,6 +3237,8 @@ public:
 	}
 	void SetCommandFactory(FTIHCommandFactory* cmdFactory);
 
+	FTIHCommandBase* GenerateCommandByCommandHeader(const FTIHCommandHeader cmdHeader);
+
 	FTIHCommandShareBoard& GetCommandShaderBoard()
 	{
 		return *mShareBoard;
@@ -2553,6 +3254,11 @@ public:
 	FTIHManagedObjectPool& GetObjectPool()
 	{
 		return *mGlobalObjectPool;
+	}
+
+	FTIHCommander& GetCommander()
+	{
+		return *mCommander;
 	}
 
 protected:
@@ -2670,6 +3376,7 @@ public:
 
 	TIHMACRO_STATION_HELPER_LIFECYCLE_FUNCTIONS;
 };
+
 
 
 //#define TIHTEMPLATE_POLYMORPH_FUNC_CRPT_CARRYOUT(checkFuncName,targetFunc)\

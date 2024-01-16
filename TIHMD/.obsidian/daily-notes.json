@@ -1,0 +1,5 @@
+{
+  "template": "DevelopLog/Template/01LogTemplate",
+  "folder": "DevelopLog/Logs",
+  "format": "YY-MM_DD"
+}

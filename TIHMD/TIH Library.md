@@ -54,7 +54,7 @@ EAsyncDonCare
 	EMultiThreading 와 페어로 이루어지며 처리 방법을 무조건 먼저 만나기때문에 디폴트로 변경이 된다.
 
 ### structs
-#### FTIHCommandHeader #ue
+#### FTIHCommandHeader #ue #struct
 ##### description
 커맨드의 특징을 담은 메타데이터
 ##### elements
@@ -63,7 +63,7 @@ EAsyncDonCare
 + int8 Option0; #ue<br>추가 외에 들어가야할 정보1
 + int8 Option1; #ue<br>추가 외에 들어가야할 정보2
 
-#### FTIHCommandMethod #ue
+#### FTIHCommandMethod #ue #struct
 ##### description
 커맨드가 작동하게 될 방식
 ##### elements
@@ -80,36 +80,36 @@ EAsyncDonCare
 		data 는 새롭게 생성하거나 이미 할당되어진 영역의 것을 들고오는것.
 
 ### class
-#### FTIHCommandBase #native #pattern-commander
-#### TTIHCommand #native #template #pattern-type-erasure
-#### FTIHCommandTestDelay #native #CRTP
+#### FTIHCommandBase #native #pattern-commander #class
+#### TTIHCommand #native #template #pattern-type-erasure #class
+#### FTIHCommandTestDelay #native #pattern-CRTP #class
 [Parent : TTIHCommand](#TTIHCommand)
 
 	커멘드 테스트를 위한 클래스
-#### FTIHCommandCreateAssignPool #native #CRTP
+#### FTIHCommandCreateAssignPool #native #pattern-CRTP #class
 [Parent : TTIHCommand](#TTIHCommand)
 
 	assign pooling 을 하기 위한 클래
-#### FTIHCommandCreateNewAlloc #native #CRTP
+#### FTIHCommandCreateNewAlloc #native #pattern-CRTP #class
 [Parent : TTIHCommand](#TTIHCommand)
-#### FTIHCommandList #native
+#### FTIHCommandList #native #class
 	커맨더들을 담기위한 클래스이다. 
-#### FTIHCommander #native
+#### FTIHCommander #native #class
 	커맨드를 작동시키는 주체 클래스이다.
 	여러 커맨드 리스트를 담고있을 수 있고 결과를 저장할 수 있는 저장소를 가진다.
-#### UTIHCommandFactoryConfigure #ue
+#### UTIHCommandFactoryConfigure #ue #class
 [Parent : UObject](https://docs.unrealengine.com/5.3/en-US/API/Runtime/CoreUObject/UObject/UObject/)
-#### FTIHCommandDataBoard #native
-#### FTIHCommandShareBoard #native
+#### FTIHCommandDataBoard #native #class
+#### FTIHCommandShareBoard #native #class
 [Parent : FTIHCommandDataBoard](#FTIHCommandDataBoard)
-#### FTIHCommandResultBoard #native
+#### FTIHCommandResultBoard #native #class
 [Parent : FTIHCommandDataBoard](#FTIHCommandDataBoard)
-#### FTIHCommandPathBoard #native
+#### FTIHCommandPathBoard #native #class
 [Parent : FTIHCommandDataBoard](#FTIHCommandDataBoard)
-#### FTIHChainBuilderBase #native
+#### FTIHChainBuilderBase #native #class
 #### TTIHChainBuilder #native #template #pattern-type-erasure
 [parent : FTIHChainBuilderBase](#ftihchainbuilderbase)
-#### FTIHCommandFactory #native
+#### FTIHCommandFactory #native #class
 ##### method
 ###### SetCommanHeaderMetaDataBuilder
 
@@ -146,7 +146,7 @@ EAsyncDonCare
 [Parent : FTIHManagedObjectComposite](#FTIHManagedObjectComposite)
 #### FTIHManagedObjectBase #native
 #### TTIHManagedObject
-[Parent : FTIHManagedObjectBase] #native #type-erasure #template 
+[Parent : FTIHManagedObjectBase] #native #pattern-type-erasure #template 
 	UE 오브젝트를 연결할 수 있고, 나중에 참조를 하기 위한 용도이다.
 		 
 #### FTIHManagedObjectPool
