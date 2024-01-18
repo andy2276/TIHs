@@ -8,11 +8,15 @@
         "type": "tabs",
         "children": [
           {
-            "id": "2405068ddb077e19",
+            "id": "9fbbfd10106e89f1",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "Ideas/MangagedObjectPipeline.md",
+                "mode": "source",
+                "source": false
+              }
             }
           }
         ],
@@ -82,6 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "Ideas/MangagedObjectPipeline.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -98,6 +103,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "Ideas/MangagedObjectPipeline.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -119,7 +125,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "Ideas/MangagedObjectPipeline.md"
+              }
             }
           }
         ]
@@ -139,10 +147,23 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "2405068ddb077e19",
+  "active": "9fbbfd10106e89f1",
   "lastOpenFiles": [
-    "TIH/Life Cycle.md",
+    "Ideas/GenerateManagedObjectByActor.md",
+    "Ideas/CheckManagedObjectPool.md",
+    "DevelopLog/Logs/24-01_18.md",
+    "DevelopLog/Template/02LifeCycleTemplate.md",
+    "Ideas/MangagedObjectPipeline.md",
+    "TIH/FTIHManagedObjectHeader.md",
     "TIH/FTIHManagedObjectPool.md",
+    "무제 파일.md",
+    "Ideas",
+    "TIH/FTIHManagedObjectComposite.md",
+    "TIH/FTIHManagedObjectBase.md",
+    "DevelopLog/Logs/24-01_17.md",
+    "DevelopLog/Logs/24-01_16.md",
+    "TIH/FTIHNetWork.md",
+    "TIH/Life Cycle.md",
     "TIH/TemplatesLink.md",
     "TIH/TTIHCommandFunctorWrapper.md",
     "TIH/TTIHManagedObject.md",
@@ -150,24 +171,11 @@
     "TIH/combine-ShaderBoards.md",
     "TIH/combine-ExecuteStrategy.md",
     "TIH/combine-CommanderStrategies.md",
-    "TIH/FTIHManagedObjectBase.md",
     "TIH/FTIHStation.md",
     "TIH/FTIHCommandList.md",
     "TIH/FTIHCommandFactory.md",
     "TIH/FTIHCommandFunctorHeader.md",
     "TIH/UTIHGameInstance.md",
-    "TIH/FTIHCommandExecutionState.md",
-    "DevelopLog/Template/02LifeCycleTemplate.md",
-    "DevelopLog/Logs/24-01_11.md",
-    "DevelopLog/Logs/24-01_12.md",
-    "DevelopLog/Logs/24-01_14.md",
-    "DevelopLog/Logs/24-01_15.md",
-    "DevelopLog/Template/01LogTemplate.md",
-    "DevelopLog/Template/00TimeLogTemplate.md",
-    "TIH Library.md",
-    "무제 파일.md",
-    "무제 폴더",
-    "TIH/사용법.md",
     "TIH",
     "DevelopLog/Template",
     "DevelopLog/Logs",

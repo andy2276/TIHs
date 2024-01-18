@@ -16,6 +16,9 @@ Template : [[02LifeCycleTemplate]]
 + 그래서 생각한건데 [UStaticMesh](https://docs.unrealengine.com/5.3/en-US/API/Runtime/Engine/Engine/UStaticMesh/) 의 배열도 가지면 좋을까 생각해봤는데 역할구분상 그건 [[combine-ShaderBoards]] 에 주는게 맞는거 같음.
 	+ 그중에서 path 에 넣어서 관리하는게 좋을거같음.
 + 순환을 시키는게 핵심인데 오브젝트의 상태도 관리해야할거같음
+## Function
++ 해당 클래스의 링크를 거는 함수에 액터와 매니지드 오브젝트를 넣는다. 액터를 가지고 매니지드 오브젝트를 만들어주지는 않고 컴포넌트만 만들어준다.
++ 컴포넌트의 uclass 타입을 확인하고 그에 연결되어진 managedObjectComponent 인 기능클래스들을 생성해서 붙여준다. 여기서 생성해서 붙인다고 했는데, 만약 사용이 중지된 즉 reject 되어진 클래스가 있다면 재사용하고 아니면 새롭게 생성한다.
 ## Element
 + [[FTIHManagedObjectBase]] 포인터 배열
 + 빠르게 연결해야할 것들은 인덱스로 가질거같다.
