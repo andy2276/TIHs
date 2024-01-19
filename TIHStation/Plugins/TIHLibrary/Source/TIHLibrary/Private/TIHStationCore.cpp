@@ -1098,80 +1098,127 @@ void FTIHManagedObjectPool::ReserveObjectPool(SIZE_T targetCls, int16 maxCount)
 	
 }
 
-TIHReturn64 FTIHManagedObjectPool::GenerateManagedObjectByActorPtr(AActor* actor)
+int16 FTIHManagedObjectPool::CreateNewAllocManagedObject()
+{
+	int16 reValue = 0;
+	/*
+		max 인지 아닌지 검증부터 해야한다.
+		그리고 인덱스가 뭔지 얻어내야하는데
+	*/
+	CreateNewAllocManagedObjectRange(1);
+	
+	return reValue;
+}
+
+TIHReturn64 FTIHManagedObjectPool::CreateNewAllocManagedObjectRange(int16 allocCount)
+{
+	FUnionTIHDataBoardResult reValue;
+	reValue.WholeData = 0;
+	/*
+		max 인지 아닌지 검증부터 해야한다.
+		그리고 인덱스가 뭔지 얻어내야하는데 이거는 좀 쉬운게
+		shader보드에 써놓으면 된다.
+	*/
+	int32 managedNum = mWholeManagedObjects.Num();
+	if(managedNum +allocCount < mWholeManagedObjects.Max())
+	{
+		TIHSETTING_CURRURNT_STATION& station = *TIHSETTING_CURRURNT_STATION::SingleTone();
+		reValue.RegisterRangeDetail.Protocol = 0;//	이걸 registManagedObject 로 바꾸자.
+		reValue.RegisterRangeDetail.StartIndex0 = mCurrWholdManagedObjectIndex;//	지금 등록된 매니지드 오브젝트의 인덱스시작
+		reValue.RegisterRangeDetail.RegistCount = allocCount;
+
+		mWholeManagedObjects.AddDefaulted(allocCount);
+		/*
+			만약 해쉬를 넣는다면 여기에.
+		*/
+		mCurrWholdManagedObjectIndex = mWholeManagedObjects.Num();	
+
+		//	지금 shaderBoader 에 들어간 해당 오브젝트 인덱스 목록
+		reValue.RegisterRangeDetail.StartIndex1 = station.GetCommandShaderBoard().mBoard.RegisterToArrayAsInt16(reValue.RegisterRangeDetail.StartIndex0);
+		for(int32 i = 1; i < allocCount; ++i)
+		{
+			station.GetCommandShaderBoard().mBoard.RegisterToArrayAsInt16(reValue.RegisterRangeDetail.StartIndex0 +i);
+		}
+	}
+	/*
+		제대로 할당이 되었다면
+		매니지드 오브젝트 시작위치
+		해당 인덱스가 저장된 shaderboad 에서의 인덱스
+		할당 되어진 크기
+	*/
+	return reValue.WholeData;
+}
+
+TIHReturn64 FTIHManagedObjectPool::LinkingUEObjectAndManagedObject(UObject* ueObj, FTIHManagedObjectBase* mangedObj)
+{
+	TIHReturn64 reValue = 0;
+	bool isPossibleSet = false;
+	if(ueObj != nullptr)
+	{
+		if(mangedObj != nullptr)
+		{
+			isPossibleSet = mangedObj->GetState().IsAssginPossible();
+		}
+		else
+		{
+			/*
+				log.NullPtr(ueObj.StaticClass.tostring(),"managedObject 가 없다.")
+					funcNum
+					funcName
+					Caller
+			*/
+		}
+	}
+	else
+	{
+		/*
+			log.NullUePtr(ueObj.StaticClass.tostring(),"ueObject 가 없다")
+		*/
+	}
+	bool isLinkSuccess = false;
+	if(isPossibleSet == true)
+	{
+		isLinkSuccess = mangedObj->LinkUeObject(ueObj);
+	}
+	else
+	{
+		/*
+			Log.Error(non Link)
+		*/
+	}
+
+	if(isLinkSuccess == true)
+	{
+		SettingByUObject(mangedObj);
+	}
+
+	return reValue;
+}
+
+TIHReturn64 FTIHManagedObjectPool::SettingByUObject(FTIHManagedObjectBase* mangedObj)
 {
 	TIHReturn64 reValue = 0;
 
-	USceneComponent* rootComponent = nullptr;
-	UClass* whatIsThisClass = actor->StaticClass();
-	
-	FTIHManagedObjectBase* managedObject = CheckManagedObjectPoolByUEClass(whatIsThisClass);
-	
-	APawn* pawn;
-
-
-
-	rootComponent = actor->GetRootComponent();
-	/*
-		루트 컴포넌트를 먼저 검색한다.
-		
-		여기서 먼저 해당 컴포넌트가 루트 컴포넌트가 있는지 없는지 부터 검색해서 시스템인지 아닌지부터 확인한다.
-			만약 루트가 있다면
-				오브젝트 풀에 재사용할 오브젝트가 있는지 부터 검사한다.
-					재사용될 오브젝트가 있는경우에
-						->결정 오브젝트가 reject 되었을경우에 컴포넌트들을 모두 반환할것인지 냅둘것인지
-							모두 반환을 했을경우에 찾는 과정에서 오버헤드가 발생하겠지만 일반적이된다.
-							반환하지 않았을 경우에 그럼에도 액터에 잇는 컴포넌트들과 연결을 해줘야한다
-								그럼 조금 변경을 해야하는데 매니지드 오브젝트를 먼저 등록해서 만들어 놔야한다.
-								즉 지금의 과정을 변화시켜서 등록하는 과정으로 생각을 해야한다.
-								그럼 컴포넌트들은 필요가 없을것이다
-								->	결론 어차피 액터들의 컴포넌트가 변화가 이루어지는건 극히 드문경우이고 
-									같은 액터라면 같은 컴포넌트들이 잇을것이기때문에 처음 만들때만 생성해준다.
-
-			
-			만약 루트가 없다면 시스템이라고 생각하고 해당 클래스가 있는지 체크를 한다.
-				없다면 새롭게 생성할것인지 컨피규에서 확인한다.
-					컨피규에서 새롭게 생성한다라는게 켜져있다면
-						새롭게 생성을 한다. 이때 이거 전용 함수를 실행시켜준다.
-					안켜져있다면 무시한다. 즉 해당 액터의 생성은 거절된다.
-				있다면 해당 시스템에 관련된 매니지드 오브젝트를 넣고 상태를 변화시켜준다.(정지되어진것만 찾아서 넣는것이므로)
-			
-
-		논리부터 생각하자
-			다시 처음부터 설계한다.
-			여기는 처음부터 매니지드 오브젝트를 제너레이트 하는곳이다.
-			액터가 있다는 전재하에 만든다
-			해당 액터에서 루트 컴포넌트를 가져온다,
-				그리고 해당 오브젝트의 타입으로 객체를 생성해준다.
-				객체의 생성을 할때 staticPolyMorph 를 사용한다. 
-				아니면 이것도 생성하는 것을 만들어줄까? 이럴거면 역할을 좀 바꾸자. 
-			루트 컴포넌트가 있다면
-				해당 루트 컴포넌트를 생성하는 곳에 넣는다.
-					해당 함수는 씬 컴포넌트를 받고		
-
-			루트 컴포넌트가 없다면
-				해당 액터는 시스템에 사용되는 것으로 이것보다 위에 만들어지는 시스템은 uobject 단에서밖에 없다
-				그래서 해당 매니지드 오브젝트 태그에 해당 정보를 써 넣는다.
-			다시 생각해보자
-				오브젝트를 NewAlloc 할거다
-				이때 이에 해당하는 Actor 가 만들어질거다. 이러한 액터는 결국 어떻게 되어야하나.
-				잠시만 생각해보니깐 해당 물체의 AActor 포인터만 가지고 있어도 되는거아님?
-				물론 그 자체를 가지는게 제일 좋아보이긴 하는데, 이미 매니지드 컴포넌트에 그에 따른 행동이 있잖아.
-				그럼 차라리 인터페이스를 만들어서 내가 새로운 Pawn 을 만들었을때 그에 할당시켜가지고 
-				사용하는게 맞는거아님?
-				커맨드에서 보자 내가 transform 을 시킬거야.
-				그럼 커맨드 transform 에다가 값을 이제 쓰는거지. 그리고 해당 액터에서 IManagedBridge 를 통해 해당 액터의 
-				인덱스를들고오고 해당 값을 넣어주고 런 시키면 움직이는거잖아. 즉 커맨더가 들어가있으니깐 작동하겠지.
-				만약 유저가 마우스 클릭후에 옮겼어 그럼 그 옮기는 함수 부분에 직접 transform 시키는게 아니라 해당 커맨더를 
-				커맨더에 등록시키는 것을 호출해서 값을 써주는거지.그리고 그곳에 자기자신 넣어주고 콜백함수도 넣어주고
-				그럼 해당 액터의 매니지드 오브젝트를 알아서 찾아서 넣어주면 되는거아님?그리고 언리얼 내부에 있는 id 를 써야하나?
-				아니면 해당 오브젝트가 맞다라는 정확한 정보가 필요한데... 생성은 순서대로니깐 오브젝트타입+생성순서 로 통일?
-				그러면 IManagedObectBridge 는 해당 정보가 들어가 있는 액터겠네? pawn 들도 전부 이거 상속받아 만들고
-				stuff 들도 이거 상속받아 만들고 그리고 만들어지면 이게 자동으로 호출되면서 액터의 이름과 순서를 받아서 만들기네
-				즉 나는 어느 시스템에 가서도 동일한 정보를 유지할 수 있는 절대적인 게 필요한데 이걸 이렇게 하면 되겠네
-				-> 정리하자면 절대적인 액터를 구분하는 것이필요.-> 이거는 좀 나중에 해도 괜찮을까? 
-	*/
-
 
 	return reValue;
+}
+
+FTIHManagedObjectBase::FTIHManagedObjectBase()
+	:mManagedObjectHeader(FTIHProtocolHelper::GetSingle().GetManagedObjectHeaderForInit())
+{
+	GetState().StartStateTracing();
+}
+
+bool FTIHManagedObjectBase::LinkUeObject(UObject* ueObj)
+{
+	if(GetState().IsAssginPossible() == true)
+	{
+		mManagedTarget = MakeShared<UObject>(ueObj);
+	}
+	else
+	{
+		/*
+			제대로 확인하라고 명령을 내린다.
+		*/
+	}
 }

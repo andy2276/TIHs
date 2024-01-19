@@ -1,4 +1,46 @@
-[[GenerateManagedObjectByActor]](AActor*)
-	[[CheckManagedObjectPool]](UClass*)
-	[[GenerateManagedObjectComponents]](USceneComponent* sceneComponent)
-		[[GenerateManagedObjectComponentsRecursion]](const ScenenComponent* )
+1. CommandCreateNewAlloc 를 사용하여 새롭게 할당한다
+	1. 이때 어느곳에 할당할지는 중요하지 않고 어떤 객체를 할당할지만 중요하다
+2. Commander.RegistCommand(New Command) 를 해서 해당 커맨드를 입력시킨다
+	1. 여기에 더 편하게 하기 위해서 CreateNewAllocActor 해서 넣으면 된다. 그럼 header 와 method 가 알아서 들어간다.
+3. 그리고 커맨드가 작동을 하면 objectPool 에서 CreateNewAlloc 을 실행시키고 해당하는 객체를 만드는데 이때 필요한건 staticClass 이다. 
+	1. staticClass 로 객체를 만들때 해당 객체의 생성에 관한 특수한 함수를 실행시킨다. 해당 함수는 보통 일반적으로 staticClass 를 사용해 만드는데 변경해줄 수 있다. 변경했을때 특수 객체를 사용한다.
+	2. 하여튼 이렇게 만들고 나면 해당 객체에 관한 매니지드 오브젝트를 연동해준다.
+		1. 해당 오브젝트가 액터인지 확인한다. 만약 액터면
+		2. 액터로 캐스팅
+			1. 캐스팅된 객체를 넣고 액터의 루트씬부터 시작한다
+			2. 루트 씬에서 자식 객체들을 찾는다.
+				1. 해당 자식 컴포넌트에 대한 매니지드 컴포넌트를 확인한다.
+					1. 만약 차일드액터컴포넌트다 하면 어디다 넣어놓고 넘어간다.
+					2. 그외에는 자식 컴포넌트들을 생성한다.
+					3. 그리고 그 자식들은 자신과 연관된 컴포넌트를 액터에서 찾아서 연결해놓는다.
+						1. 컴포넌트 안에는 Link 와 unLink 가 있다. 이걸로 관리한다.
+						2. 그리고 매니지드 액터도 이걸로 관리한다.
+완전한 글로벌 해쉬는 뭐가있을까
+클래스 이름의 해쉬 + 선언영역{static,dynamic} + 선언영역에 따른 번호-{static 은 만들어진 위치의 코드가 들어간다, dynamic 은 서버에서 받은 정보에 따라 다르다.즉 액터의 생성을 위해서는 서버에서 허락을 받아야한다.}
+
+오늘 할거는 이 매니지드 오브젝트 할당에 관한건데, 일단 오브젝트 해쉬는 64bit 로 만든다.근데 이거는 좀 뒤에하고 일단은 오브젝트를 할당하는 것부터 차례대로 구현해간다. 간단하게 만들고 기능을 추가해가는 방식을 사용하자.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

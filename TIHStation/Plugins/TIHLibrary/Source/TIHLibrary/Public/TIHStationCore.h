@@ -347,12 +347,20 @@ enum class ETIHReturn8Semantic : int8
 	False = 0,
 	True = 1,
 };
-enum class ETIHManagedObjectState : int8
-{
-	EIdleState,
-	EAssginState,
 
+
+
+enum class ETIHManagedObjectStepState : int16
+{
+	ENotUse			=	0b0000'0000'0000'0000,
+	ETraceFail		=	0b0000'0000'0000'0001,
+	EAllocated		=	0b0000'0001'0000'0001,
+	EReady			=	0b0000'0010'0000'0001,
+	ERunning		=	0b0000'0011'0000'0001,
+	EWaiting		=	0b0000'0100'0000'0001,
+	ETermination	=	0b0000'0101'0000'0001,
 };
+
 
 /*!
 *	@brief 이거는 커맨드 헤더에 대한 타입들을 모아놓은곳
@@ -485,7 +493,64 @@ union FUnionTIHCommandResult
 class FTIHLogSystem
 {
 public:
-	static void RegistLog()
+	static void RegistLog();
+
+};
+
+USTRUCT()
+struct FTIHManagedObjectHeader
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int8 Protocol;//	objectType
+	UPROPERTY()
+	int8 ProtocolOption; // 뭐 해당 오브젝트의 이름같은거겠지
+	UPROPERTY()
+	int8 ComponentProtocol;
+	UPROPERTY()
+	int8 ComponentCount;
+};
+
+class FTIHProtocolHelper
+{
+public:
+	static FTIHProtocolHelper& GetSingle()
+	{
+		static FTIHProtocolHelper helper;
+		return helper;
+	}
+
+	const FTIHManagedObjectHeader& GetManagedObjectHeaderForInit()
+	{
+		return FTIHProtocolHelper::GetSingle().mManagedObjectHeaderForInit;
+	}
+
+private:
+	FTIHProtocolHelper()
+	{
+		mManagedObjectHeaderForInit.Protocol = (int8)ETIHManagedObjectProtocols::ENotUse;
+		mManagedObjectHeaderForInit.ProtocolOption = (int8)ETIHManagedObjectProtocolOptionss::ENotUse;
+		mManagedObjectHeaderForInit.ComponentProtocol = (int8)ETIHManagedObjectComponentProtocols::ENotUse;
+		mManagedObjectHeaderForInit.ComponentCount = 0;
+	};
+
+	FTIHManagedObjectHeader mManagedObjectHeaderForInit;
+};
+class FTIHResultHelper
+{
+public:
+	static FTIHResultHelper& GetSingle()
+	{
+		static FTIHResultHelper helper;
+		return helper;
+	}
+
+private:
+	FTIHResultHelper()
+	{
+
+	};
 
 };
 
@@ -495,22 +560,26 @@ public:
 */
 union FUnionTIHStateValue
 {
-	struct FTIHStateDetail
+	struct FTIHStateData
 	{
 		int8 Protocol;
 		int8 ProtocolOption;
-
-		union FUnionStateSectionDetail
+		union FUnionStateDetail
 		{
-			struct FTIHStateSectionManageObjectDetail
+			struct FTIHStateObjectLifeCycleDetail
 			{
-				int8 ObjectState0;
-				int8 OBjectState1;
-			}ManagedObjectDetail;
+				/*!
+				*	@brief 
+				*	@detail 
+				*/
+				int8 Step;
+				int8 StepOption;//{Used}
+			}LifeCycleDetail;
 
-			int16 WholeData;
-		}StateSection;
-	}StateDetail;
+			int16 LifeCycle;
+		}Details;
+
+	}Datas;
 	int32 WholeData;
 };
 
@@ -527,25 +596,159 @@ public:
 	}
 	virtual ~FTIHState(){}
 
-	bool IsReadWritePossible()
+	ETIHManagedObjectStepState GetStateStepEnum()
+	{
+		ETIHManagedObjectStepState reValue = ETIHManagedObjectStepState::ETraceFail; 
+		switch (mStateValueDetail.Datas.Details.LifeCycle)
+		{
+		case (int16)ETIHManagedObjectStepState::EAllocated:
+			reValue = ETIHManagedObjectStepState::EAllocated;
+			break;
+		case (int16)ETIHManagedObjectStepState::EReady:
+			reValue = ETIHManagedObjectStepState::EReady;
+			break;
+		case (int16)ETIHManagedObjectStepState::ERunning:
+			reValue = ETIHManagedObjectStepState::ERunning;
+			break;
+		case (int16)ETIHManagedObjectStepState::EWaiting:
+			reValue = ETIHManagedObjectStepState::EWaiting;
+			break;
+		case (int16)ETIHManagedObjectStepState::ETermination:
+			reValue = ETIHManagedObjectStepState::ETermination;
+			break;
+		default:
+			break;
+		}
+		return reValue;
+	}
+	void StartStateTracing()
+	{
+		if(mStateValueDetail.Datas.Details.LifeCycle == (int16)ETIHManagedObjectStepState::ENotUse)
+		{
+			mStateValueDetail.Datas.Details.LifeCycle = (int16)ETIHManagedObjectStepState::EAllocated;
+		}
+		else
+		{
+			/*
+				이미 초기화가 이루어졌다라고 콜링한다.
+			*/
+		}
+	}
+
+	bool IsInitPossible()
 	{
 		bool reValue = false;
-		if((int8)ETIHReturn8Semantic::False < mStateValueDetail.StateDetail.Protocol)
+		if ((int16)ETIHManagedObjectStepState::EAllocated != mStateValueDetail.Datas.Details.LifeCycle)
 		{
 			reValue = true;
 		}
 		return reValue;
 	}
-	bool IsManagedObjectAssgin()
+	bool IsAssginPossible()
 	{
 		bool reValue = false;
-		if((int8)ETIHManagedObjectState::EAssginState == mStateValueDetail.StateDetail.StateSection.ManagedObjectDetail.ObjectState0)
+		if((int16)ETIHManagedObjectStepState::EReady != mStateValueDetail.Datas.Details.LifeCycle)
+		{
+			reValue = true;
+		}
+		return reValue;
+	}
+	bool IsRunning()
+	{
+		bool reValue = false;
+		if ((int16)ETIHManagedObjectStepState::ERunning == mStateValueDetail.Datas.Details.LifeCycle)
 		{
 			reValue = true;
 		}
 		return reValue;
 	}
 
+	bool ChangeStateAllocatedToReady()
+	{
+		bool reValue = false;
+		if (ETIHManagedObjectStepState::EAllocated == GetStateStepEnum())
+		{
+			mStateValueDetail.Datas.Details.LifeCycle = (int16)ETIHManagedObjectStepState::EReady;
+			reValue = true;
+		}
+		/*
+			비운상태에서 init 를 하는것이다. 여기서 지워주거나 하지않는다. 즉 순환이 깨지면 에러다.
+			그래서 에러가 나면 해당 사유를 로그로 발사해준다.
+		*/
+		return reValue;
+	}
+	bool ChangeStateReadyToRunning()
+	{
+		bool reValue = false;
+		if (ETIHManagedObjectStepState::EReady == GetStateStepEnum())
+		{
+			mStateValueDetail.Datas.Details.LifeCycle = (int16)ETIHManagedObjectStepState::ERunning;
+			reValue = true;
+		}
+		/*
+			비운상태에서 init 를 하는것이다. 여기서 지워주거나 하지않는다. 즉 순환이 깨지면 에러다.
+			그래서 에러가 나면 해당 사유를 로그로 발사해준다.
+		*/
+		return reValue;
+	}
+	bool ChangeStateRunningToWaiting()
+	{
+		bool reValue = false;
+		if (ETIHManagedObjectStepState::ERunning == GetStateStepEnum())
+		{
+			mStateValueDetail.Datas.Details.LifeCycle = (int16)ETIHManagedObjectStepState::EWaiting;
+			reValue = true;
+		}
+		/*
+			비운상태에서 init 를 하는것이다. 여기서 지워주거나 하지않는다. 즉 순환이 깨지면 에러다.
+			그래서 에러가 나면 해당 사유를 로그로 발사해준다.
+		*/
+		return reValue;
+	}
+	bool ChangeStateRunningToTermination()
+	{
+		bool reValue = false;
+		if (ETIHManagedObjectStepState::ERunning == GetStateStepEnum())
+		{
+			mStateValueDetail.Datas.Details.LifeCycle = (int16)ETIHManagedObjectStepState::ETermination;
+			reValue = true;
+		}
+		/*
+			비운상태에서 init 를 하는것이다. 여기서 지워주거나 하지않는다. 즉 순환이 깨지면 에러다.
+			그래서 에러가 나면 해당 사유를 로그로 발사해준다.
+		*/
+		return reValue;
+	}
+	bool ChangeStateTerminationToAllocated()
+	{
+		bool reValue = false;
+		if (ETIHManagedObjectStepState::ETermination == GetStateStepEnum())
+		{
+			mStateValueDetail.Datas.Details.LifeCycle = (int16)ETIHManagedObjectStepState::EAllocated;
+			reValue = true;
+		}
+		/*
+			비운상태에서 init 를 하는것이다. 여기서 지워주거나 하지않는다. 즉 순환이 깨지면 에러다.
+			그래서 에러가 나면 해당 사유를 로그로 발사해준다.
+		*/
+		return reValue;
+	}
+	void ChangeErrorState()
+	{
+		if (ETIHManagedObjectStepState::ENotUse != GetStateStepEnum())
+		{
+			mStateValueDetail.Datas.Details.LifeCycle = (int16)ETIHManagedObjectStepState::ETraceFail;
+			/*
+				이전의 상태가 무엇이었는지에 따라서 로그를 출력하는 코드를 넣자.
+			*/
+		}
+		else
+		{
+			/*
+				아주 아주 큰 에러임. 그래서 log.BigError 이렇게 콜링해야함.
+			*/
+		}
+	}
 protected:
 	FUnionTIHStateValue mStateValueDetail;
 };
@@ -883,28 +1086,39 @@ private:
 	============================================================================================================================================================
 	============================================================================================================================================================
 */
+
+union FUnionTIHDataBoardResult
+{
+	struct FTIHDataBoardReserveResultDetail
+	{
+		int8 Protocol;
+		int8 Padding;
+		int16 PreMax;
+		TIHReturn32 SimpleResult;
+	}ReserveDetail;
+	struct FTIHDataBoardRegisterResultDetail
+	{
+		int8 Protocol;
+		int8 Padding;
+		int16 RegistedIndex;
+		TIHReturn32 SimpleResult;
+	}RegisterDetail;
+	struct FTIHDataBoardRegisterRangeResultDetail
+	{
+		int8 Protocol;
+		int8 Padding;
+		int16 StartIndex0;
+
+		int16 StartIndex1;
+		int16 RegistCount;
+	}RegisterRangeDetail;
+
+	TIHReturn64 WholeData;
+};
+
 class FTIHCommandDataBoard
 {
 public:
-
-	union FUnionTIHDataBoardResult
-	{
-		struct FTIHDataBoardReserveResultDetail
-		{
-			int8 Protocol;
-			int8 Padding;
-			int16 PreMax;
-			TIHReturn32 SimpleResult;
-		}ReserveDetail;
-		struct FTIHDataBoardRegisterResultDetail
-		{
-			int8 Protocol;
-			int8 Padding;
-			int16 RegistedIndex;
-			TIHReturn32 SimpleResult;
-		}RegisterDetail;
-		TIHReturn64 WholeData;
-	};
 
 #pragma region Reserve
 /*
@@ -912,7 +1126,18 @@ public:
 	나중에 이전의 데이터가 있으면 어떻게 할지에 대해 처리하자
 		1안은 이동
 		2안은 삭제
+
+			TArray<int8> mInt8Array;
+	TArray<int16> mInt16Array;
 */
+	TIHReturn64 ReserveForArrayInt8ByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<int8>>(size, mInt8Array);
+	}
+	TIHReturn64 ReserveForArrayInt16ByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<int16>>(size, mInt16Array);
+	}
 	TIHReturn64 ReserveForArrayInt32ByGrowing(int32 size)
 	{
 		return ReserveForArrayByGrowing<TArray<int32>>(size, mInt32Array);
@@ -944,6 +1169,14 @@ public:
 #pragma endregion
 
 #pragma region Register
+	TIHReturn64 RegisterToArrayAsInt8(const int8& value)
+	{
+		return RegisterToArray<int8, TArray<int8>>(value, mInt8Array);
+	}
+	TIHReturn64 RegisterToArrayAsInt16(const int16& value)
+	{
+		return RegisterToArray<int16, TArray<int16>>(value, mInt16Array);
+	}
 	TIHReturn64 RegisterToArrayAsInt32(const int32& value)
 	{
 		return RegisterToArray<int32, TArray<int32>>(value, mInt32Array);
@@ -975,6 +1208,15 @@ public:
 
 #pragma endregion
 #pragma region Ref
+	const int32 GetDataInInt8Array(int32 index)
+	{
+		return mInt8Array[index];
+	}
+	const int64 GetDataInInt16Array(int32 index)
+	{
+		return mInt16Array[index];
+	}
+
 	const int32 GetDataInInt32Array(int32 index)
 	{
 		return mInt32Array[index];
@@ -1007,6 +1249,8 @@ public:
 #pragma endregion
 
 private:
+	TArray<int8> mInt8Array;
+	TArray<int16> mInt16Array;
 	TArray<int32> mInt32Array;
 	TArray<int64> mInt64Array;
 	TArray<float> mFloatArray;
@@ -2682,9 +2926,6 @@ public:
 	*/
 
 private:
-
-
-
 	int32 mCurrentCommandListIndex;
 	int32 mCurrMainCmdListIndex;
 	TArray<FTIHCommandList> mCommandLists;
@@ -2732,6 +2973,7 @@ private:
 	============================================================================================================================================================
 	============================================================================================================================================================
 */
+
 class FTIHManagedObjectBase;
 template<typename TIHTemplateType = FTIHManagedObjectBase> class TTIHManagedObject;
 class FTIHManagedObjectComposite;
@@ -2931,9 +3173,16 @@ public:
 
 
 
-
 enum class ETIHManagedObjectProtocols
 {
+	ENotUse,
+	EActor,
+	EPawn,
+	EUI,
+};
+enum class ETIHManagedObjectProtocolOptionss
+{
+	ENotUse,
 	EStaticMesh,
 	ESkeletalMesh,
 	EUI,
@@ -2958,20 +3207,6 @@ enum class ETIHManagedObjectComponentProtocols
 *	@brief 
 *	@detail 
 */
-USTRUCT()
-struct FTIHManagedObjectHeader
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	int8 Protocol;//	objectType
-	UPROPERTY()
-	int8 ProtocolOption; // 뭐 해당 오브젝트의 이름같은거겠지
-	UPROPERTY()
-	int8 ComponentProtocol;
-	UPROPERTY()
-	int8 ComponentCount;
-};
 
 
 /*
@@ -2993,7 +3228,7 @@ class FTIHManagedObjectBase
 {
 public:
 
-	FTIHManagedObjectBase() {};
+	FTIHManagedObjectBase();
 	virtual ~FTIHManagedObjectBase() {};
 
 	virtual bool IsValidManagedTarget()
@@ -3025,6 +3260,13 @@ public:
 		mManagedTarget = MakeShared<UObject>(target);
 	};
 	
+	void ForcedStop()
+	{
+
+	}
+
+	bool LinkUeObject(UObject* ueObj);
+	bool UnLinkUeObject();
 
 private:
 	/*
@@ -3194,61 +3436,13 @@ public:
 
 	TIHReturn64 ReserveWholeObjectPool(int16 maxCount);
 	void ReserveObjectPool(SIZE_T targetCls, int16 maxCount);
-	
-	/*!
-	*	@brief 
-	*	@detail 
-	*	ManagedObjectBase 를 넘기는 이유는 ManagedObject 는 템플릿이기 때문에 조건에 따라 만들고 거기에 
-	*			해당 오브젝트를 만들어야하기때문이다.
-	*/
-	//TIHReturn64 LinkingUEObjectAndManagedObject(UObject* ueObj, FTIHManagedObjectBase& managedObj);
 
+	/*!
+	*	@brief 전체 오브젝트 풀에서 인덱스만으로 오브젝트 베이스를 들고온다
+	*	@detail 
+	*/
 	FTIHManagedObjectBase* GetManagedObject(int32 index);
 
-
-	TIHReturn64 PooledData();
-	/*
-		여기서 만들어줘야하나....그냥 연결만 하고싶은데...
-		Factory 통해서 만들까?
-		관리기능이 있는것은 통제하에 있어야하고 아닌것들은 알빠아니다.
-
-		하여튼 여기에는 그냥 가공되어 만들어진 FTIHManagedObjectBase* 만들어온다. 불만없제
-
-		아 그리고 시발 타입id 확인후에 그거 재사용가능하도록 하는게 필요하다.
-		그니깐 할당이 되어있긴한데 만약 staticOBject 의 mesh 만 변경가능한거면 우짬? 그게 필요한거아님?
-	*/
-
-
-	
-
-	//void RecursionGenerateManagedComponentByActor(int32 curIndex,USceneComponent* sceneComponent, FTIHManagedObjectBase& managedObj);
-	//TIHReturn64 GenerateManagedComponentByActor(AActor* actor, FTIHManagedObjectBase& managedObj);
-	//FTIHManagedObjectBase* CheckManagedObjectPool(UClass* ucls);
-	//FTIHManagedObjectComponentBase* CheckManagedObjectComponentPool();
-	//TIHReturn64 GenerateManagedObjectComponents(FTIHManagedObjectBase* targetMangedObject,const USceneComponent* rootComponent);
-	//void GenereteManagedObjectComponentsRecursion(FTIHManagedObjectBase* targetMangedObject,const USceneComponent* sceneComponent);
-	//
-	//
-	//TIHReturn64 GenerateActorByManagedObjectPtr(FTIHManagedObjectBase* managedObject);
-	//TIHReturn64 GenerateActorByManagedObjectIndex(int16 managedObjectIndex);
-
-	//	액터를 넣어서 해당 액터가 뭔지에 따라 pool 에서 가져오든 새롭게 만들든 하는것의 엔트리포인트
-	TIHReturn64 GenerateManagedObjectByActorPtr(AActor* actor);
-	//	액터클래스를 확인해서 풀에 있는지 확인하고 옵션에 따라 새롭게 만들든 한다
-	FTIHManagedObjectBase* CheckManagedObjectPoolByUEClass(UClass* ucls);
-	
-	//	매니지드 컴포넌트들을 확인하고 그에 따라 연결해주던가 한다.
-	//	이때 확인해야할게 3가지인데, 
-	//		해당 매니지드 오브젝트안에 이미 매니지드 컴포넌트가 있는가
-	//		없다면 매니지드 오브젝트 풀에 남아있는게 있는가
-	//		없다면 만들어야하는가
-	//	이모든게 안되어야지만 nullptr 을 반환한다.
-	FTIHManagedObjectComponentBase* CheckManagedObjectComponentPoolByComponentUEClass();
-
-	//	원래는 만들어야하는가에 넣으려고 했는데 다르게 만들자.
-	//TIHReturn64 GenerateManagedObjectComponentByActor(AActor* actor, FTIHManagedObjectBase& managedObj);
-
-	
 	void RegistTagForClassHash(FName tag, FTIHHashArray hashArray) 
 	{
 		if(mTagToClassHashs.Contains(tag) == false)
@@ -3298,9 +3492,45 @@ public:
 
 		mUClassToClassHashs[ucls].GenerateTags.Add(clsHash);
 	}
+#pragma region Object Assgin and NewAlloc
+public:
+	//	이런것들에 무조건 config 는 넣어놓는다
+	//		config 는 외부에서 객체를 받아올 수 있으며 설정값으로 이루어져있다.
+	//	reserve 가 되어있다라는 가정하에 한다
+	//	그리고 이건 이것위에 액터를 만들어주는 녀석이 액터를 만들고 나서 실행해주는 녀석이다
+	int16 CreateNewAllocManagedObject();
+	//	범위로 만들어주는 녀석이다. 
+	TIHReturn64 CreateNewAllocManagedObjectRange(int16 allocCount);
+	//	이녀석은 pooling 하는 녀석이다.
+	//	uclass 로 만들어진 녀석을 확인한다.
+	FTIHManagedObjectBase* CreateAssignPoolManagedObject(UClass* ucls);
+
+	//	어떤 결과가 나오든 연결지어주는 녀석이다.
+	TIHReturn64 LinkingUEObjectAndManagedObject(UObject* ueObj, FTIHManagedObjectBase* mangedObj);
+
+	//	컴포넌트를 만들것인가 아닌가를 결정짓는 녀석이다.
+	TIHReturn64 SettingByUObject(FTIHManagedObjectBase* mangedObj);
+
+	//	이제 매니지드 오브젝트에게 컴포넌트를 만들어주자.
+	//	일단은 만들면서 링크도 시킬거임
+	TIHReturn64 CreateManagedComponentAndLinkComponents(USceneComponent* ueSceneComp, FTIHManagedObjectBase* mangedObj);
+
+
+
+	//	
+
+
+
+#pragma endregion
+
+
+
+
+
 protected:
+	int16 mCurrWholdManagedObjectIndex;
 	//	일단은 여기에 전부 넣고 나중에 생각한다.
-	TArray< FTIHManagedObjectBase*> mWholeManagedObjectIndices;
+	TArray< FTIHManagedObjectBase*> mWholeManagedObjects;
 	TMap<FName, SIZE_T> mClassHash;//	같은것끼리 묶기위한 해쉬
 	TMap<SIZE_T, FTIHManangedObjectPoolStorageDatas> mPoolingDatas;//이거는 sizeT 가 배치되어진 영역에 데이터가 얼마나 남았나를 확인할때 사용
 
@@ -3316,12 +3546,11 @@ protected:
 	TMap<FName, FTIHHashArray> mTagToClassHashs;
 	TMap<UClass*, FTIHHashArray> mUClassToClassHashs;// ForManagedComponent	ue컴포넌트로 해당하는 해쉬찾는거임
 	TMap < TIHReturn64, TFunction< FTIHManagedObjectComponentBase* ()>> mClassHashToGenerateFunction;
-	
-
 
 	TMap<UClass*, FTIHManagedObjectClassStatus> mManagedObjectStatus;
 	TMap< TIHReturn64, TDeque< FTIHManagedObjectComponentBase*> > mManagedObjectComponentsStatus;
 private:
+
 
 };
 
