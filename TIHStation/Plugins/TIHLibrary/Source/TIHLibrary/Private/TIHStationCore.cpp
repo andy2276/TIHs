@@ -123,8 +123,15 @@ TIHReturn64 FTIHDefaultStation::PrepareStation()
 {
 	TIHReturn64 reValue = 0;
 
+	/*
+		외부 서버와 먼저 연결을 하기 전에 사전준비를 한다. 해당부분은 프로세서가 실행되고 로고 창이 뜰때 로딩이 될것이다.
+		로딩이 
+	*/
+
 	mCommander = MakeUnique<FTIHCommander>();
-	
+	mObjectPoolCenter = MakeUnique<FTIHManagedObjectPoolCenter>();
+
+
 
 	return reValue;
 }
@@ -161,9 +168,10 @@ void FTIHCommander::TestSettingCommandList()
 		SetTest03(3);
 }
 
+
 TIHReturn64 FTIHCommander::ExecuteCommands()
 {
-	static TIHSETTING_CURRURNT_STATION* station = TIHSETTING_CURRURNT_STATION::SingleTone();
+	static TIHSETTING_CURRURNT_STATION& station = TIHSETTING_CURRURNT_STATION::GetSingle();
 
 	FUnionTIHCommandResult cmdResult;
 	
@@ -252,8 +260,8 @@ TIHReturn64 FTIHCommander::ExecuteCommandDirect(FTIHCommandBase* curCommand)
 
 	
 
-	FTIHCommandFactory& factory = TIHSETTING_CURRURNT_STATION::SingleTone()->GetCommandFactory();
-	FTIHCommander& commander = TIHSETTING_CURRURNT_STATION::SingleTone()->GetCommander();
+	FTIHCommandFactory& factory = TIHSTATION.GetCommandFactory();
+	FTIHCommander& commander = TIHSTATION.GetCommander();
 
 	factory.BeginChainBuild();
 
@@ -284,7 +292,7 @@ TIHReturn64 FTIHCommander::ExecuteCommandDirect(FTIHCommandBase* curCommand)
 	
 	UClass* a;
 	
-	UStaticMesh::StaticClass()
+	UStaticMesh::StaticClass();
 
 	const uint8 TempProtocol[] =
 	{
@@ -643,10 +651,10 @@ TIHReturn64 FTIHCommandFactory::PrepareCommandFactory()
 TIHReturn64 FTIHCommandFactory::PrevRegistCommand()
 {
 	FUnionTIHCommandFactoryResult reValue;
-	FTIHCommandDataBoard::FUnionTIHDataBoardResult dataResult;
+	FUnionTIHDataBoardResult dataResult;
 	reValue.WholeData = 0;
 	
-	TIH_CURRURNT_STATION_CLASS& station = *TIH_CURRURNT_STATION_CLASS::SingleTone();
+	TIH_CURRURNT_STATION_CLASS& station = TIHSTATION;
 
 	mGenerateHash.Add(FTIHCommandCreateAssignPool::TIHClassNameHash(), nullptr);
 	
@@ -753,22 +761,6 @@ TIHReturn64 FTIHCommandFactory::PrevRegistCommand()
 	*/
 	
 
-	ChainBuildCommandHeader().SetProtocol(1).;
-	ChainBuildCommandMethod().SetProtocol(1).SetExecuteMethodType(1).SetMethodAddtionalInfoIndex(1);
-	ChainBuildCommandData<FTIHCommandTestDelayDatas>().SetTest00(1);
-
-	EndChainBuild();
-
-
-
-
-	BeginChainBuild();
-
-	ChainBuildCommandHeader().SetProtocol(1);
-	ChainBuildCommandMethod().SetProtocol(1);
-	ChainBuildCommandData<FTIHCommandTestDelayDatas>().SetTest00(1);
-
-	EndChainBuild();
 
 
 	return reValue.WholeData;
@@ -791,7 +783,7 @@ TIHReturn64 FTIHCommandFactory::InstantiateCommandsInMetaArray(FTIHCommander& co
 		if(protocolIndex < mGenerateCommandFunctions.Num())
 		{
 			FName currCmdName = mClassNamesForCreateCommand[protocolIndex];
-			cmdBase = mGenerateCommandFunctions[currCmdName]();
+			//cmdBase = mGenerateCommandFunctions[currCmdName]();
 		}
 		else
 		{
@@ -915,8 +907,7 @@ TIHReturn64 FTIHCommanderStrategyTestDelay::ExecuteStrategy(FTIHCommandBase* cmd
 		그럼 여기는 아마 딜레이겠지?
 		만약 load 였다하면?
 	*/
-	FTIHDefaultStation& defaultStation = *FTIHDefaultStation::SingleTone();
-	
+	TIHSTATION_TYPE& defaultStation = TIHSTATION;
 	
 	const FTIHCommandHeader cmdHeader = cmdBase->GetCommandHeader();
 	const FTIHCommandMethod cmdMethod = cmdBase->GetCommandMethod();
@@ -1098,109 +1089,310 @@ void FTIHManagedObjectPool::ReserveObjectPool(SIZE_T targetCls, int16 maxCount)
 	
 }
 
-int16 FTIHManagedObjectPool::CreateNewAllocManagedObject()
+FTIHManagedObjectBase* FTIHManagedObjectPool::CreateManagedObjectActor()
 {
-	int16 reValue = 0;
-	/*
-		max 인지 아닌지 검증부터 해야한다.
-		그리고 인덱스가 뭔지 얻어내야하는데
-	*/
-	CreateNewAllocManagedObjectRange(1);
+	FTIHManagedObjectBase* newManagedObject = nullptr;
+	newManagedObject = new FTIHManagedObjectBase();
+	check(newManagedObject != nullptr);
+	newManagedObject->SetHeaderSpace(ETIHManagedObjectSpace::ELoaclSpace);
+	newManagedObject->SetManagedObjectHeaderByValues(
+		(int8)ETIHManagedObjectHeaderProtocols::EActorBase,
+		(int8)ETIHManagedObjectHeaderProtocolOptions::ENotUse,
+		(int8)ETIHManagedObjectHeaderComponentProtocols::ENotUse,
+		GetConfigure().ManagedObjectSpace
+	);
 	
-	return reValue;
+	return newManagedObject;
 }
 
-TIHReturn64 FTIHManagedObjectPool::CreateNewAllocManagedObjectRange(int16 allocCount)
+void FTIHManagedObjectPool::GenerateTIHObject(const TArray< FTIHManagedObjectPoolingData>& poolingDataArray)
 {
-	FUnionTIHDataBoardResult reValue;
-	reValue.WholeData = 0;
-	/*
-		max 인지 아닌지 검증부터 해야한다.
-		그리고 인덱스가 뭔지 얻어내야하는데 이거는 좀 쉬운게
-		shader보드에 써놓으면 된다.
-	*/
-	int32 managedNum = mWholeManagedObjects.Num();
-	if(managedNum +allocCount < mWholeManagedObjects.Max())
+	int32 currwholeAllocCount = mWholeManagedObjects.Num();
+	int32 wholeCount = mWholeManagedObjects.Max();//	reserve 를 했다면 제대로 뜰거임
+
+	check(currwholeAllocCount < wholeCount);
+	bool continueThisFunc = true;
+
+	for(const FTIHManagedObjectPoolingData& poolingData : poolingDataArray)
 	{
-		TIHSETTING_CURRURNT_STATION& station = *TIHSETTING_CURRURNT_STATION::SingleTone();
-		reValue.RegisterRangeDetail.Protocol = 0;//	이걸 registManagedObject 로 바꾸자.
-		reValue.RegisterRangeDetail.StartIndex0 = mCurrWholdManagedObjectIndex;//	지금 등록된 매니지드 오브젝트의 인덱스시작
-		reValue.RegisterRangeDetail.RegistCount = allocCount;
-
-		mWholeManagedObjects.AddDefaulted(allocCount);
-		/*
-			만약 해쉬를 넣는다면 여기에.
-		*/
-		mCurrWholdManagedObjectIndex = mWholeManagedObjects.Num();	
-
-		//	지금 shaderBoader 에 들어간 해당 오브젝트 인덱스 목록
-		reValue.RegisterRangeDetail.StartIndex1 = station.GetCommandShaderBoard().mBoard.RegisterToArrayAsInt16(reValue.RegisterRangeDetail.StartIndex0);
-		for(int32 i = 1; i < allocCount; ++i)
+		currwholeAllocCount += poolingData.AllocateCount;
+		
+		if (currwholeAllocCount < wholeCount)
 		{
-			station.GetCommandShaderBoard().mBoard.RegisterToArrayAsInt16(reValue.RegisterRangeDetail.StartIndex0 +i);
-		}
-	}
-	/*
-		제대로 할당이 되었다면
-		매니지드 오브젝트 시작위치
-		해당 인덱스가 저장된 shaderboad 에서의 인덱스
-		할당 되어진 크기
-	*/
-	return reValue.WholeData;
-}
+			if((int8)ETIHManagedObjectHeaderProtocols::EActorBase == poolingData.Protocol)
+			{
+				GenerateUEActor(poolingData.AllocateCount, poolingData.TargetUObject);
+			}
+			else if((int8)ETIHManagedObjectHeaderProtocols::EWidgetBase == poolingData.Protocol)
+			{
+				GenerateUEWidget(poolingData.AllocateCount, poolingData.TargetUObject);
+			}
+			else if((int8)ETIHManagedObjectHeaderProtocols::ESystem == poolingData.Protocol)
+			{
 
-TIHReturn64 FTIHManagedObjectPool::LinkingUEObjectAndManagedObject(UObject* ueObj, FTIHManagedObjectBase* mangedObj)
-{
-	TIHReturn64 reValue = 0;
-	bool isPossibleSet = false;
-	if(ueObj != nullptr)
-	{
-		if(mangedObj != nullptr)
-		{
-			isPossibleSet = mangedObj->GetState().IsAssginPossible();
+			}
 		}
 		else
 		{
 			/*
-				log.NullPtr(ueObj.StaticClass.tostring(),"managedObject 가 없다.")
-					funcNum
-					funcName
-					Caller
+				log.Error(objectPool alloc is full!!)
 			*/
+			continueThisFunc = false;
+			break;
 		}
 	}
-	else
-	{
-		/*
-			log.NullUePtr(ueObj.StaticClass.tostring(),"ueObject 가 없다")
-		*/
-	}
-	bool isLinkSuccess = false;
-	if(isPossibleSet == true)
-	{
-		isLinkSuccess = mangedObj->LinkUeObject(ueObj);
-	}
-	else
-	{
-		/*
-			Log.Error(non Link)
-		*/
-	}
 
-	if(isLinkSuccess == true)
+	if(continueThisFunc == true)
 	{
-		SettingByUObject(mangedObj);
-	}
 
-	return reValue;
+
+
+	}
 }
 
-TIHReturn64 FTIHManagedObjectPool::SettingByUObject(FTIHManagedObjectBase* mangedObj)
+AActor*& FTIHManagedObjectPool::ConvertPoolableActor(AActor*& actor)
 {
-	TIHReturn64 reValue = 0;
+	actor->SetActorEnableCollision(false);
+	actor->SetActorTickEnabled(false);
+	actor->SetActorHiddenInGame(true);
+	return actor;
+}
+
+void FTIHManagedObjectPool::GenerateUEActor(int16 allocCount, UClass* targetCls)
+{
+	int16 currStartIndex = mWholeManagedObjects.Num();
+	int16 predictEndIndex = currStartIndex + allocCount;
+	
+	UWorld* spawnSpace = GetConfigure().SpawnSpace;
+	AActor* ownerActor = GetConfigure().OwnerActor;
+	FTransform spawnTempTransform = GetConfigure().DefaultTransform;
+	AActor* newActor = nullptr;
+
+	FActorSpawnParameters spawnParam = {};
+	spawnParam.Owner = ownerActor;
+
+	TArray<AActor*> actorArray;
+	TArray<int16> parentIndexArray;
+
+	actorArray.Reserve(allocCount);
+	actorArray.AddDefaulted(allocCount);
+
+	parentIndexArray.Reserve(allocCount);
+	parentIndexArray.AddDefaulted(allocCount);
+
+	for(int16 i = 0; i < allocCount; ++i)
+	{
+		newActor = nullptr;
+		newActor = spawnSpace->SpawnActor(targetCls, &spawnTempTransform, spawnParam);
+		ConvertPoolableActor(newActor);
+		actorArray[i] = newActor;
+		parentIndexArray[i] = -1;//	요거는 해당 매니지드 오브젝트가 매니지드오브젝트들의 루트인지 아닌지를 확인하는것이다.
+	}
+
+	GenerateManagedObject(allocCount, actorArray, parentIndexArray);
+
+}
+
+void FTIHManagedObjectPool::GenerateManagedObject(int16 allocCount, TArray<AActor*>& targetActor, TArray<int16>& parentIndex)
+{
+	check((allocCount == targetActor.Num()) && (targetActor.Num() == parentIndex.Num()));
+
+	static FTIHManagedObjectPoolCenter& poolCenter = mPoolCenter;
+
+	int32 wholeObjectMax = mWholeManagedObjects.Max();
+	int32 currWholeObjectNum = mWholeManagedObjects.Num();
+	int8 currManagedObjectSpace = GetConfigure().ManagedObjectSpace;
+
+	TArray<USceneComponent*> sceneArray;
+	TArray< FTIHManagedObjectBase* > managedObjArray;
+
+	TArray< FTIHGeneratePairSceneAndManaged> genPairArray;
+	TArray<int16> genParentIndexArray;
+	if(currWholeObjectNum + allocCount < wholeObjectMax)
+	{
+		int16 startIndex = mWholeManagedObjects.AddDefaulted(allocCount);
+		int16 endIndex = startIndex + allocCount - 1;
+		int16 currIndex = startIndex;
+	
+		for (int32 elementAdd = 0; elementAdd < allocCount; ++elementAdd)
+		{
+			FTIHManagedObjectBase* currManagedObject = new FTIHManagedObjectBase();
+			mWholeManagedObjects[currIndex + elementAdd] = currManagedObject;
+			currManagedObject->SetSelfIndex(startIndex + elementAdd);
+			currManagedObject->SetManagedTarget(targetActor[elementAdd]);
+			currManagedObject->ChainManagedObjectHeader().
+				SetProtocol((int8)ETIHManagedObjectHeaderProtocols::EActorBase).
+				SetProtocolOption(0).
+				SetAllocatedSpace(currManagedObjectSpace).
+				SetComponentProtocol(0);
+			currManagedObject->SetParentByObjectPoolIndex(parentIndex[elementAdd]);
+			//	만약 연결시키고 싶은 액터에  root 컴포넌트가 있다면 이는 움직임이 필히 가능하다는 말이다.
+			//	그게 어떤 계층을 가지든지 말이다.
+			//	
+			USceneComponent* rootComponent = targetActor[elementAdd]->GetRootComponent();
+
+			if(rootComponent != nullptr)
+			{
+				genPairArray.Add({ rootComponent ,currManagedObject });
+				//sceneArray.Add(rootComponent);
+				//managedObjArray.Add(currManagedObject);
+
+				//	root 씬은 자체적인 정보가 남아 있지 않아서 움직임을 주는 기능을 만들어야한다. 무조건 루트씬은 움직임이 먼저이기때문이다.
+				FTIHManagedObjectComponentBase* newComp = 
+					poolCenter.GenerateManagedObjectComponent(FTIHManagedObjectMovementComponent::TIHClassNameHash());
+				newComp->LinkingManagedCompoentBySceneComponent(rootComponent);
+				currManagedObject->GetComposite().PushBackComponent(newComp);
+				
+				genParentIndexArray.Add(newComp->GetComponentIndex());
+				//GenerateManagedComponent(rootComponent, currManagedObject, );//	이걸 array 사용해서?
+			}
+			else
+			{
+				currManagedObject->SetSystem();
+			}
+		}// End for (int32 elementAdd = 0; elementAdd < allocCount; ++elementAdd) 
+
+		GenerateManagedComponentArray(genPairArray, genParentIndexArray);
+
+	}//	End if(currWholeObjectNum + allocCount < wholeObjectMax) 
+	else//	if (wholeObjectMax <= currWholeObjectNum + allocCount) 
+	{
+		/*
+			log.err.allocateMemory.overFlow
+		*/
+		check(false);
+	}//	End if (wholeObjectMax <= currWholeObjectNum + allocCount) 
+}
+
+void FTIHManagedObjectPool::GenerateManagedComponentArray(TArray<FTIHGeneratePairSceneAndManaged>& pairArray, const TArray<int16>& parentIndexArray)
+{
+	static FTIHProtocolHelper& protocolHelper = FTIHProtocolHelper::GetSingle();				//	프로토콜 핼퍼를 가져온다
+	static FTIHManagedObjectPoolCenter& poolCenter = FTIHManagedObjectPoolCenter::GetSingle();	//	poolCenter 를 들고온다. 
+
+	int32 loopNum = pairArray.Num();
+
+	for(int32 currPair = 0; currPair < loopNum; ++currPair)
+	{
+		USceneComponent* const currSceneComponent = pairArray[currPair].UESceneComponent;
+		FTIHManagedObjectBase* currManagedObject = pairArray[currPair].TIHManagedObjectBase;
+
+		UClass* currComponentClass = currSceneComponent->StaticClass();
+		int16 currManagedObjectIndex = currManagedObject->GetSelfIndexInWholeDatas();
+
+		UEObjectHash64 ueSceneComponentHash = poolCenter.GetUeHashByUClassInUEComponent(currComponentClass);
+
+		if(poolCenter.IsUeHashValid(ueSceneComponentHash) == true)
+		{
+			const FTIHHashArray& tihHashArray = poolCenter.GetTIHHashArrayByUEHash(ueSceneComponentHash);
+
+			for (const TIHObjectHash64& tihHash : tihHashArray.GenerateTags.Array())
+			{
+				FTIHManagedObjectComponentBase* currGenManagedComponent = poolCenter.GenerateManagedComponentByTIHHash(tihHash);
+				if(currGenManagedComponent == nullptr)
+				{
+					//	logging part
+					continue;
+				}
+				currGenManagedComponent->SetComponentParent(parentIndexArray[currPair]);
+			}
+		}
+	}
+}
+
+void FTIHManagedObjectPool::GenerateManagedComponent(USceneComponent* targetUEComponent, FTIHManagedObjectBase* targetManagedObject, int16 parentIndex)
+{
+	
+	static FTIHProtocolHelper& protocolHelper = FTIHProtocolHelper::GetSingle();				//	프로토콜 핼퍼를 가져온다
+	static FTIHManagedObjectPoolCenter& poolCenter = FTIHManagedObjectPoolCenter::GetSingle();	//	poolCenter 를 들고온다. 
+
+	UClass* whatIsThisComponetClass = targetUEComponent->StaticClass();				//	ue 컴포넌트의 uclass 를 들고온다
+	int16 targetManagedObjectIndex = targetManagedObject->GetSelfIndexInWholeDatas();	//	tihObject 의 인덱스를 들고온다
+
+	UEObjectHash64 ueSceneComponentHash = poolCenter.GetUeHashByUClassInUEComponent(whatIsThisComponetClass);	//	해당 컴포넌트가 등록이 되었는지 확인한다
+
+	TArray<AActor*> childActorArray;
+	TArray<int16> parentIndexArray;
+
+	//	만약 해당 해쉬가 등록이 제대로 되어있는 유효한 해쉬라면
+	if(poolCenter.IsUeHashValid(ueSceneComponentHash) == true)
+	{
+		const FTIHHashArray& tihHashArray = poolCenter.GetTIHHashArrayByUEHash(ueSceneComponentHash);	//	해당 해쉬로 만들어야하는 tihManagedComponent 해쉬들을 들고온다
+	
+		for(const TIHObjectHash64& tihHash : tihHashArray.GenerateTags.Array())
+		{
+			FTIHManagedObjectComponentBase* currGenManagedComponent = nullptr;
+			currGenManagedComponent = poolCenter.GenerateManagedComponentByTIHHash(tihHash);	//	해당 컴포넌트를 만든다
 
 
-	return reValue;
+			if(currGenManagedComponent == nullptr)	//	제대로 만들어지지 않았다면 해당 부분은 넘어간다
+			{
+				/*
+					log.매니지드 오브젝트 컴포넌트 생성에 문제가 생겼다. 꺼져
+				*/
+				continue;
+			}
+			currGenManagedComponent->SetComponentParent(parentIndex);
+			FTIHManagedObjectComponentHeader compHeader = currGenManagedComponent->GetComponentHeader();	//	제대로 만들어졌다면 커맨드 헤더가 제대로 설정되어잇을거임
+			//	해당 커맨더 해더에 따라 처리해야하는게 다르니 그걸 확인하는 과정임
+			if (protocolHelper.ManagedObjectHelper().IsGenerateGeneric(compHeader))
+			{
+				
+				
+			}
+			else if (protocolHelper.ManagedObjectHelper().IsGenerateSpcial(compHeader))
+			{
+				//	사실 지금은 actorchild 만 특수 처리해주면 되는거임 새로운 액터를 매니지드 오브젝트로 등록하는데 부모를 지금의 매니지드 오브젝트 인덱스로 한다
+				if(compHeader.ProtocolOption == 1)
+				{
+					UChildActorComponent* childActorComponent = Cast<UChildActorComponent>(targetUEComponent);	//	차일드 액터로 캐스팅하고 액터를 꺼내온다
+					AActor* childActor = childActorComponent->GetChildActor();
+					if(childActor != nullptr)
+					{
+						childActorArray.Add(childActor);				//	그럼 해당 액터에 대한 처리로 바꾼다
+						parentIndexArray.Add(targetManagedObjectIndex);//	부모목록에 넣어준다.
+					}
+				}
+			}
+			else if (protocolHelper.ManagedObjectHelper().IsGenerateSystem(compHeader))
+			{
+
+			}
+			else if (protocolHelper.ManagedObjectHelper().IsGenerateWidget(compHeader))
+			{
+
+			}
+			currGenManagedComponent->LinkingManagedCompoentBySceneComponent(targetUEComponent);	//	이제 지금 생성된 컴포넌트에 타겟 컴포넌트를 연결해준다 그럼 처리만 달라지는 매니지드 오브젝트가 만들어진다
+			targetManagedObject->AddManagedTag(currGenManagedComponent->GetComponentTagHashs());//	사용가능한 태그를 넣어서 관리능력을 올린다.
+			int16 insertIndex = targetManagedObject->GetComposite().PushBackComponent(currGenManagedComponent);	//	해당 컴포넌트를 넣는다.
+			//currGenManagedComponent->SetComponentIndex(insertIndex);	//	매니지드 오브젝트에 들어가 있는 순서이다. 나중에 중복이 있을시 구분지어줄 자료임
+		}
+		const TArray<TObjectPtr<USceneComponent>>& sceneArray = targetUEComponent->GetAttachChildren();//	해당 컴포넌트에 달린 
+
+		for(const TObjectPtr<USceneComponent>& childScene :sceneArray)
+		{
+			GenerateManagedComponent(childScene.Get(), targetManagedObject, -1);
+		}
+	}
+}
+
+void FTIHManagedObjectPoolCenter::RegistUEClassForGenerate(UClass* ucls)
+{
+	check(ucls != nullptr);
+	FName uclassName = ucls->GetClassPathName().GetAssetName();
+	//	여기에서  cstr 을 얻어내야한다.
+
+	TIHReturn64 newHash = ClassNameHashImplement(*(uclassName.ToString()));
+	if(mUeClassHashToUClass.Contains(newHash) == false)
+	{
+		mUeClassHashToUClass.Add(newHash, ucls);
+	}
+	else
+	{
+		/*
+			중복! 에대한 로그를 넘긴다. 
+		*/
+		check(false);
+	}
 }
 
 FTIHManagedObjectBase::FTIHManagedObjectBase()
@@ -1211,6 +1403,8 @@ FTIHManagedObjectBase::FTIHManagedObjectBase()
 
 bool FTIHManagedObjectBase::LinkUeObject(UObject* ueObj)
 {
+	check(ueObj != nullptr);
+
 	if(GetState().IsAssginPossible() == true)
 	{
 		mManagedTarget = MakeShared<UObject>(ueObj);
@@ -1218,7 +1412,13 @@ bool FTIHManagedObjectBase::LinkUeObject(UObject* ueObj)
 	else
 	{
 		/*
-			제대로 확인하라고 명령을 내린다.
+			log.thisManagedis
 		*/
 	}
+}
+
+
+void FTIHManagedObjectMovementComponent::PostLinkingSettingFunction()
+{
+	
 }

@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Ideas/MangagedObjectPipeline.md",
+                "file": "DevelopLog/Logs/24-01_24.md",
                 "mode": "source",
                 "source": false
               }
@@ -86,7 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Ideas/MangagedObjectPipeline.md",
+                "file": "DevelopLog/Logs/24-01_24.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +103,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Ideas/MangagedObjectPipeline.md",
+                "file": "DevelopLog/Logs/24-01_24.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +126,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Ideas/MangagedObjectPipeline.md"
+                "file": "DevelopLog/Logs/24-01_24.md"
               }
             }
           }
@@ -134,8 +134,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -149,14 +148,17 @@
   },
   "active": "9fbbfd10106e89f1",
   "lastOpenFiles": [
+    "DevelopLog/Logs/24-01_24.md",
+    "무제 파일.md",
+    "DevelopLog/Logs/24-01_23.md",
+    "DevelopLog/Logs/24-01_22.md",
+    "Ideas/MangagedObjectPipeline.md",
     "Ideas/GenerateManagedObjectByActor.md",
     "Ideas/CheckManagedObjectPool.md",
     "DevelopLog/Logs/24-01_18.md",
     "DevelopLog/Template/02LifeCycleTemplate.md",
-    "Ideas/MangagedObjectPipeline.md",
     "TIH/FTIHManagedObjectHeader.md",
     "TIH/FTIHManagedObjectPool.md",
-    "무제 파일.md",
     "Ideas",
     "TIH/FTIHManagedObjectComposite.md",
     "TIH/FTIHManagedObjectBase.md",
@@ -173,9 +175,6 @@
     "TIH/combine-CommanderStrategies.md",
     "TIH/FTIHStation.md",
     "TIH/FTIHCommandList.md",
-    "TIH/FTIHCommandFactory.md",
-    "TIH/FTIHCommandFunctorHeader.md",
-    "TIH/UTIHGameInstance.md",
     "TIH",
     "DevelopLog/Template",
     "DevelopLog/Logs",
