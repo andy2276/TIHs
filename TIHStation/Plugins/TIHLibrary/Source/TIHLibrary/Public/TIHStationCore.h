@@ -34,7 +34,7 @@ class	FTIHCommandList;
 class	FTIHCommander;
 class	FTIHPakInfra;
 
-class	FTIHManagedObjectComposite;
+class	FTIHManagedObjectCompositesss;
 class	FTIHManagedObject;
 class	FTIHManagedObjectPool;
 class	FTIHServer;
@@ -561,7 +561,7 @@ public:
 class FTIHProtocolHelperForManagedObject
 {
 public:
-	bool IsGenerateGeneric(const FTIHManagedObjectComponentHeader& managedHeader)
+	bool IsGenerateGeneric(const FTIHManagedObjectComponentHeadersss& managedHeader)
 	{
 		bool reValue = false;
 		if (managedHeader.Protocol == 0)
@@ -571,7 +571,7 @@ public:
 		return reValue;
 	}
 
-	bool IsGenerateSpcial(const FTIHManagedObjectComponentHeader& managedHeader)
+	bool IsGenerateSpcial(const FTIHManagedObjectComponentHeadersss& managedHeader)
 	{
 		bool reValue = false;
 		if (managedHeader.Protocol == 1)
@@ -580,7 +580,7 @@ public:
 		}
 		return reValue;
 	}
-	bool IsGenerateSystem(const FTIHManagedObjectComponentHeader& managedHeader)
+	bool IsGenerateSystem(const FTIHManagedObjectComponentHeadersss& managedHeader)
 	{
 		bool reValue = false;
 		if (managedHeader.Protocol == 2)
@@ -589,7 +589,7 @@ public:
 		}
 		return reValue;
 	}
-	bool IsGenerateWidget(const FTIHManagedObjectComponentHeader& managedHeader)
+	bool IsGenerateWidget(const FTIHManagedObjectComponentHeadersss& managedHeader)
 	{
 		bool reValue = false;
 		if (managedHeader.Protocol == 3)//이거 다임시임
@@ -653,13 +653,13 @@ private:
 
 
 
-class FTIHTagHelper
+class FTIHTagHelperssss
 {
 public:
 	
-	static FTIHTagHelper& GetSingle()
+	static FTIHTagHelperssss& GetSingle()
 	{
-		static FTIHTagHelper helper;
+		static FTIHTagHelperssss helper;
 		return helper;
 	}
 	/*
@@ -819,11 +819,11 @@ public:
 
 
 private:
-	FTIHTagHelper()
+	FTIHTagHelperssss()
 	{
 		for(int32 i = 0; i < StaticQueryListNum; ++i)
 		{
-			FName queryName = FTIHTagHelper::StaticQueryList[i];
+			FName queryName = FTIHTagHelperssss::StaticQueryList[i];
 			FString nameToString = queryName.ToString();
 			TIHHash64 tihHash = ClassNameHashImplement(*nameToString);
 			mRegistedHashsByTag.Add(queryName,tihHash);
@@ -847,7 +847,7 @@ private:
 	TMap<TIHHash64, FName> mRegistedTagsByHash;
 	TMap<UEObjectHash64, FTIHHashArray> mRegistedHashForManagedComponent;
 };
-const FName FTIHTagHelper::StaticQueryList[] =
+const FName FTIHTagHelperssss::StaticQueryList[] =
 {
 	TEXT("NoRegistedTag"),
 	TEXT("UnknownTag"),
@@ -3282,40 +3282,22 @@ private:
 	============================================================================================================================================================
 */
 
-class FTIHManagedObjectBase;
-template<typename TIHTemplateType = FTIHManagedObjectBase> class TTIHManagedObject;
-class FTIHManagedObjectComposite;
-class FTIHManagedObjectComponentBase;
-template<typename TIHTemplateType> class TTIHManagedObjectComponent;
+class FTIHManagedObjectBasesss;
+template<typename TIHTemplateType = FTIHManagedObjectBasesss> class TTIHManagedObjectsss;
+class FTIHManagedObjectCompositesss;
+class FTIHManagedObjectComponentBasesss;
+template<typename TIHTemplateType> class TTIHManagedObjectComponentsss;
 
 
 
-class FTIHManagedObjectComposite
+class FTIHManagedObjectCompositesss
 {
 public:
-	FTIHManagedObjectComposite() {};
-	virtual ~FTIHManagedObjectComposite() {};
+	FTIHManagedObjectCompositesss() {};
+	virtual ~FTIHManagedObjectCompositesss() {};
 
-	//FTIHManagedObjectComponentBase* GetComponentByTagAndPriority(FName tag,int16 priority)
-	//{
-	//	FTIHManagedObjectComponentBase* reValue = nullptr;
-	//	if(mComponentPriorities.Contains(tag) == true && mComponentPriorities[tag].IsEmpty() == false)
-	//	{
-	//		int16 componentIndex = mComponentPriorities[tag][priority];
-	//	
-	//		if(-1 < componentIndex)
-	//		{
-	//			reValue = mComponentArray[componentIndex].Get();
-	//		}
-	//	}
-	//	return reValue;
-	//}
-	//FTIHManagedObjectComponentBase* GetComponentFirstPriorityByTag(FName tag)
-	//{
-	//	return GetComponentByTagAndPriority(tag,0);
-	//}
 
-	FTIHManagedObjectComponentBase* GetComponentByIndex(int16 index)
+	FTIHManagedObjectComponentBasesss* GetComponentByIndex(int16 index)
 	{
 		return mComponentArray[index].Get();
 	}
@@ -3328,9 +3310,9 @@ public:
 	{
 		return mComponentArray.Num();
 	}
-	int16 PushBackComponent(FTIHManagedObjectComponentBase* ptr)
+	int16 PushBackComponent(FTIHManagedObjectComponentBasesss* ptr)
 	{
-		int16 index = mComponentArray.Add(MakeUnique<FTIHManagedObjectComponentBase>(ptr));
+		int16 index = mComponentArray.Add(MakeUnique<FTIHManagedObjectComponentBasesss>(ptr));
 		ptr->SetComponentIndexInComposite(index);
 		TIHHash64 currComponentHash = ptr->GetTIHHash();
 		if(mComponentPriorities.Contains(currComponentHash)==false)
@@ -3345,11 +3327,11 @@ public:
 	
 private:
 	TMap<TIHHash64, TArray<int16>> mComponentPriorities;
-	TArray< TUniquePtr<FTIHManagedObjectComponentBase>> mComponentArray;
+	TArray< TUniquePtr<FTIHManagedObjectComponentBasesss>> mComponentArray;
 };
 
 USTRUCT()
-struct FTIHManagedObjectComponentHeader
+struct FTIHManagedObjectComponentHeadersss
 {
 	GENERATED_BODY()
 
@@ -3368,10 +3350,10 @@ struct FTIHManagedObjectComponentHeader
 };
 
 
-class FTIHManagedObjectComponentBase
+class FTIHManagedObjectComponentBasesss
 {
 public:
-	const FTIHManagedObjectComponentHeader GetComponentHeader()
+	const FTIHManagedObjectComponentHeadersss GetComponentHeader()
 	{
 		return mComponentHeader;
 	}
@@ -3416,7 +3398,7 @@ public:
 	}
 	const FTIHHashArray& GetComponentTagHashs()
 	{
-		return FTIHTagHelper::GetSingle().GetComponentHashs(mSelfHash);
+		return FTIHTagHelperssss::GetSingle().GetComponentHashs(mSelfHash);
 	}
 	
 	
@@ -3424,15 +3406,369 @@ private:
 	int16 mComponentParent;
 	int16 mComponentIndexInComposite;
 	TIHReturn64 mSelfHash;
-	FTIHManagedObjectComponentHeader mComponentHeader;
+	FTIHManagedObjectComponentHeadersss mComponentHeader;
 };
 
+
+/*
+=================================================================================================================================================
+										 여기 아래서 부터 다시한다
+=================================================================================================================================================
+*/
+USTRUCT()
+struct FTIHManagedObjectComponentHeader
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int8 Protocol;
+
+	UPROPERTY()
+	int8 Padding0;
+	UPROPERTY()
+	int16 Padding1;
+};
+struct FTIHRegistHelper
+{
+	TIHHash64 TihHash;
+	TFunction<FTIHManagedObjectLeaf* ()> GenerateFunction;
+};
+class FTIHManagedTagHelper
+{
+public:
+	static FTIHManagedTagHelper& GetSingle()
+	{
+		static FTIHManagedTagHelper self;
+		return self;
+	}
+	/*
+		UnknownHash
+		ExistRegistHash
+	*/
+	UEObjectHash64 RegistUESceneComponentByUClass(UClass* ucls)
+	{
+		FString assetName = ucls->GetClassPathName().GetAssetName().ToString();
+		UEObjectHash64 reValue = 0;//UnknownHash
+		reValue = ClassNameHashImplement(*assetName);
+
+		if(mRegistedUESceneComponenBytUEHash.Contains(reValue) == false)
+		{
+			mRegistedUESceneComponenBytUEHash.Add(reValue, ucls);
+			mRegistedSwapUESceneToUEHash.Add(ucls, reValue);
+		}
+		else
+		{
+			/*
+			reValue = existRegistHash
+			*/
+		}
+		return reValue;
+	}
+	UClass* GetUESceneComponentByHash(UEObjectHash64 ueHash)
+	{
+		UClass* reValue = nullptr;
+
+		if(mRegistedUESceneComponenBytUEHash.Contains(ueHash) == true)
+		{
+			reValue = mRegistedUESceneComponenBytUEHash[ueHash];
+		}
+		return reValue;
+	}
+	UEObjectHash64 GetUESceneComponentHashByUClass(UClass* ucls)
+	{
+		UEObjectHash64 reValue = 0;//	noRegist
+		if(mRegistedSwapUESceneToUEHash.Contains(ucls) == true)
+		{
+			reValue = mRegistedSwapUESceneToUEHash[ucls];
+		}
+		return reValue;
+	}
+	
+	void RegistGenerateFunc(TIHHash64 tihHash, TFunction<FTIHManagedObjectLeaf* ()> genFunc)
+	{
+		if(mRegistedGenerateFuncByTIHHash.Contains(tihHash) == false)
+		{
+			mRegistedGenerateFuncByTIHHash.Add(tihHash, genFunc);
+		}
+		else
+		{
+			/*
+				logging.changeGenFunc
+			*/
+			mRegistedGenerateFuncByTIHHash[tihHash] = genFunc;
+		}
+	}
+	FTIHManagedObjectLeaf* GenerateTIHManagedObjectLeaf(TIHHash64 tihHash)
+	{
+		FTIHManagedObjectLeaf* reValue = nullptr;
+		if(mRegistedGenerateFuncByTIHHash.Contains(tihHash) == true)
+		{
+			reValue = mRegistedGenerateFuncByTIHHash[tihHash]();
+		}
+		else
+		{
+			/*
+				logging.noregistedFunc
+			*/
+		}
+		return reValue;
+	}
+	void RegistGenerateCandidateHashArrayByUEHash(UEObjectHash64 ueHash, FTIHHashArray hashArray)
+	{
+		 if(mRegistedGenCandidates.Contains(ueHash) == false)
+		 {
+			 mRegistedGenCandidates.Add(ueHash, hashArray);
+		 }
+	}
+	
+	const FTIHHashArray& GetGenerateCandidateHashArrayByUEHash(UEObjectHash64 ueHash)
+	{
+		if (mRegistedGenCandidates.Contains(ueHash) == true)
+		{
+			return mRegistedGenCandidates[ueHash];
+		}
+		else
+		{
+			return FTIHHashArray();
+		}
+	}
+	void GenerateLeavesByUEHash(UEObjectHash64 ueHash,FTIHManagedObjectComposite& out)
+	{
+		if(mRegistedGenCandidates.Contains(ueHash) == true)
+		{
+			const FTIHHashArray& hashArray = mRegistedGenCandidates[ueHash];
+			for (const TIHHash64& tihHash : hashArray.GenerateTags.Array())
+			{
+				out.AddLeaf(GenerateTIHManagedObjectLeaf(tihHash));
+			}
+		}
+	}
+
+	void RegistForGenerate(UClass* ucls, TArray<FTIHRegistHelper>& leafGenPairArray)
+	{
+		UEObjectHash64 registedUeHash = RegistUESceneComponentByUClass(ucls);
+		FTIHHashArray hashArray;
+		for (FTIHRegistHelper& leafPair : leafGenPairArray)
+		{
+			hashArray.GenerateTags.Add(leafPair.TihHash);
+			RegistGenerateFunc(leafPair.TihHash, leafPair.GenerateFunction);
+		}
+		RegistGenerateCandidateHashArrayByUEHash(registedUeHash, hashArray);
+	}
+
+
+private:
+	TMap<UEObjectHash64, UClass*> mRegistedUESceneComponenBytUEHash;	//	for Leaf
+	TMap<UClass*, UEObjectHash64> mRegistedSwapUESceneToUEHash;//	이거는 솔직히 잘안 쓸거 같긴함.  왜냐하면 이거 솔직히 용량 낭비같음
+	
+	//TMap< UClass*, UEObjectHash64> mRegistedSwap
+	TMap<UEObjectHash64, FTIHHashArray> mRegistedGenCandidates;	//	이녀석은 uclass 를 넣으면 그에 해당하는 generateFunc목록에 관한 해쉬를 넘겨줌
+	TMap < TIHHash64, TFunction<FTIHManagedObjectLeaf* ()> > mRegistedGenerateFuncByTIHHash;//	tih 해쉬를 넣으면 그에 해당하는 함수를 호출해줌.
+	//	leaf 가 가능한 일은 mRegistedGenCandidates  사실 여기에 들어가있음. 근데 해당 씬액터에 대한 해쉬를 가지는거는?
+
+
+};
+
+class FTIHManagedObjectComponent
+{
+public:
+
+	TIHHash64 GetTIHHash()
+	{
+		return mSelfHash;
+	}
+
+	void SetTIHHash(TIHHash64 tihHash)
+	{
+		mSelfHash = tihHash;
+	}
+
+	FTIHManagedObjectComponentHeader GetManagedObjectComponentHeader()
+	{
+		return mComponentHeader;
+	}
+	void SetManagedObjectComponentHeader(FTIHManagedObjectComponentHeader compHeader)
+	{
+		mComponentHeader = compHeader;
+	}
+	FTIHManagedObjectComponentHeader& ChainManagedObjectComponentHeader()
+	{
+		return mComponentHeader;
+	}
+	void SetSelfIndex(int16 index)
+	{
+		mSelfIndex = index;
+	}
+	int16 GetSelfIndex()
+	{
+		return mSelfIndex;
+	}
+	void SetManagedObjectIndex(int16 index)
+	{
+		mManagedObjectIndex = index;
+	}
+	int16 GetManagedObjectIndex()
+	{
+		return mManagedObjectIndex;
+	}
+
+private:
+	FTIHManagedObjectComponentHeader mComponentHeader;
+	TIHHash64 mSelfHash;
+	int16 mManagedObjectIndex;//InManagedObjectPool
+	int16 mSelfIndex;//InManagedObject
+
+};
+class FTIHManagedObjectLeaf;
+
+class FTIHManagedObjectComposite :public FTIHManagedObjectComponent
+{
+public:
+	/*
+		이녀석의 selfHash 는 그냥 컴포지트를 넘겨준다. 즉 
+	*/
+	/*
+		AddLeaf
+		GetLeaf
+		UnionTagTable()
+		GetTagTable
+		set parentindex
+		get parentindex
+
+		get selfindex
+
+		LinkScene
+	*/
+	void AddLeaf(FTIHManagedObjectLeaf* leaf)
+	{
+		check(leaf != nullptr);
+	
+		mTagTable.Add(leaf->GetTIHHash());
+	}
+	TSet<TIHHash64>& GetManagedObjectCompositeTagTable()
+	{
+		return mTagTable;
+	}
+
+protected:
+	//	tagList 는 자신이 가지고 있는 특징을 넣는다.
+	//	예를들어 5개의 리프들이 모였다면 그 해당 리프들의 특징을 모두가지며 해당 컴포지트를 설명하는 요약문이 될것임
+	TSet<TIHHash64> mTagTable;
+	//int16 mParentIndexInManagedObjectArray;	//	오브젝트의 배열안에서 자신의 부모를 찾는데 -1 이면 루트이다 이거랑 SetManagedObjectIndex 이거같은거아님?
+	//int16 mSelfIndexInManagedObjectArray;//	스스로가 어느 위치에 있는지 정보이다.
+	TMap<TIHHash64, FTIHManagedObjectLeaf*> mLeafMap;
+	USceneComponent* mUESceneComponent;
+};
+
+class FTIHManagedObjectLeaf :public FTIHManagedObjectComponent
+{
+public:
+	/*
+		이녀석의 selfHash 는 typeEraser 로 만들어진 Node 들의 clssHash 이다.
+	*/
+
+
+	int16 GetCompositeIndex()
+	{
+		return mCompositeIndexInManagedObjectArray;
+	}
+	void SetCompositeIndex(int16 compositeIndex)
+	{
+		mCompositeIndexInManagedObjectArray = compositeIndex;
+	}
+	const TSet<TIHHash64>& GetLeafTags()
+	{
+		//	FTIHTAgHelper
+	}
+
+protected:
+	int16 mCompositeIndexInManagedObjectArray;
+	//	이걸 넣으면 tagHelper 에서 여기에 관련된 배열을 넘겨준
+};
+
+template<typename TIHTemplateType>
+class TTIManagedObjectHLeaf : public FTIHManagedObjectLeaf
+{
+public:
+	
+protected:
+	TIHTemplateType* mCastedComponent;
+};
+
+class FTIHManagedObjectFactory
+{
+public:
+	FTIHManagedObject* CreateManagedObjectForActor(AActor* actor)
+
+
+};
+
+
+
+USTRUCT()
+struct FTIHManagedObjectHeader
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int8 Protocol;
+
+	UPROPERTY()
+	int8 Padding0;
+	UPROPERTY()
+	int16 Padding1;
+};
+
+
+class FTIHManagedObject
+{
+public:
+	FTIHManagedObjectHeader GetManagedObjectHeader()
+	{
+		return mManagedObjectHeader;
+	}
+	void SetManagedObjectHeader(FTIHManagedObjectHeader objHeader)
+	{
+		mManagedObjectHeader = objHeader;
+	}
+	FTIHManagedObjectHeader& ChainManagedObjectHeader()
+	{
+		return mManagedObjectHeader;
+	}
+
+	int16 AddComposite(FTIHManagedObjectComposite* composite)
+	{
+		int16 reValue = 0;
+		reValue = mCompositeArray.Add(composite);
+		composite->SetSelfIndex(reValue);
+		return reValue;
+	}
+
+
+private:
+	FTIHManagedObjectHeader mManagedObjectHeader;//	get set
+	UObject* mManagedUEObect;				//	get set
+	TIHHash64 mManagedUEObjectHash;			//	get set
+	
+	FTIHState mStateDetail;					//	interface	get
+
+	int16 mParentIndexInWholeArray;		//	get set
+	int16 mSelfIndexInWholeArray;		//	get set
+
+	TArray<FTIHManagedObjectComposite*> mCompositeArray;	//	add
+
+};
+/*
+=================================================================================================================================================
+										 여기 아래서 부터 다시한다
+=================================================================================================================================================
+*/
 /*!
 *	@brief 
 *	@detail 
 */
 template<typename TIHTemplateType = USceneComponent>
-class TTIHManagedObjectComponent : public FTIHManagedObjectComponentBase
+class TTIHManagedObjectComponentsss : public FTIHManagedObjectComponentBasesss
 {
 public:
 	void LinkingManagedComponentAtActor(AActor* actor) override
@@ -3452,7 +3788,7 @@ protected:
 };
 
 
-class FTIHManagedObjectMovementComponent : public TTIHManagedObjectComponent<USceneComponent>
+class FTIHManagedObjectMovementComponent : public TTIHManagedObjectComponentsss<USceneComponent>
 {
 public:
 	TIHMACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION(FTIHManagedObjectMovementComponent);
@@ -3508,7 +3844,7 @@ public:
 	void PostLinkingSettingFunction() override;
 };
 
-class FTIHManagedObjectRenderComponent : public TTIHManagedObjectComponent<UMeshComponent>
+class FTIHManagedObjectRenderComponent : public TTIHManagedObjectComponentsss<UMeshComponent>
 {
 public:
 	TIHMACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION(FTIHManagedObjectRenderComponent);
@@ -3534,7 +3870,7 @@ private:
 	UStaticMeshComponent* mStaticMesh;
 	USkeletalMeshComponent* mSkeletalMesh;
 };
-class FTIHManagedObjectAnimationComponent : public TTIHManagedObjectComponent<USkeletalMeshComponent>
+class FTIHManagedObjectAnimationComponent : public TTIHManagedObjectComponentsss<USkeletalMeshComponent>
 {
 public:
 	TIHMACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION(FTIHManagedObjectAnimationComponent);
@@ -3554,7 +3890,7 @@ public:
 *	@brief 이거는 메테리얼에 사용될거임
 *	@detail 
 */
-class FTIHManagedObjectPrettyComponent : public TTIHManagedObjectComponent<UMeshComponent>
+class FTIHManagedObjectPrettyComponent : public TTIHManagedObjectComponentsss<UMeshComponent>
 {
 public:
 	TIHMACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION(FTIHManagedObjectPrettyComponent);
@@ -3601,16 +3937,14 @@ class FTIHManagedObjectNode
 {
 public:
 
-	
-
 };
 
 
-class FTIHManagedObjectBase
+class FTIHManagedObjectBasesss
 {
 public:
-	FTIHManagedObjectBase();
-	virtual ~FTIHManagedObjectBase() {};
+	FTIHManagedObjectBasesss();
+	virtual ~FTIHManagedObjectBasesss() {};
 
 	virtual bool IsValidManagedTarget()
 	{
@@ -3627,7 +3961,7 @@ public:
 		reValue = mManagedComposite->GetComponentCount();
 		return reValue;
 	}
-	FTIHManagedObjectComposite& GetComposite()
+	FTIHManagedObjectCompositesss& GetComposite()
 	{
 		return *mManagedComposite;
 	}
@@ -3663,7 +3997,7 @@ public:
 	}
 	bool IsRoot()
 	{
-		bool reValue = mManagedTags.Contains(FTIHTagHelper::GetSingle().GetHashRoot());
+		bool reValue = mManagedTags.Contains(FTIHTagHelperssss::GetSingle().GetHashRoot());
 		return reValue;
 	}
 	bool IsMovePossibe()
@@ -3681,7 +4015,7 @@ public:
 
 	void AddManagedTag(const TArray<TIHHash64>& tagHashs)
 	{
-		FTIHTagHelper::GetSingle().GetHashHasChildren();
+		FTIHTagHelperssss::GetSingle().GetHashHasChildren();
 		for(const TIHHash64& tag : tagHashs)
 		{
 			if(mManagedTags.Contains(tag) == false)
@@ -3692,7 +4026,7 @@ public:
 	}
 	void AddManagedTag(const FTIHHashArray& tagHashs)
 	{
-		FTIHTagHelper::GetSingle().GetHashHasChildren();
+		FTIHTagHelperssss::GetSingle().GetHashHasChildren();
 		mManagedTags.Union(tagHashs.GenerateTags);
 	}
 
@@ -3730,7 +4064,7 @@ public:
 #pragma region PushComponent
 
 
-	void PushBackManagedComponent(FTIHManagedObjectComponentBase* target)
+	void PushBackManagedComponent(FTIHManagedObjectComponentBasesss* target)
 	{
 		mManagedComposite->PushBackComponent(target);
 	}
@@ -3748,24 +4082,24 @@ public:
 		mParentIndex = index;
 		if (-1 < index)
 		{
-			mManagedTags.Add(FTIHTagHelper::GetSingle().GetHashHasParent());
+			mManagedTags.Add(FTIHTagHelperssss::GetSingle().GetHashHasParent());
 		}
 		else
 		{
-			mManagedTags.Add(FTIHTagHelper::GetSingle().GetHashRoot());
+			mManagedTags.Add(FTIHTagHelperssss::GetSingle().GetHashRoot());
 		}
 	}
-	void SetParentByManagedObject(FTIHManagedObjectBase* parent)
+	void SetParentByManagedObject(FTIHManagedObjectBasesss* parent)
 	{
 		int16 parentIndex = -1;
 		if(parent!=nullptr)
 		{
 			parentIndex = parent->GetSelfIndexInWholeDatas();
-			mManagedTags.Add(FTIHTagHelper::GetSingle().GetHashHasParent());
+			mManagedTags.Add(FTIHTagHelperssss::GetSingle().GetHashHasParent());
 		}
 		else
 		{
-			mManagedTags.Add(FTIHTagHelper::GetSingle().GetHashRoot());
+			mManagedTags.Add(FTIHTagHelperssss::GetSingle().GetHashRoot());
 		}
 		mParentIndex = parentIndex;
 	}
@@ -3777,7 +4111,7 @@ public:
 	
 	void SetSystem()
 	{
-		mManagedTags.Add(FTIHTagHelper::GetSingle().GetHashSystem());
+		mManagedTags.Add(FTIHTagHelperssss::GetSingle().GetHashSystem());
 	}
 
 
@@ -3816,7 +4150,7 @@ private:
 	FTIHManagedObjectHeader mManagedObjectHeader;
 	TSet<TIHHash64> mManagedTags;
 
-	TUniquePtr<FTIHManagedObjectComposite> mManagedComposite;
+	TUniquePtr<FTIHManagedObjectCompositesss> mManagedComposite;
 	FName mSelfTag;
 
 	int16 mParentIndex;
@@ -3841,12 +4175,12 @@ private:
 	공통으로 사용되는 녀석을 위에다 인터페이스 넣어놓고
 */
 
-template<typename TIHTemplateType = FTIHManagedObjectBase>
-class TTIHManagedObject : public FTIHManagedObjectBase
+template<typename TIHTemplateType = FTIHManagedObjectBasesss>
+class TTIHManagedObjectsss : public FTIHManagedObjectBasesss
 {
 public:
-	TTIHManagedObject() {};
-	virtual ~TTIHManagedObject() {};
+	TTIHManagedObjectsss() {};
+	virtual ~TTIHManagedObjectsss() {};
 	
 	TSharedPtr< TIHTemplateType> GetManagedTarget()
 	{
@@ -3889,19 +4223,16 @@ struct FTIHManangedObjectPoolStorageDatas
 	TArray<int16> Indecies;
 };
 
-
-
-
 class FTIHManagedObjectGenerateMethod
 {
 public:
 	template<typename TIHTemplateType>
-	FTIHManagedObjectComponentBase* GenerateManagedObjectComponentStaticPolymorph(TIHTemplateType value)
+	FTIHManagedObjectComponentBasesss* GenerateManagedObjectComponentStaticPolymorph(TIHTemplateType value)
 	{
 		return value->GenerateManagedObjectComponentStaticPolymorph();
 	}
 
-	virtual TIHReturn64 RegistComponent(FTIHManagedObjectBase& target) = 0
+	virtual TIHReturn64 RegistComponent(FTIHManagedObjectBasesss& target) = 0
 	{
 		FTIHHashArray a;
 		//a.GenerateTags.Add("pretty");
@@ -3909,7 +4240,7 @@ public:
 
 		FTIHManagedObjectPrettyComponent* pretty;
 		FTIHManagedObjectRenderComponent* render;
-		TMap<FName, FTIHManagedObjectComponentBase*> virtualComponentOriginData;
+		TMap<FName, FTIHManagedObjectComponentBasesss*> virtualComponentOriginData;
 		virtualComponentOriginData.Add("pretty", pretty);
 
 		/*
@@ -3953,10 +4284,10 @@ struct FTIHPrepareData
 	int8 Padding;
 
 	UPROPERTY()
-	UClass* TargetClass;
+	int16 AllocateCount;
 
 	UPROPERTY()
-	int16 AllocateCount;
+	UEObjectHash64 TargetClassHash;
 };
 
 
@@ -4087,10 +4418,10 @@ struct FTIHManagedObjectPoolingData
 struct FTIHGeneratePairSceneAndManaged
 {
 	USceneComponent* const UESceneComponent;
-	FTIHManagedObjectBase* TIHManagedObjectBase;
+	FTIHManagedObjectBasesss* TIHManagedObjectBase;
 
 	FTIHGeneratePairSceneAndManaged() = delete;
-	FTIHGeneratePairSceneAndManaged(USceneComponent* sceneComp, FTIHManagedObjectBase* managedObj)
+	FTIHGeneratePairSceneAndManaged(USceneComponent* sceneComp, FTIHManagedObjectBasesss* managedObj)
 		: UESceneComponent(sceneComp), TIHManagedObjectBase(managedObj)
 	{}
 };
@@ -4116,65 +4447,10 @@ public:
 	{
 		return mPoolCenter;
 	}
-
 	FTIHManagedObjectPoolCenter& mPoolCenter;
 
-
-
-	/*void RegistTagForClassHash(FName tag, FTIHHashArray hashArray)
-	{
-		if(mTagToClassHashs.Contains(tag) == false)
-		{
-			mTagToClassHashs.Add(tag, hashArray);
-		}
-
-		mTagToClassHashs[tag].GenerateTags.Empty();
-		const TArray<TIHReturn64> targetArray = hashArray.GenerateTags.Array();
-		mTagToClassHashs[tag].GenerateTags.Reserve(targetArray.Num());
-
-		for (int i = 0; i < targetArray.Num(); ++i)
-		{
-			mTagToClassHashs[tag].GenerateTags.Add(targetArray[i]);
-
-		}
-	}*/
-	/*void AddClassHashByTag(FName tag,TIHReturn64 clsHash)
-	{
-		if (mTagToClassHashs.Contains(tag) == false)
-		{
-			mTagToClassHashs.Add(tag, FTIHHashArray());
-		}
-
-		mTagToClassHashs[tag].GenerateTags.Add(clsHash);
-	}
-	void RegistUClassForClassHash(UClass* ucls, FTIHHashArray hashArray)
-	{
-		if (mUClassToClassHashs.Contains(ucls) == false)
-		{
-			mUClassToClassHashs.Add(ucls, hashArray);
-		}
-
-		mUClassToClassHashs[ucls].GenerateTags.Empty();
-		const TArray<TIHReturn64> targetArray = hashArray.GenerateTags.Array();
-		mUClassToClassHashs[ucls].GenerateTags.Reserve(targetArray.Num());
-		for (int i = 0; i < targetArray.Num(); ++i)
-		{
-			mUClassToClassHashs[ucls].GenerateTags.Add(targetArray[i]);
-		}
-	}
-	void AddClassHashByUClass(UClass* ucls, TIHReturn64 clsHash)
-	{
-		if (mUClassToClassHashs.Contains(ucls) == false)
-		{
-			mUClassToClassHashs.Add(ucls, FTIHHashArray());
-		}
-		mUClassToClassHashs[ucls].GenerateTags.Add(clsHash);
-	}*/
 #pragma region Object Assgin and NewAlloc
 public:
-	
-
-
 	void SetSpace(ETIHManagedObjectSpace managedSpace)
 	{
 		mManagedObjectPoolConfigure.ManagedObjectSpace = (int8)managedSpace;
@@ -4185,40 +4461,27 @@ public:
 		return mManagedObjectPoolConfigure;
 	}
 
-	struct PrePareDataManagedComponent
+	AActor* ConvertPoolableActor(AActor* actor)
 	{
-		TFunction<FTIHManagedObjectComponentBase* ()> GenerateFunction;
-	};
+		actor->SetActorHiddenInGame(true);
+		actor->SetActorEnableCollision(false);
+		actor->SetActorTickEnabled(false);
+		return actor;
+	}
 
-	//	사전에 설정된 것을 만들어주는 편리 클래스이다.
-	FTIHManagedObjectBase* CreateManagedObjectActor();
-	
-	void GenerateTIHObject(const TArray< FTIHManagedObjectPoolingData>& poolingDataArray);
+	void OnGeneratePipeLining();
 
-	AActor*& ConvertPoolableActor(AActor*& actor);
-	void GenerateUEActor(int16 allocCount, UClass* targetCls);
-	void GenerateManagedObject(int16 allocCount,TArray<AActor*>& targetActor, TArray<int16>& parentIndex);
+	void GenerateUEObjectByPrepareDataArray(const TArray<FTIHPrepareData>& prepareDataArray);
 
-	void GenerateManagedComponentForRoot(AActor* targetActor, int16 parentIndex);
-	
-	void GenerateManagedComponentArray(TArray<FTIHGeneratePairSceneAndManaged>& pairArray, const TArray<int16>& parentIndexArray);
-	void GenerateManagedComponent(USceneComponent* targetComponent,FTIHManagedObjectBase* targetManagedObject, int16 parentIndex);
-	
-	void GenerateUEWidget(int16 allocCount, UClass* targetCls);
+	void GenerateUEActorBaseByPrepareData(int16 allocount,UEObjectHash64 ueObjHash,TArray<AActor*>& actorArray);
 
-	/*
-	
-	*/
+	void GenerateManagedObjectByActorArray(TArray<AActor*>& actorArray);
+
+
 protected:
 
-	//	이하는 생성과 관리를 위한 영역
-	/*
-		reserve
-		removeAt
-		pushBack
-		pushRange
-	*/
-	TArray< FTIHManagedObjectBase*> mWholeManagedObjects;
+	
+	TArray< FTIHManagedObject*> mWholeManagedObjects;
 	//	reserve 가 반드시 필요하다.
 	
 	/*
@@ -4241,33 +4504,10 @@ protected:
 		setManagedObjectConfigure 내부 setter 함수들
 	*/
 	FTIHManagedObjectPoolConfigure mManagedObjectPoolConfigure;
-	//	순수하게 관리를 위한영역
-
 
 #pragma endregion
 protected:
 	TArray< FTIHPrepareData> mPrepareManagedObjects;
-	
-	int16 mCurrWholdManagedObjectIndex;
-	//	일단은 여기에 전부 넣고 나중에 생각한다.
-	TMap<FName, SIZE_T> mClassHash;//	같은것끼리 묶기위한 해쉬
-	TMap<SIZE_T, FTIHManangedObjectPoolStorageDatas> mPoolingDatas;//이거는 sizeT 가 배치되어진 영역에 데이터가 얼마나 남았나를 확인할때 사용
-	/*
-		//먼저 Tag To class Hash 로 간다
-		TMap<FName,TIHReturn64> mTagToClassHashForManagedObjecComponent;
-		//	이제 classHash to GenerateComponent 로 간다.
-		TMap<TIHReturn64,TFunction<TIHReturn64()>
-	*/
-
-
-	TMap<FName, FTIHHashArray> mTagToClassHashs;
-	TMap<FName, UClass*> mTagToClassName;
-	
-	
-	//	이거 필요할까? 일단 생성만 생각하자.
-	TMap<UClass*, FTIHManagedObjectClassStatus> mManagedObjectStatus;
-	TMap< TIHReturn64, TDeque< FTIHManagedObjectComponentBase*> > mManagedObjectComponentsStatus;
-private:
 
 };
 /*!
@@ -4282,12 +4522,13 @@ public:
 		static FTIHManagedObjectPoolCenter& SelfObject = TIHSTATION.GetManagedObjectPoolCenter();
 		return SelfObject;
 	}
-	/*
+	const TArray<FTIHPrepareData>& GetPrepareDataArray()
+	{
+		return mPrepareDatas;
+	}
 
-
-	*/
 	void RegistUEClassForGenerate(UClass* ucls);
-	void RegistFunctionForManagedComponentGeneration(TIHReturn64 managedCompHash, TFunction< FTIHManagedObjectComponentBase* ()> func)
+	void RegistFunctionForManagedComponentGeneration(TIHReturn64 managedCompHash, TFunction< FTIHManagedObjectComponentBasesss* ()> func)
 	{
 		if (mTIHClassHashToGenerateFunction.Contains(managedCompHash) == false)
 		{
@@ -4306,9 +4547,9 @@ public:
 
 	}
 
-	FTIHManagedObjectComponentBase* GenerateManagedObjectComponent(TIHReturn64 genType)
+	FTIHManagedObjectComponentBasesss* GenerateManagedObjectComponent(TIHReturn64 genType)
 	{
-		FTIHManagedObjectComponentBase* reValue = nullptr;
+		FTIHManagedObjectComponentBasesss* reValue = nullptr;
 		if (mTIHClassHashToGenerateFunction.Contains(genType) == true)
 		{
 			reValue = mTIHClassHashToGenerateFunction[genType]();
@@ -4358,9 +4599,9 @@ public:
 	{
 		return mUClassToClassHashs[ueHash];
 	}
-	FTIHManagedObjectComponentBase* GenerateManagedComponentByTIHHash(TIHObjectHash64 ueHash)
+	FTIHManagedObjectComponentBasesss* GenerateManagedComponentByTIHHash(TIHObjectHash64 ueHash)
 	{
-		FTIHManagedObjectComponentBase* reValue = nullptr;
+		FTIHManagedObjectComponentBasesss* reValue = nullptr;
 		
 		reValue = mTIHClassHashToGenerateFunction[ueHash]();
 		return reValue;
@@ -4368,9 +4609,9 @@ public:
 
 private:
 	TMap<FName, UEObjectHash64> mClassNameToUeClassHash;
-	
+	TArray<FTIHPrepareData> mPrepareDatas;
 
-	TMap<TIHObjectHash64, TFunction< FTIHManagedObjectComponentBase* ()>> mTIHClassHashToGenerateFunction;
+	TMap<TIHObjectHash64, TFunction< FTIHManagedObjectComponentBasesss* ()>> mTIHClassHashToGenerateFunction;
 	TMap<UEObjectHash64, FTIHHashArray> mUClassToClassHashs;// ForManagedComponent	ue컴포넌트로 해당하는 해쉬찾는거임
 	TMap<UEObjectHash64, UClass*> mUeClassHashToUClass;
 
