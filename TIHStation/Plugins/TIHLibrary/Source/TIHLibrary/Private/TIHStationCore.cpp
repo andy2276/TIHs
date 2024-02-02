@@ -1094,27 +1094,6 @@ void FTIHMngObjPoolCenter::RegistUEClassForGenerate(UClass* ucls)
 	}
 }
 
-FTIHManagedObjectBasesss::FTIHManagedObjectBasesss()
-	:mManagedObjectHeader(FTIHProtocolHelper::GetSingle().GetManagedObjectHeaderForInit())
-{
-	GetState().StartStateTracing();
-}
-
-bool FTIHManagedObjectBasesss::LinkUeObject(UObject* ueObj)
-{
-	check(ueObj != nullptr);
-
-	if(GetState().IsAssginPossible() == true)
-	{
-		mManagedTarget = MakeShared<UObject>(ueObj);
-	}
-	else
-	{
-		/*
-			log.thisManagedis
-		*/
-	}
-}
 //	정리를 한다면 이름들을 좀 통일하기
 void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 {
@@ -1369,6 +1348,7 @@ void FTIHMngObjFactory::GenerateManagedObjectLeafArray(TArray< FTIHMngObjComposi
 			currComposite->AddLeaf(leaf);
 		}
 	}
+
 }
 
 void FTIHMngObjLeafTestDelay::InitSetting()
@@ -1407,4 +1387,9 @@ void FTIHSettingHelper::FTIHManagedObjectSettings::RegistPrepareDataForNewAlloc(
 
 	poolCenter.EmplaceAddMngObjPrepareData((int8)targetClsType, ueHash, -1, allocCount );
 
+}
+
+void FTIHMngObjLeafMovement::InitSetting()
+{
+	
 }

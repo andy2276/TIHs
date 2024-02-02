@@ -3665,6 +3665,9 @@ public:
 
 	FTIHMngObj* GetOwnerManagedObject()
 	{
+		return FTIHMngObjPoolCenter::GetSingle().GetManagedObjectPool(GetManagedObjectComponentHeader().AllocationSpace)->GetWholeManagedObjectArray()[GetOwnerIndex()];
+
+
 		return nullptr;
 	}
 
@@ -3686,6 +3689,7 @@ public:
 	
 	void SetTargetUeSceneComponent(USceneComponent* targetScene)
 	{
+		FTIHMngObjGenerateHelper::GetSingle()
 		mUESceneComponent = targetScene;
 		UEObjectHash64 ueHash = FTIHMngObjGenerateHelper::GetSingle().GetUESceneComponentHashByUClass(targetScene->StaticClass());
 		SetHashValue(ueHash);
@@ -3741,9 +3745,10 @@ public:
 	{
 		return mStep;
 	}
-	void TransmissionHashSetToManagedObject(FTIHMngObj* mngObj)
+	void TransmissionHashSetToManagedObject()
 	{
-		
+		GetOwnerManagedObject();
+
 	}
 
 protected:
