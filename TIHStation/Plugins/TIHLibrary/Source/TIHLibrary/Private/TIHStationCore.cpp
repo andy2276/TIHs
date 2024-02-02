@@ -129,10 +129,21 @@ TIHReturn64 FTIHDefaultStation::PrepareStation()
 	*/
 
 	mCommander = MakeUnique<FTIHCommander>();
-	mObjectPoolCenter = MakeUnique<FTIHManagedObjectPoolCenter>();
+	mObjectPoolCenter = MakeUnique<FTIHMngObjPoolCenter>();
+	mMngObjGenerateHelper = MakeUnique<FTIHMngObjGenerateHelper>();
 
+	FTIHMngObjPoolCenter& poolCeneter = GetManagedObjectPoolCenter();
 
+	mSettingHelper.MngObjSetting().RegistUEActorTemplate<AActor>();
+	mSettingHelper.MngObjSetting().RegistUEActorTemplate<APawn>();
+	mSettingHelper.MngObjSetting().RegistUEActorTemplate<ACameraActor>();
 
+	mSettingHelper.MngObjSetting().RegistTIHMngObjLeafGenerateFuncTemplate<FTIHMngObjLeafTestDelay>();
+
+	mSettingHelper.MngObjSetting().RegistUESceneAndTIHMngObjLeafListTemplate<USkeletalMeshComponent>({ 12,3,4,5,6 });
+
+	mSettingHelper.MngObjSetting().RegistPrepareDataForNewAllocTemplateActorBase<AActor>(16);
+	mSettingHelper.MngObjSetting().RegistPrepareDataForNewAllocTemplateActorBase<APawn>(16);
 	return reValue;
 }
 
@@ -264,14 +275,6 @@ TIHReturn64 FTIHCommander::ExecuteCommandDirect(FTIHCommandBase* curCommand)
 	FTIHCommander& commander = TIHSTATION.GetCommander();
 
 	factory.BeginChainBuild();
-
-	//int16 linkedManagedObjectIndex = commander.
-	/*
-		
-
-
-
-	*/
 
 	factory.ChainBuildCommandHeader()
 		.SetProtocol((int8)ETIHCommandHeaderProtocols::ECreateAssignPool)
@@ -1071,7 +1074,7 @@ TIHReturn64 FTIHCommanderStrategyInOutWriteAndModify::ExecuteStrategy(FTIHComman
 #pragma endregion
 
 
-void FTIHManagedObjectPoolCenter::RegistUEClassForGenerate(UClass* ucls)
+void FTIHMngObjPoolCenter::RegistUEClassForGenerate(UClass* ucls)
 {
 	check(ucls != nullptr);
 	FName uclassName = ucls->GetClassPathName().GetAssetName();
@@ -1112,104 +1115,296 @@ bool FTIHManagedObjectBasesss::LinkUeObject(UObject* ueObj)
 		*/
 	}
 }
-
-
-void FTIHManagedObjectMovementComponent::PostLinkingSettingFunction()
+//	정리를 한다면 이름들을 좀 통일하기
+void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 {
-	
-}
+	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+	static FTIHMngObjFactory& managedObjectFactory = TIHSTATION.GetManagedObjectPoolCenter().GetFactory();
 
-void FTIHManagedObjectPool::OnGeneratePipeLining()
-{
-	static FTIHManagedObjectPoolCenter& poolCenter = mPoolCenter;
+	managedObjectFactory.SetManagedObjectPool(targetPool);
 
-	GenerateUEObjectByPrepareDataArray(poolCenter.GetPrepareDataArray());
+	TDeque<const FTIHNewAllocPrepareData>& prepareQueue = poolCenter.GetPrepareDataQueue();
+	int32 prepareNum = prepareQueue.Num();
+	const TArray<FTIHMngObj*>& wholeArray = targetPool->GetWholeManagedObjectArray();
+	int32 wholeObjNum = wholeArray.Num();
+	const int32 wholeObjMax = wholeArray.Max();
 
-}
 
-void FTIHManagedObjectPool::GenerateUEObjectByPrepareDataArray(const TArray<FTIHPrepareData>& prepareDataArray)
-{
-	int32 prepareNum = prepareDataArray.Num();
-	int32 wholeObjNum = mWholeManagedObjects.Num();
-	int32 wholObjMax = mWholeManagedObjects.Max();
-	
-	for (const FTIHPrepareData& prepareData : prepareDataArray)
+	TDeque<AActor*> actorArray;
+	TArray<FTIHManagedObjectGenerateCompositeOutData> generateCompositeArray;
+	TArray< FTIHMngObjComposite*> newCompositeArray;
+
+	int32 endPhaseCount = targetPool->GetConfigure().EndCreateAllocCount;//	즉 파이프라이닝을 돌릴때 
+	int32 currPhaseCount = 0;
+
+	while (true)
 	{
-		if(mWholeManagedObjects.Num() + prepareData.AllocateCount < wholObjMax)
-		{
-			if (prepareData.TargetClassType == (int8)ETIHManagedObjectHeaderProtocols::EActorBase)
-			{
-				TArray<AActor*> actorArray;
-				GenerateUEActorBaseByPrepareData(prepareData.AllocateCount, prepareData.TargetClassHash, actorArray);
-
-			}
-			else if (prepareData.TargetClassType == (int8)ETIHManagedObjectHeaderProtocols::EWidgetBase)
-			{
-
-			}
-			else if (prepareData.TargetClassType == (int8)ETIHManagedObjectHeaderProtocols::ESystem)
-			{
-
-			}
-			else if (prepareData.TargetClassType == (int8)ETIHManagedObjectHeaderProtocols::EAuto)
-			{
-
-			}
-		}
-		else
+		if (prepareQueue.IsEmpty() == true)
 		{
 			/*
-				overflow
+
 			*/
-			check(false);
+			break;
 		}
-		
-	}
-}
+		if (endPhaseCount <= currPhaseCount)
+		{
+			/*
 
-void FTIHManagedObjectPool::GenerateUEActorBaseByPrepareData(int16 allocount, UEObjectHash64 ueObjHash, TArray<AActor*>& actorArray)
-{
-	static FTIHManagedObjectPoolCenter& poolCenter = mPoolCenter;
-	static FTIHManagedTagHelper& tagHelper = FTIHManagedTagHelper::GetSingle();
+			*/
+			break;
+		}
+		const FTIHNewAllocPrepareData& currPrepareData = prepareQueue.First();
+		int16 currAllocateCount = currPrepareData.AllocateCount;
+		bool isChildActor = false;
+		if (currAllocateCount < 0)
+		{
+			/*
+				childActor 를 할당한다는 의미
+			*/
+			isChildActor = true;
+			currAllocateCount *= -1;// 양수화 해준다. 그런데 -1 을 곱해주는 이유는 나중에 갯수를 합쳐서 할당해야할 일도 잇을거같아서 일단은. 이렇게 햇는데 나중에 바꾸자.
+		}
 
-	actorArray.Empty();
-	actorArray.Reserve(allocount);
-	FTIHManagedObjectPoolConfigure& poolConfigu = mManagedObjectPoolConfigure;
-	
-	int16 startIndex = mWholeManagedObjects.Num();
-	UWorld* spawnSpace = poolConfigu.SpawnSpace;
-	AActor* spawnOwner = poolConfigu.OwnerActor;
-	FTransform spawnTransform = poolConfigu.DefaultTransform;
-	UClass* spawnClass = tagHelper.GetUESceneComponentByHash(ueObjHash);
+		if (wholeObjMax < wholeArray.Num() + currAllocateCount)
+		{
+			/*
+				나머지를 할당하려고 노력은 해본다
+			*/
+			currAllocateCount = wholeObjMax - wholeArray.Num();
+			if (currAllocateCount == 0)
+			{
+				/*
+					아예 전체 오브젝트 맥스에서 지금 할당되어진 영역을 가져온다. allocate 가 너무 크기때문에 이런일이 생긴거니 나머지를 채워주기 위해 노력한다.]
+					이건 0 일경우만 이루어지는 거다.
+				*/
+				break;
+			}
+		}
+		++currPhaseCount;
+		generateCompositeArray.Reset();
+		newCompositeArray.Reset();
 
-	mWholeManagedObjects.AddDefaulted(allocount);
+		if (currPrepareData.TargetClassType == (int8)ETIHMngObjHeaderProcotols::EActorBase)
+		{
+			managedObjectFactory.GenerateUEActorBaseByPrepareData(currAllocateCount, currPrepareData.TargetClassHash, actorArray, isChildActor);
 
-	for(int16 addCount = 0; addCount < allocount; ++allocount)
-	{
-		int16 currIndex = startIndex + addCount;
-		//	필요하다면 spawnParam 도 만들어놓는다.
-		AActor* newActor = spawnSpace->SpawnActor(spawnClass, &spawnTransform);
-		ConvertPoolableActor(newActor);
-		actorArray.Add(newActor);
-	}
-}
+			managedObjectFactory.GenerateManagedObjectByActorArray(actorArray, currPrepareData.CallParentIndex, generateCompositeArray);
 
-void FTIHManagedObjectPool::GenerateManagedObjectByActorArray(TArray<AActor*>& actorArray)
-{
-	int32 actorArrayNum = actorArray.Num();
+			managedObjectFactory.GenerateManagedObjectCompositeArray(generateCompositeArray, actorArray, newCompositeArray);
 
-	for(int32 actorIndex = 0; actorIndex < actorArrayNum; ++actorIndex)
-	{
-		AActor* currActor = actorArray[actorIndex];
-		USceneComponent* rootScene = currActor->GetRootComponent();
+			managedObjectFactory.GenerateManagedObjectLeafArray(newCompositeArray);
 
-		if (rootScene != nullptr)
+		}
+		else if (currPrepareData.TargetClassType == (int8)ETIHMngObjHeaderProcotols::EWidgetBase)
 		{
 
+		}
+		else if (currPrepareData.TargetClassType == (int8)ETIHMngObjHeaderProcotols::ESystem)
+		{
+
+		}
+		else if (currPrepareData.TargetClassType == (int8)ETIHMngObjHeaderProcotols::EAuto)
+		{
+
+		}
+	}
+
+
+}
+
+void FTIHMngObjFactory::GenerateUEActorBaseByPrepareData(int16 allocount, UEObjectHash64 ueObjHash, TDeque<AActor*>& actorArray, bool isChild)
+{
+	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+	static FTIHMngObjGenerateHelper& tagHelper = TIHSTATION.GetGenerateHelper();
+
+	FTIHMngObjPool& currMngObjPool = *GetCurrentManagedObjectPool();
+	FTIHMngObjConfigure& poolConfigu = currMngObjPool.GetConfigureNoConst();
+
+	if (isChild == false)
+	{
+		UWorld* spawnWorld = poolConfigu.SpawnSpace;
+		AActor* spawnOwner = poolConfigu.OwnerActor;
+		FTransform spawnTransform = poolConfigu.DefaultTransform;
+		UClass* spawnClass = tagHelper.GetUEActorClassByUEHash(ueObjHash);//	GetUEActorByHash 를 넣어주자.
+
+		for (int16 addCount = 0; addCount < allocount; ++allocount)
+		{
+			AActor* newActor = spawnWorld->SpawnActor(spawnClass, &spawnTransform);
+			ConvertPoolableActor(newActor);
+			actorArray.PushLast(newActor);
+		}
+	}
+
+}
+
+void FTIHMngObjFactory::GenerateManagedObjectByActorArray(TDeque<AActor*>& actorQueue, int16 parentData, TArray<FTIHManagedObjectGenerateCompositeOutData>& outData)
+{
+	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter(); 
+
+	int32 actorArrayNum = actorQueue.Num();
+	//	나중에 업데이트 할때 해주자
+	//	검증 해봣을때 차일드 액터를 제외하고는 전부 문제 없음. 차일드 액터도 같은 수끼리 묶어주는 작업해놓으면 됨. 그리고 prepare 만들어서 넣어주면 된다.
+	//TArray<FTIHMngObj*>& wholeManagedObjectArray = GetWholeManagedObjectArray();
+	//int16 startIndex = wholeManagedObjectArray.Num();
+	//wholeManagedObjectArray.AddDefaulted(actorArrayNum);
+
+	FTIHMngObjPool& currMngObjPool = *GetCurrentManagedObjectPool();
+
+	while (true)
+	{
+		if (actorQueue.IsEmpty() == true)
+		{
+			break;
+		}
+		AActor* currActor = actorQueue.First();
+		actorQueue.PopFirst();
+		USceneComponent* rootScene = currActor->GetRootComponent();
+
+		FTIHMngObj* newManagedObject = new FTIHMngObj();
+		newManagedObject->InitMngObj(currActor, parentData, currMngObjPool.GetConfigure().AllocationSpace);
+		//newManagedObject->UpdateStateByManagedObjectHeader();//	여기를 뒤로 미루자. 나중에 한번에 해주면 된다.
+		if (rootScene != nullptr)
+		{
+			int32 newAddIndex = outData.AddDefaulted();
+			outData[newAddIndex].UESceneComponent = rootScene;
+			outData[newAddIndex].TIHManagedObject = newManagedObject;
 		}
 		else
 		{
+			newManagedObject->ChainManagedObjectHeader()
+				.SetProtocol((int8)ETIHManagedObjectHeaderProtocols::ESystem);
+		}
 
+		currMngObjPool.AddNewManagedObject(newManagedObject);
+	}
+}
+
+void FTIHMngObjFactory::GenerateManagedObjectCompositeArray(TArray<FTIHManagedObjectGenerateCompositeOutData>& inData, TDeque<AActor*>& actorQueue, TArray< FTIHMngObjComposite*>& outData)
+{
+	int32 arrayNum = inData.Num();
+	FTIHCommander& commander = TIHSTATION.GetCommander();
+	TDeque< FTIHMngObjGenerateCompositeBFSData> que;
+	int16 currStep = 0;
+	FTIHMngObjPool& currMngObjPool = *GetCurrentManagedObjectPool();
+	for (int32 i = 0; i < arrayNum; ++i)
+	{
+		que.EmplaceLast
+		(
+			FTIHMngObjGenerateCompositeBFSData
+			{
+				currStep,
+				-1,
+				inData[i].UESceneComponent,
+				inData[i].TIHManagedObject
+			}
+		);
+	}
+	while (true)
+	{
+		if (que.IsEmpty() == true)
+		{
+			break;
+		}
+		int16 StepValue = que.First().StepValue;
+		int16 ParentCompositeIndex = que.First().ParentCompositeIndex;
+		FTIHMngObj* currManagedObject = que.First().TIHManagedObject;
+		USceneComponent* currScene = que.First().UESceneComponent;
+		que.PopFirst();
+		if (currScene->StaticClass() == UChildActorComponent::StaticClass())
+		{
+			GenerateUEChildActorBy(Cast<UChildActorComponent>(currScene), currManagedObject, actorQueue);
+		}
+		FTIHMngObjComposite* newComposite = new FTIHMngObjComposite();
+		newComposite->InitMngObjComposite(currMngObjPool.GetConfigure().AllocationSpace, currScene, ParentCompositeIndex, StepValue);
+
+		currManagedObject->AddComposite(newComposite);
+
+		const TArray<TObjectPtr<USceneComponent>>& childScenes = currScene->GetAttachChildren();
+
+		for (const TObjectPtr<USceneComponent>& childScene : childScenes)
+		{
+			//													level						parentIndex == curCompositeIndex		attachScenes	managedObject
+			que.EmplaceLast(FTIHMngObjGenerateCompositeBFSData{ StepValue + 1,newComposite->GetIndexInManagedObjectCompositeArray(),childScene,currManagedObject });
+		}
+
+		outData.Add(newComposite);
+	}
+}
+
+void FTIHMngObjFactory::GenerateUEChildActorBy(UChildActorComponent* childActorScene, FTIHMngObj* currManagedObject, TDeque<AActor*>& actorQueue)
+{
+	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
+
+	check(childActorScene != nullptr);
+
+	AActor* childActor = childActorScene->GetChildActor();
+	UClass* childActorClass = childActor->StaticClass();
+
+	check(childActor != nullptr);
+
+	actorQueue.PushLast(childActor);
+	UEObjectHash64 chileActorHash = genHelper.GetUESceneComponentHashByUClass(childActorClass);
+	int16 parentIndex = currManagedObject->GetSelfIndexInWholeArray();
+	poolCenter.EmplaceAddMngObjPrepareDataForChildActor(chileActorHash, parentIndex);
+}
+
+void FTIHMngObjFactory::GenerateManagedObjectLeafArray(TArray< FTIHMngObjComposite*>& inData)
+{
+	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+
+	int32 arrayNum = inData.Num();
+
+	for (int32 i = 0; i < arrayNum; ++i)
+	{
+		FTIHMngObjComposite* currComposite = inData[i];
+		UEObjectHash64 targetSceneComponentHash = currComposite->GetHashValue();
+		const FTIHGenerateCandidateLeaves& hashArray = poolCenter.GetTIHHashArrayByUEHash(targetSceneComponentHash);
+
+		
+		for (const TIHHash64 managedComponentHash : hashArray.GenerateTags)
+		{
+			FTIHMngObjLeaf* leaf = poolCenter.GenerateManagedComponentByTIHHash(managedComponentHash);
+			leaf->SetManagedSceneComponentAndCasting(currComposite->GetTargetUeSceneComponent());
+			currComposite->AddLeaf(leaf);
 		}
 	}
+}
+
+void FTIHMngObjLeafTestDelay::InitSetting()
+{
+	
+	
+}
+
+void FTIHSettingHelper::FTIHManagedObjectSettings::RegistUEActorByUEHash(UClass* ueActorUcls)
+{
+	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
+	UEObjectHash64 ueHash = genHelper.ConvertUClassToHash(ueActorUcls);
+	genHelper.RegistUEActorByUClass(ueHash, ueActorUcls);
+}
+
+void FTIHSettingHelper::FTIHManagedObjectSettings::RegistTIHMngObjLeafGenerateFunc(TIHHash64 tihHash, TFunction < FTIHMngObjLeaf* ()> generateFunc)
+{
+	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
+	genHelper.RegistGenerateFunc(tihHash, generateFunc);
+}
+
+void FTIHSettingHelper::FTIHManagedObjectSettings::RegistUESceneAndTIHMngObjLeafList(UClass* ueSceneCls,const FTIHGenerateCandidateLeaves& tihLeafList)
+{
+	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
+	UEObjectHash64 ueHash = genHelper.ConvertUClassToHash(ueSceneCls);
+
+	genHelper.RegistGenerateCandidateHashArrayByUEHash(ueHash, tihLeafList);
+}
+
+void FTIHSettingHelper::FTIHManagedObjectSettings::RegistPrepareDataForNewAlloc(ETIHMngObjHeaderProcotols targetClsType, UClass* targetCls, int16 allocCount)
+{
+	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
+
+	UEObjectHash64 ueHash = genHelper.ConvertUClassToHash(targetCls);
+
+	poolCenter.EmplaceAddMngObjPrepareData((int8)targetClsType, ueHash, -1, allocCount );
+
 }
