@@ -1,0 +1,1 @@
+[[skeletal mesh]] 와 동일한 말이다.

@@ -34,7 +34,7 @@ class	FTIHCommandList;
 class	FTIHCommander;
 class	FTIHPakInfra;
 
-class	FTIHManagedObjectCompositesss;
+
 class	FTIHMngObj;
 class	FTIHMngObjPool;
 class	FTIHServer;
@@ -239,6 +239,7 @@ static TIHReturn64 TIHClassNameHash()\
 static TIHReturn64 reValue = ClassNameHashImplement(TEXT( #thisClass ) ); \
 return reValue; }
 
+//	반드시 InitSetting 을 구현해야한다
 #define TIHMACRO_MANAGED_LEAF_FEATURES( thisClass )\
 TIHMACRO_CLASS_STATIC_NAME_HASH( thisClass )\
 static FTIHMngObjLeaf* GenerateLeaf()\
@@ -644,49 +645,6 @@ public:
 	
 };
 
-class FTIHProtocolHelperForManagedObject
-{
-public:
-	bool IsGenerateGeneric(const FTIHManagedObjectComponentHeadersss& managedHeader)
-	{
-		bool reValue = false;
-		if (managedHeader.Protocol == 0)
-		{
-			reValue = true;
-		}
-		return reValue;
-	}
-
-	bool IsGenerateSpcial(const FTIHManagedObjectComponentHeadersss& managedHeader)
-	{
-		bool reValue = false;
-		if (managedHeader.Protocol == 1)
-		{
-			reValue = true;
-		}
-		return reValue;
-	}
-	bool IsGenerateSystem(const FTIHManagedObjectComponentHeadersss& managedHeader)
-	{
-		bool reValue = false;
-		if (managedHeader.Protocol == 2)
-		{
-			reValue = true;
-		}
-		return reValue;
-	}
-	bool IsGenerateWidget(const FTIHManagedObjectComponentHeadersss& managedHeader)
-	{
-		bool reValue = false;
-		if (managedHeader.Protocol == 3)//이거 다임시임
-		{
-			reValue = true;
-		}
-		return reValue;
-	}
-
-};
-
 class FTIHProtocolHelper
 {
 public:
@@ -701,15 +659,12 @@ public:
 		return FTIHProtocolHelper::GetSingle().mManagedObjectHeaderForInit;
 	}
 
-	FTIHProtocolHelperForManagedObject& ManagedObjectHelper()
-	{
-		return mManagedObjectHelper;
-	}
+
 
 
 
 private:
-	FTIHProtocolHelperForManagedObject mManagedObjectHelper;
+
 	FTIHProtocolHelper()
 	{
 		mManagedObjectHeaderForInit.Protocol = (int8)ETIHManagedObjectHeaderProtocols::ENotUse;
@@ -3362,133 +3317,6 @@ private:
 	============================================================================================================================================================
 */
 
-class FTIHManagedObjectBasesss;
-template<typename TIHTemplateType = FTIHManagedObjectBasesss> class TTIHManagedObjectsss;
-class FTIHManagedObjectCompositesss;
-class FTIHManagedObjectComponentBasesss;
-template<typename TIHTemplateType> class TTIHManagedObjectComponentsss;
-
-
-
-class FTIHManagedObjectCompositesss
-{
-public:
-	FTIHManagedObjectCompositesss() {};
-	virtual ~FTIHManagedObjectCompositesss() {};
-
-
-	FTIHManagedObjectComponentBasesss* GetComponentByIndex(int16 index)
-	{
-		return mComponentArray[index].Get();
-	}
-	/*
-		만들어야하는거
-		remove component
-		
-	*/
-	int32 GetComponentCount()
-	{
-		return mComponentArray.Num();
-	}
-	int16 PushBackComponent(FTIHManagedObjectComponentBasesss* ptr)
-	{
-		int16 index = mComponentArray.Add(MakeUnique<FTIHManagedObjectComponentBasesss>(ptr));
-		ptr->SetComponentIndexInComposite(index);
-		TIHHash64 currComponentHash = ptr->GetTIHHash();
-		if(mComponentPriorities.Contains(currComponentHash)==false)
-		{
-			mComponentPriorities.Add(currComponentHash, TArray<int16>());
-		}
-		mComponentPriorities[currComponentHash].Add(index);
-
-		return index;
-		
-	}
-	
-private:
-	TMap<TIHHash64, TArray<int16>> mComponentPriorities;
-	TArray< TUniquePtr<FTIHManagedObjectComponentBasesss>> mComponentArray;
-};
-
-USTRUCT()
-struct FTIHManagedObjectComponentHeadersss
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	int8 Protocol;
-
-	UPROPERTY()
-	int8 ProtocolOption;
-
-	UPROPERTY()
-	int8 Padding0;
-
-	UPROPERTY()
-	int8 Padding1;
-
-};
-
-
-class FTIHManagedObjectComponentBasesss
-{
-public:
-	const FTIHManagedObjectComponentHeadersss GetComponentHeader()
-	{
-		return mComponentHeader;
-	}
-	/*!
-	*	@brief 링킹을 걸기 위한 용도의 함수
-	*	@detail 해당 함수는 자식이 특수 작업을 해야할 경우 새롭게 override 하면 된다.
-	*/
-	virtual void LinkingManagedComponentAtActor(AActor* actor) = 0;
-	
-	virtual void LinkingManagedCompoentBySceneComponent(USceneComponent* target)
-	{
-	};
-	
-	virtual void PostLinkingSettingFunction()
-	{
-	};
-	
-	int16 GetComponentIndex()
-	{
-		return mComponentIndexInComposite;
-	}
-	void SetComponentIndexInComposite(int16 index)
-	{
-		mComponentIndexInComposite = index;
-	}
-	void SetComponentParent(int16 parentIndex)
-	{
-		mComponentParent = parentIndex;
-	}
-	int16 GetComponentParent()
-	{
-		return mComponentParent;
-	}
-	void SetTIHHash(TIHReturn64 tihHash)
-	{
-		mSelfHash = tihHash;
-	}
-
-	TIHReturn64 GetTIHHash()
-	{
-		return mSelfHash;
-	}
-	const FTIHGenerateCandidateLeaves& GetComponentTagHashs()
-	{
-		return FTIHTagHelperssss::GetSingle().GetComponentHashs(mSelfHash);
-	}
-	
-	
-private:
-	int16 mComponentParent;
-	int16 mComponentIndexInComposite;
-	TIHReturn64 mSelfHash;
-	FTIHManagedObjectComponentHeadersss mComponentHeader;
-};
-
 
 /*
 =================================================================================================================================================
@@ -3734,7 +3562,7 @@ public:
 	{
 		return mHashValue;
 	}
-
+	
 	const FTIHMngObjComponentHeader& GetManagedObjectComponentHeader()
 	{
 		return mComponentHeader;
@@ -3913,7 +3741,10 @@ public:
 	{
 		return mStep;
 	}
-
+	void TransmissionHashSetToManagedObject(FTIHMngObj* mngObj)
+	{
+		
+	}
 
 protected:
 	int16 mParentIndex;
@@ -3921,10 +3752,6 @@ protected:
 
 	TMap<TIHHash64, FTIHMngObjLeaf*> mLeafMap;
 	USceneComponent* mUESceneComponent;
-
-	/*
-		
-	*/
 };
 
 class FTIHMngObjLeaf :public FTIHMngObjComponent
@@ -3964,6 +3791,8 @@ protected:
 	//	이걸 넣으면 tagHelper 에서 여기에 관련된 배열을 넘겨준
 };
 
+
+
 template<typename TIHTemplateType>
 class TTIManagedObjectLeaf : public FTIHMngObjLeaf
 {
@@ -3986,6 +3815,8 @@ protected:
 	TIHTemplateType* mCastedComponent;
 };
 
+
+
 class FTIHMngObjLeafTestDelay : public TTIManagedObjectLeaf<UStaticMeshComponent>
 {
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafTestDelay)
@@ -3993,7 +3824,78 @@ public:
 	void InitSetting() override;
 };
 
+class FTIHMngObjLeafMovement : public TTIManagedObjectLeaf<USceneComponent>
+{
+	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafMovement)
+public:
+	void InitSetting() override;
 
+	void SetWorldLocation(const FVector& value)
+	{
+		check(mCastedComponent != nullptr);
+		mCastedComponent->SetWorldLocation(value);
+	}
+	void SetWorldRotation(const FVector& value)
+	{
+		check(mCastedComponent != nullptr);
+		mCastedComponent->SetWorldRotation(value.ToOrientationQuat());
+	}
+	void SetWorldTransform(const FTransform& value)
+	{
+		check(mCastedComponent != nullptr);
+		mCastedComponent->SetWorldTransform(value);
+	}
+
+	void SetRelativeLocation(const FVector& value)
+	{
+		check(mCastedComponent != nullptr);
+		mCastedComponent->SetRelativeLocation(value);
+	}
+	void SetRelativeRotation(const FVector& value)
+	{
+		check(mCastedComponent != nullptr);
+		mCastedComponent->SetRelativeRotation(value.ToOrientationQuat());
+	}
+	void SetRelativeTransform(const FTransform& value)
+	{
+		check(mCastedComponent != nullptr);
+		mCastedComponent->SetRelativeTransform(value);
+	}
+};
+class FTIHMngObjLeafPretty : public TTIManagedObjectLeaf<UMeshComponent>
+{
+	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafMovement)
+public:
+	void InitSetting() override;
+
+	void SetMaterial(const FString& path)
+	{
+
+	}
+};
+class FTIHMngObjLeafStMesh : public TTIManagedObjectLeaf<UStaticMeshComponent>
+{
+	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafStMesh)
+public:
+	void InitSetting() override;
+
+	void SetStMesh(const FString& path)
+	{
+		//	여기에서 stmeshPool 을 들고온다. 
+		mCastedComponent->SetStaticMesh();
+	}
+};
+class FTIHMngObjLeafSkMesh : public TTIManagedObjectLeaf<UStaticMeshComponent>
+{
+	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafStMesh)
+public:
+	void InitSetting() override;
+
+	void SetMaterial(const FString& path)
+	{
+
+	}
+};
 class FTIHSettingHelper
 {
 	class FTIHManagedObjectSettings;
@@ -4096,7 +3998,7 @@ struct FTIHMngObjHeader
 
 	TIHMACRO_CHAINBUILDER_SETTER(Protocol);
 	TIHMACRO_CHAINBUILDER_SETTER(ManagedObjectState);
-	TIHMACRO_CHAINBUILDER_SETTER(Padding);
+	TIHMACRO_CHAINBUILDER_SETTER(AllocationSpace);
 };
 
 
@@ -4173,7 +4075,10 @@ public:
 		SetAllocSpace(allocationSpace);
 		//mStateDetail.StartStateTracing();
 	}
-
+	void UnionHashTable(const TSet<TIHHash64>& otherSet)
+	{
+		mHashTable.Union(otherSet);
+	}
 
 private:
 	FTIHMngObjHeader mManagedObjectHeader;//	get set
@@ -4218,118 +4123,6 @@ protected:
 	TIHTemplateType* mTargetComponent;
 };
 
-//
-//class FTIHManagedObjectMovementComponent : public TTIHManagedObjectComponentsss<USceneComponent>
-//{
-//public:
-//	TIHMACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION(FTIHManagedObjectMovementComponent);
-//
-//	/*static const TArray<TIHHash64>& SetTagsArray()
-//	{
-//		static TSet< TIHHash64> hashSet =
-//		{
-//			FTIHTagHelper::GetSingle().GetHashActorBase(),
-//		};
-//		static TArray<TIHHash64> reValue = hashSet.Array();
-//		return reValue;
-//	}
-//	virtual const TArray<TIHHash64>& GetTagArray()
-//	{
-//		return FTIHManagedObjectMovementComponent::SetTagsArray();
-//	}*/
-//	
-//
-//
-//
-//	FTIHManagedObjectMovementComponent& SetRelateTransform(const FTransform& trans)
-//	{
-//		mTargetComponent->SetRelativeTransform(trans);
-//		return *this;
-//	}
-//	FTIHManagedObjectMovementComponent& SetWorldTransform(const const FTransform& trans)
-//	{
-//		mTargetComponent->SetWorldTransform(trans);
-//		return *this;
-//	}
-//	FTIHManagedObjectMovementComponent& SetRelateLocation(const FVector& vect)
-//	{
-//		mTargetComponent->SetRelativeLocation(vect);
-//		return *this;
-//	}
-//	FTIHManagedObjectMovementComponent& SetWorldLocation(const FVector& vect)
-//	{
-//		mTargetComponent->SetWorldLocation(vect);
-//		return *this;
-//	}
-//
-//	FTIHManagedObjectMovementComponent& SetRelateRotation(const FVector& vect)
-//	{
-//		mTargetComponent->SetRelativeRotation(vect.ToOrientationQuat());
-//		return *this;
-//	}
-//	FTIHManagedObjectMovementComponent& SetWorldRotation(const FVector& vect)
-//	{
-//		mTargetComponent->SetWorldRotation(vect.ToOrientationQuat());
-//		return *this;
-//	}
-//	void PostLinkingSettingFunction() override;
-//};
-//
-//class FTIHManagedObjectRenderComponent : public TTIHManagedObjectComponentsss<UMeshComponent>
-//{
-//public:
-//	TIHMACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION(FTIHManagedObjectRenderComponent);
-//
-//	FTIHManagedObjectRenderComponent& SetStaticMesh(UStaticMesh* stMesh)
-//	{
-//		if(mStaticMesh != nullptr)
-//		{
-//			mStaticMesh->SetStaticMesh(stMesh);
-//		}
-//		return *this;
-//	}
-//	FTIHManagedObjectRenderComponent& SetSkeletalMesh(USkeletalMesh* skMesh)
-//	{
-//		if (mSkeletalMesh != nullptr)
-//		{
-//			mSkeletalMesh->SetSkeletalMesh(skMesh);
-//		}
-//		return *this;
-//	}
-//
-//private:
-//	UStaticMeshComponent* mStaticMesh;
-//	USkeletalMeshComponent* mSkeletalMesh;
-//};
-//class FTIHManagedObjectAnimationComponent : public TTIHManagedObjectComponentsss<USkeletalMeshComponent>
-//{
-//public:
-//	TIHMACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION(FTIHManagedObjectAnimationComponent);
-//
-//	void Play()
-//	{
-//
-//
-//
-//	}
-//	void Stop();
-//	void ResetAnimation();
-//};
-//
-//
-///*!
-//*	@brief 이거는 메테리얼에 사용될거임
-//*	@detail 
-//*/
-//class FTIHManagedObjectPrettyComponent : public TTIHManagedObjectComponentsss<UMeshComponent>
-//{
-//public:
-//	TIHMACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION(FTIHManagedObjectPrettyComponent);
-//
-//};
-//
-//
-
 
 
 /*!
@@ -4371,264 +4164,11 @@ public:
 };
 
 
-class FTIHManagedObjectBasesss
-{
-public:
-	FTIHManagedObjectBasesss();
-	virtual ~FTIHManagedObjectBasesss() {};
-
-	virtual bool IsValidManagedTarget()
-	{
-		return mManagedTarget.IsValid();
-	}
-
-	const FTIHMngObjHeader GetManagedObjectHeader()
-	{
-		return mManagedObjectHeader;
-	}
-	int32 GetComponentCount()
-	{
-		int32 reValue = 0;
-		reValue = mManagedComposite->GetComponentCount();
-		return reValue;
-	}
-	FTIHManagedObjectCompositesss& GetComposite()
-	{
-		return *mManagedComposite;
-	}
-
-	FTIHState& GetState()
-	{
-		return mObjectState;
-	}
-
-	virtual void SetManagedTarget(UObject* target)
-	{
-		mManagedTarget = MakeShared<UObject>(target);
-	};
-
-	bool IsManagedTargetActor()
-	{
-		bool reValue = false;
-		reValue = mManagedTarget->IsA<AActor*>();
-		return reValue;
-	}
-	TSharedPtr<UObject> GetManagedTarget()
-	{
-		return mManagedTarget;
-	}
-
-	void SetHeaderProtocol(ETIHManagedObjectHeaderProtocols managedProtocol)
-	{
-		mManagedObjectHeader.SetProtocol((int8)managedProtocol);
-	}
-	void SetHeaderSpace(ETIHManagedObjectSpace managedSpace)
-	{
-		mManagedObjectHeader.SetAllocatedSpace((int8)managedSpace);
-	}
-	bool IsRoot()
-	{
-		bool reValue = mManagedTags.Contains(FTIHTagHelperssss::GetSingle().GetHashRoot());
-		return reValue;
-	}
-	bool IsMovePossibe()
-	{
-
-	}
-	bool IsRender3dPossible()
-	{
-
-	}
-	bool IsMaterialSetPossible()
-	{
-	
-	}
-
-	void AddManagedTag(const TArray<TIHHash64>& tagHashs)
-	{
-		FTIHTagHelperssss::GetSingle().GetHashHasChildren();
-		for(const TIHHash64& tag : tagHashs)
-		{
-			if(mManagedTags.Contains(tag) == false)
-			{
-				mManagedTags.Add(tag);
-			}
-		}
-	}
-	void AddManagedTag(const FTIHGenerateCandidateLeaves& tagHashs)
-	{
-		FTIHTagHelperssss::GetSingle().GetHashHasChildren();
-		mManagedTags.Union(tagHashs.GenerateTags);
-	}
-
-	bool LinkUeObject(UObject* ueObj);
-	bool UnLinkUeObject();
-	/*
-		만들어야하는거
-			header 를 set 하는거v
-			mManagedComposite 에다가 값넣는거v
-			부모set 하는거
-			자식 매니지드 오브젝트 set 하는거.
-			셀프 인덱스 셋하는거
-			부모 인덱스 셋하는거
-	*/
-#pragma region SetHeader
-
-
-	FTIHMngObjHeader& ChainManagedObjectHeader()
-	{
-		return mManagedObjectHeader;
-	}
-	void SetManagedObjectHeaderByValues(int8 Protocol,int8 ProtocolOption,int8 ComponentProtocol,int8 allocatedSpace)
-	{
-		mManagedObjectHeader
-			.SetProtocol(Protocol)
-			.SetProtocolOption(ProtocolOption)
-			.SetComponentProtocol(ComponentProtocol)
-			.SetAllocatedSpace(allocatedSpace);
-	}
-	void SetManagedObjectHeaderByOther(const FTIHMngObjHeader& other)
-	{
-		SetManagedObjectHeaderByValues(other.Protocol, other.ProtocolOption, other.ComponentProtocol, other.AllocatedSpace);
-	}
-#pragma endregion
-#pragma region PushComponent
-
-
-	void PushBackManagedComponent(FTIHManagedObjectComponentBasesss* target)
-	{
-		mManagedComposite->PushBackComponent(target);
-	}
-#pragma endregion
-
-	int16 GetSelfIndexInWholeDatas()
-	{
-		return mSelfIndex;
-	}
-#pragma region SetParent
-
-
-	void SetParentByObjectPoolIndex(int16 index)
-	{
-		mParentIndex = index;
-		if (-1 < index)
-		{
-			mManagedTags.Add(FTIHTagHelperssss::GetSingle().GetHashHasParent());
-		}
-		else
-		{
-			mManagedTags.Add(FTIHTagHelperssss::GetSingle().GetHashRoot());
-		}
-	}
-	void SetParentByManagedObject(FTIHManagedObjectBasesss* parent)
-	{
-		int16 parentIndex = -1;
-		if(parent!=nullptr)
-		{
-			parentIndex = parent->GetSelfIndexInWholeDatas();
-			mManagedTags.Add(FTIHTagHelperssss::GetSingle().GetHashHasParent());
-		}
-		else
-		{
-			mManagedTags.Add(FTIHTagHelperssss::GetSingle().GetHashRoot());
-		}
-		mParentIndex = parentIndex;
-	}
-#pragma endregion
-	void SetRoot()
-	{
-		SetParentByManagedObject(nullptr);
-	}
-	
-	void SetSystem()
-	{
-		mManagedTags.Add(FTIHTagHelperssss::GetSingle().GetHashSystem());
-	}
-
-
-	void SetSelfIndex(int16 allocIndex)
-	{
-		mSelfIndex = allocIndex;
-	}
-
-#pragma region SetChild
-	void SetChildByObjectPoolIndex(int16 index)
-	{
-		mChildIndices.Add(index);
-	}
-
-
-
-
-#pragma endregion
-
-	/*
-		GetRenderComponent
-			여러개가 있을경우에 클릭한 대상에 대한 정보를 리턴하면 된다.
-		GetPrettyComponent
-		GetMoveComponent
-		Get...
-	*/
-
-private:
-	/*
-		여기에 뭘만들어야하냐면
-		해당 매니지드 오브젝트의 타입이 뭔지 같은 header 가 필요하다. 이게 사실 메타데이터였는데 헤더로 바뀜
-		태그 래퍼는 없앤다. 불만 없제.
-	*/
-	FTIHState mObjectState;	//	이거는 나중에
-
-	FTIHMngObjHeader mManagedObjectHeader;
-	TSet<TIHHash64> mManagedTags;
-
-	TUniquePtr<FTIHManagedObjectCompositesss> mManagedComposite;
-	FName mSelfTag;
-
-	int16 mParentIndex;
-	int16 mSelfIndex;
-
-	int8 mSiblingProtocol;
-	int8 mSiblingProtocolOption;
-	int16 mPadding;
-
-	TArray<int16> mSiblingIndices;
-	TArray<int16> mChildIndices;
-
-	SIZE_T mClassHashValue;
-
-	TSharedPtr< UObject> mManagedTarget;
-
-
-};
-
 /*
 	이녀석이 중간재라 이걸 흠...타입을 들고오고 데이터를 들고와야하는데
 	공통으로 사용되는 녀석을 위에다 인터페이스 넣어놓고
 */
 
-template<typename TIHTemplateType = FTIHManagedObjectBasesss>
-class TTIHManagedObjectsss : public FTIHManagedObjectBasesss
-{
-public:
-	TTIHManagedObjectsss() {};
-	virtual ~TTIHManagedObjectsss() {};
-	
-	TSharedPtr< TIHTemplateType> GetManagedTarget()
-	{
-		return mManagedTarget;
-	}
-	/*!
-	*	@brief shaderPtr 안에 제대로 등록이 되었는지 확인하고 처리한다.
-	*	@detail 
-	*/
-	bool IsValidManagedTarget() override
-	{
-		return mManagedTarget->IsValid();
-	}
-
-private:
-	UClass* mTargetClass;
-};
 
 UCLASS()
 class ATIHTestPawn : public APawn
@@ -4652,39 +4192,6 @@ struct FTIHManangedObjectPoolStorageDatas
 
 	UPROPERTY()
 	TArray<int16> Indecies;
-};
-
-class FTIHManagedObjectGenerateMethod
-{
-public:
-	template<typename TIHTemplateType>
-	FTIHManagedObjectComponentBasesss* GenerateManagedObjectComponentStaticPolymorph(TIHTemplateType value)
-	{
-		return value->GenerateManagedObjectComponentStaticPolymorph();
-	}
-
-	virtual TIHReturn64 RegistComponent(FTIHManagedObjectBasesss& target) = 0
-	{
-		FTIHGenerateCandidateLeaves a;
-		//a.GenerateTags.Add("pretty");
-		//a.GenerateTags.Add("render");
-
-	
-		
-		/*
-			staticMesh 라는 테그를 가졌을경우
-				
-		
-		*/
-		/*
-			StaticMesh
-				FTIHManagedObjectPrettyComponent
-				FTIHManagedObjectRenderComponent
-		
-		*/
-
-		
-	}
 };
 
 /*!
@@ -4913,16 +4420,7 @@ struct FTIHManagedObjectPoolingData
 
 	UClass* TargetUObject;
 };
-struct FTIHGeneratePairSceneAndManaged
-{
-	USceneComponent* const UESceneComponent;
-	FTIHManagedObjectBasesss* TIHManagedObjectBase;
 
-	FTIHGeneratePairSceneAndManaged() = delete;
-	FTIHGeneratePairSceneAndManaged(USceneComponent* sceneComp, FTIHManagedObjectBasesss* managedObj)
-		: UESceneComponent(sceneComp), TIHManagedObjectBase(managedObj)
-	{}
-};
 class FTIHMngObjPoolCenter;
 
 struct FTIHManagedObjectGenerateCompositeOutData
