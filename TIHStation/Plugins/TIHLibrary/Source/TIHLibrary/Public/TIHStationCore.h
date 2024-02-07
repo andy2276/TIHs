@@ -203,6 +203,18 @@ TIHMACRO_CHAINBUILDER_SETTER_BASE(*this,TIHTemplateType , MemFuncName, MemberVar
 cmdTarget = new castTemplateType();\
 static_cast<castTemplateType*>(cmdBase)->SetCommandFeature(GetCastedBuildersCommandData< castTemplateType##Datas >())
 
+class FTIHHashClass
+{
+public:
+	
+
+
+private:
+	
+};
+
+
+
 /*!
 *	@brief 간단한 해쉬
 *	@detail https://withhamit.tistory.com/401
@@ -210,7 +222,16 @@ static_cast<castTemplateType*>(cmdBase)->SetCommandFeature(GetCastedBuildersComm
 TIHReturn64 ClassNameHashImplement(const TCHAR* clsName)
 {
 	//	충돌 검사를 해야한다....시발거
-	//	
+	//FString toFString(clsName);
+	//
+	//if( 31 < toFString.Len())
+	//{
+	//
+	//}
+	/*
+		일단 음...이거 된다 생각하고 어떻게든 여기에 맞춰야지.
+		지금바꾸는건 미친짓임. 이것조차 확장성을 둬버리면 잣됨
+	*/
 
 	TIHReturn64 reValue = -1;
 	if(clsName != nullptr )
@@ -229,6 +250,8 @@ TIHReturn64 ClassNameHashImplement(const TCHAR* clsName)
 		reValue = hash_val;
 	}
 	
+	
+
 	return reValue;
 }
 
@@ -937,12 +960,18 @@ union FUnionTIHStateValue
 */
 class FTIHState
 {
+	static FTIHMngObjPoolCenter* gPoolCenter;
 public:
 	FTIHState()
 	{
 		mStateValueDetail.WholeData = 0;
 	}
 	virtual ~FTIHState(){}
+
+	static void SetManagedObjectPoolCenter(FTIHMngObjPoolCenter* poolCenter)
+	{
+		gPoolCenter = poolCenter;
+	}
 
 	ETIHManagedObjectStepState GetStateStepEnum()
 	{
@@ -969,6 +998,31 @@ public:
 		}
 		return reValue;
 	}
+	int8 GetStateStepInt8()
+	{
+		int8 reValue = (int8)ETIHManagedObjectStepState::ETraceFail;
+		switch (mStateValueDetail.Datas.Details.LifeCycle)
+		{
+		case (int16)ETIHManagedObjectStepState::EAllocated:
+			reValue = (int8)ETIHManagedObjectStepState::EAllocated;
+			break;
+		case (int16)ETIHManagedObjectStepState::EReady:
+			reValue = (int8)ETIHManagedObjectStepState::EReady;
+			break;
+		case (int16)ETIHManagedObjectStepState::ERunning:
+			reValue = (int8)ETIHManagedObjectStepState::ERunning;
+			break;
+		case (int16)ETIHManagedObjectStepState::EWaiting:
+			reValue = (int8)ETIHManagedObjectStepState::EWaiting;
+			break;
+		case (int16)ETIHManagedObjectStepState::ETermination:
+			reValue = (int8)ETIHManagedObjectStepState::ETermination;
+			break;
+		default:
+			break;
+		}
+		return reValue;
+	}
 	void StartStateTracing()
 	{
 		if(mStateValueDetail.Datas.Details.LifeCycle == (int16)ETIHManagedObjectStepState::ENotUse)
@@ -983,7 +1037,7 @@ public:
 		}
 	}
 
-	bool IsInitPossible()
+	bool IsStateAllocated()
 	{
 		bool reValue = false;
 		if ((int16)ETIHManagedObjectStepState::EAllocated != mStateValueDetail.Datas.Details.LifeCycle)
@@ -992,7 +1046,7 @@ public:
 		}
 		return reValue;
 	}
-	bool IsAssginPossible()
+	bool IsStateReady()
 	{
 		bool reValue = false;
 		if((int16)ETIHManagedObjectStepState::EReady != mStateValueDetail.Datas.Details.LifeCycle)
@@ -1097,9 +1151,13 @@ public:
 			*/
 		}
 	}
+
 protected:
 	FUnionTIHStateValue mStateValueDetail;
 };
+FTIHMngObjPoolCenter* FTIHState::gPoolCenter = nullptr;
+
+
 /*!
 *	@brief AActor 의 Tag 와 호환이 되지만 wrap 을 한것뿐임
 *	@detail 
@@ -1656,6 +1714,16 @@ private:
 	인터페이스 정도는 만들어주자.
 
 */
+class FTIHMeshPool
+{
+private:
+
+
+public:
+
+
+};
+
 class FTIHCommandShareBoard
 {
 public:
@@ -1903,6 +1971,10 @@ public:
 	FTIHCommandTestDelay() {};
 	virtual ~FTIHCommandTestDelay() {};
 };
+
+
+
+
 /*
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 													FTIHCommandCreateAssignPoolDatas
@@ -1934,20 +2006,14 @@ struct FTIHCommandCreateAssignPoolDatas
 	TIHMACRO_CHAINBUILDER_SETTER(DataCount);
 	TIHMACRO_CHAINBUILDER_SETTER(DataOption);
 };
-class FTIHCommandCreateAssignPool : public TTIHCommand<FTIHCommandCreateAssignPoolDatas>
-{
-	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCommandCreateAssignPool);
-
-public:
-	FTIHCommandCreateAssignPool();
-	virtual ~FTIHCommandCreateAssignPool();
-};
 
 /*
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 													FTIHCommandCreateNewAllocDatas
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
+//	음...prepare 이랑 합칠까? 어차피 prepare 하는거잖아.
+//	이거는 좀 생각을 해보자.
 USTRUCT()
 struct FTIHCommandCreateNewAllocDatas
 {
@@ -1968,13 +2034,35 @@ struct FTIHCommandCreateNewAllocDatas
 	
 	TIHMACRO_CHAINBUILDER_SETTER(TargetClassHash);
 };
-class FTIHCommandCreateNewAlloc : public TTIHCommand<FTIHCommandCreateNewAllocDatas>
+/*
+	CommandHeader	:	해당 커맨더가 무엇인지 idenetity 를 말한다
+	CommandMethod	:	해당 커맨더가 어떻게 처리될지를 말한다
+	CommandFeature	:	해당 커맨더의 특징을 말한다.
+
+
+*/
+class FTIHCommandCreateNewAllocPrepare : public TTIHCommand<FTIHNewAllocPrepareData>
 {
-	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCommandCreateNewAlloc);
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCommandCreateNewAllocPrepare);
 public:
-	FTIHCommandCreateNewAlloc();
-	virtual ~FTIHCommandCreateNewAlloc();
+	FTIHCommandCreateNewAllocPrepare();
+	virtual ~FTIHCommandCreateNewAllocPrepare();
 };
+/*!
+*	@brief 
+*	@detail 
+*/
+
+class FTIHCommandCreateNewAllocOnGenerate : public TTIHCommand<FTIHMngObjPoolConfigureDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCommandCreateNewAllocOnGenerate);
+public:
+	FTIHCommandCreateNewAllocOnGenerate();
+	virtual ~FTIHCommandCreateNewAllocOnGenerate();
+};
+
+
+
 
 /*
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
@@ -2871,7 +2959,6 @@ private:
 			mDeleteCandidates.RemoveAt(lastIndex);
 		}
 	}
-
 };
 #pragma region Command Strategy
 
@@ -3425,7 +3512,8 @@ public:
 
 		if(mRegistedActorByUEHash.Contains(ueHash) == false)
 		{
-			mRegistedActorByUEHash[ueHash] = ueActorUcls;
+			mRegistedActorByUEHash.Add(ueHash, ueActorUcls);
+			mSwapActorHashByUClass.Add(ueActorUcls, ueHash);
 		}
 		else
 		{
@@ -3524,6 +3612,16 @@ public:
 		RegistGenerateCandidateHashArrayByUEHash(registedUeHash, hashArray);
 	}
 
+	UEObjectHash64 GetUEHashByActorUClass(UClass* ucls)
+	{
+		UEObjectHash64 reValue = GetNoRegistTag();
+		if(mSwapActorHashByUClass.Contains(ucls) == true)
+		{
+			reValue = mSwapActorHashByUClass[ucls];
+		}
+		return reValue;
+	}
+
 	UEObjectHash64 GetNoRegistTag()
 	{
 		static UEObjectHash64 reValue = ClassNameHashImplement(L"GetNoRegistTag");
@@ -3541,6 +3639,7 @@ private:
 	
 
 	TMap< UEObjectHash64, UClass*> mRegistedActorByUEHash;//	for Actor
+	TMap< UClass*, UEObjectHash64 > mSwapActorHashByUClass;//	for Actor
 };
 
 class FTIHMngObjComponent
@@ -3689,7 +3788,6 @@ public:
 	
 	void SetTargetUeSceneComponent(USceneComponent* targetScene)
 	{
-		FTIHMngObjGenerateHelper::GetSingle()
 		mUESceneComponent = targetScene;
 		UEObjectHash64 ueHash = FTIHMngObjGenerateHelper::GetSingle().GetUESceneComponentHashByUClass(targetScene->StaticClass());
 		SetHashValue(ueHash);
@@ -3850,7 +3948,6 @@ public:
 		check(mCastedComponent != nullptr);
 		mCastedComponent->SetWorldTransform(value);
 	}
-
 	void SetRelativeLocation(const FVector& value)
 	{
 		check(mCastedComponent != nullptr);
@@ -3865,6 +3962,31 @@ public:
 	{
 		check(mCastedComponent != nullptr);
 		mCastedComponent->SetRelativeTransform(value);
+	}
+	void SetAddLocalOffset(const FVector& value)
+	{
+		check(mCastedComponent != nullptr);
+		mCastedComponent->AddLocalOffset(value);
+	}
+	void SetAddLocalRotation(const FVector& value)
+	{
+		check(mCastedComponent != nullptr);
+		mCastedComponent->AddLocalRotation(value.ToOrientationQuat());
+	}
+	void SetAddLocalRotation(const FTransform& value)
+	{
+		check(mCastedComponent != nullptr);
+		mCastedComponent->AddLocalTransform(value);
+	}
+	void SetAddRelativeLocation(const FVector& value)
+	{
+		check(mCastedComponent != nullptr);
+		mCastedComponent->AddRelativeLocation(value);
+	}
+	void SetAddRelativeRotation(const FVector& value)
+	{
+		check(mCastedComponent != nullptr);
+		mCastedComponent->AddRelativeRotation(value.ToOrientationQuat());
 	}
 };
 class FTIHMngObjLeafPretty : public TTIManagedObjectLeaf<UMeshComponent>
@@ -3946,6 +4068,178 @@ private:
 	};
 	FTIHManagedObjectSettings mManagedObjectSettingHelper;
 };
+class FTIHManagedObjectGenerateCompositeOutData;
+
+template<typename TIHTemplateTypeA, typename TIHTemplateTypeB>
+struct TTIHMngObjTempDataPair
+{
+	TIHTemplateTypeA HashValueType;
+	TIHTemplateTypeB UEValueType;
+
+	TTIHMngObjTempDataPair() {}
+	TTIHMngObjTempDataPair(TIHTemplateTypeA hashValueType, TIHTemplateTypeB ueValueType)
+		:
+		HashValueType(hashValueType), UEValueType(ueValueType)
+	{}
+	TTIHMngObjTempDataPair(const TTIHMngObjTempDataPair& copyCtor)
+		:
+		HashValueType(copyCtor.hashValueType), UEValueType(copyCtor.ueValueType)
+	{}
+
+	TTIHMngObjTempDataPair(TTIHMngObjTempDataPair&& moveCtor)
+		:
+		HashValueType(moveCtor.hashValueType), UEValueType(moveCtor.ueValueType)
+	{}
+
+	TTIHMngObjTempDataPair& operator=(const TTIHMngObjTempDataPair& copyOper)
+	{
+		HashValueType = copyOper.HashValueType;
+		UEValueType = copyOper.UEValueType;
+		return *this;
+	}
+	TTIHMngObjTempDataPair& operator=(TTIHMngObjTempDataPair&& moveOper)
+	{
+		std::move(moveOper);
+		return *this;
+	}
+};
+
+class FTIHMngObjTempDatas
+{
+public:
+	
+	/*
+		reset
+		clear
+		pushBacks
+		getTop
+		getElementNums
+		getCapacityMaxs
+		isEmpties
+
+	*/
+	void ResetAllQueue()
+	{
+		mActorQueue.Reset();
+		mPrepareDatasForComposite.Reset();
+		mEmptyComposites.Reset();
+	}
+	void ClearCapacityAllQueue()
+	{
+		mActorQueue.Empty();
+		mPrepareDatasForComposite.Empty();
+		mEmptyComposites.Empty();
+	}
+
+	void PushBackActor(AActor* actor, UEObjectHash64 ueObjHash)
+	{
+		TTIHMngObjTempDataPair<UEObjectHash64, AActor*> copyValue(ueObjHash, actor);
+		mActorQueue.PushLast(copyValue);
+	}
+	void PushBackPrepareDataForComposite(FTIHMngObjGenerateCompositeBFSData&& prepareData)
+	{
+		mPrepareDatasForComposite.PushLast(prepareData);
+	}
+	void PushBackEmptyComposite(FTIHMngObjComposite* composite)
+	{
+		mEmptyComposites.PushLast(composite);
+	}
+
+	int16 GetNumInActorQueue()
+	{
+		int16 reValue = mActorQueue.Num();
+		return reValue;
+	}
+	int16 GetNumInPrepareDataForCompositeQueue()
+	{
+		int16 reValue = mPrepareDatasForComposite.Num();
+		return reValue;
+	}
+	int16 GetNumInEmptyCompositeQueue()
+	{
+		int16 reValue = mPrepareDatasForComposite.Num();
+		return reValue;
+	}
+
+	int16 GetCapacityInActorQueue()
+	{
+		int16 reValue = mActorQueue.Max();
+		return reValue;
+	}
+	int16 GetCapacityInPrepareDataForCompositeQueue()
+	{
+		int16 reValue = mPrepareDatasForComposite.Max();
+		return reValue;
+	}
+	int16 GetCapacityInEmptyCompositeQueue()
+	{
+		int16 reValue = mPrepareDatasForComposite.Max();
+		return reValue;
+	}
+
+
+	bool IsEmptyActorQueue()
+	{
+		bool reValue = mActorQueue.IsEmpty();
+		return reValue;
+	}
+	bool IsEmptyPrepareDataForCompositeQueue()
+	{
+		bool reValue = mPrepareDatasForComposite.IsEmpty();
+		return reValue;
+	}
+	bool IsEmptyEmptyCompositeQueue()
+	{
+		bool reValue = mEmptyComposites.IsEmpty();
+		return reValue;
+	}
+	bool IsEmpties()
+	{
+		bool reValue = (IsEmptyActorQueue() && IsEmptyPrepareDataForCompositeQueue() && IsEmptyEmptyCompositeQueue());
+		return reValue;
+	}
+
+	AActor* GetTopAndPopActorQueue()
+	{
+		AActor* reValue = mActorQueue.First().UEValueType;
+		mActorQueue.PopFirst();
+		return reValue;
+	}
+
+	TTIHMngObjTempDataPair<UEObjectHash64, AActor*> GetTopAndPopActorPairQueue()
+	{
+		TTIHMngObjTempDataPair<UEObjectHash64, AActor*> reValue = mActorQueue.First();
+		return reValue;
+	}
+
+	FTIHMngObjGenerateCompositeBFSData GetTopAndPopPrepareDataForCompositeQueue()
+	{
+		FTIHMngObjGenerateCompositeBFSData reValue = mPrepareDatasForComposite.First();
+		mPrepareDatasForComposite.PopFirst();
+		return reValue;
+	}
+
+	FTIHMngObjComposite* GetTopAndPopEmptyCompositeQueue()
+	{
+		FTIHMngObjComposite* reValue = mEmptyComposites.First();
+		mEmptyComposites.PopFirst();
+		return reValue;
+	}
+
+	void Reserve(int16 forActorQueue, int16 forComposite, int16 forLeaf)
+	{
+		mActorQueue.Reserve(forActorQueue);
+		mPrepareDatasForComposite.Reserve(forComposite);
+		mEmptyComposites.Reserve(forLeaf);
+	}
+
+private:
+	
+	TDeque<TTIHMngObjTempDataPair<UEObjectHash64,AActor*>> mActorQueue;
+	TDeque< FTIHMngObjGenerateCompositeBFSData> mPrepareDatasForComposite;
+	
+	TDeque< FTIHMngObjComposite*> mEmptyComposites;
+};
 
 class FTIHMngObjFactory
 {
@@ -3972,18 +4266,21 @@ public:
 	}
 	void OnGeneratePipeLining(FTIHMngObjPool* targetPool);
 	//	
-	void GenerateUEActorBaseByPrepareData(int16 allocount, UEObjectHash64 ueObjHash, TDeque<AActor*>& actorArray, bool isChild);
+	void GenerateUEActorBaseByPrepareData(int16 allocount, UEObjectHash64 ueObjHash, FTIHMngObjTempDatas& tempDatas, bool isChild);
 
-	void GenerateManagedObjectByActorArray(TDeque<AActor*>& actorQueue, int16 parentData, TArray<FTIHManagedObjectGenerateCompositeOutData>& outData);
+	void GenerateManagedObjectByActorArray(FTIHMngObjTempDatas& tempDatas, int16 parentData);
 
-	void GenerateManagedObjectCompositeArray(TArray<FTIHManagedObjectGenerateCompositeOutData>& inData, TDeque<AActor*>& actorQueue, TArray< FTIHMngObjComposite*>& outData);
+	void GenerateManagedObjectCompositeArray(FTIHMngObjTempDatas& tempDatas);
 
-	void GenerateUEChildActorBy(UChildActorComponent* childActorScene, FTIHMngObj* currManagedObject, TDeque<AActor*>& actorQueue);
+	void GenerateUEChildActorBy(UChildActorComponent* childActorScene, FTIHMngObj* currManagedObject, FTIHMngObjTempDatas& tempDatas);
 
-	void GenerateManagedObjectLeafArray(TArray< FTIHMngObjComposite*>& inData);
+	void GenerateManagedObjectLeafArray(FTIHMngObjTempDatas& tempDatas);
 private:
 	FTIHMngObjPool* mCurrManagedObjectPool;
+	
 };
+
+
 
 USTRUCT()
 struct FTIHMngObjHeader
@@ -4006,10 +4303,16 @@ struct FTIHMngObjHeader
 	TIHMACRO_CHAINBUILDER_SETTER(AllocationSpace);
 };
 
+class FTIHMngObjPoolCenter;
 
 class FTIHMngObj
 {
+	static FTIHMngObjPoolCenter* gPoolCenter;
 public:
+	static void SetManagedObjectPoolCenter(FTIHMngObjPoolCenter* poolCenter)
+	{
+		gPoolCenter = poolCenter;
+	}
 	FTIHMngObjHeader GetManagedObjectHeader()
 	{
 		return mManagedObjectHeader;
@@ -4018,6 +4321,15 @@ public:
 	{
 		mManagedObjectHeader = objHeader;
 	}
+	const int8 GetManagedObjectAlloactionSpace()
+	{
+		return mManagedObjectHeader.AllocationSpace;
+	}
+	int8 GetManagedObjectUEObjectBase()
+	{
+		return mManagedObjectHeader.Protocol;
+	}
+
 	FTIHMngObjHeader& ChainManagedObjectHeader()
 	{
 		return mManagedObjectHeader;
@@ -4031,6 +4343,7 @@ public:
 		composite->SetManagedObjectIndex(mSelfIndexInWholeArray);
 		return reValue;
 	}
+
 	void SetManagedUObject(UObject* target)
 	{
 		mManagedUEObect = target;
@@ -4039,6 +4352,7 @@ public:
 	{
 		return mManagedUEObect;
 	}
+
 	void SetSelfIndexInWholeArray(int16 index)
 	{
 		mSelfIndexInWholeArray = index;
@@ -4084,6 +4398,44 @@ public:
 	{
 		mHashTable.Union(otherSet);
 	}
+	FTIHMngObjPool* GetMyManagedPool()
+	{
+		static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+
+		FTIHMngObjPool* reValue = nullptr;
+		reValue = poolCenter.GetManagedObjectPool(mManagedObjectHeader.AllocationSpace);
+		check(reValue != nullptr);
+
+		return reValue;
+	}
+	FTIHState& GetStateNonConst()
+	{
+		return mStateDetail;
+	}
+	const FTIHState& GetState()
+	{
+		return mStateDetail;
+	}
+	
+	TIHReturn64 TryPooling()
+	{
+		TIHReturn64 reValue = 0;
+		if(mStateDetail.IsStateReady() == true)
+		{
+			mStateDetail.ChangeStateReadyToRunning();
+		}
+		return reValue;
+	}
+
+	
+	void SetUEObjectHash(UEObjectHash64 value)
+	{
+		mManagedUEObjectHash = value;
+	}
+	UEObjectHash64 GetUEObjectHash()
+	{
+		return mManagedUEObjectHash;
+	}
 
 private:
 	FTIHMngObjHeader mManagedObjectHeader;//	get set
@@ -4097,37 +4449,16 @@ private:
 
 	TArray<FTIHMngObjComposite*> mCompositeArray;	//	add
 	TSet<TIHHash64> mHashTable;
+
+	
 };
+FTIHMngObjPoolCenter* FTIHMngObj::gPoolCenter = nullptr;
+
 /*
 =================================================================================================================================================
 										여기 위부터 다시한다
 =================================================================================================================================================
 */
-/*!
-*	@brief 
-*	@detail 
-*/
-template<typename TIHTemplateType = USceneComponent>
-class TTIHManagedObjectComponentsss : public FTIHManagedObjectComponentBasesss
-{
-	
-public:
-	void LinkingManagedComponentAtActor(AActor* actor) override
-	{
-		mTargetComponent = actor->GetComponentByClass<TIHTemplateType>();
-	}
-	
-	void LinkingManagedCompoentBySceneComponent(USceneComponent* target) final
-	{
-		mTargetComponent = Cast<TIHTemplateType>(target);
-		
-		PostLinkingSettingFunction();
-	}
-protected:
-	TArray<int32> mLinkedComponents;
-	TIHTemplateType* mTargetComponent;
-};
-
 
 
 /*!
@@ -4211,17 +4542,28 @@ enum class EPrepareClassType : int8
 	ESystem,
 	EAuto,
 };
-
+//	이걸 같이쓰자.
 USTRUCT()
 struct FTIHNewAllocPrepareData
 {
 	GENERATED_BODY()
 
+	static int16 StaticPrepareAddOrder;
+
+	static int16 StaticPrepareAddOrderFunction()
+	{
+		++StaticPrepareAddOrder;
+		if(StaticPrepareAddOrder < 0)
+		{
+			StaticPrepareAddOrder = 0;
+		}
+	}
+
 	UPROPERTY()
 	int8 TargetClassType;
 
 	UPROPERTY()
-	int8 Padding0;
+	int8 AllocationSpace;
 
 	UPROPERTY()
 	int16 AllocateCount;
@@ -4230,7 +4572,7 @@ struct FTIHNewAllocPrepareData
 	int16 CallParentIndex;
 
 	UPROPERTY()
-	int16 Padding1;
+	int16 AddOrder;
 	
 	UPROPERTY()
 	UEObjectHash64 TargetClassHash;
@@ -4258,8 +4600,8 @@ struct FTIHNewAllocPrepareData
 		AllocateCount(rvalue.AllocateCount),
 		CallParentIndex(rvalue.CallParentIndex),
 		TargetClassHash(rvalue.TargetClassHash),
-		Padding0(rvalue.Padding0),
-		Padding1(rvalue.Padding1)
+		AllocationSpace(rvalue.AllocationSpace)
+		
 	{
 	}
 	FTIHNewAllocPrepareData(FTIHNewAllocPrepareData&& rvalue) :
@@ -4267,8 +4609,7 @@ struct FTIHNewAllocPrepareData
 		AllocateCount(rvalue.AllocateCount),
 		CallParentIndex(rvalue.CallParentIndex),
 		TargetClassHash(rvalue.TargetClassHash),
-		Padding0(rvalue.Padding0),
-		Padding1(rvalue.Padding1)
+		AllocationSpace(rvalue.AllocationSpace)
 	{
 	}
 	~FTIHNewAllocPrepareData()
@@ -4281,21 +4622,37 @@ struct FTIHNewAllocPrepareData
 		AllocateCount = rvalue.AllocateCount;
 		CallParentIndex = rvalue.CallParentIndex;
 		TargetClassHash = rvalue.TargetClassHash;
-		Padding0 = rvalue.Padding0;
-		Padding1 = rvalue.Padding1;
+		AllocationSpace = rvalue.AllocationSpace;
+
 		return *this;
 	}
 
 	FTIHNewAllocPrepareData& operator=(FTIHNewAllocPrepareData&& rvalue)
 	{
 		*this = std::move(rvalue);
+		
 		return *this;
 	}
+	
+	bool IsSamePrepareData(const FTIHNewAllocPrepareData& compareOther)
+	{
+		bool reValue =
+			(
+				compareOther.TargetClassType == TargetClassType &&
+				compareOther.AllocationSpace == AllocationSpace &&
+				compareOther.CallParentIndex == CallParentIndex &&
+				compareOther.TargetClassHash == TargetClassHash
+				);
+		return reValue;
+	}
+	void OnCheck()
+	{
+		AddOrder = 1;
+	}
 };
-
-
+int16 FTIHNewAllocPrepareData::StaticPrepareAddOrder = -1;
 USTRUCT()
-struct FTIHMngObjConfigure
+struct FTIHMngObjPoolConfigureDatas
 {
 	GENERATED_BODY()
 
@@ -4303,16 +4660,67 @@ struct FTIHMngObjConfigure
 	int16 WholeManagedObjectMaxCount;
 
 	UPROPERTY()
-	int8 IsNewAllocateWhenCapacityMax;
-	
+	int16 MaxPhase;
+
+	UPROPERTY()
+	int8 AddWholeCapasityWhenFullWhole;
+
 	UPROPERTY()
 	int8 AllocationSpace;
 
 	UPROPERTY()
-	int16 CurrentCreateAllocPhase;
+	int8 Option0;//{bitmask : isSet  WholeManagedObjectMaxCount,MaxPhase,AddWholeCapasityWhenFullWhole}
 
 	UPROPERTY()
-	int16 EndCreateAllocCount;
+	int8 Option1;
+
+	FTIHMngObjPoolConfigureDatas& operator=(const FTIHMngObjPoolConfigureDatas& otherDatas)
+	{
+		//	WholeManagedObjectMaxCount
+		if(otherDatas.Option0 & 1 << 0 )
+		{
+			WholeManagedObjectMaxCount = otherDatas.WholeManagedObjectMaxCount;
+		}
+		//	MaxPhase
+		if (otherDatas.Option0 & 1 << 1)
+		{
+			MaxPhase = otherDatas.MaxPhase;
+		}
+		//	AddWholeCapasityWhenFullWhole
+		if (otherDatas.Option0 & 1 << 2)
+		{
+			AddWholeCapasityWhenFullWhole = otherDatas.AddWholeCapasityWhenFullWhole;
+		}
+		//	AllocationSpace
+		if (otherDatas.Option0 & 1 << 3)
+		{
+			//	사실 이거 바꾸는건 얼척이 없는거긴해.
+			AllocationSpace = otherDatas.AllocationSpace;
+		}
+		//	Option0
+		if (otherDatas.Option0 < 0 )
+		{
+			Option0 = otherDatas.Option0;
+		}
+		//	Option1
+		if (otherDatas.Option0 & 1 << 4)
+		{
+			Option1 = otherDatas.Option1;
+		}
+		return *this;
+	}
+
+
+};
+
+
+USTRUCT()
+struct FTIHMngObjPoolConfigure
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FTIHMngObjPoolConfigureDatas PoolDatas;
 
 	UPROPERTY()
 	UWorld* SpawnSpace;
@@ -4322,9 +4730,8 @@ struct FTIHMngObjConfigure
 
 	UPROPERTY()
 	FTransform DefaultTransform;
-
-
 };
+
 
 struct FTIHManagedObjectClassStatus
 {
@@ -4432,6 +4839,44 @@ struct FTIHManagedObjectGenerateCompositeOutData
 {
 	USceneComponent* UESceneComponent;
 	FTIHMngObj* TIHManagedObject;
+
+	FTIHManagedObjectGenerateCompositeOutData()
+		:
+		UESceneComponent(nullptr), TIHManagedObject(nullptr)
+	{}
+
+	FTIHManagedObjectGenerateCompositeOutData(USceneComponent* uESceneComponent,
+	FTIHMngObj* tIHManagedObject)
+		:
+		UESceneComponent(uESceneComponent), TIHManagedObject(tIHManagedObject)
+	{}
+	FTIHManagedObjectGenerateCompositeOutData(const FTIHManagedObjectGenerateCompositeOutData& copyCtor)
+		:
+		UESceneComponent(copyCtor.UESceneComponent), TIHManagedObject(copyCtor.TIHManagedObject)
+	{}
+	FTIHManagedObjectGenerateCompositeOutData(FTIHManagedObjectGenerateCompositeOutData&& moveCtor)
+		:
+		UESceneComponent(moveCtor.UESceneComponent), TIHManagedObject(moveCtor.TIHManagedObject)
+	{
+		moveCtor.UESceneComponent = nullptr;
+		moveCtor.TIHManagedObject = nullptr;
+	}
+
+	FTIHManagedObjectGenerateCompositeOutData& operator=(const FTIHManagedObjectGenerateCompositeOutData& copyOper)
+	{
+		UESceneComponent = copyOper.UESceneComponent;
+		TIHManagedObject = copyOper.TIHManagedObject;
+		return *this;
+	}
+	FTIHManagedObjectGenerateCompositeOutData& operator=( FTIHManagedObjectGenerateCompositeOutData&& moveOper)
+	{
+		UESceneComponent = moveOper.UESceneComponent;
+		TIHManagedObject = moveOper.TIHManagedObject;
+		//	std::move(moveOper);
+		moveOper.UESceneComponent = nullptr;
+		moveOper.TIHManagedObject = nullptr;
+		return *this;
+	}
 };
 
 struct FTIHMngObjGenerateCompositeBFSData
@@ -4449,8 +4894,9 @@ struct FTIHMngObjGenerateCompositeBFSData
 		UESceneComponent(nullptr),
 		TIHManagedObject(nullptr)
 	{
-
 	}
+
+
 	FTIHMngObjGenerateCompositeBFSData
 	(
 		int16 stepValue,
@@ -4463,6 +4909,19 @@ struct FTIHMngObjGenerateCompositeBFSData
 		ParentCompositeIndex(parentCompositeIndex),
 		UESceneComponent(ueSceneComponent),
 		TIHManagedObject(tihManagedObject)
+	{
+	}
+	FTIHMngObjGenerateCompositeBFSData
+	(
+		int16 stepValue,
+		int16 parentCompositeIndex,
+		const FTIHManagedObjectGenerateCompositeOutData& prepareDataForComposite
+	)
+		:
+		StepValue(stepValue),
+		ParentCompositeIndex(parentCompositeIndex),
+		UESceneComponent(prepareDataForComposite.UESceneComponent),
+		TIHManagedObject(prepareDataForComposite.TIHManagedObject)
 	{
 	}
 	FTIHMngObjGenerateCompositeBFSData(const FTIHMngObjGenerateCompositeBFSData& copyCtor)
@@ -4510,7 +4969,7 @@ public:
 	~FTIHMngObjPool() {};
 
 	TIHReturn64 ReserveWholeObjectPool(int16 maxCount);
-	void ReserveObjectPool(SIZE_T targetCls, int16 maxCount);//	차라리 명세서를 작성하자/
+	
 
 	FTIHUnionFind& GetUnionFind()
 	{
@@ -4521,32 +4980,42 @@ public:
 	{
 		return mPoolCenter;
 	}
-	
+	/*
+		self 인덱스가 필요한가? 어차피 지금 객체를 특정짓는건 불가능하잖아. 그럼tarray 로 그냥 넣는게 맞지않나?
+		근데 remove 를 위해서는 있어야하긴하네.
+		tset 에 top 이있나?
+	*/
 
 
 #pragma region Object Assgin and NewAlloc
 public:
+	
+
 	void SetManagedPoolSpace(int8 managedSpace)
 	{
 
-		mManagedObjectPoolConfigure.AllocationSpace = managedSpace;
+		mManagedObjectPoolConfigure.PoolDatas.AllocationSpace = managedSpace;
 	}
 
-	const FTIHMngObjConfigure& GetConfigure()
+	const FTIHMngObjPoolConfigure& GetConfigure()
 	{
 		return mManagedObjectPoolConfigure;
 	}
-	FTIHMngObjConfigure& GetConfigureNoConst()
+	FTIHMngObjPoolConfigure& GetConfigureNoConst()
 	{
 		return mManagedObjectPoolConfigure;
 	}
-
+	void SetObjectPoolConfigure(const FTIHMngObjPoolConfigureDatas& datas)
+	{
+		mManagedObjectPoolConfigure.PoolDatas = datas;
+	}
 
 	//	여기에서 SetSelfIndexInWholeArray 를 해준다.
 	void AddNewManagedObject(FTIHMngObj* newManagedObject)
 	{
 		int16 addIndex = mWholeManagedObjects.Add(newManagedObject);
 		newManagedObject->SetSelfIndexInWholeArray(addIndex);
+
 	}
 	
 
@@ -4554,6 +5023,85 @@ public:
 	{
 		return mWholeManagedObjects;
 	}
+	FTIHMngObjTempDatas& GetTempDatas()
+	{
+		return mTempDatasForNewAlloc;
+	}
+	/*bool IsContainManagedIndex(const int8 stateInt8, const int8 ueObjBase, const TIHHash64 ueObjHash)
+	{
+		bool reValue = false;
+		if (mManagedObjectStateBaseTypeIndices.Contains(stateInt8) == true)
+		{
+			if (mManagedObjectStateBaseTypeIndices[stateInt8].Contains(ueObjBase) == true)
+			{
+				if (mManagedObjectStateBaseTypeIndices[stateInt8][ueObjBase].Contains(ueObjHash) == true)
+				{
+					reValue = true;
+				}
+			}
+		}
+		return reValue;
+	}*/
+	/*void RemoveManagedIndex(FTIHMngObj& target)
+	{
+		const int8 stateInt8 = target.GetStateNonConst().GetStateStepInt8();
+		const int8 ueObjBase = target.GetManagedObjectUEObjectBase();
+		const TIHHash64 ueObjHash = target.GetUEObjectHash();
+		const int16 selfIndex = target.GetSelfIndexInWholeArray();
+
+		if(IsContainManagedIndex(stateInt8,ueObjBase,ueObjHash) == true)
+		{
+			if (mManagedObjectStateBaseTypeIndices[stateInt8][ueObjBase][ueObjHash].Contains(selfIndex) == true)
+			{
+				mManagedObjectStateBaseTypeIndices[stateInt8][ueObjBase][ueObjHash].Remove(selfIndex);
+			}
+		}
+	}
+	void InsertManagedIndex(FTIHMngObj& target)
+	{
+		const int8 stateInt8 = target.GetStateNonConst().GetStateStepInt8();
+		const int8 ueObjBase = target.GetManagedObjectUEObjectBase();
+		const TIHHash64 ueObjHash = target.GetUEObjectHash();
+		const int16 selfIndex = target.GetSelfIndexInWholeArray();
+
+		if (IsContainManagedIndex(stateInt8, ueObjBase, ueObjHash) == true)
+		{
+			if (mManagedObjectStateBaseTypeIndices[stateInt8][ueObjBase][ueObjHash].Contains(selfIndex) == false)
+			{
+				mManagedObjectStateBaseTypeIndices[stateInt8][ueObjBase][ueObjHash].Add(selfIndex);
+			}
+		}
+	}*/
+
+	void OnSortManagedStates()
+	{
+
+		for(int32 i = 0; i < mWholeManagedObjects.Num(); ++i)
+		{
+			if(mWholeManagedObjects[i] == nullptr)
+			{
+				continue;
+			}
+			if(mWholeManagedObjects[i]->GetStateNonConst().IsStateAllocated() == true)
+			{
+				mWholeManagedObjects[i]->GetStateNonConst().ChangeStateAllocatedToReady();
+				
+
+			}
+		}
+
+	}
+
+	void PushBackReadyMngObj(FTIHMngObj* target);
+	FTIHMngObj* GetAnyReadyMngObj(int8 base, TIHHash64 ueHash);
+
+	void OnChangeStateAllocateToReady();
+	void OnCompleteCreateNewAlloc();
+
+	void OnRepeatCreateNewAlloc(int32 currPhase);
+	void OnErrorCallCreateNewAlloc(TIHReturn64 errCode);
+
+	
 
 protected:
 	FTIHMngObjPoolCenter& mPoolCenter;
@@ -4580,20 +5128,42 @@ protected:
 	/*
 		setManagedObjectConfigure 내부 setter 함수들
 	*/
-	FTIHMngObjConfigure mManagedObjectPoolConfigure;
+	FTIHMngObjPoolConfigure mManagedObjectPoolConfigure;
 
 #pragma endregion
 
 	TDeque< FTIHNewAllocPrepareData> mPrepareManagedObjects;
 
-	TMap<int8,TMap<int8, TMap<int8,TArray<int16>>>> mManagedObjectStateBaseTypeIndices;
-	/*
-		State {idle,running,clearance}
-			base {actor,widget,system...}
-				Type {render,move,...}
-			
-	*/
+	//TMap<int8,TMap<int8, TMap<TIHHash64,TSet<int16>>>> mManagedObjectStateBaseTypeIndices;
 
+	TMap<int8, TMap< TIHHash64, TSet<int16> > > mManagedObjectStateRunningIndices;
+	/*
+		base
+			managedHash
+					selfIndex
+	*/
+	TMap<int8, TMap< TIHHash64, TDeque<int16>>> mManagedObjectStateReadyIndices;
+
+	/*
+		running 일때 tset 쓰고
+		ready 일땐 deque 쓰고
+
+		저거 인터페이스 만들기
+			저게 어디에 들어가야 할지 만들기
+		커맨드와 리프들 만들기
+	
+	*/
+	
+
+	/*
+		state
+			base
+				managedHash
+					selfIndex
+		allocate 는 무조건 생성하고 나서만 존재해야한다.
+		그리고 
+	*/
+	FTIHMngObjTempDatas mTempDatasForNewAlloc;
 };
 /*!
 *	@brief 오브젝트 풀을 생성하거나 관리하는 클래스
@@ -4613,9 +5183,13 @@ public:
 		static FTIHMngObjPoolCenter& SelfObject = TIHSTATION.GetManagedObjectPoolCenter();
 		return SelfObject;
 	}
+	void MergeSamePrepareDatas();
+	
+	
 
 	TDeque<const FTIHNewAllocPrepareData>& GetPrepareDataQueue()
 	{
+
 		return mPrepareDatas;
 	}
 	void EmplaceAddMngObjPrepareData
@@ -4631,9 +5205,9 @@ public:
 		UEObjectHash64 TargetClassHash,int16 CallParentIndex
 	)
 	{
-		EmplaceAddMngObjPrepareData((int8)ETIHMngObjHeaderProcotols::EActorBase, TargetClassHash, CallParentIndex, -1 );
+		EmplaceAddMngObjPrepareData((int8)ETIHMngObjHeaderProcotols::EActorBase, TargetClassHash, CallParentIndex, 1 );
 	}
-
+	
 
 	int8 RegistManagedObjectPool(ETIHManagedObjectSpace managedObjectSpace ,FTIHMngObjPool* managedObjectPool)
 	{
@@ -4692,8 +5266,17 @@ public:
 	{
 		return mManagedObjectFactory;
 	}
-	
+	void OnGeneratePipeLining(int8 allocationSpace)
+	{
+		FTIHMngObjPool* mngObjPool = GetManagedObjectPool(allocationSpace);
+		check(mngObjPool != nullptr);
+		mManagedObjectFactory.OnGeneratePipeLining(mngObjPool);
+	}
+	void OnSetObjectPoolConfigure(const FTIHMngObjPoolConfigureDatas& data)
+	{
 
+
+	}
 	const FTIHGenerateCandidateLeaves& GenerateManagedObjectComponentByUClass(UClass* ucls)
 	{
 		check(ucls != nullptr);
@@ -4736,8 +5319,28 @@ public:
 
 		return reValue;
 	}
-
+	/*
+		그래서 이거는 어디서? 바로 원하는 곳에서 호출해주면 된다. 대신 prepare 들 이전에 호출해줘야함.
 	
+	*/
+	FTIHMngObjPool* CreateManagedObjectPool(
+		int8 allocationSpace,
+		int16 wholeMngObjCapacity,
+		int16 processingPhaseCount,
+		UWorld* spawnSpace,
+		AActor* ownerActor,
+		const FTransform& defaultTransform = FTransform::Identity,
+		int8 ifAddCapacityCount = 256
+		);
+	FTIHMngObj* PoolingManagedObject(int8 allocationSpace,int8 ueObjBase,TIHObjectHash64 ueObjHash)
+	{
+		FTIHMngObj* reValue = nullptr;
+		if(mManagedObjectPools.Contains(allocationSpace) == true)
+		{
+			reValue = mManagedObjectPools[allocationSpace]->GetAnyReadyMngObj(ueObjBase, ueObjHash);
+		}
+		return reValue;
+	}
 
 private:
 	TMap<FName, UEObjectHash64> mClassNameToUeClassHash;

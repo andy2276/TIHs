@@ -8,12 +8,12 @@
         "type": "tabs",
         "children": [
           {
-            "id": "9fbbfd10106e89f1",
+            "id": "b513ff6756334dd3",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DevelopLog/Logs/24-01_24.md",
+                "file": "헬퍼만들어야할때.md",
                 "mode": "source",
                 "source": false
               }
@@ -86,7 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "DevelopLog/Logs/24-01_24.md",
+                "file": "헬퍼만들어야할때.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +103,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "DevelopLog/Logs/24-01_24.md",
+                "file": "헬퍼만들어야할때.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +126,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "DevelopLog/Logs/24-01_24.md"
+                "file": "헬퍼만들어야할때.md"
               }
             }
           }
@@ -134,7 +134,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -146,10 +147,14 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "9fbbfd10106e89f1",
+  "active": "b513ff6756334dd3",
   "lastOpenFiles": [
+    "Ideas/각 역할정하기.md",
+    "헬퍼만들어야할때.md",
+    "TIH/combine-ExecuteStrategy.md",
+    "DevelopLog/Logs/24-02_07.md",
+    "DevelopLog/Logs/24-02_06.md",
     "DevelopLog/Logs/24-01_24.md",
-    "무제 파일.md",
     "DevelopLog/Logs/24-01_23.md",
     "DevelopLog/Logs/24-01_22.md",
     "Ideas/MangagedObjectPipeline.md",
@@ -171,10 +176,6 @@
     "TIH/TTIHManagedObject.md",
     "TIH/FTIHCommander.md",
     "TIH/combine-ShaderBoards.md",
-    "TIH/combine-ExecuteStrategy.md",
-    "TIH/combine-CommanderStrategies.md",
-    "TIH/FTIHStation.md",
-    "TIH/FTIHCommandList.md",
     "TIH",
     "DevelopLog/Template",
     "DevelopLog/Logs",
