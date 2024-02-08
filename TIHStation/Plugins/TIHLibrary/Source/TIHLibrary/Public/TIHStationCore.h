@@ -1469,6 +1469,11 @@ public:
 	virtual ~FTIHCommandBase() = 0 
 	{}
 
+	virtual int32 GetCommandFeatureSize()
+	{
+		return 0;
+	}
+
 	/*
 		strategy 에 데이터를 넣고 이걸 처리할거임. 
 		단순하게 header 와 method 만 보고 해당 부분으로 데이터를 넘길거고
@@ -2060,6 +2065,34 @@ public:
 	FTIHCommandCreateNewAllocOnGenerate();
 	virtual ~FTIHCommandCreateNewAllocOnGenerate();
 };
+
+USTRUCT()
+struct FTIHMngObjPoolingDatas
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int8 AllocationSpace;
+
+	UPROPERTY()
+	int8 UEObjectBase;
+
+	UPROPERTY()
+	int16 PoolingCount;
+
+	UPROPERTY()
+	TIHObjectHash64 UEObjectHash;
+};
+
+class FTIHCommandCreatePooling : public TTIHCommand<FTIHMngObjPoolConfigureDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCommandCreatePooling);
+public:
+	FTIHCommandCreatePooling();
+	virtual ~FTIHCommandCreatePooling();
+};
+
+
 
 
 
@@ -2979,11 +3012,22 @@ class FTIHCommanderStrategyTestDelay :public FTIHCommandStrategyCRTP<FTIHCommand
 public:
 	TIHReturn64 ExecuteStrategy(FTIHCommandBase* cmdBase);
 };
+/*
+	0 == Pooling
+	return 의 결과가 result 보드에 들어간다. 즉 그냥 결정되어있는거임.
+	1 == Reject
+*/
 class FTIHCommanderStrategyCreateAssignPool :public FTIHCommandStrategyCRTP<FTIHCommanderStrategyCreateAssignPool>
 {
 public:
 	TIHReturn64 ExecuteStrategy(FTIHCommandBase* cmdBase);
 };
+/*
+	0 == prepare
+	commandPrepare
+	결과에 아무것도 쓰지 않는다. 혹은 쓸까? 아니 쓰지마
+	1 == onGenerate
+*/
 class FTIHCommanderStrategyCreateNewAlloc :public FTIHCommandStrategyCRTP<FTIHCommanderStrategyCreateNewAlloc>
 {
 public:
@@ -4709,8 +4753,6 @@ struct FTIHMngObjPoolConfigureDatas
 		}
 		return *this;
 	}
-
-
 };
 
 
@@ -4963,6 +5005,7 @@ struct FTIHMngObjGenerateCompositeBFSData
 class FTIHMngObjPool
 {
 public:
+
 	FTIHMngObjPool(FTIHMngObjPoolCenter& center)
 		: mPoolCenter(center)
 	{};
@@ -5027,55 +5070,9 @@ public:
 	{
 		return mTempDatasForNewAlloc;
 	}
-	/*bool IsContainManagedIndex(const int8 stateInt8, const int8 ueObjBase, const TIHHash64 ueObjHash)
-	{
-		bool reValue = false;
-		if (mManagedObjectStateBaseTypeIndices.Contains(stateInt8) == true)
-		{
-			if (mManagedObjectStateBaseTypeIndices[stateInt8].Contains(ueObjBase) == true)
-			{
-				if (mManagedObjectStateBaseTypeIndices[stateInt8][ueObjBase].Contains(ueObjHash) == true)
-				{
-					reValue = true;
-				}
-			}
-		}
-		return reValue;
-	}*/
-	/*void RemoveManagedIndex(FTIHMngObj& target)
-	{
-		const int8 stateInt8 = target.GetStateNonConst().GetStateStepInt8();
-		const int8 ueObjBase = target.GetManagedObjectUEObjectBase();
-		const TIHHash64 ueObjHash = target.GetUEObjectHash();
-		const int16 selfIndex = target.GetSelfIndexInWholeArray();
-
-		if(IsContainManagedIndex(stateInt8,ueObjBase,ueObjHash) == true)
-		{
-			if (mManagedObjectStateBaseTypeIndices[stateInt8][ueObjBase][ueObjHash].Contains(selfIndex) == true)
-			{
-				mManagedObjectStateBaseTypeIndices[stateInt8][ueObjBase][ueObjHash].Remove(selfIndex);
-			}
-		}
-	}
-	void InsertManagedIndex(FTIHMngObj& target)
-	{
-		const int8 stateInt8 = target.GetStateNonConst().GetStateStepInt8();
-		const int8 ueObjBase = target.GetManagedObjectUEObjectBase();
-		const TIHHash64 ueObjHash = target.GetUEObjectHash();
-		const int16 selfIndex = target.GetSelfIndexInWholeArray();
-
-		if (IsContainManagedIndex(stateInt8, ueObjBase, ueObjHash) == true)
-		{
-			if (mManagedObjectStateBaseTypeIndices[stateInt8][ueObjBase][ueObjHash].Contains(selfIndex) == false)
-			{
-				mManagedObjectStateBaseTypeIndices[stateInt8][ueObjBase][ueObjHash].Add(selfIndex);
-			}
-		}
-	}*/
 
 	void OnSortManagedStates()
 	{
-
 		for(int32 i = 0; i < mWholeManagedObjects.Num(); ++i)
 		{
 			if(mWholeManagedObjects[i] == nullptr)
@@ -5089,7 +5086,7 @@ public:
 
 			}
 		}
-
+		
 	}
 
 	void PushBackReadyMngObj(FTIHMngObj* target);
@@ -5414,6 +5411,17 @@ private:
 
 };  
 
+class FTIHCommandHelper
+{
+public:
+	void DictateCommandCreateNewAllocPrepare();
+	void DictateCommandCreateNewAllocOnGenerate();
+
+	void DictateCommandCreatePooling();
+	void DictateCommandCreateReject();
+
+	void DictateCommandLoadMesh();
+};
 
 
 #pragma endregion

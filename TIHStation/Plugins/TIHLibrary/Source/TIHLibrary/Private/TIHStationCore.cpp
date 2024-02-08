@@ -845,8 +845,7 @@ TIHReturn64 FTIHCommandFactoryForDefaultStation::InstantiateCommandsInMetaArray(
 	FTIHCommandFactory::FUnionTIHCommandFactoryResult reValue;
 
 
-	UClass* c;
-	
+
 
 
 	return reValue.WholeData;
@@ -1365,8 +1364,6 @@ void FTIHMngObjFactory::GenerateManagedObjectCompositeArray(FTIHMngObjTempDatas&
 	FTIHMngObjPool& currMngObjPool = *GetCurrentManagedObjectPool();
 	const int16 currAllocationSpace = currMngObjPool.GetConfigure().PoolDatas.AllocationSpace;
 	int16 currStep = 0;
-
-	tempDatas.GetTopAndPopPrepareDataForCompositeQueue();
 
 	while (true)
 	{
