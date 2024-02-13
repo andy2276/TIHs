@@ -1,3 +1,7 @@
 {
-  "spellcheck": false
+  "spellcheck": false,
+  "showLineNumber": true,
+  "defaultViewMode": "source",
+  "livePreview": true,
+  "propertiesInDocument": "source"
 }

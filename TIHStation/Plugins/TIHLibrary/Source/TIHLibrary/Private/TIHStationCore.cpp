@@ -934,7 +934,7 @@ TIHReturn64 FTIHCommanderStrategyCreateAssignPool::ExecuteStrategy(FTIHCommandBa
 {
 	TIHReturn64 reValue = 0;
 	
-	UObject* o;
+	
 	
 
 	return reValue;
@@ -1078,6 +1078,15 @@ TIHReturn64 FTIHCommanderStrategyModifyTransform::ExecuteStrategy(FTIHCommandBas
 TIHReturn64 FTIHCommanderStrategyModifyValue::ExecuteStrategy(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
+	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+
+	const FTIHCommandHeader& cmdHeader = cmdBase->GetCommandHeader();
+	const FTIHCommandMethod& cmdMethod = cmdBase->GetCommandMethod();
+	
+
+	if()
+
+
 
 	return reValue;
 }
@@ -1345,7 +1354,7 @@ void FTIHMngObjFactory::GenerateManagedObjectByActorArray(FTIHMngObjTempDatas& t
 		{
 			tempDatas.PushBackPrepareDataForComposite({ 0 , -1, rootScene ,newManagedObject });
 		}
-		else
+		else`
 		{
 			newManagedObject->ChainManagedObjectHeader()
 				.SetProtocol((int8)ETIHManagedObjectHeaderProtocols::ESystem);

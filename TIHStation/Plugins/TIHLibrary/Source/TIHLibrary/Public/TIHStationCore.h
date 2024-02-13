@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Containers/Deque.h"
+#include "TIHStationCoreDefines.h"
 #include "TIHStationCore.generated.h"
 
 #pragma region Typedefs
@@ -88,8 +89,9 @@ class	FTIHDefaultStation;
 */
 
 //	이거 나중에 맨처음 include 하는 곳에 넣어서 변경을 하자. 
-//어차피 헤더가 컴파일될때 변경이 될거니깐 reaverse oop 이거 패턴사용할거임. 
+//어차피 헤더가 컴파일될때 변경이 될거니깐reaverse oop 이거 패턴사용할거임. 
 //지금은 좀 나중에 일단 형태만
+//sc s
 #define TIHSETTING_STATION_IS_DEFAULT
 
 #ifdef TIHSETTING_STATION_IS_NOT_DEFAULT
@@ -662,12 +664,6 @@ struct FTIHGenerateCandidateLeaves
 };
 
 
-class FTIHManagedObjectComponentHelper
-{
-public:
-	
-};
-
 class FTIHProtocolHelper
 {
 public:
@@ -681,11 +677,6 @@ public:
 	{
 		return FTIHProtocolHelper::GetSingle().mManagedObjectHeaderForInit;
 	}
-
-
-
-
-
 private:
 
 	FTIHProtocolHelper()
@@ -698,6 +689,7 @@ private:
 
 	FTIHMngObjHeader mManagedObjectHeaderForInit;
 };
+
 class FTIHResultHelper
 {
 public:
@@ -714,9 +706,9 @@ private:
 	};
 
 };
+//sc e
 
-
-
+//	참고용
 class FTIHTagHelperssss
 {
 public:
@@ -953,7 +945,7 @@ union FUnionTIHStateValue
 	}Datas;
 	int32 WholeData;
 };
-
+//sc s
 /*!
 *	@brief 
 *	@detail 
@@ -1156,46 +1148,8 @@ protected:
 	FUnionTIHStateValue mStateValueDetail;
 };
 FTIHMngObjPoolCenter* FTIHState::gPoolCenter = nullptr;
+//sc e
 
-
-/*!
-*	@brief AActor 의 Tag 와 호환이 되지만 wrap 을 한것뿐임
-*	@detail 
-*/
-class FTIHTagWrapper
-{
-public:
-	int32 AddTag(const FName& tag)
-	{
-		return mTags.Add(tag);
-	};
-	const TArray<FName>& GetArray()
-	{
-		return mTags;
-	};
-	void RemoveTagByIndex(int32 index)
-	{
-		mTags.RemoveAt(index);
-	};
-
-
-protected:
-
-private:
-	TMap<FName, int> mTagHashs;
-	TArray<FName> mTags;
-};
-#pragma region TIHMeta
-
-template<typename TIHTemplateType = int64>
-class TTIHMetaWrapper
-{
-public:
-
-private:
-	
-	
-};
 
 #pragma endregion
 #pragma region Commands
@@ -1721,10 +1675,15 @@ private:
 */
 class FTIHMeshPool
 {
-private:
-
-
 public:
+	static FTIHMeshPool* GetSingle()
+	{
+		static FTIHMeshPool meshPool;
+		return &meshPool;
+	}
+	TSoftObjectPtr<UStaticMesh> GetStaticMeshByPath(const FString& meshPath);
+	TSoftObjectPtr<USkeletalMesh> GetSkeletalMeshByPath(const FString& meshPath);
+private:
 
 
 };
@@ -2092,6 +2051,41 @@ public:
 	virtual ~FTIHCommandCreatePooling();
 };
 
+class FTIHCommandCreateReject : public TTIHCommand<FTIHMngObjPoolConfigureDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCommandCreateReject);
+public:
+	FTIHCommandCreateReject();
+	virtual ~FTIHCommandCreateReject();
+};
+
+class FTIHCommand : public TTIHCommand<FTIHMngObjPoolConfigureDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCommandCreateReject);
+public:
+	FTIHCommandCreateReject();
+	virtual ~FTIHCommandCreateReject();
+};
+
+
+/*
+	leaf 만들기
+	command datas 정의 및 command 만들기
+	strategy 설정
+	
+	leaf 는 단순하게 설정을 하고 하는 역할만 하는거임
+	command 데이터는 커맨더가 참조할 데이터를 담고있는 녀석임. 만약 set mesh 를 할거면
+		참조할 영역은 무엇인지. 그 영역에서 뭐를 들고와야하는지
+		대상은 어느 매니지드 오브젝트의 몇번째에 있는 것인지 2차원으로 찾는다라고 생각하면됨
+			그러면 어떤 오브젝트를 변경할건지는 그냥 커맨더에 넣어서 해주면됨
+	gpu 에 빗대어서 생각하면편함
+	자원의 메모리는 board 에 기록이 된다. r 인지 w 인지
+	쉐이더는 strategy 를 사용한다.
+	명령은 command 로 하고 기능은 leaf 로 처리한다.
+	더 정확하게는
+		특정 컴포지트에 명령을 내기러가 매니지드 오브젝트에 명령을 내리면
+
+*/
 
 
 
@@ -4052,21 +4046,30 @@ public:
 
 	void SetStMesh(const FString& path)
 	{
+		TSoftObjectPtr<UStaticMesh> stMeshPtr = FTIHMeshPool::GetSingle()->GetStaticMeshByPath(path);
 		//	여기에서 stmeshPool 을 들고온다. 
-		mCastedComponent->SetStaticMesh();
+		mCastedComponent->SetStaticMesh(stMeshPtr.Get());
 	}
 };
-class FTIHMngObjLeafSkMesh : public TTIManagedObjectLeaf<UStaticMeshComponent>
+class FTIHMngObjLeafSkMesh : public TTIManagedObjectLeaf<USkeletalMeshComponent>
 {
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafStMesh)
 public:
 	void InitSetting() override;
 
-	void SetMaterial(const FString& path)
+	void SetSkMesh(const FString& path)
 	{
-
+		TSoftObjectPtr<USkeletalMesh> skMeshPtr = FTIHMeshPool::GetSingle()->GetSkeletalMeshByPath(path);
+		//	여기에서 stmeshPool 을 들고온다. 
+		mCastedComponent->SetSkeletalMesh(skMeshPtr.Get());
 	}
 };
+
+/*
+	이제 좀 나눠놓고 변경을 하자.
+*/
+
+
 class FTIHSettingHelper
 {
 	class FTIHManagedObjectSettings;
@@ -5381,25 +5384,71 @@ struct FTIHServerConfigure
 *	@brief 서버는 이제 이걸 모두 상속받아서 만드는 것이다. 이것도 CRTP 로 만들어야하나?
 *	@detail 
 */
+
+template<typename TIHTempateType>
 class FTIHServer
 {
 public:
-
+	TIHReturn64 PrepareServer();
+	TIHReturn64 StartServer();
+	TIHReturn64 StopServer();
+	TIHReturn64 AcceptConnectionServer();
+	TIHReturn64 ReceiveDataServer();
+	TIHReturn64 SendDataServer();
 protected:
-
+	TIHTempateType* mSelfPointer;
 private:
 
-protected:
-
-private:
 
 };
 
 class FTIHNetwork
 {
 public:
+	template<typename TIHTemplateType>
+	TIHReturn64 PrepareServer(TIHTemplateType* targetServer)
+	{
+		TIHReturn64 reValue = 0;
+		reValue = targetServer->PrepareServer();
+		return reValue;
+	}
 
-	TIHReturn64 PrepareNetwork();
+	template<typename TIHTemplateType>
+	TIHReturn64 StartServer(TIHTemplateType* targetServer)
+	{
+		TIHReturn64 reValue = 0;
+		reValue = targetServer->StartServer();
+		return reValue;
+	}
+	template<typename TIHTemplateType>
+	TIHReturn64 StopServer(TIHTemplateType* targetServer)
+	{
+		TIHReturn64 reValue = 0;
+		reValue = targetServer->StopServer();
+		return reValue;
+	}
+	
+	template<typename TIHTemplateType>
+	TIHReturn64 AcceptConnectionServer(TIHTemplateType* targetServer)
+	{
+		TIHReturn64 reValue = 0;
+		reValue = targetServer->AcceptConnectionServer();
+		return reValue;
+	}
+	template<typename TIHTemplateType>
+	TIHReturn64 ReceiveDataServer(TIHTemplateType* targetServer)
+	{
+		TIHReturn64 reValue = 0;
+		reValue = targetServer->ReceiveDataServer();
+		return reValue;
+	}
+	template<typename TIHTemplateType>
+	TIHReturn64 SendDataServer(TIHTemplateType* targetServer)
+	{
+		TIHReturn64 reValue = 0;
+		reValue = targetServer->SendDataServer();
+		return reValue;
+	}
 
 protected:
 

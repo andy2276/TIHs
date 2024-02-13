@@ -13,7 +13,19 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "헬퍼만들어야할때.md",
+                "file": "리프,커맨드,스트라테지 현황판.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "f2f7423c64bec7e6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "할일 정리.md",
                 "mode": "source",
                 "source": false
               }
@@ -32,6 +44,7 @@
             }
           }
         ],
+        "currentTab": 1,
         "stacked": true
       }
     ],
@@ -98,7 +111,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "헬퍼만들어야할때.md",
+                "file": "할일 정리.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +128,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "헬퍼만들어야할때.md",
+                "file": "할일 정리.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +151,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "헬퍼만들어야할때.md"
+                "file": "할일 정리.md"
               }
             }
           }
@@ -159,10 +172,12 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "b513ff6756334dd3",
+  "active": "f2f7423c64bec7e6",
   "lastOpenFiles": [
-    "DevelopLog/Template/commandTemplate.md",
+    "리프,커맨드,스트라테지 현황판.md",
+    "할일 정리.md",
     "헬퍼만들어야할때.md",
+    "DevelopLog/Template/commandTemplate.md",
     "Ideas/각 역할정하기.md",
     "TIH/combine-ExecuteStrategy.md",
     "DevelopLog/Logs/24-02_07.md",
@@ -186,8 +201,6 @@
     "TIH/Life Cycle.md",
     "TIH/TemplatesLink.md",
     "TIH/TTIHCommandFunctorWrapper.md",
-    "TIH/TTIHManagedObject.md",
-    "TIH/FTIHCommander.md",
     "TIH",
     "DevelopLog/Template",
     "DevelopLog/Logs",
