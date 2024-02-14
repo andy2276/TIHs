@@ -3,10 +3,18 @@
 	{
 		"Module.TIHLibraryEntry.cpp.obj": [
 			"TIHGameInstance.gen.cpp.obj",
-			"TIHLibraryEntry.cpp.obj",
-			"TIHLibraryEntry.init.gen.cpp.obj",
 			"TIHGameInstance.cpp.obj",
-			"TIHStationCore.cpp.obj"
+			"TIHLibraryEntry.cpp.obj",
+			"TIHCommands.gen.cpp.obj",
+			"TIHLibraryEntry.init.gen.cpp.obj",
+			"TIHManagedObjects.gen.cpp.obj",
+			"TIHStationCore.gen.cpp.obj",
+			"TIHCommands.cpp.obj",
+			"TIHManagedObjects.cpp.obj",
+			"TIHNetworks.cpp.obj",
+			"TIHStationCore.cpp.obj",
+			"TIHStationCoreDefines.cpp.obj",
+			"TIHStrategies.cpp.obj"
 		]
 	}
 }

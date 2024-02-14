@@ -4,7 +4,12 @@
 #include "Containers/Deque.h"
 #include "TIHStationCoreDefines.h"
 #include "TIHManagedObjects.h"
+
 #include "TIHCommands.generated.h"
+
+class FTIHCommander;
+
+
 
 union FUnionTIHCommandResult
 {
@@ -778,8 +783,6 @@ public:
 	//	생성시 전략
 	virtual TIHReturn64 InstantiateCommandsInMetaArray(FTIHCommander& commander) = 0;
 
-
-
 	FTIHCommandFactory();
 	virtual ~FTIHCommandFactory() = 0
 	{
@@ -839,6 +842,223 @@ private:
 	//}
 };
 
+class FTIHCommandDataBoard
+{
+public:
+
+#pragma region Reserve
+	/*
+
+		나중에 이전의 데이터가 있으면 어떻게 할지에 대해 처리하자
+			1안은 이동
+			2안은 삭제
+
+				TArray<int8> mInt8Array;
+		TArray<int16> mInt16Array;
+	*/
+	TIHReturn64 ReserveForArrayInt8ByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<int8>>(size, mInt8Array);
+	}
+	TIHReturn64 ReserveForArrayInt16ByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<int16>>(size, mInt16Array);
+	}
+	TIHReturn64 ReserveForArrayInt32ByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<int32>>(size, mInt32Array);
+	}
+	TIHReturn64 ReserveForArrayInt64ByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<int64>>(size, mInt64Array);
+	}
+	TIHReturn64 ReserveForArrayFloatByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<float>>(size, mFloatArray);
+	}
+	TIHReturn64 ReserveForArrayDoubleByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<double>>(size, mDoubleArray);
+	}
+	TIHReturn64 ReserveForArrayVector3fByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<FVector>>(size, mVectorArray);
+	}
+	TIHReturn64 ReserveForArrayTransformByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<FTransform>>(size, mTransformArray);
+	}
+	TIHReturn64 ReserveForArrayStringByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<FString>>(size, mStringArray);
+	}
+#pragma endregion
+
+#pragma region Register
+	TIHReturn64 RegisterToArrayAsInt8(const int8& value)
+	{
+		return RegisterToArray<int8, TArray<int8>>(value, mInt8Array);
+	}
+	TIHReturn64 RegisterToArrayAsInt16(const int16& value)
+	{
+		return RegisterToArray<int16, TArray<int16>>(value, mInt16Array);
+	}
+	TIHReturn64 RegisterToArrayAsInt32(const int32& value)
+	{
+		return RegisterToArray<int32, TArray<int32>>(value, mInt32Array);
+	}
+	TIHReturn64 RegisterToArrayAsInt64(const int64& value)
+	{
+		return RegisterToArray<int64, TArray<int64>>(value, mInt64Array);
+	}
+	TIHReturn64 RegisterToArrayAsFloat(const float& value)
+	{
+		return RegisterToArray<float, TArray<float>>(value, mFloatArray);
+	}
+	TIHReturn64 RegisterToArrayAsDouble(const double& value)
+	{
+		return RegisterToArray<double, TArray<double>>(value, mDoubleArray);
+	}
+	TIHReturn64 RegisterToArrayAsVector(const FVector& value)
+	{
+		return RegisterToArray<FVector, TArray<FVector>>(value, mVectorArray);
+	}
+	TIHReturn64 RegisterToArrayAsTransform(const FTransform& value)
+	{
+		return RegisterToArray<FTransform, TArray<FTransform>>(value, mTransformArray);
+	}
+	TIHReturn64 RegisterToArrayAsString(const FString& value)
+	{
+		return RegisterToArray<FString, TArray<FString>>(value, mStringArray);
+	}
+
+#pragma endregion
+#pragma region Ref
+	const int32 GetDataInInt8Array(int32 index)
+	{
+		return mInt8Array[index];
+	}
+	const int64 GetDataInInt16Array(int32 index)
+	{
+		return mInt16Array[index];
+	}
+
+	const int32 GetDataInInt32Array(int32 index)
+	{
+		return mInt32Array[index];
+	}
+	const int64 GetDataInInt64Array(int32 index)
+	{
+		return mInt64Array[index];
+	}
+	const float GetDataInFloatArray(int32 index)
+	{
+		return mFloatArray[index];
+	}
+	const double GetDataInDoubleArray(int32 index)
+	{
+		return mDoubleArray[index];
+	}
+	const FVector& GetDataInVectorArray(int32 index)
+	{
+		return mVectorArray[index];
+	}
+	const FTransform& GetDataInTransformArray(int32 index)
+	{
+		return mTransformArray[index];
+	}
+	const FString& GetDataInStringArray(int32 index)
+	{
+		return mStringArray[index];
+	}
+
+#pragma endregion
+
+private:
+	TArray<int8> mInt8Array;
+	TArray<int16> mInt16Array;
+	TArray<int32> mInt32Array;
+	TArray<int64> mInt64Array;
+	TArray<float> mFloatArray;
+	TArray<double> mDoubleArray;
+	TArray<FVector> mVectorArray;
+	TArray<FTransform> mTransformArray;
+	TArray<FString> mStringArray;
+	template<typename TIHTemplateType = TArray<int32>>
+	TIHReturn64 ReserveForArrayByGrowing(int32 size, TIHTemplateType& memeberArray)
+	{
+		FUnionTIHDataBoardResult reValue;
+		reValue.ReserveDetail.Protocol = (int8)ETIHResultDetailProtocols::EReserve;
+		reValue.ReserveDetail.PreMax = memeberArray.Max();
+
+		int16 reserveValue = size - reValue.ReserveDetail.PreMax;
+		if (reserveValue < 1)
+		{
+			if (reserveValue == 0)
+			{
+				reValue.ReserveDetail.SimpleResult = (int32)ETIHReturn32Semantic::Void;
+			}
+			else
+			{
+				reValue.ReserveDetail.SimpleResult = (int32)ETIHReturn32Semantic::Fail;
+			}
+		}
+		else
+		{
+			reValue.ReserveDetail.SimpleResult = (int32)ETIHReturn32Semantic::Success;
+			memeberArray.Reserve(size);
+			//reValue.ReserveDetail.CurMax = memeberArray.Max();
+		}
+		return reValue.WholeData;
+	}
+
+	template<typename TIHTemplateValueType = int32, typename TIHTemplateArrayType = TArray<int32>>
+	TIHReturn64 RegisterToArray(const TIHTemplateValueType& value, TIHTemplateArrayType& memberArray)
+	{
+		FUnionTIHDataBoardResult reValue;
+		reValue.RegisterDetail.Protocol = (int8)ETIHResultDetailProtocols::ERegister;
+		reValue.RegisterDetail.SimpleResult = (int32)ETIHReturn32Semantic::Fail;
+		int32 curPushIndex = memberArray.Num();
+		if (curPushIndex < memberArray.Max())
+		{
+			reValue.RegisterDetail.RegistedIndex = memberArray.Add(value);
+		}
+		return reValue.WholeData;
+	}
+
+};
+class FTIHCommandShareBoard
+{
+public:
+	FTIHCommandShareBoard() {};
+	~FTIHCommandShareBoard() {};
+
+	//	샤딩을 넣는다면 여기에 넣어야겠지?
+
+	FTIHCommandDataBoard mBoard;
+};
+
+class FTIHCommandResultBoard
+{
+public:
+	FTIHCommandResultBoard() {};
+	~FTIHCommandResultBoard() {};
+
+
+
+	FTIHCommandDataBoard mBoard;
+};
+
+class FTIHCommandPathBoard
+{
+public:
+	FTIHCommandPathBoard() {};
+	~FTIHCommandPathBoard() {};
+
+	TMap<FName, FString> mPathAddtions;
+
+	FTIHCommandDataBoard mBoard;
+};
 
 class FTIHCommandList
 {
@@ -1002,6 +1222,27 @@ private:
 	}
 };
 
+
+USTRUCT()
+struct FTIHCommandFunctorHeader
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int8 Protocol;
+	UPROPERTY()
+	int8 ProtocolOption;
+
+	/*!
+	*	@brief 이거의 목적은 다용도이긴한데 일단 managedOBject 의 인덱스로 사용.
+	*	@detail 
+	*/
+	UPROPERTY()
+	int16 ReferenceIndex;	//	이게 16비트였나 기억이안남
+							//	참조할 영역이 managedOBject 또는 커맨드 내부에 있는 내부 콜백의 인덱스
+							//	이제 이걸 가지고 결정을 한 결과를 기록해놓으면 된다.
+};
+
 template<typename TIHTemplateType>
 class TTIHCommandFunctorWrapper
 {
@@ -1015,7 +1256,7 @@ public:
 		{
 			//	이걸 safety 하게 만들어야함
 			int32 objectRef = mFunctorHeader.ReferenceIndex;
-			reValue = objectPool.GetManagedObject(objectRef)->IsValidManagedTarget();
+			reValue = objectPool.GetManagedObject(objectRef);
 		}
 		else if ((int8)ETIHCommandFunctorProtocols::ECommanderFunction == mFunctorHeader.Protocol)
 		{
@@ -1073,17 +1314,15 @@ public:
 	TIHReturn64 ExecuteCommandDirect(FTIHCommandBase* curCommand);
 
 	template<typename TIHTemplateType>
-	TIHReturn64 ExecuteCommandStaticPolymorph(FTIHCommandStrategyCRTP<TIHTemplateType>& target, FTIHCommandBase* cmdBase)
+	TIHReturn64 ExecuteCommandStaticPolymorph(TTIHCommandStrategyCRTP<TIHTemplateType>& target, FTIHCommandBase* cmdBase)
 	{
 		return target.ExecuteStrategy(cmdBase);
 	}
-	//
+
 
 
 	//	이거 리절브 해야함.
 	TArray<TTIHCommandFunctorWrapper< TIHReturn64(FTIHCommandBase*) > > mCompleteFunctions;
-
-
 
 	TIHReturn64 ExecuteCommandStaticPolymorphs(FTIHCommandBase* primitiveCmd);
 	TIHReturn64 SequenceCommand(TIHReturn64 result, FTIHCommandBase* primitiveCmd);
@@ -1209,7 +1448,7 @@ private:
 
 	FTIHCommandExecutionState mCommaderExecutionState;
 
-	FTIHCommanderStrategyTestDelay* mStrategyTestDelay;
+	//FTIHCommanderStrategyTestDelay* mStrategyTestDelay;
 	FTIHCommanderStrategyCreateNewAlloc* mStrategyCreateNewAlloc;
 	FTIHCommanderStrategyCreateAssignPool* mStrategyCreateAssignPool;
 	FTIHCommanderStrategyServerConnect* mStrategyServerConnect;

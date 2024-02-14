@@ -1,4 +1,6 @@
 #include "TIHManagedObjects.h"
+#include "TIHCommands.h"
+#include "TIHStationCoreDefines.h"
 
 //	정리를 한다면 이름들을 좀 통일하기
 void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
@@ -272,7 +274,7 @@ void FTIHMngObjFactory::GenerateUEChildActorBy(UChildActorComponent* childActorS
 
 void FTIHMngObjFactory::GenerateManagedObjectLeafArray(FTIHMngObjTempDatas& tempDatas)
 {
-	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+	static FTIHMngObjPoolCenter& poolCenter = FTIHDefaultStation::GetSingle().GetManagedObjectPoolCenter();
 
 	while (true)
 	{
@@ -373,4 +375,28 @@ void FTIHMngObjPool::OnCompleteCreateNewAlloc()
 {
 	OnChangeStateAllocateToReady();
 
+}
+
+void FTIHMngObjGenerateHelper::GenerateLeavesByUEHash(UEObjectHash64 ueHash, FTIHMngObjComposite& out)
+{
+	if (mRegistedGenCandidates.Contains(ueHash) == true)
+	{
+		const FTIHGenerateCandidateLeaves& hashArray = mRegistedGenCandidates[ueHash];
+		for (const TIHHash64& tihHash : hashArray.GenerateTags.Array())
+		{
+			out.AddLeaf(GenerateTIHManagedObjectLeaf(tihHash));
+		}
+	}
+}
+
+const FTIHGenerateCandidateLeaves& FTIHMngObjGenerateHelper::GetCandidateForManagedLeafByUEComponentHash(UEObjectHash64 ueHash)
+{
+	if (mRegistedGenCandidates.Contains(ueHash) == true)
+	{
+		return mRegistedGenCandidates[ueHash];
+	}
+	else
+	{
+		return FTIHGenerateCandidateLeaves();
+	}
 }

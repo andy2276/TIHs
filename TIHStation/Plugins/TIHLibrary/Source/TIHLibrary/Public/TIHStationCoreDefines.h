@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Containers/Deque.h"
-#include "TIHStationCoreDefines.generated.h"
+//#include "TIHStationCoreDefines.generated.h"
 //--	----	----	----	----	----	----	----	----	----	----	----
 
 /*
@@ -105,9 +105,55 @@
 ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 */
-
 //--	----	----	----	----	----	----	----	----	----	----	----
 
+/*
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃																						   ┃
+┃									Forward Declare										   ┃
+┃																						   ┃
+┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
+*/
+#pragma region Forward Declare
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+										Sub_Title
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
+union FUnionTIHStateValue
+{
+	struct FTIHStateData
+	{
+		int8 Protocol;
+		int8 ProtocolOption;
+		union FUnionStateDetail
+		{
+			struct FTIHStateObjectLifeCycleDetail
+			{
+				/*!
+				*	@brief
+				*	@detail
+				*/
+				int8 Step;
+				int8 StepOption;//{Used}
+			}LifeCycleDetail;
+
+			int16 LifeCycle;
+		}Details;
+
+	}Datas;
+	int32 WholeData;
+};
+#pragma endregion Forward Declare
+/*
+┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
+┃									Template_For_Copy									   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
+//--	----	----	----	----	----	----	----	----	----	----	----
+//
 /*
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
@@ -121,9 +167,9 @@ typedef int32 TIHReturn32;
 typedef signed long long TIHReturn64;
 typedef signed long long TIHSummary64;
 
-using TIHHash64 = TIHReturn64;
-using UEObjectHash64 = TIHReturn64;
-using TIHObjectHash64 = TIHReturn64;
+typedef signed long long TIHHash64 ;
+typedef signed long long UEObjectHash64 ;
+typedef signed long long TIHObjectHash64 ;
 
 #pragma endregion Type Defines
 /*
@@ -382,16 +428,27 @@ enum class ETIHReturn8Semantic : int8
 };
 
 
+enum class ETIHCommandFunctorProtocols
+{
+	EManagedObjectMemberFunction = 0,
+	ECommanderFunction,
+};
+enum class ETIHCommandFunctorProtocolOptions
+{
+	ECallingCompleteFunction = 0,
+	ECallingErrorFunction,
+};
+
 
 enum class ETIHManagedObjectStepState : int16
 {
-	ENotUse = 0b0000'0000'0000'0000,
-	ETraceFail = 0b0000'0000'0000'0001,
-	EAllocated = 0b0000'0001'0000'0001,
-	EReady = 0b0000'0010'0000'0001,
-	ERunning = 0b0000'0011'0000'0001,
-	EWaiting = 0b0000'0100'0000'0001,
-	ETermination = 0b0000'0101'0000'0001,
+	ENotUse = 0b0000000000000000,		//	0
+	ETraceFail = 0b0000000000000001,	//	1
+	EAllocated = 0b0000000100000001,	//	257
+	EReady = 0b0000001000000001,		//	513
+	ERunning = 0b0000001100000001,		//	769
+	EWaiting = 0b0000010000000001,		//	1025
+	ETermination = 0b0000010100000001,	//	1281
 };
 
 
@@ -502,7 +559,7 @@ enum class ETIHCommandResultBitMask : int8
 	EOnPopFornt = 1 << 3,
 	EOnPopBack = 1 << 4,
 	ECallingCompleteFunction = 1 << 6,
-	ECallingErrorFunction = 1 << 7,
+	ECallingErrorFunction = -2,
 	EAsyncTask = -1 //이거 - 일거라 그냥 확인만 하면 됨.
 };
 const int8 MaxObjectPoolSlotCount = 8;
@@ -546,6 +603,13 @@ enum class ETIHManagedObjectHeaderProtocolOptions
 	ESound,
 	ESystem,
 	ECustom,
+};
+enum class EPrepareClassType : int8
+{
+	EActorBase,
+	EWidgetBase,
+	ESystem,
+	EAuto,
 };
 #pragma endregion TIH Enums
 /*
@@ -684,6 +748,7 @@ bool SafeDeletePtrArrayConst(const TIHTemplateType*& ptrConst)
 										FTIHSate
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
+class FTIHMngObjPoolCenter;
 class FTIHState
 {
 	static FTIHMngObjPoolCenter* gPoolCenter;
@@ -724,25 +789,25 @@ public:
 		}
 		return reValue;
 	}
-	int8 GetStateStepInt8()
+	int16 GetStateStepInt8()
 	{
-		int8 reValue = (int8)ETIHManagedObjectStepState::ETraceFail;
+		int16 reValue = (int16)ETIHManagedObjectStepState::ETraceFail;
 		switch (mStateValueDetail.Datas.Details.LifeCycle)
 		{
 		case (int16)ETIHManagedObjectStepState::EAllocated:
-			reValue = (int8)ETIHManagedObjectStepState::EAllocated;
+			reValue = (int16)ETIHManagedObjectStepState::EAllocated;
 			break;
 		case (int16)ETIHManagedObjectStepState::EReady:
-			reValue = (int8)ETIHManagedObjectStepState::EReady;
+			reValue = (int16)ETIHManagedObjectStepState::EReady;
 			break;
 		case (int16)ETIHManagedObjectStepState::ERunning:
-			reValue = (int8)ETIHManagedObjectStepState::ERunning;
+			reValue = (int16)ETIHManagedObjectStepState::ERunning;
 			break;
 		case (int16)ETIHManagedObjectStepState::EWaiting:
-			reValue = (int8)ETIHManagedObjectStepState::EWaiting;
+			reValue = (int16)ETIHManagedObjectStepState::EWaiting;
 			break;
 		case (int16)ETIHManagedObjectStepState::ETermination:
-			reValue = (int8)ETIHManagedObjectStepState::ETermination;
+			reValue = (int16)ETIHManagedObjectStepState::ETermination;
 			break;
 		default:
 			break;
@@ -1000,6 +1065,7 @@ public:
 
 };
 
+
 #pragma endregion TIH Systems
 /*
 ┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
@@ -1021,13 +1087,258 @@ public:
 #pragma region Structures
 /*
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐
-										Sub_Title
+										Union
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
+
 #pragma endregion Structures
 /*
 ┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
 ┃										Structures										   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
+
+//--	----	----	----	----	----	----	----	----	----	----	----
+
+/*
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃																						   ┃
+┃										TTIHStationCRTP									   ┃
+┃																						   ┃
+┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
+*/
+
+template<typename TIHTemplateType>
+class TTIHStationCRTP
+{
+
+public:
+	TTIHStationCRTP()
+		: mSelfPointer(this)
+	{}
+	virtual ~TTIHStationCRTP() {};
+
+	virtual TIHReturn64 InitDefaultFunc()
+	{
+		return 0;
+	};
+
+	TIHTemplateType* mSelfPointer;
+
+	static TIHTemplateType& GetSingle()
+	{
+		static TIHTemplateType self;
+		return self;
+	}
+
+
+
+#pragma region LifeCycle Functions
+	TIHReturn64 InstantiateStation()
+	{
+		return 0;
+	}
+	TIHReturn64 PrepareStation()
+	{
+		return 0;
+	}
+	TIHReturn64 InitializeStation()
+	{
+		return 0;
+	}
+	TIHReturn64 RefreshStation()
+	{
+		return 0;
+	}
+	TIHReturn64 ExecuteStation()
+	{
+		return 0;
+	}
+	TIHReturn64 SuspendStation()
+	{
+		return 0;
+	}
+	TIHReturn64 WaitStation()
+	{
+		return 0;
+	}
+	TIHReturn64 FinalizeStation()
+	{
+		return 0;
+	}
+	TIHReturn64 DestroyStation()
+	{
+		return 0;
+	}
+#pragma endregion
+#pragma region Network Functions
+	TIHReturn64 CreateServer()
+	{
+		return 0;
+	}
+	TIHReturn64 PrepareServer(const TArray<FString>& params)
+	{
+		return 0;
+	}
+	TIHReturn64 InitServer(const TArray<FString>& params)
+	{
+		return 0;
+	}
+	TIHReturn64 ConnectServer(const TArray<FString>& params)
+	{
+		return 0;
+	}
+	TIHReturn64 WaitServer(const TArray<FString>& params)
+	{
+		return 0;
+	}
+	TIHReturn64 CheckServer(const TArray<FString>& params)
+	{
+		return 0;
+	}
+	TIHReturn64 DisConnectServer(const TArray<FString>& params)
+	{
+		return 0;
+	}
+	TIHReturn64 RequestServer(const TArray<FString>& params)
+	{
+		return 0;
+	}
+	TIHReturn64 ReceiveServer(const TArray<FString>& params)
+	{
+		return 0;
+	}
+#pragma endregion
+
+	FTIHCommandFactory& GetCommandFactory()
+	{
+		return *mCommandFactory;
+	}
+	void SetCommandFactory(FTIHCommandFactory* cmdFactory);
+
+	FTIHCommandBase* GenerateCommandByCommandHeader(const FTIHCommandHeader cmdHeader);
+
+	FTIHCommandShareBoard& GetCommandShaderBoard()
+	{
+		return *mShareBoard;
+	}
+	FTIHCommandShareBoard& GetCommandResultBoard()
+	{
+		return *mResultBoard;
+	}
+	FTIHCommandShareBoard& GetCommandPathBoard()
+	{
+		return *mPathBoard;
+	}
+	FTIHMngObjPool& GetObjectPool()
+	{
+		return *mGlobalObjectPool;
+	}
+
+	FTIHCommander& GetCommander()
+	{
+		return *mCommander;
+	}
+
+	FTIHMngObjPoolCenter& GetManagedObjectPoolCenter()
+	{
+		return *mObjectPoolCenter;
+	}
+	FTIHMngObjGenerateHelper& GetGenerateHelper()
+	{
+		return *mMngObjGenerateHelper;
+	}
+
+protected:
+
+	/*!
+	*	@brief 서버접속을 하기위한
+	*	@detail
+	*/
+	FTIHNetwork* mNetwork;
+	/*!
+	*	@brief 명령을 위한
+	*	@detail
+	*/
+	//FTIHManagedObjectPool* mGlobalObjectPool;
+	//FTIHManagedObjectPool* mLocalObjectPool;
+
+	TUniquePtr<FTIHMngObjPool> mGlobalObjectPool;
+	TUniquePtr<FTIHMngObjPool> mLocalObjectPool;
+
+	TUniquePtr< FTIHMngObjPoolCenter> mObjectPoolCenter;
+
+	//FTIHCommandShareBoard mShareBoard;
+	//FTIHCommandResultBoard mResultBoard;
+	//FTIHCommandPathBoard mPathBoard;
+
+	TUniquePtr<FTIHCommandShareBoard> mShareBoard;
+	TUniquePtr<FTIHCommandResultBoard> mResultBoard;
+	TUniquePtr<FTIHCommandPathBoard> mPathBoard;
+
+	//FTIHCommander mCommander;
+
+	TUniquePtr<FTIHCommander> mCommander;
+
+	int64 mTickTime;
+	int64 mTickTimeRunning;
+	int64 mTickTimeStarted;
+
+	FTIHCommandFactory* mCommandFactory;
+
+	//	시발 이거 합칠까
+	TUniquePtr<FTIHMngObjGenerateHelper> mMngObjGenerateHelper;
+	FTIHSettingHelper mSettingHelper;
+
+private:
+
+};
+
+TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_InstantiateStation, InstantiateStation);
+TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_PrepareStation, PrepareStation);
+TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_InitializeStation, InitializeStation);
+TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_RefreshStation, RefreshStation);
+TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_ExecuteStation, ExecuteStation);
+TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_WaitStation, WaitStation);
+TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_SuspendStation, SuspendStation);
+TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_FinalizeStation, FinalizeStation);
+TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_DestroyStation, DestroyStation);
+
+class FTIHStationPolymorphInterface
+{
+public:
+	static TIHReturn64 TIHErrEmplementFunc();
+
+	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_InstantiateStation, InstantiateStation);
+	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_PrepareStation, PrepareStation);
+	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_InitializeStation, InitializeStation);
+	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_RefreshStation, RefreshStation);
+	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_ExecuteStation, ExecuteStation);
+	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_WaitStation, WaitStation);
+	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_SuspendStation, SuspendStation);
+	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_FinalizeStation, FinalizeStation);
+	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_DestroyStation, DestroyStation);
+
+};
+
+#define TIHMACRO_STATION_HELPER_LIFECYCLE_FUNCTIONS( className ) \
+public:\
+static className& GetSingle(){ static className singleTone; return singleTone;}\
+TIHReturn64 InstantiateStation();\
+TIHReturn64 PrepareStation();\
+TIHReturn64 InitializeStation();\
+TIHReturn64 RefreshStation();\
+TIHReturn64 ExecuteStation();\
+TIHReturn64 SuspendStation();\
+TIHReturn64 WaitStation();\
+TIHReturn64 FinalizeStation();\
+TIHReturn64 DestroyStation()\
+
+/*
+┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
+┃										TTIHStationCRTP									   ┃
 ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 */

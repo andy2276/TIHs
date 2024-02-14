@@ -4,6 +4,33 @@
 #include "TIHStationCoreDefines.h"
 #include "TIHManagedObjects.generated.h"
 
+struct FTIHMngObjHeader;
+struct FTIHMngObjPoolConfigureDatas;
+struct FTIHMngObjPoolConfigure;
+struct FTIHNewAllocPrepareData;
+struct FTIHCommandCreateAssignPoolDatas;
+struct FTIHMngObjComponentHeader;
+struct FTIHGenerateDataPairForManagedObjectLeaf;
+struct FTIHManagedObjectGenerateCompositeOutData;
+struct FTIHGenerateCandidateLeaves;
+template<typename TIHTemplateTypeA, typename TIHTemplateTypeB>struct TTIHMngObjTempDataPair;
+struct FTIHMngObjGenerateCompositeBFSData;
+
+class FTIHUnionFind;
+class FTIHMngObjPool;
+class FTIHMngObjPoolCenter;
+class FTIHMngObjGenerateHelper;
+class FTIHMngObjComponent;
+class FTIHMngObjLeaf;
+class FTIHMngObjComposite;
+
+template<typename TIHTemplateType>class TTIManagedObjectLeaf;
+class FTIHMngObjLeafMovement;
+class FTIHMngObjLeafPretty;
+class FTIHMngObjLeafStMesh;
+class FTIHMngObjLeafSkMesh;
+class FTIHMngObjTempDatas;
+class FTIHMngObj;
 
 USTRUCT()
 struct FTIHMngObjHeader
@@ -11,18 +38,80 @@ struct FTIHMngObjHeader
 	GENERATED_BODY()
 
 	UPROPERTY()
-	int8 Protocol;//	objectType
-	UPROPERTY()
-	int8 ProtocolOption; // 뭐 해당 오브젝트의 이름같은거겠지
-	UPROPERTY()
-	int8 ComponentProtocol;
-	UPROPERTY()
-	int8 AllocatedSpace;
+	int8 Protocol;
 
-	TIHMACRO_CHAINBUILDER_SETTER_AUTO(Protocol);
-	TIHMACRO_CHAINBUILDER_SETTER_AUTO(ProtocolOption);
-	TIHMACRO_CHAINBUILDER_SETTER_AUTO(ComponentProtocol);
-	TIHMACRO_CHAINBUILDER_SETTER_AUTO(AllocatedSpace);
+	UPROPERTY()
+	int8 ManagedObjectState;
+	UPROPERTY()
+	int8 AllocationSpace;
+
+	UPROPERTY()
+	int8 Padding;
+
+	TIHMACRO_CHAINBUILDER_SETTER(Protocol);
+	TIHMACRO_CHAINBUILDER_SETTER(ManagedObjectState);
+	TIHMACRO_CHAINBUILDER_SETTER(AllocationSpace);
+};
+
+
+USTRUCT()
+struct FTIHMngObjPoolConfigureDatas
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int16 WholeManagedObjectMaxCount;
+
+	UPROPERTY()
+	int16 MaxPhase;
+
+	UPROPERTY()
+	int8 AddWholeCapasityWhenFullWhole;
+
+	UPROPERTY()
+	int8 AllocationSpace;
+
+	UPROPERTY()
+	int8 Option0;//{bitmask : isSet  WholeManagedObjectMaxCount,MaxPhase,AddWholeCapasityWhenFullWhole}
+
+	UPROPERTY()
+	int8 Option1;
+
+	FTIHMngObjPoolConfigureDatas& operator=(const FTIHMngObjPoolConfigureDatas& otherDatas)
+	{
+		//	WholeManagedObjectMaxCount
+		if(otherDatas.Option0 & 1 << 0 )
+		{
+			WholeManagedObjectMaxCount = otherDatas.WholeManagedObjectMaxCount;
+		}
+		//	MaxPhase
+		if (otherDatas.Option0 & 1 << 1)
+		{
+			MaxPhase = otherDatas.MaxPhase;
+		}
+		//	AddWholeCapasityWhenFullWhole
+		if (otherDatas.Option0 & 1 << 2)
+		{
+			AddWholeCapasityWhenFullWhole = otherDatas.AddWholeCapasityWhenFullWhole;
+		}
+		//	AllocationSpace
+		if (otherDatas.Option0 & 1 << 3)
+		{
+			//	사실 이거 바꾸는건 얼척이 없는거긴해.
+			AllocationSpace = otherDatas.AllocationSpace;
+		}
+		//	Option0
+		if (otherDatas.Option0 < 0 )
+		{
+			Option0 = otherDatas.Option0;
+		}
+		//	Option1
+		if (otherDatas.Option0 & 1 << 4)
+		{
+			Option1 = otherDatas.Option1;
+		}
+		return *this;
+	}
 };
 
 
@@ -44,21 +133,229 @@ struct FTIHMngObjPoolConfigure
 	FTransform DefaultTransform;
 };
 
+struct FTIHGenerateCandidateLeaves
+{
+	TSet<TIHObjectHash64> GenerateTags;
+
+	FTIHGenerateCandidateLeaves() {}
+	FTIHGenerateCandidateLeaves(const FTIHGenerateCandidateLeaves& copyCtor)
+		: GenerateTags(copyCtor.GenerateTags)
+	{}
+	FTIHGenerateCandidateLeaves(FTIHGenerateCandidateLeaves&& moveCtor)
+		:GenerateTags(moveCtor.GenerateTags)
+	{}
+
+	FTIHGenerateCandidateLeaves(std::initializer_list<TIHHash64> list)
+		:GenerateTags(list)
+	{}
+
+	FTIHGenerateCandidateLeaves& operator=(const FTIHGenerateCandidateLeaves& copyOper)
+	{
+		GenerateTags = copyOper.GenerateTags;
+	}
+	FTIHGenerateCandidateLeaves& operator=(const TSet<TIHObjectHash64>& copyOper)
+	{
+		GenerateTags = copyOper;
+	}
+	FTIHGenerateCandidateLeaves& operator=(FTIHGenerateCandidateLeaves&& moveOper)
+	{
+		GenerateTags = moveOper.GenerateTags;
+	}
+	FTIHGenerateCandidateLeaves& operator=(TSet<TIHObjectHash64>&& moveOper)
+	{
+		GenerateTags = moveOper;
+	}
+};
+
+class FTIHMngObjGenerateHelper
+{
+public:
+	static FTIHMngObjGenerateHelper& GetSingle()
+	{
+		static FTIHMngObjGenerateHelper self;
+		return self;
+	}
+	/*
+		UnknownHash
+		ExistRegistHash
+	*/
+	UEObjectHash64 RegistUESceneComponentByUClass(UClass* ucls)
+	{
+		UEObjectHash64 reValue = 0;//UnknownHash
+		reValue = ConvertUClassToHash(ucls);
+
+		if (mRegistedUESceneComponenBytUEHash.Contains(reValue) == false)
+		{
+			mRegistedUESceneComponenBytUEHash.Add(reValue, ucls);
+			mRegistedSwapUESceneToUEHash.Add(ucls, reValue);
+		}
+		else
+		{
+			/*
+			reValue = existRegistHash
+			*/
+		}
+		return reValue;
+	}
+	TIHHash64 ConvertUClassToHash(UClass* ucls)
+	{
+		check(ucls != nullptr);
+		TIHHash64 reValue = GetNoRegistTag();
+		FString assetName = ucls->GetClassPathName().GetAssetName().ToString();
+		reValue = ClassNameHashImplement(*assetName);
+		return reValue;
+	}
+
+	UClass* GetUESceneComponentByHash(UEObjectHash64 ueHash)
+	{
+		UClass* reValue = nullptr;
+
+		if (mRegistedUESceneComponenBytUEHash.Contains(ueHash) == true)
+		{
+			reValue = mRegistedUESceneComponenBytUEHash[ueHash];
+		}
+		return reValue;
+	}
+	UEObjectHash64 GetUESceneComponentHashByUClass(UClass* ucls)
+	{
+		UEObjectHash64 reValue = 0;//	noRegist
+		if (mRegistedSwapUESceneToUEHash.Contains(ucls) == true)
+		{
+			reValue = mRegistedSwapUESceneToUEHash[ucls];
+		}
+		return reValue;
+	}
+
+	UClass* GetUEActorClassByUEHash(UEObjectHash64 ueHash)
+	{
+		UClass* reValue = nullptr;
+		if (mRegistedActorByUEHash.Contains(ueHash) == true)
+		{
+			reValue = mRegistedActorByUEHash[ueHash];
+		}
+		return reValue;
+	}
+
+	void RegistUEActorByUClass(UEObjectHash64 ueHash, UClass* ueActorUcls)
+	{
+		mRegistedActorByUEHash;
+
+		if (mRegistedActorByUEHash.Contains(ueHash) == false)
+		{
+			mRegistedActorByUEHash.Add(ueHash, ueActorUcls);
+			mSwapActorHashByUClass.Add(ueActorUcls, ueHash);
+		}
+		else
+		{
+			/*
+				겹침
+			*/
+		}
+	}
+
+	/*
+		이거 이관해야함
+	*/
+	void RegistGenerateFunc(TIHHash64 tihHash, TFunction<FTIHMngObjLeaf* ()> genFunc)
+	{
+		if (mRegistedGenerateFuncByTIHHash.Contains(tihHash) == false)
+		{
+			mRegistedGenerateFuncByTIHHash.Add(tihHash, genFunc);
+		}
+		else
+		{
+			/*
+				logging.changeGenFunc
+			*/
+			mRegistedGenerateFuncByTIHHash[tihHash] = genFunc;
+		}
+	}
+	FTIHMngObjLeaf* GenerateTIHManagedObjectLeaf(TIHHash64 tihHash)
+	{
+		FTIHMngObjLeaf* reValue = nullptr;
+		if (mRegistedGenerateFuncByTIHHash.Contains(tihHash) == true)
+		{
+			reValue = mRegistedGenerateFuncByTIHHash[tihHash]();
+		}
+		else
+		{
+			/*
+
+				logging.noregistedFunc
+
+			*/
+		}
+		return reValue;
+	}
+	void RegistGenerateCandidateHashArrayByUEHash(UEObjectHash64 ueHash, const FTIHGenerateCandidateLeaves& hashArray)
+	{
+		if (mRegistedGenCandidates.Contains(ueHash) == false)
+		{
+			mRegistedGenCandidates.Add(ueHash, hashArray);
+		}
+	}
+
+	const FTIHGenerateCandidateLeaves& GetGenerateCandidateHashArrayByUEHash(UEObjectHash64 ueHash)
+	{
+		if (mRegistedGenCandidates.Contains(ueHash) == true)
+		{
+			return mRegistedGenCandidates[ueHash];
+		}
+		else
+		{
+			return FTIHGenerateCandidateLeaves();
+		}
+	}
+	void GenerateLeavesByUEHash(UEObjectHash64 ueHash, FTIHMngObjComposite& out);
+
+	const FTIHGenerateCandidateLeaves& GetCandidateForManagedLeafByUEComponentHash(UEObjectHash64 ueHash);
+
+	void RegistForGenerate(UClass* ucls, TArray<FTIHGenerateDataPairForManagedObjectLeaf>& leafGenPairArray)
+	{
+		UEObjectHash64 registedUeHash = RegistUESceneComponentByUClass(ucls);
+		FTIHGenerateCandidateLeaves hashArray;
+		for (FTIHGenerateDataPairForManagedObjectLeaf& leafPair : leafGenPairArray)
+		{
+			hashArray.GenerateTags.Add(leafPair.TihHash);
+			RegistGenerateFunc(leafPair.TihHash, leafPair.GenerateFunction);
+		}
+		RegistGenerateCandidateHashArrayByUEHash(registedUeHash, hashArray);
+	}
+
+	UEObjectHash64 GetUEHashByActorUClass(UClass* ucls)
+	{
+		UEObjectHash64 reValue = GetNoRegistTag();
+		if (mSwapActorHashByUClass.Contains(ucls) == true)
+		{
+			reValue = mSwapActorHashByUClass[ucls];
+		}
+		return reValue;
+	}
+
+	UEObjectHash64 GetNoRegistTag()
+	{
+		static UEObjectHash64 reValue = ClassNameHashImplement(L"GetNoRegistTag");
+		return reValue;
+	}
+
+
+private:
+	TMap<UEObjectHash64, UClass*> mRegistedUESceneComponenBytUEHash;	//	for Leaf
+	TMap<UClass*, UEObjectHash64> mRegistedSwapUESceneToUEHash;//	이거는 솔직히 잘안 쓸거 같긴함.  왜냐하면 이거 솔직히 용량 낭비같음
+
+	//TMap< UClass*, UEObjectHash64> mRegistedSwap
+	TMap<UEObjectHash64, FTIHGenerateCandidateLeaves> mRegistedGenCandidates;	//	이녀석은 uclass 를 넣으면 그에 해당하는 generateFunc목록에 관한 해쉬를 넘겨줌
+	TMap < TIHHash64, TFunction<FTIHMngObjLeaf* ()> > mRegistedGenerateFuncByTIHHash;//	tih 해쉬를 넣으면 그에 해당하는 함수를 호출해줌.
+
+
+	TMap< UEObjectHash64, UClass*> mRegistedActorByUEHash;//	for Actor
+	TMap< UClass*, UEObjectHash64 > mSwapActorHashByUClass;//	for Actor
+};
+
 USTRUCT()
 struct FTIHNewAllocPrepareData
 {
 	GENERATED_BODY()
-
-	static int16 StaticPrepareAddOrder;
-
-	static int16 StaticPrepareAddOrderFunction()
-	{
-		++StaticPrepareAddOrder;
-		if(StaticPrepareAddOrder < 0)
-		{
-			StaticPrepareAddOrder = 0;
-		}
-	}
 
 	UPROPERTY()
 	int8 TargetClassType;
@@ -76,7 +373,7 @@ struct FTIHNewAllocPrepareData
 	int16 AddOrder;
 	
 	UPROPERTY()
-	UEObjectHash64 TargetClassHash;
+	int64 TargetClassHash;
 
 	FTIHNewAllocPrepareData() :
 		TargetClassType((int8)ETIHManagedObjectHeaderProtocols::ENotUse),
@@ -152,65 +449,7 @@ struct FTIHNewAllocPrepareData
 	}
 };
 
-USTRUCT()
-struct FTIHMngObjPoolConfigureDatas
-{
-	GENERATED_BODY()
 
-	UPROPERTY()
-	int16 WholeManagedObjectMaxCount;
-
-	UPROPERTY()
-	int16 MaxPhase;
-
-	UPROPERTY()
-	int8 AddWholeCapasityWhenFullWhole;
-
-	UPROPERTY()
-	int8 AllocationSpace;
-
-	UPROPERTY()
-	int8 Option0;//{bitmask : isSet  WholeManagedObjectMaxCount,MaxPhase,AddWholeCapasityWhenFullWhole}
-
-	UPROPERTY()
-	int8 Option1;
-
-	FTIHMngObjPoolConfigureDatas& operator=(const FTIHMngObjPoolConfigureDatas& otherDatas)
-	{
-		//	WholeManagedObjectMaxCount
-		if(otherDatas.Option0 & 1 << 0 )
-		{
-			WholeManagedObjectMaxCount = otherDatas.WholeManagedObjectMaxCount;
-		}
-		//	MaxPhase
-		if (otherDatas.Option0 & 1 << 1)
-		{
-			MaxPhase = otherDatas.MaxPhase;
-		}
-		//	AddWholeCapasityWhenFullWhole
-		if (otherDatas.Option0 & 1 << 2)
-		{
-			AddWholeCapasityWhenFullWhole = otherDatas.AddWholeCapasityWhenFullWhole;
-		}
-		//	AllocationSpace
-		if (otherDatas.Option0 & 1 << 3)
-		{
-			//	사실 이거 바꾸는건 얼척이 없는거긴해.
-			AllocationSpace = otherDatas.AllocationSpace;
-		}
-		//	Option0
-		if (otherDatas.Option0 < 0 )
-		{
-			Option0 = otherDatas.Option0;
-		}
-		//	Option1
-		if (otherDatas.Option0 & 1 << 4)
-		{
-			Option1 = otherDatas.Option1;
-		}
-		return *this;
-	}
-};
 
 //
 //USTRUCT()
@@ -257,8 +496,220 @@ struct FTIHCommandCreateAssignPoolDatas
 	TIHMACRO_CHAINBUILDER_SETTER(DataOption);
 };
 
+class FTIHUnionFind
+{
+public:
+	void ReserveArray(int16 size)
+	{
+		mParentArray.Reserve(size);
+		mRankArray.Reserve(size);
+		mElementCountArray.Reserve(size);
+	}
 
 
+	void InitUnionFind()
+	{
+		mParentArray.Reset();
+		mRankArray.Reset();
+
+		int32 arraiesMax = mParentArray.Max();
+
+		for (int32 i = 0; i < arraiesMax; ++i)
+		{
+			mParentArray.Add(i);
+			mRankArray.Add(0);
+			mElementCountArray.Add(1);
+		}
+	}
+
+	int16 FindParent(int16 checkIndex)
+	{
+		int16 reValue = checkIndex;
+		int16 parentIndex = mParentArray[reValue];
+		if (reValue != parentIndex)
+		{
+			mParentArray[reValue] = FindParent(parentIndex);
+			reValue = mParentArray[reValue];
+		}
+		return reValue;
+	}
+	void UnionIndex(int16 leftIndex, int16 rightIndex)
+	{
+		leftIndex = FindParent(leftIndex);
+		rightIndex = FindParent(rightIndex);
+
+		if (leftIndex != rightIndex)
+		{
+			if (mRankArray[leftIndex] < mRankArray[rightIndex])
+			{
+				mParentArray[leftIndex] = rightIndex;
+			}
+			else
+			{
+				mParentArray[rightIndex] = leftIndex;
+
+				if (mRankArray[leftIndex] == mRankArray[rightIndex])
+				{
+					++mRankArray[leftIndex];
+				}
+			}
+		}
+	}
+	int16 UnionAndElementCount(int16 leftIndex, int16 rightIndex)
+	{
+		leftIndex = FindParent(leftIndex);
+		rightIndex = FindParent(rightIndex);
+
+		if (leftIndex != rightIndex)
+		{
+			mParentArray[rightIndex] = leftIndex;
+			mElementCountArray[leftIndex] += mElementCountArray[rightIndex];
+			mElementCountArray[rightIndex] = 1;
+		}
+		return mElementCountArray[leftIndex];
+	}
+
+private:
+	TArray<int16> mParentArray;
+	TArray<int16> mRankArray;
+	TArray<int16> mElementCountArray;
+};
+class FTIHMngObjTempDatas
+{
+public:
+
+	/*
+		reset
+		clear
+		pushBacks
+		getTop
+		getElementNums
+		getCapacityMaxs
+		isEmpties
+
+	*/
+	void ResetAllQueue()
+	{
+		mActorQueue.Reset();
+		mPrepareDatasForComposite.Reset();
+		mEmptyComposites.Reset();
+	}
+	void ClearCapacityAllQueue()
+	{
+		mActorQueue.Empty();
+		mPrepareDatasForComposite.Empty();
+		mEmptyComposites.Empty();
+	}
+
+	void PushBackActor(AActor* actor, UEObjectHash64 ueObjHash)
+	{
+		TTIHMngObjTempDataPair<UEObjectHash64, AActor*> copyValue(ueObjHash, actor);
+		mActorQueue.PushLast(copyValue);
+	}
+	void PushBackPrepareDataForComposite(FTIHMngObjGenerateCompositeBFSData&& prepareData)
+	{
+		mPrepareDatasForComposite.PushLast(prepareData);
+	}
+	void PushBackEmptyComposite(FTIHMngObjComposite* composite)
+	{
+		mEmptyComposites.PushLast(composite);
+	}
+
+	int16 GetNumInActorQueue()
+	{
+		int16 reValue = mActorQueue.Num();
+		return reValue;
+	}
+	int16 GetNumInPrepareDataForCompositeQueue()
+	{
+		int16 reValue = mPrepareDatasForComposite.Num();
+		return reValue;
+	}
+	int16 GetNumInEmptyCompositeQueue()
+	{
+		int16 reValue = mPrepareDatasForComposite.Num();
+		return reValue;
+	}
+
+	int16 GetCapacityInActorQueue()
+	{
+		int16 reValue = mActorQueue.Max();
+		return reValue;
+	}
+	int16 GetCapacityInPrepareDataForCompositeQueue()
+	{
+		int16 reValue = mPrepareDatasForComposite.Max();
+		return reValue;
+	}
+	int16 GetCapacityInEmptyCompositeQueue()
+	{
+		int16 reValue = mPrepareDatasForComposite.Max();
+		return reValue;
+	}
+
+
+	bool IsEmptyActorQueue()
+	{
+		bool reValue = mActorQueue.IsEmpty();
+		return reValue;
+	}
+	bool IsEmptyPrepareDataForCompositeQueue()
+	{
+		bool reValue = mPrepareDatasForComposite.IsEmpty();
+		return reValue;
+	}
+	bool IsEmptyEmptyCompositeQueue()
+	{
+		bool reValue = mEmptyComposites.IsEmpty();
+		return reValue;
+	}
+	bool IsEmpties()
+	{
+		bool reValue = (IsEmptyActorQueue() && IsEmptyPrepareDataForCompositeQueue() && IsEmptyEmptyCompositeQueue());
+		return reValue;
+	}
+
+	AActor* GetTopAndPopActorQueue()
+	{
+		AActor* reValue = mActorQueue.First().UEValueType;
+		mActorQueue.PopFirst();
+		return reValue;
+	}
+
+	TTIHMngObjTempDataPair<UEObjectHash64, AActor*> GetTopAndPopActorPairQueue()
+	{
+		TTIHMngObjTempDataPair<UEObjectHash64, AActor*> reValue = mActorQueue.First();
+		return reValue;
+	}
+
+	FTIHMngObjGenerateCompositeBFSData GetTopAndPopPrepareDataForCompositeQueue()
+	{
+		FTIHMngObjGenerateCompositeBFSData reValue = mPrepareDatasForComposite.First();
+		mPrepareDatasForComposite.PopFirst();
+		return reValue;
+	}
+
+	FTIHMngObjComposite* GetTopAndPopEmptyCompositeQueue()
+	{
+		FTIHMngObjComposite* reValue = mEmptyComposites.First();
+		mEmptyComposites.PopFirst();
+		return reValue;
+	}
+
+	void Reserve(int16 forActorQueue, int16 forComposite, int16 forLeaf)
+	{
+		mActorQueue.Reserve(forActorQueue);
+		mPrepareDatasForComposite.Reserve(forComposite);
+		mEmptyComposites.Reserve(forLeaf);
+	}
+
+private:
+
+	TDeque<TTIHMngObjTempDataPair<UEObjectHash64, AActor*>> mActorQueue;
+	TDeque< FTIHMngObjGenerateCompositeBFSData> mPrepareDatasForComposite;
+
+	TDeque< FTIHMngObjComposite*> mEmptyComposites;
+};
 class FTIHMngObjPool
 {
 public:
@@ -398,25 +849,6 @@ protected:
 	*/
 	TMap<int8, TMap< TIHHash64, TDeque<int16>>> mManagedObjectStateReadyIndices;
 
-	/*
-		running 일때 tset 쓰고
-		ready 일땐 deque 쓰고
-
-		저거 인터페이스 만들기
-			저게 어디에 들어가야 할지 만들기
-		커맨드와 리프들 만들기
-
-	*/
-
-
-	/*
-		state
-			base
-				managedHash
-					selfIndex
-		allocate 는 무조건 생성하고 나서만 존재해야한다.
-		그리고
-	*/
 	FTIHMngObjTempDatas mTempDatasForNewAlloc;
 };
 
@@ -632,214 +1064,6 @@ struct FTIHGenerateDataPairForManagedObjectLeaf
 	TFunction<FTIHMngObjLeaf* ()> GenerateFunction;
 };
 
-class FTIHMngObjLeaf;
-
-//	그냥 합치자
-class FTIHMngObjGenerateHelper
-{
-public:
-	static FTIHMngObjGenerateHelper& GetSingle()
-	{
-		static FTIHMngObjGenerateHelper self;
-		return self;
-	}
-	/*
-		UnknownHash
-		ExistRegistHash
-	*/
-	UEObjectHash64 RegistUESceneComponentByUClass(UClass* ucls)
-	{
-		UEObjectHash64 reValue = 0;//UnknownHash
-		reValue = ConvertUClassToHash(ucls);
-
-		if(mRegistedUESceneComponenBytUEHash.Contains(reValue) == false)
-		{
-			mRegistedUESceneComponenBytUEHash.Add(reValue, ucls);
-			mRegistedSwapUESceneToUEHash.Add(ucls, reValue);
-		}
-		else
-		{
-			/*
-			reValue = existRegistHash
-			*/
-		}
-		return reValue;
-	}
-	TIHHash64 ConvertUClassToHash(UClass* ucls)
-	{
-		check(ucls != nullptr);
-		TIHHash64 reValue = GetNoRegistTag();
-		FString assetName = ucls->GetClassPathName().GetAssetName().ToString();
-		reValue = ClassNameHashImplement(*assetName);
-		return reValue;
-	}
-
-	UClass* GetUESceneComponentByHash(UEObjectHash64 ueHash)
-	{
-		UClass* reValue = nullptr;
-
-		if(mRegistedUESceneComponenBytUEHash.Contains(ueHash) == true)
-		{
-			reValue = mRegistedUESceneComponenBytUEHash[ueHash];
-		}
-		return reValue;
-	}
-	UEObjectHash64 GetUESceneComponentHashByUClass(UClass* ucls)
-	{
-		UEObjectHash64 reValue = 0;//	noRegist
-		if(mRegistedSwapUESceneToUEHash.Contains(ucls) == true)
-		{
-			reValue = mRegistedSwapUESceneToUEHash[ucls];
-		}
-		return reValue;
-	}
-	
-	UClass* GetUEActorClassByUEHash(UEObjectHash64 ueHash)
-	{
-		UClass* reValue = nullptr;
-		if(mRegistedActorByUEHash.Contains(ueHash) == true)
-		{
-			reValue = mRegistedActorByUEHash[ueHash];
-		}
-		return reValue;
-	}
-
-	void RegistUEActorByUClass(UEObjectHash64 ueHash,UClass* ueActorUcls)
-	{
-		mRegistedActorByUEHash;
-
-		if(mRegistedActorByUEHash.Contains(ueHash) == false)
-		{
-			mRegistedActorByUEHash.Add(ueHash, ueActorUcls);
-			mSwapActorHashByUClass.Add(ueActorUcls, ueHash);
-		}
-		else
-		{
-			/*
-				겹침
-			*/
-		}
-	}
-
-	/*
-		이거 이관해야함
-	*/
-	void RegistGenerateFunc(TIHHash64 tihHash, TFunction<FTIHMngObjLeaf* ()> genFunc)
-	{
-		if(mRegistedGenerateFuncByTIHHash.Contains(tihHash) == false)
-		{
-			mRegistedGenerateFuncByTIHHash.Add(tihHash, genFunc);
-		}
-		else
-		{
-			/*
-				logging.changeGenFunc
-			*/
-			mRegistedGenerateFuncByTIHHash[tihHash] = genFunc;
-		}
-	}
-	FTIHMngObjLeaf* GenerateTIHManagedObjectLeaf(TIHHash64 tihHash)
-	{
-		FTIHMngObjLeaf* reValue = nullptr;
-		if(mRegistedGenerateFuncByTIHHash.Contains(tihHash) == true)
-		{
-			reValue = mRegistedGenerateFuncByTIHHash[tihHash]();
-		}
-		else
-		{
-			/*
-
-				logging.noregistedFunc
-
-			*/
-		}
-		return reValue;
-	}
-	void RegistGenerateCandidateHashArrayByUEHash(UEObjectHash64 ueHash,const FTIHGenerateCandidateLeaves& hashArray)
-	{
-		 if(mRegistedGenCandidates.Contains(ueHash) == false)
-		 {
-			 mRegistedGenCandidates.Add(ueHash, hashArray);
-		 }
-	}
-	
-	const FTIHGenerateCandidateLeaves& GetGenerateCandidateHashArrayByUEHash(UEObjectHash64 ueHash)
-	{
-		if (mRegistedGenCandidates.Contains(ueHash) == true)
-		{
-			return mRegistedGenCandidates[ueHash];
-		}
-		else
-		{
-			return FTIHGenerateCandidateLeaves();
-		}
-	}
-	void GenerateLeavesByUEHash(UEObjectHash64 ueHash,FTIHMngObjComposite& out)
-	{
-		if(mRegistedGenCandidates.Contains(ueHash) == true)
-		{
-			const FTIHGenerateCandidateLeaves& hashArray = mRegistedGenCandidates[ueHash];
-			for (const TIHHash64& tihHash : hashArray.GenerateTags.Array())
-			{
-				out.AddLeaf(GenerateTIHManagedObjectLeaf(tihHash));
-			}
-		}
-	}
-
-	const FTIHGenerateCandidateLeaves& GetCandidateForManagedLeafByUEComponentHash(UEObjectHash64 ueHash) 
-	{
-		if(mRegistedGenCandidates.Contains(ueHash) == true)
-		{
-			return mRegistedGenCandidates[ueHash];
-		}
-		else
-		{
-			return FTIHGenerateCandidateLeaves();
-		}
-	}
-
-	void RegistForGenerate(UClass* ucls, TArray<FTIHGenerateDataPairForManagedObjectLeaf>& leafGenPairArray)
-	{
-		UEObjectHash64 registedUeHash = RegistUESceneComponentByUClass(ucls);
-		FTIHGenerateCandidateLeaves hashArray;
-		for (FTIHGenerateDataPairForManagedObjectLeaf& leafPair : leafGenPairArray)
-		{
-			hashArray.GenerateTags.Add(leafPair.TihHash);
-			RegistGenerateFunc(leafPair.TihHash, leafPair.GenerateFunction);
-		}
-		RegistGenerateCandidateHashArrayByUEHash(registedUeHash, hashArray);
-	}
-
-	UEObjectHash64 GetUEHashByActorUClass(UClass* ucls)
-	{
-		UEObjectHash64 reValue = GetNoRegistTag();
-		if(mSwapActorHashByUClass.Contains(ucls) == true)
-		{
-			reValue = mSwapActorHashByUClass[ucls];
-		}
-		return reValue;
-	}
-
-	UEObjectHash64 GetNoRegistTag()
-	{
-		static UEObjectHash64 reValue = ClassNameHashImplement(L"GetNoRegistTag");
-		return reValue;
-	}
-
-
-private:
-	TMap<UEObjectHash64, UClass*> mRegistedUESceneComponenBytUEHash;	//	for Leaf
-	TMap<UClass*, UEObjectHash64> mRegistedSwapUESceneToUEHash;//	이거는 솔직히 잘안 쓸거 같긴함.  왜냐하면 이거 솔직히 용량 낭비같음
-	
-	//TMap< UClass*, UEObjectHash64> mRegistedSwap
-	TMap<UEObjectHash64, FTIHGenerateCandidateLeaves> mRegistedGenCandidates;	//	이녀석은 uclass 를 넣으면 그에 해당하는 generateFunc목록에 관한 해쉬를 넘겨줌
-	TMap < TIHHash64, TFunction<FTIHMngObjLeaf* ()> > mRegistedGenerateFuncByTIHHash;//	tih 해쉬를 넣으면 그에 해당하는 함수를 호출해줌.
-	
-
-	TMap< UEObjectHash64, UClass*> mRegistedActorByUEHash;//	for Actor
-	TMap< UClass*, UEObjectHash64 > mSwapActorHashByUClass;//	for Actor
-};
-
 class FTIHMngObjComponent
 {
 public:
@@ -913,7 +1137,7 @@ private:
 	int16 mOwnerIndex;//InManagedObjectPool
 	int16 mSelfIndex;//InManagedObject
 };
-class FTIHMngObjLeaf;
+
 
 class FTIHMngObjComposite :public FTIHMngObjComponent
 {
@@ -1191,6 +1415,19 @@ public:
 
 	}
 };
+class FTIHMeshPool
+{
+public:
+	static FTIHMeshPool* GetSingle()
+	{
+		static FTIHMeshPool meshPool;
+		return &meshPool;
+	}
+	TSoftObjectPtr<UStaticMesh> GetStaticMeshByPath(const FString& meshPath);
+	TSoftObjectPtr<USkeletalMesh> GetSkeletalMeshByPath(const FString& meshPath);
+private:
+};
+
 class FTIHMngObjLeafStMesh : public TTIManagedObjectLeaf<UStaticMeshComponent>
 {
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafStMesh)
@@ -1261,44 +1498,8 @@ struct FTIHManagedObjectGenerateCompositeOutData
 		return *this;
 	}
 };
-struct FTIHGenerateCandidateLeaves
-{
-	TSet<TIHObjectHash64> GenerateTags;
 
-	FTIHGenerateCandidateLeaves() {}
-	FTIHGenerateCandidateLeaves(const FTIHGenerateCandidateLeaves& copyCtor)
-		: GenerateTags(copyCtor.GenerateTags)
-	{}
-	FTIHGenerateCandidateLeaves(FTIHGenerateCandidateLeaves&& moveCtor)
-		:GenerateTags(moveCtor.GenerateTags)
-	{}
-	//template<typename... TIHTemplateTypeManyArg>
-	//FTIHGenerateCandidateLeaves(TIHTemplateTypeManyArg&&... manyArgs)
-	//	:
-	//	GenerateTags(std::forward<TIHTemplateTypeManyArg>(manyArgs)... ) 
-	//{
-	//}
-	FTIHGenerateCandidateLeaves(std::initializer_list<TIHHash64> list)
-		:GenerateTags(list)
-	{}
 
-	FTIHGenerateCandidateLeaves& operator=(const FTIHGenerateCandidateLeaves& copyOper)
-	{
-		GenerateTags = copyOper.GenerateTags;
-	}
-	FTIHGenerateCandidateLeaves& operator=(const TSet<TIHObjectHash64>& copyOper)
-	{
-		GenerateTags = copyOper;
-	}
-	FTIHGenerateCandidateLeaves& operator=(FTIHGenerateCandidateLeaves&& moveOper)
-	{
-		GenerateTags = moveOper.GenerateTags;
-	}
-	FTIHGenerateCandidateLeaves& operator=(TSet<TIHObjectHash64>&& moveOper)
-	{
-		GenerateTags = moveOper;
-	}
-};
 template<typename TIHTemplateTypeA, typename TIHTemplateTypeB>
 struct TTIHMngObjTempDataPair
 {
@@ -1413,142 +1614,7 @@ struct FTIHMngObjGenerateCompositeBFSData
 		return *this;
 	}
 };
-class FTIHMngObjTempDatas
-{
-public:
 
-	/*
-		reset
-		clear
-		pushBacks
-		getTop
-		getElementNums
-		getCapacityMaxs
-		isEmpties
-
-	*/
-	void ResetAllQueue()
-	{
-		mActorQueue.Reset();
-		mPrepareDatasForComposite.Reset();
-		mEmptyComposites.Reset();
-	}
-	void ClearCapacityAllQueue()
-	{
-		mActorQueue.Empty();
-		mPrepareDatasForComposite.Empty();
-		mEmptyComposites.Empty();
-	}
-
-	void PushBackActor(AActor* actor, UEObjectHash64 ueObjHash)
-	{
-		TTIHMngObjTempDataPair<UEObjectHash64, AActor*> copyValue(ueObjHash, actor);
-		mActorQueue.PushLast(copyValue);
-	}
-	void PushBackPrepareDataForComposite(FTIHMngObjGenerateCompositeBFSData&& prepareData)
-	{
-		mPrepareDatasForComposite.PushLast(prepareData);
-	}
-	void PushBackEmptyComposite(FTIHMngObjComposite* composite)
-	{
-		mEmptyComposites.PushLast(composite);
-	}
-
-	int16 GetNumInActorQueue()
-	{
-		int16 reValue = mActorQueue.Num();
-		return reValue;
-	}
-	int16 GetNumInPrepareDataForCompositeQueue()
-	{
-		int16 reValue = mPrepareDatasForComposite.Num();
-		return reValue;
-	}
-	int16 GetNumInEmptyCompositeQueue()
-	{
-		int16 reValue = mPrepareDatasForComposite.Num();
-		return reValue;
-	}
-
-	int16 GetCapacityInActorQueue()
-	{
-		int16 reValue = mActorQueue.Max();
-		return reValue;
-	}
-	int16 GetCapacityInPrepareDataForCompositeQueue()
-	{
-		int16 reValue = mPrepareDatasForComposite.Max();
-		return reValue;
-	}
-	int16 GetCapacityInEmptyCompositeQueue()
-	{
-		int16 reValue = mPrepareDatasForComposite.Max();
-		return reValue;
-	}
-
-
-	bool IsEmptyActorQueue()
-	{
-		bool reValue = mActorQueue.IsEmpty();
-		return reValue;
-	}
-	bool IsEmptyPrepareDataForCompositeQueue()
-	{
-		bool reValue = mPrepareDatasForComposite.IsEmpty();
-		return reValue;
-	}
-	bool IsEmptyEmptyCompositeQueue()
-	{
-		bool reValue = mEmptyComposites.IsEmpty();
-		return reValue;
-	}
-	bool IsEmpties()
-	{
-		bool reValue = (IsEmptyActorQueue() && IsEmptyPrepareDataForCompositeQueue() && IsEmptyEmptyCompositeQueue());
-		return reValue;
-	}
-
-	AActor* GetTopAndPopActorQueue()
-	{
-		AActor* reValue = mActorQueue.First().UEValueType;
-		mActorQueue.PopFirst();
-		return reValue;
-	}
-
-	TTIHMngObjTempDataPair<UEObjectHash64, AActor*> GetTopAndPopActorPairQueue()
-	{
-		TTIHMngObjTempDataPair<UEObjectHash64, AActor*> reValue = mActorQueue.First();
-		return reValue;
-	}
-
-	FTIHMngObjGenerateCompositeBFSData GetTopAndPopPrepareDataForCompositeQueue()
-	{
-		FTIHMngObjGenerateCompositeBFSData reValue = mPrepareDatasForComposite.First();
-		mPrepareDatasForComposite.PopFirst();
-		return reValue;
-	}
-
-	FTIHMngObjComposite* GetTopAndPopEmptyCompositeQueue()
-	{
-		FTIHMngObjComposite* reValue = mEmptyComposites.First();
-		mEmptyComposites.PopFirst();
-		return reValue;
-	}
-
-	void Reserve(int16 forActorQueue, int16 forComposite, int16 forLeaf)
-	{
-		mActorQueue.Reserve(forActorQueue);
-		mPrepareDatasForComposite.Reserve(forComposite);
-		mEmptyComposites.Reserve(forLeaf);
-	}
-
-private:
-
-	TDeque<TTIHMngObjTempDataPair<UEObjectHash64, AActor*>> mActorQueue;
-	TDeque< FTIHMngObjGenerateCompositeBFSData> mPrepareDatasForComposite;
-
-	TDeque< FTIHMngObjComposite*> mEmptyComposites;
-};
 class FTIHMngObjFactory
 {
 	/*
@@ -1589,29 +1655,6 @@ private:
 };
 
 
-
-USTRUCT()
-struct FTIHMngObjHeader
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	int8 Protocol;
-
-	UPROPERTY()
-	int8 ManagedObjectState;
-	UPROPERTY()
-	int8 AllocationSpace;
-
-	UPROPERTY()
-	int8 Padding;
-
-	TIHMACRO_CHAINBUILDER_SETTER(Protocol);
-	TIHMACRO_CHAINBUILDER_SETTER(ManagedObjectState);
-	TIHMACRO_CHAINBUILDER_SETTER(AllocationSpace);
-};
-
-class FTIHMngObjPoolCenter;
 
 class FTIHMngObj
 {

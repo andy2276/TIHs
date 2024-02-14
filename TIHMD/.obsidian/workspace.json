@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "리프,커맨드,스트라테지 현황판.md",
+                "file": "TIH Library.md",
                 "mode": "source",
                 "source": false
               }
@@ -174,9 +174,10 @@
   },
   "active": "f2f7423c64bec7e6",
   "lastOpenFiles": [
-    "리프,커맨드,스트라테지 현황판.md",
-    "할일 정리.md",
+    "TIH Library.md",
     "헬퍼만들어야할때.md",
+    "할일 정리.md",
+    "리프,커맨드,스트라테지 현황판.md",
     "DevelopLog/Template/commandTemplate.md",
     "Ideas/각 역할정하기.md",
     "TIH/combine-ExecuteStrategy.md",
@@ -200,7 +201,6 @@
     "TIH/FTIHNetWork.md",
     "TIH/Life Cycle.md",
     "TIH/TemplatesLink.md",
-    "TIH/TTIHCommandFunctorWrapper.md",
     "TIH",
     "DevelopLog/Template",
     "DevelopLog/Logs",

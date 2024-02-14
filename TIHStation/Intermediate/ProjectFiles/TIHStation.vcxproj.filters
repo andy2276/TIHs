@@ -46,25 +46,55 @@
     <Filter Include="Plugins\TIHLibrary\Source\TIHLibrary\Private">
       <UniqueIdentifier>{13058E4D-012A-386A-BFCB-97437FAFC804}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHCommands.cpp">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHGameInstance.cpp">
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHLibraryEntry.cpp">
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHManagedObjects.cpp">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHNetworks.cpp">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHStationCore.cpp">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHStationCoreDefines.cpp">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHStrategies.cpp">
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
     </ClCompile>
     <Filter Include="Plugins\TIHLibrary\Source\TIHLibrary\Public">
       <UniqueIdentifier>{EB8266E3-769F-3D5B-B5EF-13365F3A3ACD}</UniqueIdentifier>
     </Filter>
+    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHCommands.h">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHGameInstance.h">
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHLibraryEntry.h">
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHManagedObjects.h">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHNetworks.h">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHStationCore.h">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHStationCoreDefines.h">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHStrategies.h">
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
     </ClInclude>
     <None Include="..\..\Plugins\TIHLibrary\TIHLibrary.uplugin">
@@ -249,34 +279,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\TIHStation\Public\TIHTestPlayerControl.h">
       <Filter>Source\TIHStation\Public</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHCommands.cpp">
-      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHStationCoreDefines.cpp">
-      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHManagedObjects.cpp">
-      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHStrategies.cpp">
-      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHCommands.h">
-      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHStationCoreDefines.h">
-      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHManagedObjects.h">
-      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHStrategies.h">
-      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

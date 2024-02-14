@@ -1,14 +1,9 @@
 #include "TIHCommands.h"
+#include "TIHStrategies.h"
 
 void FTIHCommander::TestSettingCommandList()
 {
-	TTIHChainBuilder<FTIHCommandTestDelayDatas> chian;
-	chian.
-		GenerateChain().
-		SetTest00(0).
-		SetTest01(1).
-		SetTest02(2).
-		SetTest03(3);
+	
 }
 
 TIHReturn64 FTIHCommander::ExecuteCommands()
@@ -99,7 +94,6 @@ TIHReturn64 FTIHCommander::ExecuteCommandDirect(FTIHCommandBase* curCommand)
 
 	UStaticMeshComponent;
 	USkeletalMeshComponent* bbb;
-
 
 
 	FTIHCommandFactory& factory = TIHSTATION.GetCommandFactory();
