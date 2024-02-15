@@ -1,6 +1,7 @@
 #include "TIHManagedObjects.h"
 #include "TIHCommands.h"
 #include "TIHStationCoreDefines.h"
+#include "TIHStationCore.h"
 
 //	정리를 한다면 이름들을 좀 통일하기
 void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
@@ -296,6 +297,59 @@ void FTIHMngObjFactory::GenerateManagedObjectLeafArray(FTIHMngObjTempDatas& temp
 		}
 	}
 }
+
+FTIHMngObjPoolCenter& FTIHMngObjPoolCenter::GetSingle()
+{
+	static FTIHMngObjPoolCenter& SelfObject = TIHSTATION.GetManagedObjectPoolCenter();
+	return SelfObject;
+}
+
+TDeque<const FTIHNewAllocPrepareData>& FTIHMngObjPoolCenter::GetPrepareDataQueue()
+{
+	return mPrepareDatas;
+}
+
+void FTIHMngObjPoolCenter::EmplaceAddMngObjPrepareData(int8 TargetClassType, UEObjectHash64 TargetClassHash, int16 CallParentIndex, int16 AllocateCount)
+{
+	mPrepareDatas.EmplaceLast(FTIHNewAllocPrepareData{ TargetClassType ,AllocateCount ,CallParentIndex ,TargetClassHash });
+}
+
+void FTIHMngObjPoolCenter::EmplaceAddMngObjPrepareDataForChildActor(UEObjectHash64 TargetClassHash, int16 CallParentIndex)
+{
+	EmplaceAddMngObjPrepareData((int8)ETIHMngObjHeaderProcotols::EActorBase, TargetClassHash, CallParentIndex, 1);
+}
+
+int8 FTIHMngObjPoolCenter::RegistManagedObjectPool(ETIHManagedObjectSpace managedObjectSpace, FTIHMngObjPool* managedObjectPool)
+{
+	int8 reValue = (int8)ETIHManagedObjectSpace::ENotRegistSpace;
+	int8 wantSpaceSlot = (int8)managedObjectSpace;
+	//	outBound
+	int8 maxSpaceSlotOutBound = wantSpaceSlot + MaxObjectPoolSlotCount;//- (int8)ETIHManagedObjectSpace::ELoaclSpace;
+
+	for (; wantSpaceSlot < maxSpaceSlotOutBound; ++wantSpaceSlot)
+	{
+		if (mManagedObjectPools.Contains(wantSpaceSlot) == false)
+		{
+			reValue = wantSpaceSlot;
+			mManagedObjectPools.Add(wantSpaceSlot, managedObjectPool);
+			managedObjectPool->SetManagedPoolSpace(wantSpaceSlot);
+			break;
+		}
+	}
+	return reValue;
+}
+
+FTIHMngObjPool* FTIHMngObjPoolCenter::GetManagedObjectPool(int8 objectPoolSpace)
+{
+	FTIHMngObjPool* reValue = nullptr;
+
+	if (mManagedObjectPools.Contains(objectPoolSpace) == true)
+	{
+		reValue = mManagedObjectPools[objectPoolSpace];
+	}
+	return reValue;
+}
+
 void FTIHMngObjPoolCenter::RegistUEClassForGenerate(UClass* ucls)
 {
 	check(ucls != nullptr);
@@ -316,6 +370,118 @@ void FTIHMngObjPoolCenter::RegistUEClassForGenerate(UClass* ucls)
 	}
 }
 
+
+void FTIHMngObjPoolCenter::RegistFunctionForManagedComponentGeneration(TIHReturn64 managedCompHash, TFunction< FTIHMngObjLeaf* ()> func)
+{
+	if (mTIHClassHashToGenerateFunction.Contains(managedCompHash) == false)
+	{
+		mTIHClassHashToGenerateFunction.Add(managedCompHash, func);
+	}
+	else
+	{
+		/*
+			log.changeDelegateFunc
+		*/
+		mTIHClassHashToGenerateFunction[managedCompHash] = func;
+	}
+}
+
+FTIHMngObjFactory& FTIHMngObjPoolCenter::GetFactory()
+{
+	return *mManagedObjectFactory;
+}
+
+void FTIHMngObjPoolCenter::OnGeneratePipeLining(int8 allocationSpace)
+{
+	FTIHMngObjPool* mngObjPool = GetManagedObjectPool(allocationSpace);
+	check(mngObjPool != nullptr);
+	mManagedObjectFactory->OnGeneratePipeLining(mngObjPool);
+}
+
+void FTIHMngObjPoolCenter::OnSetObjectPoolConfigure(const FTIHMngObjPoolConfigureDatas& data)
+{
+
+}
+
+const FTIHGenerateCandidateLeaves& FTIHMngObjPoolCenter::GenerateManagedObjectComponentByUClass(UClass* ucls)
+{
+	check(ucls != nullptr);
+	FTIHGenerateCandidateLeaves reValue;
+	const FName& compName = ucls->GetClassPathName().GetAssetName();
+	bool isContain = mClassNameToUeClassHash.Contains(compName);
+
+	if (isContain == true)
+	{
+		UEObjectHash64 ueHash = mClassNameToUeClassHash[compName];
+	}
+	return reValue;
+}
+
+UEObjectHash64 FTIHMngObjPoolCenter::GetUeHashByUClassInUEComponent(UClass* ucls)
+{
+	check(ucls != nullptr);
+	UEObjectHash64 reValue = 0;
+	const FName& compName = ucls->GetClassPathName().GetAssetName();
+	bool isContain = mClassNameToUeClassHash.Contains(compName);
+	if (isContain == true)
+	{
+		reValue = mClassNameToUeClassHash[compName];
+	}
+	return reValue;
+}
+
+bool FTIHMngObjPoolCenter::IsUeHashValid(UEObjectHash64 ueHash)
+{
+	bool reValue = mUClassToClassHashs.Contains(ueHash);
+	return reValue;
+}
+
+const FTIHGenerateCandidateLeaves& FTIHMngObjPoolCenter::GetTIHHashArrayByUEHash(UEObjectHash64 ueHash)
+{
+	return mUClassToClassHashs[ueHash];
+}
+
+FTIHMngObjLeaf* FTIHMngObjPoolCenter::GenerateManagedComponentByTIHHash(TIHObjectHash64 ueHash)
+{
+	FTIHMngObjLeaf* reValue = nullptr;
+
+	reValue = mTIHClassHashToGenerateFunction[ueHash]();
+
+	return reValue;
+}
+
+FTIHMngObj* FTIHMngObjPoolCenter::PoolingManagedObject(int8 allocationSpace, int8 ueObjBase, TIHObjectHash64 ueObjHash)
+{
+	FTIHMngObj* reValue = nullptr;
+	if (mManagedObjectPools.Contains(allocationSpace) == true)
+	{
+		reValue = mManagedObjectPools[allocationSpace]->GetAnyReadyMngObj(ueObjBase, ueObjHash);
+	}
+	return reValue;
+}
+
+void FTIHMngObjPool::AddNewManagedObject(FTIHMngObj* newManagedObject)
+{
+	int16 addIndex = mWholeManagedObjects.Add(newManagedObject);
+	newManagedObject->SetSelfIndexInWholeArray(addIndex);
+}
+
+void FTIHMngObjPool::OnSortManagedStates()
+{
+	for (int32 i = 0; i < mWholeManagedObjects.Num(); ++i)
+	{
+		if (mWholeManagedObjects[i] == nullptr)
+		{
+			continue;
+		}
+		if (mWholeManagedObjects[i]->GetStateNonConst().IsStateAllocated() == true)
+		{
+			mWholeManagedObjects[i]->GetStateNonConst().ChangeStateAllocatedToReady();
+
+
+		}
+	}
+}
 
 void FTIHMngObjPool::PushBackReadyMngObj(FTIHMngObj* target)
 {
@@ -399,4 +565,35 @@ const FTIHGenerateCandidateLeaves& FTIHMngObjGenerateHelper::GetCandidateForMana
 	{
 		return FTIHGenerateCandidateLeaves();
 	}
+}
+
+FTIHMngObjPool* FTIHMngObj::GetMyManagedPool()
+{
+	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+
+	FTIHMngObjPool* reValue = nullptr;
+	reValue = poolCenter.GetManagedObjectPool(mManagedObjectHeader.AllocationSpace);
+	check(reValue != nullptr);
+
+	return reValue;
+}
+
+void FTIHMngObjComposite::AddLeaf(FTIHMngObjLeaf* leaf)
+{
+	check(leaf != nullptr);
+
+	leaf->SetSelfIndex(mLeafMap.Num());
+	leaf->SetManagedObjectCompositeIndex(this->GetSelfIndex());
+
+	mLeafMap.Add(leaf->GetHashValue(), leaf);
+}
+
+FTIHMngObjLeaf* FTIHMngObjComposite::GetLeaf(TIHHash64 tihHash)
+{
+	FTIHMngObjLeaf* reValue = nullptr;
+	if (mLeafMap.Contains(tihHash) == true)
+	{
+		reValue = mLeafMap[tihHash];
+	}
+	return reValue;
 }

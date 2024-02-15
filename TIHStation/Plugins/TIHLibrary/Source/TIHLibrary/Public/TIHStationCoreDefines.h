@@ -1109,11 +1109,100 @@ public:
 ┃																						   ┃
 ┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
 */
+class FTIHNetwork;
+class FTIHMngObjPool;
+class FTIHMngObjPoolCenter;
+class FTIHCommandShareBoard;
+class FTIHCommander;
+class FTIHMngObjGenerateHelper;
+class FTIHSettingHelper;
+class FTIHCommandFactory;
+class FTIHCommandResultBoard;
+class FTIHCommandPathBoard;
+
+class FTIHStationBase
+{
+public:
+	FTIHCommandFactory& GetCommandFactory()
+	{
+		return *mCommandFactory;
+	}
+	void SetCommandFactory(FTIHCommandFactory* cmdFactory);
+
+	//FTIHCommandBase* GenerateCommandByCommandHeader(const FTIHCommandHeader cmdHeader);
+
+	FTIHCommandShareBoard& GetCommandShaderBoard()
+	{
+		return *mShareBoard;
+	}
+	FTIHCommandResultBoard& GetCommandResultBoard()
+	{
+		return *mResultBoard.Get();
+	}
+	FTIHCommandPathBoard& GetCommandPathBoard()
+	{
+		return *mPathBoard;
+	}
+	FTIHMngObjPool& GetObjectPool()
+	{
+		return *mGlobalObjectPool;
+	}
+
+	FTIHCommander& GetCommander()
+	{
+		return *mCommander;
+	}
+
+	FTIHMngObjPoolCenter& GetManagedObjectPoolCenter()
+	{
+		return *mObjectPoolCenter;
+	}
+	FTIHMngObjGenerateHelper& GetGenerateHelper()
+	{
+		return *mMngObjGenerateHelper;
+	}
+protected:
+	FTIHNetwork* mNetwork;
+	/*!
+	*	@brief 명령을 위한
+	*	@detail
+	*/
+	//FTIHManagedObjectPool* mGlobalObjectPool;
+	//FTIHManagedObjectPool* mLocalObjectPool;
+
+	TUniquePtr<FTIHMngObjPool> mGlobalObjectPool;
+	TUniquePtr<FTIHMngObjPool> mLocalObjectPool;
+
+	TUniquePtr< FTIHMngObjPoolCenter> mObjectPoolCenter;
+
+	//FTIHCommandShareBoard mShareBoard;
+	//FTIHCommandResultBoard mResultBoard;
+	//FTIHCommandPathBoard mPathBoard;
+
+	TUniquePtr<FTIHCommandShareBoard> mShareBoard;
+	TUniquePtr<FTIHCommandResultBoard> mResultBoard;
+	TUniquePtr<FTIHCommandPathBoard> mPathBoard;
+
+	//FTIHCommander mCommander;
+
+	TUniquePtr<FTIHCommander> mCommander;
+
+	int64 mTickTime;
+	int64 mTickTimeRunning;
+	int64 mTickTimeStarted;
+
+	FTIHCommandFactory* mCommandFactory;
+
+	//	시발 이거 합칠까
+	TUniquePtr<FTIHMngObjGenerateHelper> mMngObjGenerateHelper;
+	TUniquePtr<FTIHSettingHelper> mSettingHelper;
+private:
+};
+
 
 template<typename TIHTemplateType>
-class TTIHStationCRTP
+class TTIHStationCRTP : public FTIHStationBase
 {
-
 public:
 	TTIHStationCRTP()
 		: mSelfPointer(this)
@@ -1127,15 +1216,11 @@ public:
 
 	TIHTemplateType* mSelfPointer;
 
-	static TIHTemplateType& GetSingle()
+	TIHTemplateType* GetSelfPtr()
 	{
-		static TIHTemplateType self;
-		return self;
+		return mSelfPointer;
 	}
 
-
-
-#pragma region LifeCycle Functions
 	TIHReturn64 InstantiateStation()
 	{
 		return 0;
@@ -1172,8 +1257,7 @@ public:
 	{
 		return 0;
 	}
-#pragma endregion
-#pragma region Network Functions
+
 	TIHReturn64 CreateServer()
 	{
 		return 0;
@@ -1210,91 +1294,85 @@ public:
 	{
 		return 0;
 	}
-#pragma endregion
+	//FTIHCommandFactory& GetCommandFactory()
+	//{
+	//	return *mCommandFactory;
+	//}
+	//void SetCommandFactory(FTIHCommandFactory* cmdFactory)
+	//{
+	//	SafeDeletePtr(mCommandFactory);
+	//	mCommandFactory = cmdFactory;
+	//}
 
-	FTIHCommandFactory& GetCommandFactory()
-	{
-		return *mCommandFactory;
-	}
-	void SetCommandFactory(FTIHCommandFactory* cmdFactory);
+	////FTIHCommandBase* GenerateCommandByCommandHeader(const FTIHCommandHeader cmdHeader);
 
-	FTIHCommandBase* GenerateCommandByCommandHeader(const FTIHCommandHeader cmdHeader);
+	//FTIHCommandShareBoard& GetCommandShaderBoard()
+	//{
+	//	return *mShareBoard;
+	//}
+	//FTIHCommandResultBoard& GetCommandResultBoard()
+	//{
+	//	return *mResultBoard.Get();
+	//}
+	//FTIHCommandPathBoard& GetCommandPathBoard()
+	//{
+	//	return *mPathBoard;
+	//}
+	//FTIHMngObjPool& GetObjectPool()
+	//{
+	//	return *mGlobalObjectPool;
+	//}
 
-	FTIHCommandShareBoard& GetCommandShaderBoard()
-	{
-		return *mShareBoard;
-	}
-	FTIHCommandShareBoard& GetCommandResultBoard()
-	{
-		return *mResultBoard;
-	}
-	FTIHCommandShareBoard& GetCommandPathBoard()
-	{
-		return *mPathBoard;
-	}
-	FTIHMngObjPool& GetObjectPool()
-	{
-		return *mGlobalObjectPool;
-	}
+	//FTIHCommander& GetCommander()
+	//{
+	//	return *mCommander;
+	//}
 
-	FTIHCommander& GetCommander()
-	{
-		return *mCommander;
-	}
-
-	FTIHMngObjPoolCenter& GetManagedObjectPoolCenter()
-	{
-		return *mObjectPoolCenter;
-	}
-	FTIHMngObjGenerateHelper& GetGenerateHelper()
-	{
-		return *mMngObjGenerateHelper;
-	}
-
+	//FTIHMngObjPoolCenter& GetManagedObjectPoolCenter()
+	//{
+	//	return *mObjectPoolCenter;
+	//}
+	//FTIHMngObjGenerateHelper& GetGenerateHelper()
+	//{
+	//	return *mMngObjGenerateHelper;
+	//}
 protected:
+	//FTIHNetwork* mNetwork;
+	///*!
+	//*	@brief 명령을 위한
+	//*	@detail
+	//*/
+	////FTIHManagedObjectPool* mGlobalObjectPool;
+	////FTIHManagedObjectPool* mLocalObjectPool;
 
-	/*!
-	*	@brief 서버접속을 하기위한
-	*	@detail
-	*/
-	FTIHNetwork* mNetwork;
-	/*!
-	*	@brief 명령을 위한
-	*	@detail
-	*/
-	//FTIHManagedObjectPool* mGlobalObjectPool;
-	//FTIHManagedObjectPool* mLocalObjectPool;
+	//TUniquePtr<FTIHMngObjPool> mGlobalObjectPool;
+	//TUniquePtr<FTIHMngObjPool> mLocalObjectPool;
 
-	TUniquePtr<FTIHMngObjPool> mGlobalObjectPool;
-	TUniquePtr<FTIHMngObjPool> mLocalObjectPool;
+	//TUniquePtr< FTIHMngObjPoolCenter> mObjectPoolCenter;
 
-	TUniquePtr< FTIHMngObjPoolCenter> mObjectPoolCenter;
+	////FTIHCommandShareBoard mShareBoard;
+	////FTIHCommandResultBoard mResultBoard;
+	////FTIHCommandPathBoard mPathBoard;
 
-	//FTIHCommandShareBoard mShareBoard;
-	//FTIHCommandResultBoard mResultBoard;
-	//FTIHCommandPathBoard mPathBoard;
+	//TUniquePtr<FTIHCommandShareBoard> mShareBoard;
+	//TUniquePtr<FTIHCommandResultBoard> mResultBoard;
+	//TUniquePtr<FTIHCommandPathBoard> mPathBoard;
 
-	TUniquePtr<FTIHCommandShareBoard> mShareBoard;
-	TUniquePtr<FTIHCommandResultBoard> mResultBoard;
-	TUniquePtr<FTIHCommandPathBoard> mPathBoard;
+	////FTIHCommander mCommander;
 
-	//FTIHCommander mCommander;
+	//TUniquePtr<FTIHCommander> mCommander;
 
-	TUniquePtr<FTIHCommander> mCommander;
+	//int64 mTickTime;
+	//int64 mTickTimeRunning;
+	//int64 mTickTimeStarted;
 
-	int64 mTickTime;
-	int64 mTickTimeRunning;
-	int64 mTickTimeStarted;
+	//FTIHCommandFactory* mCommandFactory;
 
-	FTIHCommandFactory* mCommandFactory;
-
-	//	시발 이거 합칠까
-	TUniquePtr<FTIHMngObjGenerateHelper> mMngObjGenerateHelper;
-	FTIHSettingHelper mSettingHelper;
-
-private:
-
+	////	시발 이거 합칠까
+	//TUniquePtr<FTIHMngObjGenerateHelper> mMngObjGenerateHelper;
+	//TUniquePtr<FTIHSettingHelper> mSettingHelper;
 };
+
 
 TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_InstantiateStation, InstantiateStation);
 TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_PrepareStation, PrepareStation);
