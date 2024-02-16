@@ -8,13 +8,13 @@
 			"TIHGameInstance.cpp.obj",
 			"TIHLibraryEntry.cpp.obj",
 			"TIHNetworks.cpp.obj",
-			"TIHStrategies.cpp.obj",
 			"TIHCommands.gen.cpp.obj",
 			"TIHLibraryEntry.init.gen.cpp.obj",
 			"TIHCommands.cpp.obj",
 			"TIHManagedObjects.cpp.obj",
 			"TIHStationCore.cpp.obj",
-			"TIHStationCoreDefines.cpp.obj"
+			"TIHStationCoreDefines.cpp.obj",
+			"TIHStrategies.cpp.obj"
 		]
 	}
 }

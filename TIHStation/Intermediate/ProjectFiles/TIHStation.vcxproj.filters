@@ -281,4 +281,14 @@
       <Filter>Source\TIHStation\Public</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHManagedObjectLeafs.cpp">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHManagedObjectLeafs.h">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

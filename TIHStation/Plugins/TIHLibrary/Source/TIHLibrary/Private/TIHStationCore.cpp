@@ -216,6 +216,3 @@ void FTIHSettingHelper::FTIHManagedObjectSettings::RegistPrepareDataForNewAlloc(
 
 	poolCenter.EmplaceAddMngObjPrepareData((int8)targetClsType, ueHash, -1, allocCount );
 }
-void FTIHMngObjLeafMovement::InitSetting()
-{
-}
