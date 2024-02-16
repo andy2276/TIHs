@@ -223,35 +223,7 @@ struct FTIHCommandReferenceData
 *	@brief 이거 커맨드 오더id 를 위한거임. 나중에 만들자.
 *	@detail 
 */
-class FTIHCommandOrder
-{
-public:
-	FTIHCommandOrder() :
-		mCommandGenerateOrderId(FTIHCommandOrder::GetGenerateCommandOrderID())
-	{
-	}
-	~FTIHCommandOrder();
-private:
-	static int32 GetGenerateCommandOrderID()
-	{
-		static const uint32 IdMax = std::numeric_limits<int32>::max();
-		static int32 reValue = 0;
-		if(GenerateOrderID < IdMax)
-		{
-			++GenerateOrderID;
-		}
-		else
-		{
-			GenerateOrderID = 0;
-		}
-		reValue = GenerateOrderID;
-		return reValue;
-	}
-	static int32 GenerateOrderID;
-	int32 mCommandGenerateOrderId;
-	
-};
-int32 FTIHCommandOrder::GenerateOrderID = std::numeric_limits<int32>::max();
+
 /*
 	============================================================================================================================================================
 	============================================================================================================================================================
@@ -277,34 +249,7 @@ int32 FTIHCommandOrder::GenerateOrderID = std::numeric_limits<int32>::max();
 	============================================================================================================================================================
 */
 
-union FUnionTIHDataBoardResult
-{
-	struct FTIHDataBoardReserveResultDetail
-	{
-		int8 Protocol;
-		int8 Padding;
-		int16 PreMax;
-		TIHReturn32 SimpleResult;
-	}ReserveDetail;
-	struct FTIHDataBoardRegisterResultDetail
-	{
-		int8 Protocol;
-		int8 Padding;
-		int16 RegistedIndex;
-		TIHReturn32 SimpleResult;
-	}RegisterDetail;
-	struct FTIHDataBoardRegisterRangeResultDetail
-	{
-		int8 Protocol;
-		int8 Padding;
-		int16 StartIndex0;
 
-		int16 StartIndex1;
-		int16 RegistCount;
-	}RegisterRangeDetail;
-
-	TIHReturn64 WholeData;
-};
 
 #pragma region CommandReferenceBoards
 
@@ -336,18 +281,18 @@ union FUnionTIHDataBoardResult
 	============================================================================================================================================================
 */
 
-struct FTIHCommandCallBack
-{
-	int8 Protocol;
-	int8 CallBackType;
-	int16 DelegateIndex;
-	TFunction<void()> Functor;
-	
-	void operator()()
-	{
-		Functor();
-	}
-};
+//struct FTIHCommandCallBack
+//{
+//	int8 Protocol;
+//	int8 CallBackType;
+//	int16 DelegateIndex;
+//	TFunction<void()> Functor;
+//	
+//	void operator()()
+//	{
+//		Functor();
+//	}
+//};
 /*
 	============================================================================================================================================================
 	============================================================================================================================================================
@@ -556,7 +501,7 @@ private:
 	};
 	FTIHManagedObjectSettings mManagedObjectSettingHelper;
 };
-class FTIHManagedObjectGenerateCompositeOutData;
+
 
 enum class ETIHManagedObjectProtocolOptions
 {

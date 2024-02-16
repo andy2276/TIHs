@@ -1,10 +1,10 @@
 
 #include "TIHStrategies.h"
+#include "TIHStationCore.h"
 
 
 
-
-TIHReturn64 FTIHCommanderStrategyCreateAssignPool::ExecuteStrategy(FTIHCommandBase* cmdBase)
+TIHReturn64 FTIHCommanderStrategyCreateAssignPool::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
 
@@ -20,7 +20,7 @@ TIHReturn64 FTIHCommanderStrategyCreateAssignPool::ExecuteStrategy(FTIHCommandBa
 													그리고 이거는 처음에 만들어졌을때 호출되는거고 pooling 도 만들어야함. 거의 다왔다. 이거까지 되면 이제 파서 들어간다.
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-TIHReturn64 FTIHCommanderStrategyCreateNewAlloc::ExecuteStrategy(FTIHCommandBase* cmdBase)
+TIHReturn64 FTIHCommanderStrategyCreateNewAlloc::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
 	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
@@ -61,7 +61,7 @@ TIHReturn64 FTIHCommanderStrategyCreateNewAlloc::ExecuteStrategy(FTIHCommandBase
 													ServerConnect Implements
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-TIHReturn64 FTIHCommanderStrategyServerConnect::ExecuteStrategy(FTIHCommandBase* cmdBase)
+TIHReturn64 FTIHCommanderStrategyServerConnect::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
 
@@ -73,7 +73,7 @@ TIHReturn64 FTIHCommanderStrategyServerConnect::ExecuteStrategy(FTIHCommandBase*
 													ServerSend Implements
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-TIHReturn64 FTIHCommanderStrategyServerSend::ExecuteStrategy(FTIHCommandBase* cmdBase)
+TIHReturn64 FTIHCommanderStrategyServerSend::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
 
@@ -85,7 +85,7 @@ TIHReturn64 FTIHCommanderStrategyServerSend::ExecuteStrategy(FTIHCommandBase* cm
 													ServerListen Implements
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-TIHReturn64 FTIHCommanderStrategyServerListen::ExecuteStrategy(FTIHCommandBase* cmdBase)
+TIHReturn64 FTIHCommanderStrategyServerListen::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
 
@@ -97,7 +97,7 @@ TIHReturn64 FTIHCommanderStrategyServerListen::ExecuteStrategy(FTIHCommandBase* 
 													ServerDisConnect Implements
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-TIHReturn64 FTIHCommanderStrategyServerDisConnect::ExecuteStrategy(FTIHCommandBase* cmdBase)
+TIHReturn64 FTIHCommanderStrategyServerDisConnect::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
 
@@ -109,7 +109,7 @@ TIHReturn64 FTIHCommanderStrategyServerDisConnect::ExecuteStrategy(FTIHCommandBa
 													DeleteRejectPool Implements
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-TIHReturn64 FTIHCommanderStrategyDeleteRejectPool::ExecuteStrategy(FTIHCommandBase* cmdBase)
+TIHReturn64 FTIHCommanderStrategyDeleteRejectPool::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
 
@@ -121,7 +121,7 @@ TIHReturn64 FTIHCommanderStrategyDeleteRejectPool::ExecuteStrategy(FTIHCommandBa
 													DeleteDestory Implements
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-TIHReturn64 FTIHCommanderStrategyDeleteDestory::ExecuteStrategy(FTIHCommandBase* cmdBase)
+TIHReturn64 FTIHCommanderStrategyDeleteDestory::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
 
@@ -133,7 +133,7 @@ TIHReturn64 FTIHCommanderStrategyDeleteDestory::ExecuteStrategy(FTIHCommandBase*
 													ModifyTransform Implements
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-TIHReturn64 FTIHCommanderStrategyModifyTransform::ExecuteStrategy(FTIHCommandBase* cmdBase)
+TIHReturn64 FTIHCommanderStrategyModifyTransform::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
 
@@ -145,16 +145,13 @@ TIHReturn64 FTIHCommanderStrategyModifyTransform::ExecuteStrategy(FTIHCommandBas
 													yModifyValue Implements
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-TIHReturn64 FTIHCommanderStrategyModifyValue::ExecuteStrategy(FTIHCommandBase* cmdBase)
+TIHReturn64 FTIHCommanderStrategyModifyValue::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
 	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
 
 	const FTIHCommandHeader& cmdHeader = cmdBase->GetCommandHeader();
 	const FTIHCommandMethod& cmdMethod = cmdBase->GetCommandMethod();
-
-
-	if ()
 
 
 
@@ -166,7 +163,7 @@ TIHReturn64 FTIHCommanderStrategyModifyValue::ExecuteStrategy(FTIHCommandBase* c
 													InOutReadAndSave Implements
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-TIHReturn64 FTIHCommanderStrategyInOutReadAndSave::ExecuteStrategy(FTIHCommandBase* cmdBase)
+TIHReturn64 FTIHCommanderStrategyInOutReadAndSave::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
 
@@ -178,7 +175,7 @@ TIHReturn64 FTIHCommanderStrategyInOutReadAndSave::ExecuteStrategy(FTIHCommandBa
 													InOutWriteAndModify Implements
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----
 */
-TIHReturn64 FTIHCommanderStrategyInOutWriteAndModify::ExecuteStrategy(FTIHCommandBase* cmdBase)
+TIHReturn64 FTIHCommanderStrategyInOutWriteAndModify::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
 
@@ -204,6 +201,6 @@ void FTIHMngObjPoolCenter::MergeSamePrepareDatas()
 
 	}
 
-	mPrepareDatas.PushLast(mergeDataA);
+	//mPrepareDatas.PushLast(mergeDataA);
 
 }

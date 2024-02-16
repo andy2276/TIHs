@@ -134,12 +134,12 @@ struct TTIHMngObjTempDataPair
 	{}
 	TTIHMngObjTempDataPair(const TTIHMngObjTempDataPair& copyCtor)
 		:
-		HashValueType(copyCtor.hashValueType), UEValueType(copyCtor.ueValueType)
+		HashValueType(copyCtor.HashValueType), UEValueType(copyCtor.UEValueType)
 	{}
 
 	TTIHMngObjTempDataPair(TTIHMngObjTempDataPair&& moveCtor)
 		:
-		HashValueType(moveCtor.hashValueType), UEValueType(moveCtor.ueValueType)
+		HashValueType(std::move(moveCtor.HashValueType)), UEValueType(std::move(moveCtor.UEValueType))
 	{}
 
 	TTIHMngObjTempDataPair& operator=(const TTIHMngObjTempDataPair& copyOper)
@@ -175,6 +175,7 @@ struct FTIHMngObjPoolConfigure
 
 struct FTIHGenerateCandidateLeaves
 {
+	static FTIHGenerateCandidateLeaves gErrorReference;
 	TSet<TIHObjectHash64> GenerateTags;
 
 	FTIHGenerateCandidateLeaves() {}
@@ -199,13 +200,14 @@ struct FTIHGenerateCandidateLeaves
 	}
 	FTIHGenerateCandidateLeaves& operator=(FTIHGenerateCandidateLeaves&& moveOper)
 	{
-		GenerateTags = moveOper.GenerateTags;
+		GenerateTags = std::move(moveOper.GenerateTags);
 	}
 	FTIHGenerateCandidateLeaves& operator=(TSet<TIHObjectHash64>&& moveOper)
 	{
 		GenerateTags = moveOper;
 	}
 };
+
 USTRUCT()
 struct FTIHMngObjComponentHeader
 {
@@ -579,7 +581,6 @@ struct FTIHNewAllocPrepareData
 		TargetClassHash(targetClassHash)
 	{
 	};
-
 	FTIHNewAllocPrepareData(const FTIHNewAllocPrepareData& rvalue):
 		TargetClassType(rvalue.TargetClassType),
 		AllocateCount(rvalue.AllocateCount),
@@ -901,201 +902,7 @@ private:
 
 	TDeque< FTIHMngObjComposite*> mEmptyComposites;
 };
-class FTIHMngObjPool
-{
-public:
 
-	FTIHMngObjPool(FTIHMngObjPoolCenter& center)
-		: mPoolCenter(center)
-	{};
-	~FTIHMngObjPool() {};
-
-	TIHReturn64 ReserveWholeObjectPool(int16 maxCount);
-
-
-	FTIHUnionFind& GetUnionFind()
-	{
-		return mUnionFind;
-	}
-
-	FTIHMngObjPoolCenter& GetManagedObjectPoolCenter()
-	{
-		return mPoolCenter;
-	}
-	/*
-		self 인덱스가 필요한가? 어차피 지금 객체를 특정짓는건 불가능하잖아. 그럼tarray 로 그냥 넣는게 맞지않나?
-		근데 remove 를 위해서는 있어야하긴하네.
-		tset 에 top 이있나?
-	*/
-
-
-#pragma region Object Assgin and NewAlloc
-public:
-
-
-	void SetManagedPoolSpace(int8 managedSpace)
-	{
-
-		mManagedObjectPoolConfigure.PoolDatas.AllocationSpace = managedSpace;
-	}
-
-	const FTIHMngObjPoolConfigure& GetConfigure()
-	{
-		return mManagedObjectPoolConfigure;
-	}
-	FTIHMngObjPoolConfigure& GetConfigureNoConst()
-	{
-		return mManagedObjectPoolConfigure;
-	}
-	void SetObjectPoolConfigure(const FTIHMngObjPoolConfigureDatas& datas)
-	{
-		mManagedObjectPoolConfigure.PoolDatas = datas;
-	}
-
-	//	여기에서 SetSelfIndexInWholeArray 를 해준다.
-	void AddNewManagedObject(FTIHMngObj* newManagedObject);
-
-
-	TArray<FTIHMngObj*>& GetWholeManagedObjectArray()
-	{
-		return mWholeManagedObjects;
-	}
-	FTIHMngObjTempDatas& GetTempDatas()
-	{
-		return mTempDatasForNewAlloc;
-	}
-
-	void OnSortManagedStates();
-
-	void PushBackReadyMngObj(FTIHMngObj* target);
-	FTIHMngObj* GetAnyReadyMngObj(int8 base, TIHHash64 ueHash);
-
-	void OnChangeStateAllocateToReady();
-	void OnCompleteCreateNewAlloc();
-
-	void OnRepeatCreateNewAlloc(int32 currPhase);
-	void OnErrorCallCreateNewAlloc(TIHReturn64 errCode);
-
-
-
-protected:
-	FTIHMngObjPoolCenter& mPoolCenter;
-
-	TArray< FTIHMngObj*> mWholeManagedObjects;
-	//	reserve 가 반드시 필요하다.
-
-	/*
-		reserve
-		merge
-		IsValid
-	*/
-	FTIHUnionFind mUnionFind;//	need reserve
-
-	/*
-		setWorldTarget
-	*/
-	AActor* mGenerateTargetWorld;	//	need setting
-	/*
-		setWorldTarget
-	*/
-	AActor* mGenerateOwner;//	need setting
-
-	/*
-		setManagedObjectConfigure 내부 setter 함수들
-	*/
-	FTIHMngObjPoolConfigure mManagedObjectPoolConfigure;
-
-#pragma endregion
-
-	TDeque< FTIHNewAllocPrepareData> mPrepareManagedObjects;
-
-	//TMap<int8,TMap<int8, TMap<TIHHash64,TSet<int16>>>> mManagedObjectStateBaseTypeIndices;
-
-	TMap<int8, TMap< TIHHash64, TSet<int16> > > mManagedObjectStateRunningIndices;
-	/*
-		base
-			managedHash
-					selfIndex
-	*/
-	TMap<int8, TMap< TIHHash64, TDeque<int16>>> mManagedObjectStateReadyIndices;
-
-	FTIHMngObjTempDatas mTempDatasForNewAlloc;
-};
-
-class FTIHMngObjPoolCenter
-{
-	/*
-		사실 여기서 하고싶은건 ObjectPool 의 공통기능 및 공유 기능을 만드는건데,
-		특히 prepare 이거를 하는거다.
-
-
-	*/
-public:
-	static FTIHMngObjPoolCenter& GetSingle();
-	void MergeSamePrepareDatas();
-
-
-
-	TDeque<const FTIHNewAllocPrepareData>& GetPrepareDataQueue();
-	void EmplaceAddMngObjPrepareData
-	(
-		int8 TargetClassType, UEObjectHash64 TargetClassHash,
-		int16 CallParentIndex, int16 AllocateCount
-	);
-	void EmplaceAddMngObjPrepareDataForChildActor
-	(
-		UEObjectHash64 TargetClassHash, int16 CallParentIndex
-	);
-
-
-	int8 RegistManagedObjectPool(ETIHManagedObjectSpace managedObjectSpace, FTIHMngObjPool* managedObjectPool);
-
-	FTIHMngObjPool* GetManagedObjectPool(int8 objectPoolSpace);
-
-
-
-	void RegistUEClassForGenerate(UClass* ucls);
-	void RegistFunctionForManagedComponentGeneration(TIHReturn64 managedCompHash, TFunction< FTIHMngObjLeaf* ()> func);
-	/*void RegistLinkUEClassAndManagedComponentByUEClass(UClass* ucls, const TArray<TIHReturn64>& tihHashs)
-	{
-
-	}*/
-	
-	FTIHMngObjFactory& GetFactory();
-	void OnGeneratePipeLining(int8 allocationSpace);
-	void OnSetObjectPoolConfigure(const FTIHMngObjPoolConfigureDatas& data);
-	const FTIHGenerateCandidateLeaves& GenerateManagedObjectComponentByUClass(UClass* ucls);
-	UEObjectHash64 GetUeHashByUClassInUEComponent(UClass* ucls);
-	bool IsUeHashValid(UEObjectHash64 ueHash);
-	const FTIHGenerateCandidateLeaves& GetTIHHashArrayByUEHash(UEObjectHash64 ueHash);
-	FTIHMngObjLeaf* GenerateManagedComponentByTIHHash(TIHObjectHash64 ueHash);
-	/*
-		그래서 이거는 어디서? 바로 원하는 곳에서 호출해주면 된다. 대신 prepare 들 이전에 호출해줘야함.
-
-	*/
-	//FTIHMngObjPool* CreateManagedObjectPool(
-	//	int8 allocationSpace,
-	//	int16 wholeMngObjCapacity,
-	//	int16 processingPhaseCount,
-	//	UWorld* spawnSpace,
-	//	AActor* ownerActor,
-	//	const FTransform& defaultTransform = FTransform::Identity,
-	//	int8 ifAddCapacityCount = 256
-	//);
-	FTIHMngObj* PoolingManagedObject(int8 allocationSpace, int8 ueObjBase, TIHObjectHash64 ueObjHash);
-
-private:
-	FTIHMngObjFactory* mManagedObjectFactory;
-	TMap<FName, UEObjectHash64> mClassNameToUeClassHash;
-	TDeque<const FTIHNewAllocPrepareData> mPrepareDatas;
-
-	TMap<TIHObjectHash64, TFunction< FTIHMngObjLeaf* ()>> mTIHClassHashToGenerateFunction;
-	TMap<UEObjectHash64, FTIHGenerateCandidateLeaves> mUClassToClassHashs;// ForManagedComponent	ue컴포넌트로 해당하는 해쉬찾는거임
-	TMap<UEObjectHash64, UClass*> mUeClassHashToUClass;
-
-	TMap<int8, FTIHMngObjPool*> mManagedObjectPools;
-
-};
 
 class FTIHMngObjComponent
 {
@@ -1244,12 +1051,7 @@ public:
 		return GetOwnerIndex();
 	}
 
-	FTIHMngObj* GetOwnerManagedObject()
-	{
-		return FTIHMngObjPoolCenter::GetSingle().GetManagedObjectPool(GetManagedObjectComponentHeader().AllocationSpace)->GetWholeManagedObjectArray()[GetOwnerIndex()];
-
-		return nullptr;
-	}
+	FTIHMngObj* GetOwnerManagedObject();
 
 	void SetIndexInManagedObjectCompositeArray(int16 index)
 	{
@@ -1656,3 +1458,232 @@ private:
 	
 };
 FTIHMngObjPoolCenter* FTIHMngObj::gPoolCenter = nullptr;
+
+class FTIHMngObjPool
+{
+public:
+
+	FTIHMngObjPool(FTIHMngObjPoolCenter& center)
+		: mPoolCenter(center)
+	{};
+	~FTIHMngObjPool() {};
+
+	TIHReturn64 ReserveWholeObjectPool(int16 maxCount);
+
+
+	FTIHUnionFind& GetUnionFind()
+	{
+		return mUnionFind;
+	}
+
+	FTIHMngObjPoolCenter& GetManagedObjectPoolCenter()
+	{
+		return mPoolCenter;
+	}
+	/*
+		self 인덱스가 필요한가? 어차피 지금 객체를 특정짓는건 불가능하잖아. 그럼tarray 로 그냥 넣는게 맞지않나?
+		근데 remove 를 위해서는 있어야하긴하네.
+		tset 에 top 이있나?
+	*/
+
+
+#pragma region Object Assgin and NewAlloc
+public:
+
+
+	void SetManagedPoolSpace(int8 managedSpace)
+	{
+
+		mManagedObjectPoolConfigure.PoolDatas.AllocationSpace = managedSpace;
+	}
+
+	const FTIHMngObjPoolConfigure& GetConfigure()
+	{
+		return mManagedObjectPoolConfigure;
+	}
+	FTIHMngObjPoolConfigure& GetConfigureNoConst()
+	{
+		return mManagedObjectPoolConfigure;
+	}
+	void SetObjectPoolConfigure(const FTIHMngObjPoolConfigureDatas& datas)
+	{
+		mManagedObjectPoolConfigure.PoolDatas = datas;
+	}
+
+	//	여기에서 SetSelfIndexInWholeArray 를 해준다.
+	void AddNewManagedObject(FTIHMngObj* newManagedObject);
+
+
+	TArray<FTIHMngObj*>& GetWholeManagedObjectArray()
+	{
+		return mWholeManagedObjects;
+	}
+	FTIHMngObjTempDatas& GetTempDatas()
+	{
+		return mTempDatasForNewAlloc;
+	}
+
+	void OnSortManagedStates();
+
+	void PushBackReadyMngObj(FTIHMngObj* target);
+	FTIHMngObj* GetAnyReadyMngObj(int8 base, TIHHash64 ueHash);
+
+	void OnChangeStateAllocateToReady();
+	void OnCompleteCreateNewAlloc();
+
+	void OnRepeatCreateNewAlloc(int32 currPhase);
+	void OnErrorCallCreateNewAlloc(TIHReturn64 errCode);
+
+	/*
+		개별 매니지드 오브젝트 가져오는 함수만들기
+		매니지드 오브젝트 상태확인을 바로하는 거 만들기
+	
+	*/
+
+	FTIHMngObj* GetMngObj(int16 index)
+	{
+		FTIHMngObj* reValue = nullptr;
+		reValue = mWholeManagedObjects[index];
+		return reValue;
+	}
+
+	FTIHMngObj* GetMngObjFaster(int16 index)
+	{
+		FTIHMngObj* reValue = nullptr;
+		reValue = *(mWholeManagedObjects.GetData() + (int32)index);
+		return reValue;
+	}
+
+	FTIHMngObj* GetMngObjFast(int16 index)
+	{
+		FTIHMngObj* reValue = nullptr;
+		if (index < mWholeManagedObjects.Num())
+		{
+			reValue = GetMngObjFaster(index);
+		}
+		return reValue;
+	}
+
+	const FTIHState& GetMngObjState(int16 index)
+	{
+		FTIHMngObj* target = GetMngObjFast(index);
+		check(target != nullptr);
+		return target->GetState();
+	}
+
+protected:
+	FTIHMngObjPoolCenter& mPoolCenter;
+
+	TArray< FTIHMngObj*> mWholeManagedObjects;
+	//	reserve 가 반드시 필요하다.
+
+	/*
+		reserve
+		merge
+		IsValid
+	*/
+	FTIHUnionFind mUnionFind;//	need reserve
+
+	/*
+		setWorldTarget
+	*/
+	AActor* mGenerateTargetWorld;	//	need setting
+	/*
+		setWorldTarget
+	*/
+	AActor* mGenerateOwner;//	need setting
+
+	/*
+		setManagedObjectConfigure 내부 setter 함수들
+	*/
+	FTIHMngObjPoolConfigure mManagedObjectPoolConfigure;
+
+#pragma endregion
+
+	TDeque< FTIHNewAllocPrepareData> mPrepareManagedObjects;
+
+	//TMap<int8,TMap<int8, TMap<TIHHash64,TSet<int16>>>> mManagedObjectStateBaseTypeIndices;
+
+	TMap<int8, TMap< TIHHash64, TSet<int16> > > mManagedObjectStateRunningIndices;
+	/*
+		base
+			managedHash
+					selfIndex
+	*/
+	TMap<int8, TMap< TIHHash64, TDeque<int16>>> mManagedObjectStateReadyIndices;
+
+	FTIHMngObjTempDatas mTempDatasForNewAlloc;
+};
+
+class FTIHMngObjPoolCenter
+{
+	/*
+		사실 여기서 하고싶은건 ObjectPool 의 공통기능 및 공유 기능을 만드는건데,
+		특히 prepare 이거를 하는거다.
+
+
+	*/
+public:
+	static FTIHMngObjPoolCenter& GetSingle();
+	void MergeSamePrepareDatas();
+
+	TDeque<FTIHNewAllocPrepareData>& GetPrepareDataQueue();
+	void EmplaceAddMngObjPrepareData
+	(
+		int8 TargetClassType, UEObjectHash64 TargetClassHash,
+		int16 CallParentIndex, int16 AllocateCount
+	);
+	void EmplaceAddMngObjPrepareDataForChildActor
+	(
+		UEObjectHash64 TargetClassHash, int16 CallParentIndex
+	);
+
+
+	int8 RegistManagedObjectPool(ETIHManagedObjectSpace managedObjectSpace, FTIHMngObjPool* managedObjectPool);
+
+	FTIHMngObjPool* GetManagedObjectPool(int8 objectPoolSpace);
+
+
+
+	void RegistUEClassForGenerate(UClass* ucls);
+	void RegistFunctionForManagedComponentGeneration(TIHReturn64 managedCompHash, TFunction< FTIHMngObjLeaf* ()> func);
+	/*void RegistLinkUEClassAndManagedComponentByUEClass(UClass* ucls, const TArray<TIHReturn64>& tihHashs)
+	{
+
+	}*/
+	
+	FTIHMngObjFactory& GetFactory();
+	void OnGeneratePipeLining(int8 allocationSpace);
+	void OnSetObjectPoolConfigure(const FTIHMngObjPoolConfigureDatas& data);
+	const FTIHGenerateCandidateLeaves& GenerateManagedObjectComponentByUClass(UClass* ucls);
+	UEObjectHash64 GetUeHashByUClassInUEComponent(UClass* ucls);
+	bool IsUeHashValid(UEObjectHash64 ueHash);
+	const FTIHGenerateCandidateLeaves& GetTIHHashArrayByUEHash(UEObjectHash64 ueHash);
+	FTIHMngObjLeaf* GenerateManagedComponentByTIHHash(TIHObjectHash64 ueHash);
+	/*
+		그래서 이거는 어디서? 바로 원하는 곳에서 호출해주면 된다. 대신 prepare 들 이전에 호출해줘야함.
+
+	*/
+	//FTIHMngObjPool* CreateManagedObjectPool(
+	//	int8 allocationSpace,
+	//	int16 wholeMngObjCapacity,
+	//	int16 processingPhaseCount,
+	//	UWorld* spawnSpace,
+	//	AActor* ownerActor,
+	//	const FTransform& defaultTransform = FTransform::Identity,
+	//	int8 ifAddCapacityCount = 256
+	//);
+	FTIHMngObj* PoolingManagedObject(int8 allocationSpace, int8 ueObjBase, TIHObjectHash64 ueObjHash);
+
+private:
+	FTIHMngObjFactory* mManagedObjectFactory;
+	TMap<FName, UEObjectHash64> mClassNameToUeClassHash;
+	TDeque<FTIHNewAllocPrepareData> mPrepareDatas;
+
+	TMap<TIHObjectHash64, TFunction< FTIHMngObjLeaf* ()>> mTIHClassHashToGenerateFunction;
+	TMap<UEObjectHash64, FTIHGenerateCandidateLeaves> mUClassToClassHashs;// ForManagedComponent	ue컴포넌트로 해당하는 해쉬찾는거임
+	TMap<UEObjectHash64, UClass*> mUeClassHashToUClass;
+
+	TMap<int8, FTIHMngObjPool*> mManagedObjectPools;
+
+};

@@ -1,5 +1,6 @@
 #include "TIHCommands.h"
 #include "TIHStrategies.h"
+#include "TIHStationCore.h"
 
 void FTIHCommander::TestSettingCommandList()
 {
@@ -20,7 +21,7 @@ TIHReturn64 FTIHCommander::ExecuteCommands()
 
 		if ((int8)ETIHCommandMethodProcessingProtocols::EStrategies == cmdMethod.CommandProcessingProtocol)
 		{
-			cmdResult.WholeData = ExecuteCommandStaticPolymorphs(primitiveCmd);
+			cmdResult.WholeData = ExecuteCommandByCmdProtocolEnum(primitiveCmd);
 		}
 		else if ((int8)ETIHCommandMethodProcessingProtocols::EDelegates == cmdMethod.CommandProcessingProtocol)
 		{
@@ -92,45 +93,10 @@ TIHReturn64 FTIHCommander::ExecuteCommandDirect(FTIHCommandBase* curCommand)
 	FTIHCommandHeader primitiveCmdHeader = curCommand->GetCommandHeader();
 	FTIHCommandMethod primitiveCmdMethod = curCommand->GetCommandMethod();
 
-	UStaticMeshComponent;
-	USkeletalMeshComponent* bbb;
-
-
 	FTIHCommandFactory& factory = TIHSTATION.GetCommandFactory();
 	FTIHCommander& commander = TIHSTATION.GetCommander();
 
-	factory.BeginChainBuild();
-
-	factory.ChainBuildCommandHeader()
-		.SetProtocol((int8)ETIHCommandHeaderProtocols::ECreateAssignPool)
-		.SetProtocolOption(0)
-		.SetOption0(1)
-		.SetOption1(2);
-
-	factory.ChainBuildCommandMethod()
-		.SetCommandProcessingProtocol((int8)ETIHCommandMethodProcessingProtocols::EStrategies)
-		.SetCommandProgressionProtocol((int8)ETIHCommandMethodProgressionProtocols::ETickable)
-		.SetCompleteFunctorIndex(1);
-
-	factory.ChainBuildCommandData<FTIHCommandCreateAssignPoolDatas>()
-		.SetCreateType(1)
-		.SetDataType(1);
-
-	factory.EndChainBuild();
-
-	UClass* a;
-
-	UStaticMesh::StaticClass();
-
-	const uint8 TempProtocol[] =
-	{
-		0,	//	continue
-		1	//	nextTick
-	};
-
-	FTIHCommandTestDelay commandDelay;
-
-
+	
 
 	return reValue;
 }
@@ -138,80 +104,61 @@ TIHReturn64 FTIHCommander::ExecuteCommandDirect(FTIHCommandBase* curCommand)
 *	@brief StaticPolymorph 패턴 사용하여 커맨드를 실행하는것
 *	@detail
 */
-TIHReturn64 FTIHCommander::ExecuteCommandStaticPolymorphs(FTIHCommandBase* primitiveCmd)
+TIHReturn64 FTIHCommander::ExecuteCommandByCmdProtocolEnum(FTIHCommandBase* primitiveCmd)
 {
 	TIHReturn64 reValue = 0;
 
-	const FTIHCommandHeader& cmdHeader = primitiveCmd->GetCommandHeader();
+	ExecuteCommandStaticPolymorph(mStrategyCreateNewAlloc, primitiveCmd);
 
-	if (cmdHeader.Protocol < (int8)ETIHCommandHeaderProtocols::MaxLength)
-	{
-		//	이거 룩업화 할수있는지 생각
+	const FTIHCommandHeader& cmdHeader = primitiveCmd->GetCommandHeader();
 		switch (cmdHeader.Protocol)
 		{
 		case (int8)ETIHCommandHeaderProtocols::ECreateAssignPool:
-			reValue = ExecuteCommandStaticPolymorph(*mStrategyCreateNewAlloc, primitiveCmd);
+			reValue = mStrategyCreateNewAlloc->ExecuteCommandStaticPolymorph(primitiveCmd);
 			break;
 		case (int8)ETIHCommandHeaderProtocols::ECreateNewAlloc:
-			reValue = ExecuteCommandStaticPolymorph(*mStrategyCreateAssignPool, primitiveCmd);
+			reValue = mStrategyCreateAssignPool->ExecuteCommandStaticPolymorph(primitiveCmd);
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EServerConnect:
-			reValue = ExecuteCommandStaticPolymorph(*mStrategyServerConnect, primitiveCmd);
+			reValue = mStrategyServerConnect->ExecuteCommandStaticPolymorph(primitiveCmd);
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EServerSend:
-			reValue = ExecuteCommandStaticPolymorph(*mStrategyServerSend, primitiveCmd);
+			reValue = mStrategyServerSend->ExecuteCommandStaticPolymorph(primitiveCmd);
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EServerListen:
-			reValue = ExecuteCommandStaticPolymorph(*mStrategyServerListen, primitiveCmd);
+			reValue = mStrategyServerListen->ExecuteCommandStaticPolymorph(primitiveCmd);
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EServerDisConnect:
-			reValue = ExecuteCommandStaticPolymorph(*mStrategyServerDisConnect, primitiveCmd);
+			reValue = mStrategyServerDisConnect->ExecuteCommandStaticPolymorph(primitiveCmd);
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EDeleteRejectPool:
-			reValue = ExecuteCommandStaticPolymorph(*mStrategyDeleteRejectPool, primitiveCmd);
+			reValue = mStrategyDeleteRejectPool->ExecuteCommandStaticPolymorph(primitiveCmd);
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EDeleteDestory:
-			reValue = ExecuteCommandStaticPolymorph(*mStrategyDeleteDestory, primitiveCmd);
+			reValue = mStrategyDeleteDestory->ExecuteCommandStaticPolymorph(primitiveCmd);
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EModifyTransform:
-			reValue = ExecuteCommandStaticPolymorph(*mStrategyModifyTransform, primitiveCmd);
+			reValue = mStrategyModifyTransform->ExecuteCommandStaticPolymorph(primitiveCmd);
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EModifyValue:
-			reValue = ExecuteCommandStaticPolymorph(*mStrategyModifyValue, primitiveCmd);
+			reValue = mStrategyModifyValue->ExecuteCommandStaticPolymorph(primitiveCmd);
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EInOutReadAndSave:
-			reValue = ExecuteCommandStaticPolymorph(*mStrategyInOutReadAndSave, primitiveCmd);
+			reValue = mStrategyInOutReadAndSave->ExecuteCommandStaticPolymorph(primitiveCmd);
 			break;
 		case (int8)ETIHCommandHeaderProtocols::EInOutWriteAndModify:
-			reValue = ExecuteCommandStaticPolymorph(*mStrategyInOutWriteAndModify, primitiveCmd);
+			reValue = mStrategyInOutWriteAndModify->ExecuteCommandStaticPolymorph(primitiveCmd);
 			break;
-		case (int8)ETIHCommandHeaderProtocols::ETestDelay:
-			reValue = ExecuteCommandStaticPolymorph(*mStrategyTestDelay, primitiveCmd);
+		case (int8)ETIHCommandHeaderProtocols::EExtendStratey:
+			check(mStrategyExention != nullptr);
+			reValue = mStrategyExention->ExecuteCommandInheritance(primitiveCmd);
 			break;
 		case (int8)ETIHCommandHeaderProtocols::MaxLength:
 			break;
 		}
-	}
-	else
-	{
-		/*
-			저기에 카테고리에 없는 strategy 를 추가하겠다는 건데
-			만약 저기 없는 프로토콜에 심지어 라이브러리 업데이트 되지 않은 그런 전략을 커맨드 실행에 사용하고 싶다면
-			commanderExention 을 상속받아 넣으면 된다. 대신 staticPolymorphism 이아니라 dynamicPolymorphism 일거임.
-		*/
-		if (mStrategyExention != nullptr)
-		{
-			reValue = mStrategyExention->ExecuteCommandInheritance(primitiveCmd);
-		}
-
-	}
-
 	return reValue;
 }
-/*!
-*	@brief execute 결과를 처리하는 함수. 루프를 컨트롤 한다.
-*	@detail
-*/
+
 TIHReturn64 FTIHCommander::SequenceCommand(TIHReturn64 result, FTIHCommandBase* primitiveCmd)
 {
 	FUnionTIHCommandResult reValue;
@@ -297,7 +244,7 @@ TIHReturn64 FTIHCommander::CheckCallingCompleteFunctions(FTIHCommandBase* primit
 	const FTIHCommandHeader cmdHeader = primitiveCmd->GetCommandHeader();
 	const FTIHCommandMethod cmdMethod = primitiveCmd->GetCommandMethod();
 	TIHReturn64 reValue = 0;
-
+	//	여기에 pooling 의 space 가 필요함함
 	int16 completIndex = cmdMethod.CompleteFunctorIndex;
 	bool validCheck = (completIndex < mCompleteFunctions.Num()) ?
 		mCompleteFunctions[completIndex].IsValidFunctor() : false;
@@ -346,6 +293,7 @@ TIHReturn64 FTIHCommandFactory::NextBuilders()
 {
 	//	여기 다시고치자
 	FUnionTIHCommandFactoryResult reValue;
+	reValue.WholeData = 0;
 	int32 nextIndex = 0;
 	/*
 		move 와 절대 index 가 일치하는지 확인
@@ -410,6 +358,7 @@ TIHReturn64 FTIHCommandFactory::ReserveArrayForCommandMetaDatasByGrowing()
 TIHReturn64 FTIHCommandFactory::AssignToArrayForCommandMetaData(FTIHChainBuilderBase* data)
 {
 	FUnionTIHCommandFactoryResult reValue;
+	reValue.WholeData = 0;
 	/*
 		이거는 없어져야할듯
 		1. 할당할 영역이 pooling 인지 혹은 realloc 인지확인
@@ -459,7 +408,7 @@ TIHReturn64 FTIHCommandFactory::PrepareCommandFactory()
 TIHReturn64 FTIHCommandFactory::PrevRegistCommand()
 {
 	FUnionTIHCommandFactoryResult reValue;
-	FUnionTIHDataBoardResult dataResult;
+	//FUnionTIHDataBoardResult dataResult;
 	reValue.WholeData = 0;
 
 	TIH_CURRURNT_STATION_CLASS& station = TIHSTATION;
@@ -580,7 +529,7 @@ TIHReturn64 FTIHCommandFactory::PrevRegistCommand()
 TIHReturn64 FTIHCommandFactory::InstantiateCommandsInMetaArray(FTIHCommander& commander)
 {
 	FUnionTIHCommandFactoryResult reValue;
-
+	reValue.WholeData = 0;
 	FTIHCommandList& cmdList = commander.GetCommandList();
 
 	for (int32 i = 0; i < mBuildersArray.Num(); ++i)
@@ -631,7 +580,7 @@ TIHReturn64 FTIHCommandFactory::InstantiateCommandsInMetaArray(FTIHCommander& co
 
 FTIHCommandFactory::FTIHCommandFactory()
 {
-	mFactoryConfigObject = MakeUnique<UTIHCommandFactoryConfigure>();
+	mFactoryConfigObject = MakeUnique<FTIHCommandFactoryConfigure>();
 	mFactoryConfigObject->CheckConstantSetting();
 
 }
@@ -649,7 +598,7 @@ TIHReturn64 FTIHCommandFactory::SearchReserveIndex()
 
 
 
-TIHReturn64 UTIHCommandFactoryConfigure::CheckConstantSetting()
+TIHReturn64 FTIHCommandFactoryConfigure::CheckConstantSetting()
 {
 	mFactorySettingType = 1;
 	mFactorySettingTypeOption = 0;
@@ -661,4 +610,30 @@ TIHReturn64 UTIHCommandFactoryConfigure::CheckConstantSetting()
 	mRoggingSavePath = "";
 	mRoggingServerUrl = "";
 	return 0;
+}
+
+bool FTIHCommandFunctorWrapperBase::IsValidFunctor()
+{
+	static FTIHMngObjPoolCenter& objectPoolCenter = TIHSTATION.GetManagedObjectPoolCenter();//	여기 아예 수정을 해야겠네
+	bool reValue = false;
+
+	if ((int8)ETIHCommandFunctorProtocols::EManagedObjectMemberFunction == mFunctorHeader.Protocol)
+	{
+		int8 poolAllocationSpace = mFunctorHeader.OptionInt8;
+		int16 mngObjIndex = mFunctorHeader.OptionInt16;
+
+		FTIHMngObjPool* objectPool = objectPoolCenter.GetManagedObjectPool(poolAllocationSpace);
+		check(objectPool != nullptr);
+		FTIHMngObj* mngObj = objectPool->GetMngObjFast(mngObjIndex);
+		check(mngObj != nullptr);
+		if(mngObj->GetState().IsStateReady() || mngObj->GetState().IsRunning())
+		{
+			reValue = true;
+		}
+	}
+	else if ((int8)ETIHCommandFunctorProtocols::ECommanderFunction == mFunctorHeader.Protocol)
+	{
+
+	}
+	return reValue;
 }

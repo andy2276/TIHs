@@ -8,8 +8,73 @@
 #include "TIHCommands.generated.h"
 
 class FTIHCommander;
+class FTIHCommandBase;
+template<typename TIHTemplateType>class TTIHCommand;
+class FTIHCommandCreateNewAllocPrepare;
+class FTIHCommandCreateNewAllocOnGenerate;
+class FTIHCommandCreatePooling;
+class FTIHCommandCreateReject;
+class FTIHCommandServerConnect;
+class FTIHCommandServerSend;
+class FTIHCommandServerListen;
+class FTIHCommandServerDisConnect;
+class FTIHCommandDeleteRejectPool;
+class FTIHCommanEDeleteDestory;
+class FTIHCommandModifyTransform;
+class FTIHCommandModifyValue;
+class FTIHCommandInOutReadAndSave;
+class FTIHCommandInOutWriteAndModify;
+class FTIHCommandFactoryConfigure;
+class FTIHChainBuilderPool;
+class FTIHCommandFactory;
+class FTIHCommandDataBoard;
+class FTIHCommandShareBoard;
+class FTIHCommandResultBoard;
+class FTIHCommandPathBoard;
+class FTIHCommandList;
+template<typename TIHTemplateType>class TTIHCommandFunctorWrapper;
 
 
+
+/*이거는 strategy 때문에 이렇게 해줌.근데 커맨더를 다른곳에 빼도 될거같긴한데 일단은*/
+class FTIHCommanderStrategyCreateNewAlloc;
+class FTIHCommanderStrategyCreateAssignPool;
+class FTIHCommanderStrategyServerConnect;
+class FTIHCommanderStrategyServerSend;
+class FTIHCommanderStrategyServerListen;
+class FTIHCommanderStrategyServerDisConnect;
+class FTIHCommanderStrategyDeleteRejectPool;
+class FTIHCommanderStrategyDeleteDestory;
+class FTIHCommanderStrategyModifyTransform;
+class FTIHCommanderStrategyModifyValue;
+class FTIHCommanderStrategyInOutReadAndSave;
+class FTIHCommanderStrategyInOutWriteAndModify;
+class FTIHCommanderExtentionForExeCmdStrategy;
+
+
+
+
+
+
+union FUnionTIHCommandResult;
+union FUnionTIHDataBoardResult;
+union FUnionTIHCommandFactoryResult;
+union FUnionTIHCommandListResult;
+
+struct FTIHCommandHeader;
+struct FTIHCommandMethod;
+struct FTIHCommandServerConnectDatas;
+struct FTIHCommandServerSendDatas;
+struct FTIHCommandServerListenDatas;
+struct FTIHCommandServerDisConnectDatas;
+struct FTIHCommandDeleteRejectPoolDatas;
+struct FTIHCommanEDeleteDestoryDatas;
+struct FTIHCommandModifyTransformDatas;
+struct FTIHCommandModifyValueDatas;
+struct FTIHCommandInOutReadAndSaveDatas;
+struct FTIHCommandInOutWriteAndModifyDatas;
+struct FTIHCommandFactoryBuilders;
+struct FTIHCommandFunctorHeader;
 
 union FUnionTIHCommandResult
 {
@@ -23,6 +88,34 @@ union FUnionTIHCommandResult
 
 		int32 SimpleResult;
 	}ResultDetail;
+	TIHReturn64 WholeData;
+};
+union FUnionTIHDataBoardResult
+{
+	struct FTIHDataBoardReserveResultDetail
+	{
+		int8 Protocol;
+		int8 Padding;
+		int16 PreMax;
+		TIHReturn32 SimpleResult;
+	}ReserveDetail;
+	struct FTIHDataBoardRegisterResultDetail
+	{
+		int8 Protocol;
+		int8 Padding;
+		int16 RegistedIndex;
+		TIHReturn32 SimpleResult;
+	}RegisterDetail;
+	struct FTIHDataBoardRegisterRangeResultDetail
+	{
+		int8 Protocol;
+		int8 Padding;
+		int16 StartIndex0;
+
+		int16 StartIndex1;
+		int16 RegistCount;
+	}RegisterRangeDetail;
+
 	TIHReturn64 WholeData;
 };
 USTRUCT()
@@ -359,11 +452,8 @@ public:
 	FTIHCommandInOutWriteAndModify();
 	virtual ~FTIHCommandInOutWriteAndModify();
 };
-
-UCLASS()
-class UTIHCommandFactoryConfigure : public UObject
+class FTIHCommandFactoryConfigure 
 {
-	GENERATED_BODY()
 public:
 	TIHMACRO_CHAINBUILDER_SETTER_FUNCNAME(FactorySettingType, mFactorySettingType);
 	TIHMACRO_CHAINBUILDER_SETTER_FUNCNAME(FactorySettingTypeOption, mFactorySettingTypeOption);
@@ -546,60 +636,60 @@ struct FTIHCommandFactoryBuilders
 		SafeDeletePtr(CommandDataBuilder);
 	}
 };
+union FUnionTIHCommandFactoryResult
+{
+	struct FTIHCommandFactoryResultDetail
+	{
+		int8 Protocol;
+		int8 ProtocolOption;
+		int16 SaveIndex;
 
+		TIHReturn32 SimpleResult;
+	}ResultDetail;
+	struct FTIHCommandFactoryAssignResultDetail
+	{
+		int8 Protocol;
+		int8 AssignSemantic;
+		int16 AssignIndex;
+		TIHReturn32 SimpleResult;
+	}AssignDetail;
+
+	struct FTIHCommandFactoryReserveResultDetail
+	{
+		int8 Protocol;
+		int8 Padding;
+		int16 PreMax;
+		TIHReturn32 SimpleResult;
+	}ReserveDetail;
+	struct FTIHCommandFactoryRegistResultDetail
+	{
+		int8 Protocol;
+		int8 ProtocolOption;
+		int8 RegistResult;
+		int8 RegistResultOption;
+
+		int16 RegistIndex;
+		int16 Padding;
+
+	}RegistDetail;
+	struct FTIHCommandFactoryInstantiateResultDetail
+	{
+		int8 Protocol;
+		int8 ProtocolOption;
+
+		int16 SuccessCount;
+		int16 FailCount;
+
+		int16 Padding;
+	}InstantiateDetail;
+
+	TIHReturn64 WholeData;
+};
 
 class FTIHCommandFactory
 {
 public:
-	union FUnionTIHCommandFactoryResult
-	{
-		struct FTIHCommandFactoryResultDetail
-		{
-			int8 Protocol;
-			int8 ProtocolOption;
-			int16 SaveIndex;
-
-			TIHReturn32 SimpleResult;
-		}ResultDetail;
-		struct FTIHCommandFactoryAssignResultDetail
-		{
-			int8 Protocol;
-			int8 AssignSemantic;
-			int16 AssignIndex;
-			TIHReturn32 SimpleResult;
-		}AssignDetail;
-
-		struct FTIHCommandFactoryReserveResultDetail
-		{
-			int8 Protocol;
-			int8 Padding;
-			int16 PreMax;
-			TIHReturn32 SimpleResult;
-		}ReserveDetail;
-		struct FTIHCommandFactoryRegistResultDetail
-		{
-			int8 Protocol;
-			int8 ProtocolOption;
-			int8 RegistResult;
-			int8 RegistResultOption;
-
-			int16 RegistIndex;
-			int16 Padding;
-
-		}RegistDetail;
-		struct FTIHCommandFactoryInstantiateResultDetail
-		{
-			int8 Protocol;
-			int8 ProtocolOption;
-
-			int16 SuccessCount;
-			int16 FailCount;
-
-			int16 Padding;
-		}InstantiateDetail;
-
-		TIHReturn64 WholeData;
-	};
+	
 
 	/*
 		HelperFunc
@@ -674,7 +764,7 @@ public:
 		return SetCommandDataMetaDataBuilderTemplate<TIHTemplateCmdDataType>().BegineChain();
 	}
 
-#pragma region Generate CommandMetaData
+
 
 	//	만약 새롭게 할당해야하면 할당하고 아니면 다음으로 넘어가는 기능이지 
 
@@ -768,7 +858,7 @@ public:
 
 
 
-#pragma endregion
+
 	TIHReturn64 ReserveArrayForCommandMetaDatasByGrowing();
 	//	이거는 제거를 하자.
 	TIHReturn64 AssignToArrayForCommandMetaData(FTIHChainBuilderBase* data);
@@ -802,7 +892,7 @@ public:
 	{
 		return new TTIHChainBuilder<TIHTemplateType>();
 	}
-	UTIHCommandFactoryConfigure& CommandFactoryConfig()
+	FTIHCommandFactoryConfigure& CommandFactoryConfig()
 	{
 		return *mFactoryConfigObject.Get();
 	}
@@ -826,7 +916,7 @@ protected:
 
 	int32 mCurrTempBuilderIndex;
 	TArray< FTIHChainBuilderBase*> mTempBuilders;
-	TUniquePtr<UTIHCommandFactoryConfigure> mFactoryConfigObject;
+	TUniquePtr<FTIHCommandFactoryConfigure> mFactoryConfigObject;
 
 	TMap<uint32, FTIHChainBuilderPool> mCommandDataBuilderPool;
 
@@ -846,7 +936,7 @@ class FTIHCommandDataBoard
 {
 public:
 
-#pragma region Reserve
+
 	/*
 
 		나중에 이전의 데이터가 있으면 어떻게 할지에 대해 처리하자
@@ -892,9 +982,7 @@ public:
 	{
 		return ReserveForArrayByGrowing<TArray<FString>>(size, mStringArray);
 	}
-#pragma endregion
 
-#pragma region Register
 	TIHReturn64 RegisterToArrayAsInt8(const int8& value)
 	{
 		return RegisterToArray<int8, TArray<int8>>(value, mInt8Array);
@@ -932,8 +1020,7 @@ public:
 		return RegisterToArray<FString, TArray<FString>>(value, mStringArray);
 	}
 
-#pragma endregion
-#pragma region Ref
+
 	const int32 GetDataInInt8Array(int32 index)
 	{
 		return mInt8Array[index];
@@ -972,7 +1059,6 @@ public:
 		return mStringArray[index];
 	}
 
-#pragma endregion
 
 private:
 	TArray<int8> mInt8Array;
@@ -1059,7 +1145,26 @@ public:
 
 	FTIHCommandDataBoard mBoard;
 };
+union FUnionTIHCommandListResult
+{
+	struct FTIHCommandListClearResultDetail
+	{
+		int8 Protocol;
+		int8 Padding;
+		int16 NullCount;
 
+		int16 DeleteCount;
+		int16 EndIndex;
+	}ClearDetail;
+	struct FTIHCommandListReserveResultDetail
+	{
+		int8 Protocol;
+		int8 Padding;
+		int16 PreMax;
+		TIHReturn32 SimpleResult;
+	}ReserveDetail;
+	TIHReturn64 WholeData;
+};
 class FTIHCommandList
 {
 public:
@@ -1069,26 +1174,7 @@ public:
 
 	TArray< FTIHCommandBase*> mDeleteCandidates;
 
-	union FUnionTIHCommandListResult
-	{
-		struct FTIHCommandListClearResultDetail
-		{
-			int8 Protocol;
-			int8 Padding;
-			int16 NullCount;
-
-			int16 DeleteCount;
-			int16 EndIndex;
-		}ClearDetail;
-		struct FTIHCommandListReserveResultDetail
-		{
-			int8 Protocol;
-			int8 Padding;
-			int16 PreMax;
-			TIHReturn32 SimpleResult;
-		}ReserveDetail;
-		TIHReturn64 WholeData;
-	};
+	
 
 
 	FTIHCommandBase* operator[](int32 index)
@@ -1170,7 +1256,7 @@ public:
 	TIHReturn64 PopFrontCommand()
 	{
 		FUnionTIHCommandListResult reValue;
-
+		reValue.WholeData = 0;
 		mDeleteCandidates.Add(mCommandQueue[mCurCommandQueueIndex]);
 		mCommandQueue[mCurCommandQueueIndex] = nullptr;
 
@@ -1231,45 +1317,40 @@ struct FTIHCommandFunctorHeader
 	UPROPERTY()
 	int8 Protocol;
 	UPROPERTY()
-	int8 ProtocolOption;
+	int8 OptionInt8;
 
 	/*!
 	*	@brief 이거의 목적은 다용도이긴한데 일단 managedOBject 의 인덱스로 사용.
 	*	@detail 
 	*/
 	UPROPERTY()
-	int16 ReferenceIndex;	//	이게 16비트였나 기억이안남
+	int16 OptionInt16;	//	이게 16비트였나 기억이안남
 							//	참조할 영역이 managedOBject 또는 커맨드 내부에 있는 내부 콜백의 인덱스
 							//	이제 이걸 가지고 결정을 한 결과를 기록해놓으면 된다.
 };
 
-template<typename TIHTemplateType>
-class TTIHCommandFunctorWrapper
+class FTIHCommandFunctorWrapperBase
 {
 public:
-	bool IsValidFunctor()
-	{
-		static FTIHCommander& commander = TIHSTATION.GetCommander();
-		static FTIHMngObjPool& objectPool = TIHSTATION.GetObjectPool();
-		bool reValue = false;
-		if ((int8)ETIHCommandFunctorProtocols::EManagedObjectMemberFunction == mFunctorHeader.Protocol)
-		{
-			//	이걸 safety 하게 만들어야함
-			int32 objectRef = mFunctorHeader.ReferenceIndex;
-			reValue = objectPool.GetManagedObject(objectRef);
-		}
-		else if ((int8)ETIHCommandFunctorProtocols::ECommanderFunction == mFunctorHeader.Protocol)
-		{
+	bool IsValidFunctor();
 
-		}
-		return reValue;
-	}
+
+protected:
+	FTIHCommandFunctorHeader mFunctorHeader;
+};
+
+
+
+template<typename TIHTemplateType>
+class TTIHCommandFunctorWrapper : public FTIHCommandFunctorWrapperBase
+{
+public:
 	TFunction<TIHTemplateType>& GetFunction()
 	{
 		return mContents;
 	}
 private:
-	FTIHCommandFunctorHeader mFunctorHeader;
+	
 	TFunction<TIHTemplateType> mContents;
 };
 
@@ -1314,9 +1395,11 @@ public:
 	TIHReturn64 ExecuteCommandDirect(FTIHCommandBase* curCommand);
 
 	template<typename TIHTemplateType>
-	TIHReturn64 ExecuteCommandStaticPolymorph(TTIHCommandStrategyCRTP<TIHTemplateType>& target, FTIHCommandBase* cmdBase)
+	TIHReturn64 ExecuteCommandStaticPolymorph(TTIHCommandStrategyCRTP<TIHTemplateType>* target, FTIHCommandBase* cmdBase)
 	{
-		return target.ExecuteStrategy(cmdBase);
+		TIHReturn64 reValue = 0;
+		reValue = target->GetSelfPtr()->ExecuteCommandStaticPolymorph(cmdBase);
+		return reValue;
 	}
 
 
@@ -1324,7 +1407,7 @@ public:
 	//	이거 리절브 해야함.
 	TArray<TTIHCommandFunctorWrapper< TIHReturn64(FTIHCommandBase*) > > mCompleteFunctions;
 
-	TIHReturn64 ExecuteCommandStaticPolymorphs(FTIHCommandBase* primitiveCmd);
+	TIHReturn64 ExecuteCommandByCmdProtocolEnum(FTIHCommandBase* primitiveCmd);
 	TIHReturn64 SequenceCommand(TIHReturn64 result, FTIHCommandBase* primitiveCmd);
 
 	/*!
@@ -1350,12 +1433,12 @@ public:
 	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyInOutReadAndSave, mStrategyInOutReadAndSave);
 	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyInOutWriteAndModify, mStrategyInOutWriteAndModify);
 
-	decltype(auto) SetStrategyTestDelay(auto value)
-	{
-		SafeDeletePtr(mStrategyTestDelay);
-		mStrategyTestDelay = value;
-		return *this;
-	}
+	//decltype(auto) SetStrategyTestDelay(auto value)
+	//{
+	//	SafeDeletePtr(mStrategyTestDelay);
+	//	mStrategyTestDelay = value;
+	//	return *this;
+	//}
 	decltype(auto) SetStrategyCreateNewAlloc(auto value)
 	{
 		SafeDeletePtr(mStrategyCreateNewAlloc);
@@ -1449,18 +1532,18 @@ private:
 	FTIHCommandExecutionState mCommaderExecutionState;
 
 	//FTIHCommanderStrategyTestDelay* mStrategyTestDelay;
-	FTIHCommanderStrategyCreateNewAlloc* mStrategyCreateNewAlloc;
-	FTIHCommanderStrategyCreateAssignPool* mStrategyCreateAssignPool;
-	FTIHCommanderStrategyServerConnect* mStrategyServerConnect;
-	FTIHCommanderStrategyServerSend* mStrategyServerSend;
-	FTIHCommanderStrategyServerListen* mStrategyServerListen;
-	FTIHCommanderStrategyServerDisConnect* mStrategyServerDisConnect;
-	FTIHCommanderStrategyDeleteRejectPool* mStrategyDeleteRejectPool;
-	FTIHCommanderStrategyDeleteDestory* mStrategyDeleteDestory;
-	FTIHCommanderStrategyModifyTransform* mStrategyModifyTransform;
-	FTIHCommanderStrategyModifyValue* mStrategyModifyValue;
-	FTIHCommanderStrategyInOutReadAndSave* mStrategyInOutReadAndSave;
-	FTIHCommanderStrategyInOutWriteAndModify* mStrategyInOutWriteAndModify;
+	FTIHCommanderStrategyCreateNewAlloc*		mStrategyCreateNewAlloc;
+	FTIHCommanderStrategyCreateAssignPool*		mStrategyCreateAssignPool;
+	FTIHCommanderStrategyServerConnect*			mStrategyServerConnect;
+	FTIHCommanderStrategyServerSend*			mStrategyServerSend;
+	FTIHCommanderStrategyServerListen*			mStrategyServerListen;
+	FTIHCommanderStrategyServerDisConnect*		mStrategyServerDisConnect;
+	FTIHCommanderStrategyDeleteRejectPool*		mStrategyDeleteRejectPool;
+	FTIHCommanderStrategyDeleteDestory*			mStrategyDeleteDestory;
+	FTIHCommanderStrategyModifyTransform*		mStrategyModifyTransform;
+	FTIHCommanderStrategyModifyValue*			mStrategyModifyValue;
+	FTIHCommanderStrategyInOutReadAndSave*		mStrategyInOutReadAndSave;
+	FTIHCommanderStrategyInOutWriteAndModify*	mStrategyInOutWriteAndModify;
 
-	FTIHCommanderExtentionForExeCmdStrategy* mStrategyExention;
+	FTIHCommanderExtentionForExeCmdStrategy*	mStrategyExention;
 };

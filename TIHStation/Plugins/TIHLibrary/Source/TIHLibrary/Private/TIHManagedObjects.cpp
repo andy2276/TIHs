@@ -3,6 +3,8 @@
 #include "TIHStationCoreDefines.h"
 #include "TIHStationCore.h"
 
+FTIHGenerateCandidateLeaves FTIHGenerateCandidateLeaves::gErrorReference = {};
+
 //	정리를 한다면 이름들을 좀 통일하기
 void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 {
@@ -13,7 +15,7 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 
 	const FTIHMngObjPoolConfigure& targetPoolConfig = targetPool->GetConfigure();
 
-	TDeque<const FTIHNewAllocPrepareData>& prepareQueue = poolCenter.GetPrepareDataQueue();
+	TDeque<FTIHNewAllocPrepareData>& prepareQueue = poolCenter.GetPrepareDataQueue();
 	int32 prepareNum = prepareQueue.Num();
 	const TArray<FTIHMngObj*>& wholeArray = targetPool->GetWholeManagedObjectArray();
 	FTIHMngObjTempDatas& tempDatas = targetPool->GetTempDatas();
@@ -304,14 +306,16 @@ FTIHMngObjPoolCenter& FTIHMngObjPoolCenter::GetSingle()
 	return SelfObject;
 }
 
-TDeque<const FTIHNewAllocPrepareData>& FTIHMngObjPoolCenter::GetPrepareDataQueue()
+TDeque<FTIHNewAllocPrepareData>& FTIHMngObjPoolCenter::GetPrepareDataQueue()
 {
 	return mPrepareDatas;
 }
 
 void FTIHMngObjPoolCenter::EmplaceAddMngObjPrepareData(int8 TargetClassType, UEObjectHash64 TargetClassHash, int16 CallParentIndex, int16 AllocateCount)
 {
-	mPrepareDatas.EmplaceLast(FTIHNewAllocPrepareData{ TargetClassType ,AllocateCount ,CallParentIndex ,TargetClassHash });
+	//mPrepareDatas.EmplaceLast(FTIHNewAllocPrepareData( TargetClassType ,AllocateCount ,CallParentIndex ,TargetClassHash ));
+	//FTIHNewAllocPrepareData tempData(TargetClassType, AllocateCount, CallParentIndex, TargetClassHash);
+	mPrepareDatas.EmplaceLast((int8)TargetClassType, (int16)AllocateCount, (int16)CallParentIndex, (UEObjectHash64)TargetClassHash);
 }
 
 void FTIHMngObjPoolCenter::EmplaceAddMngObjPrepareDataForChildActor(UEObjectHash64 TargetClassHash, int16 CallParentIndex)
@@ -323,7 +327,7 @@ int8 FTIHMngObjPoolCenter::RegistManagedObjectPool(ETIHManagedObjectSpace manage
 {
 	int8 reValue = (int8)ETIHManagedObjectSpace::ENotRegistSpace;
 	int8 wantSpaceSlot = (int8)managedObjectSpace;
-	//	outBound
+	//	outBoundFTIHGenerateCandidateLeaves
 	int8 maxSpaceSlotOutBound = wantSpaceSlot + MaxObjectPoolSlotCount;//- (int8)ETIHManagedObjectSpace::ELoaclSpace;
 
 	for (; wantSpaceSlot < maxSpaceSlotOutBound; ++wantSpaceSlot)
@@ -406,28 +410,29 @@ void FTIHMngObjPoolCenter::OnSetObjectPoolConfigure(const FTIHMngObjPoolConfigur
 const FTIHGenerateCandidateLeaves& FTIHMngObjPoolCenter::GenerateManagedObjectComponentByUClass(UClass* ucls)
 {
 	check(ucls != nullptr);
-	FTIHGenerateCandidateLeaves reValue;
-	const FName& compName = ucls->GetClassPathName().GetAssetName();
+	const FName & compName = ucls->GetClassPathName().GetAssetName();
 	bool isContain = mClassNameToUeClassHash.Contains(compName);
-
+	/*
+		이걸 고치거나 지우자.
+	*/
 	if (isContain == true)
 	{
 		UEObjectHash64 ueHash = mClassNameToUeClassHash[compName];
+		return mUClassToClassHashs[ueHash];
 	}
-	return reValue;
+	else
+	{
+		return FTIHGenerateCandidateLeaves::gErrorReference;
+	}
 }
 
 UEObjectHash64 FTIHMngObjPoolCenter::GetUeHashByUClassInUEComponent(UClass* ucls)
 {
 	check(ucls != nullptr);
-	UEObjectHash64 reValue = 0;
-	const FName& compName = ucls->GetClassPathName().GetAssetName();
-	bool isContain = mClassNameToUeClassHash.Contains(compName);
-	if (isContain == true)
-	{
-		reValue = mClassNameToUeClassHash[compName];
-	}
-	return reValue;
+	/*
+		이걸 고치거나 지우자.
+	*/
+	return 0;
 }
 
 bool FTIHMngObjPoolCenter::IsUeHashValid(UEObjectHash64 ueHash)
@@ -458,6 +463,13 @@ FTIHMngObj* FTIHMngObjPoolCenter::PoolingManagedObject(int8 allocationSpace, int
 		reValue = mManagedObjectPools[allocationSpace]->GetAnyReadyMngObj(ueObjBase, ueObjHash);
 	}
 	return reValue;
+}
+
+TIHReturn64 FTIHMngObjPool::ReserveWholeObjectPool(int16 maxCount)
+{
+
+
+	return 0;
 }
 
 void FTIHMngObjPool::AddNewManagedObject(FTIHMngObj* newManagedObject)
@@ -543,6 +555,18 @@ void FTIHMngObjPool::OnCompleteCreateNewAlloc()
 
 }
 
+
+
+void FTIHMngObjPool::OnRepeatCreateNewAlloc(int32 currPhase)
+{
+
+}
+
+void FTIHMngObjPool::OnErrorCallCreateNewAlloc(TIHReturn64 errCode)
+{
+
+}
+
 void FTIHMngObjGenerateHelper::GenerateLeavesByUEHash(UEObjectHash64 ueHash, FTIHMngObjComposite& out)
 {
 	if (mRegistedGenCandidates.Contains(ueHash) == true)
@@ -563,7 +587,7 @@ const FTIHGenerateCandidateLeaves& FTIHMngObjGenerateHelper::GetCandidateForMana
 	}
 	else
 	{
-		return FTIHGenerateCandidateLeaves();
+		return FTIHGenerateCandidateLeaves::gErrorReference;
 	}
 }
 
@@ -596,4 +620,10 @@ FTIHMngObjLeaf* FTIHMngObjComposite::GetLeaf(TIHHash64 tihHash)
 		reValue = mLeafMap[tihHash];
 	}
 	return reValue;
+}
+
+FTIHMngObj* FTIHMngObjComposite::GetOwnerManagedObject()
+{
+	return FTIHMngObjPoolCenter::GetSingle().GetManagedObjectPool(GetManagedObjectComponentHeader().AllocationSpace)->GetWholeManagedObjectArray()[GetOwnerIndex()];
+	return nullptr;
 }

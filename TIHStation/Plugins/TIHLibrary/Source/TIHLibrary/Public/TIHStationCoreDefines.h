@@ -38,6 +38,7 @@
 	+ TIH Enums
 	+ Helper Implements
 	+ TIH System
+	+ Forward Declares for Build
 
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐
 										Coding Rule
@@ -477,6 +478,7 @@ enum class ETIHCommandHeaderProtocols : int8
 	EInOutReadAndSave,
 	EInOutWriteAndModify,
 
+	EExtendStratey,
 	MaxLength,
 };
 /*!
@@ -645,38 +647,6 @@ private:
 
 };
 
-TIHReturn64 ClassNameHashImplement(const TCHAR* clsName)
-{
-	//	충돌 검사를 해야한다....시발거
-	//FString toFString(clsName);
-	//
-	//if( 31 < toFString.Len())
-	//{
-	//
-	//}
-	/*
-		일단 음...이거 된다 생각하고 어떻게든 여기에 맞춰야지.
-		지금바꾸는건 미친짓임. 이것조차 확장성을 둬버리면 잣됨
-	*/
-
-	TIHReturn64 reValue = -1;
-	if (clsName != nullptr)
-	{
-		const int p = 53;
-		const int m = 1e9 + 9; // 10^9 +9 == 1'000`000`009 < 2`147`000`000 == int32 max
-
-		int hash_val = 0;
-		int pow_p = 1;
-
-		for (int i = 0; (clsName[i] != '\0' && clsName + i != nullptr); ++i)
-		{
-			hash_val = (hash_val + (clsName[i] - 'a' + 1) * pow_p) % m;
-			pow_p = (p + pow_p) % m;
-		}
-		reValue = hash_val;
-	}
-	return reValue;
-}
 /*
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐
 									template Helpers
@@ -757,6 +727,32 @@ public:
 	{
 		mStateValueDetail.WholeData = 0;
 	}
+	FTIHState(int32 turnValue)
+	{
+		mStateValueDetail.WholeData = turnValue;
+	}
+	FTIHState(FUnionTIHStateValue unionStateValue)
+		:
+		mStateValueDetail(unionStateValue)
+	{}
+	FTIHState(const FTIHState& copyCtor)
+		:
+		mStateValueDetail(copyCtor.mStateValueDetail)
+	{}
+	FTIHState(FTIHState&& moveCtor)
+		:
+		mStateValueDetail(std::move(moveCtor.mStateValueDetail))
+	{}
+
+	FTIHState& operator=(const FTIHState& copyOper)
+	{
+		mStateValueDetail.WholeData = copyOper.mStateValueDetail.WholeData;
+	}
+	FTIHState& operator=(FTIHState&& moveOper)
+	{
+		mStateValueDetail.WholeData = std::move(moveOper.mStateValueDetail.WholeData);
+	}
+
 	virtual ~FTIHState() {}
 
 	static void SetManagedObjectPoolCenter(FTIHMngObjPoolCenter* poolCenter)
@@ -764,7 +760,7 @@ public:
 		gPoolCenter = poolCenter;
 	}
 
-	ETIHManagedObjectStepState GetStateStepEnum()
+	ETIHManagedObjectStepState GetStateStepEnum() const
 	{
 		ETIHManagedObjectStepState reValue = ETIHManagedObjectStepState::ETraceFail;
 		switch (mStateValueDetail.Datas.Details.LifeCycle)
@@ -789,7 +785,7 @@ public:
 		}
 		return reValue;
 	}
-	int16 GetStateStepInt8()
+	int16 GetStateStepInt8() const
 	{
 		int16 reValue = (int16)ETIHManagedObjectStepState::ETraceFail;
 		switch (mStateValueDetail.Datas.Details.LifeCycle)
@@ -827,8 +823,8 @@ public:
 			*/
 		}
 	}
-
-	bool IsStateAllocated()
+	
+	bool IsStateAllocated() const
 	{
 		bool reValue = false;
 		if ((int16)ETIHManagedObjectStepState::EAllocated != mStateValueDetail.Datas.Details.LifeCycle)
@@ -837,7 +833,7 @@ public:
 		}
 		return reValue;
 	}
-	bool IsStateReady()
+	bool IsStateReady() const
 	{
 		bool reValue = false;
 		if ((int16)ETIHManagedObjectStepState::EReady != mStateValueDetail.Datas.Details.LifeCycle)
@@ -846,7 +842,7 @@ public:
 		}
 		return reValue;
 	}
-	bool IsRunning()
+	bool IsRunning() const
 	{
 		bool reValue = false;
 		if ((int16)ETIHManagedObjectStepState::ERunning == mStateValueDetail.Datas.Details.LifeCycle)
@@ -942,6 +938,7 @@ public:
 			*/
 		}
 	}
+
 
 protected:
 	FUnionTIHStateValue mStateValueDetail;
@@ -1214,11 +1211,11 @@ public:
 		return 0;
 	};
 
-	TIHTemplateType* mSelfPointer;
+	FTIHStationBase* mSelfPointer;
 
 	TIHTemplateType* GetSelfPtr()
 	{
-		return mSelfPointer;
+		return static_cast<TIHTemplateType*>(mSelfPointer);
 	}
 
 	TIHReturn64 InstantiateStation()
@@ -1417,6 +1414,56 @@ TIHReturn64 DestroyStation()\
 /*
 ┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
 ┃										TTIHStationCRTP									   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
+
+
+//--	----	----	----	----	----	----	----	----	----	----	----
+
+/*
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃																						   ┃
+┃							Forward Declares for Build									   ┃
+┃																						   ┃
+┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
+*/
+#pragma region Forward Declares for Build
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+										For Strategy
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
+class FTIHCommandBase;
+template<typename TIHTemplateType>
+class TTIHCommandStrategyCRTP
+{
+public:
+	TTIHCommandStrategyCRTP() : mSelfCRTP(static_cast<TTIHCommandStrategyCRTP*>(this))
+	{}
+	virtual ~TTIHCommandStrategyCRTP()
+	{
+		SafeDeletePtr(mSelfCRTP);
+	};
+
+	TIHReturn64 ExecuteStrategy(FTIHCommandBase* cmdBase)
+	{
+		TIHReturn64 reValue = 0;
+		reValue = static_cast<TTIHCommandStrategyCRTP*>(this)->ExecuteCommandStaticPolymorph(cmdBase);
+		return reValue;
+	}
+	TIHTemplateType* GetSelfPtr()
+	{
+		return mSelfCRTP;
+	}
+protected:
+	TIHTemplateType* mSelfCRTP;
+};
+#pragma endregion Forward Declares for Build
+/*
+┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
+┃									Forward Declares for Build									   ┃
 ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 */

@@ -126,18 +126,15 @@ TIHReturn64 FTIHDefaultStation::PrepareStation()
 	mMngObjGenerateHelper = MakeUnique<FTIHMngObjGenerateHelper>();
 
 	//FTIHMngObjPoolCenter& poolCeneter = GetManagedObjectPoolCenter();
-
-	mSettingHelper.MngObjSetting().RegistUEActorTemplate<AActor>();
-	mSettingHelper.MngObjSetting().RegistUEActorTemplate<APawn>();
-	mSettingHelper.MngObjSetting().RegistUEActorTemplate<ACameraActor>();
-
-	mSettingHelper.MngObjSetting().RegistTIHMngObjLeafGenerateFuncTemplate<FTIHMngObjLeafTestDelay>();
-
-	mSettingHelper.MngObjSetting().RegistUESceneAndTIHMngObjLeafListTemplate<USkeletalMeshComponent>({ 12,3,4,5,6 });
-
-	mSettingHelper.MngObjSetting().RegistPrepareDataForNewAllocTemplateActorBase<AActor>(16);
-	mSettingHelper.MngObjSetting().RegistPrepareDataForNewAllocTemplateActorBase<APawn>(16);
+	//mSettingHelper->MngObjSetting().RegistUEActorTemplate<AActor>();
+	//mSettingHelper->MngObjSetting().RegistUEActorTemplate<APawn>();
+	//mSettingHelper->MngObjSetting().RegistUEActorTemplate<ACameraActor>();
+	//mSettingHelper->MngObjSetting().RegistTIHMngObjLeafGenerateFuncTemplate<FTIHMngObjLeafTestDelay>();
+	//mSettingHelper->MngObjSetting().RegistUESceneAndTIHMngObjLeafListTemplate<USkeletalMeshComponent>({ 12,3,4,5,6 });
+	//mSettingHelper->MngObjSetting().RegistPrepareDataForNewAllocTemplateActorBase<AActor>(16);
+	//mSettingHelper->MngObjSetting().RegistPrepareDataForNewAllocTemplateActorBase<APawn>(16);
 	return reValue;
+	
 }
 
 #pragma endregion
@@ -153,7 +150,8 @@ TIHReturn64 FTIHStationPolymorphInterface::TIHErrEmplementFunc()
 
 TIHReturn64 FTIHCommandFactoryForDefaultStation::InstantiateCommandsInMetaArray(FTIHCommander& commander)
 {
-	FTIHCommandFactory::FUnionTIHCommandFactoryResult reValue;
+	FUnionTIHCommandFactoryResult reValue;
+	reValue.WholeData = 0;
 	return reValue.WholeData;
 }
 
