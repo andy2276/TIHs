@@ -3,7 +3,22 @@
 #include "Containers/Deque.h"
 #include "TIHStationCoreDefines.h"
 #include "TIHManagedObjects.generated.h"
+//--	----	----	----	----	----	----	----	----	----	----	----
+/*
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃																						   ┃
+┃									Forward Declares									   ┃
+┃																						   ┃
+┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
+*/
+#pragma region Forward Declares
+/*
 
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+										Structures
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 struct FTIHMngObjHeader;
 struct FTIHMngObjPoolConfigureDatas;
 struct FTIHMngObjPoolConfigure;
@@ -15,6 +30,12 @@ struct FTIHManagedObjectGenerateCompositeOutData;
 struct FTIHGenerateCandidateLeaves;
 template<typename TIHTemplateTypeA, typename TIHTemplateTypeB>struct TTIHMngObjTempDataPair;
 struct FTIHMngObjGenerateCompositeBFSData;
+
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+										Class
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 
 class FTIHUnionFind;
 class FTIHMngObjPool;
@@ -32,7 +53,204 @@ class FTIHMngObjLeafSkMesh;
 class FTIHMngObjTempDatas;
 class FTIHMngObj;
 class FTIHMngObjFactory;
+#pragma endregion Forward Declares
+/*
+┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
+┃									Forward Declares									   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
 
+//--	----	----	----	----	----	----	----	----	----	----	----
+
+/*
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃																						   ┃
+┃										Miscellaneous									   ┃
+┃																						   ┃
+┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
+*/
+#pragma region Miscellaneous
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+										Algorithm
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
+class FTIHUnionFind
+{
+public:
+	void ReserveArray(int16 size)
+	{
+		mParentArray.Reserve(size);
+		mRankArray.Reserve(size);
+		mElementCountArray.Reserve(size);
+	}
+
+
+	void InitUnionFind()
+	{
+		mParentArray.Reset();
+		mRankArray.Reset();
+
+		int32 arraiesMax = mParentArray.Max();
+
+		for (int32 i = 0; i < arraiesMax; ++i)
+		{
+			mParentArray.Add(i);
+			mRankArray.Add(0);
+			mElementCountArray.Add(1);
+		}
+	}
+
+	int16 FindParent(int16 checkIndex)
+	{
+		int16 reValue = checkIndex;
+		int16 parentIndex = mParentArray[reValue];
+		if (reValue != parentIndex)
+		{
+			mParentArray[reValue] = FindParent(parentIndex);
+			reValue = mParentArray[reValue];
+		}
+		return reValue;
+	}
+	void UnionIndex(int16 leftIndex, int16 rightIndex)
+	{
+		leftIndex = FindParent(leftIndex);
+		rightIndex = FindParent(rightIndex);
+
+		if (leftIndex != rightIndex)
+		{
+			if (mRankArray[leftIndex] < mRankArray[rightIndex])
+			{
+				mParentArray[leftIndex] = rightIndex;
+			}
+			else
+			{
+				mParentArray[rightIndex] = leftIndex;
+
+				if (mRankArray[leftIndex] == mRankArray[rightIndex])
+				{
+					++mRankArray[leftIndex];
+				}
+			}
+		}
+	}
+	int16 UnionAndElementCount(int16 leftIndex, int16 rightIndex)
+	{
+		leftIndex = FindParent(leftIndex);
+		rightIndex = FindParent(rightIndex);
+
+		if (leftIndex != rightIndex)
+		{
+			mParentArray[rightIndex] = leftIndex;
+			mElementCountArray[leftIndex] += mElementCountArray[rightIndex];
+			mElementCountArray[rightIndex] = 1;
+		}
+		return mElementCountArray[leftIndex];
+	}
+
+private:
+	TArray<int16> mParentArray;
+	TArray<int16> mRankArray;
+	TArray<int16> mElementCountArray;
+};
+
+
+union FUnionTIHSlidingPointer
+{
+	struct FTIHSlidingPointerDetail
+	{
+		int16 LeftIndex;
+		int16 RightIndex;
+
+	}Detail;
+
+	int32 WholeData;
+};
+enum class ETIHSlidingWindowTypes : int8
+{
+	EStuckEnd,	//	option is Direction
+	EInfiniteEnd,//	option is Direction	
+	ESlackEnd,//	option is Direction
+	ECircling,//	option is not
+};
+
+class FTIHSlidingWindowBase
+{
+public:
+
+	virtual void SlidingRight(int16 value) = 0;
+	virtual void SlidingLeft(int16 value) = 0;
+
+	virtual bool IsInIndex(int16 index) = 0;
+
+
+private:
+	int8 mSlidingWindowType;
+	int8 mSlidingWindowTypeOption;
+	int16 mRangeCount;
+
+	FUnionTIHSlidingPointer mSlidingPointer;
+};
+class FTIHSlidingWindowStuck : public FTIHSlidingWindowBase
+{
+
+};
+class FTIHSlidingWindowInfinite : public FTIHSlidingWindowBase
+{
+
+};
+class FTIHSlidingWindowSlack : public FTIHSlidingWindowBase
+{
+
+};
+
+class FTIHSlidingWindowCircling : public FTIHSlidingWindowBase
+{
+
+public:
+	void SlidingRight(int16 value) override
+	{
+
+	}
+
+	void SlidingLeft(int16 value) override
+	{
+
+	}
+
+	bool IsInIndex(int16 index) override
+	{
+
+	}
+private:
+};
+
+#pragma endregion Miscellaneous
+/*
+┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
+┃									Miscellaneous										   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
+//--	----	----	----	----	----	----	----	----	----	----	----
+
+
+/*
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃																						   ┃
+┃									Struct Implements									   ┃
+┃																						   ┃
+┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
+*/
+#pragma region Struct Implements
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+								ManagedObject Meta Infos 
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 USTRUCT()
 struct FTIHMngObjHeader
 {
@@ -54,7 +272,29 @@ struct FTIHMngObjHeader
 	TIHMACRO_CHAINBUILDER_SETTER(AllocationSpace);
 };
 
+USTRUCT()
+struct FTIHMngObjComponentHeader
+{
+	GENERATED_BODY()
 
+	UPROPERTY()
+	int8 Protocol;//{}
+	UPROPERTY()
+	int8 AllocationSpace;
+	UPROPERTY()
+	int8 ProtocolOption;
+	UPROPERTY()
+	int8 Padding;
+
+	TIHMACRO_CHAINBUILDER_SETTER(Protocol);
+	TIHMACRO_CHAINBUILDER_SETTER(ProtocolOption);
+	TIHMACRO_CHAINBUILDER_SETTER(AllocationSpace);
+};
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+								ManagedObject Configures
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 USTRUCT()
 struct FTIHMngObjPoolConfigureDatas
 {
@@ -114,13 +354,33 @@ struct FTIHMngObjPoolConfigureDatas
 		return *this;
 	}
 };
+USTRUCT()
+struct FTIHMngObjPoolConfigure
+{
+	GENERATED_BODY()
 
+	UPROPERTY()
+	FTIHMngObjPoolConfigureDatas PoolDatas;
+
+	UPROPERTY()
+	UWorld* SpawnSpace;
+
+	UPROPERTY()
+	AActor* OwnerActor;
+
+	UPROPERTY()
+	FTransform DefaultTransform;
+};
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+								For Generate Structure
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 struct FTIHGenerateDataPairForManagedObjectLeaf
 {
 	TIHHash64 TihHash;
 	TFunction<FTIHMngObjLeaf* ()> GenerateFunction;
 };
-
 template<typename TIHTemplateTypeA, typename TIHTemplateTypeB>
 struct TTIHMngObjTempDataPair
 {
@@ -155,24 +415,6 @@ struct TTIHMngObjTempDataPair
 		return *this;
 	}
 };
-USTRUCT()
-struct FTIHMngObjPoolConfigure
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	FTIHMngObjPoolConfigureDatas PoolDatas;
-
-	UPROPERTY()
-	UWorld* SpawnSpace;
-
-	UPROPERTY()
-	AActor* OwnerActor;
-
-	UPROPERTY()
-	FTransform DefaultTransform;
-};
-
 struct FTIHGenerateCandidateLeaves
 {
 	static FTIHGenerateCandidateLeaves gErrorReference;
@@ -207,26 +449,6 @@ struct FTIHGenerateCandidateLeaves
 		GenerateTags = moveOper;
 	}
 };
-
-USTRUCT()
-struct FTIHMngObjComponentHeader
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	int8 Protocol;//{}
-	UPROPERTY()
-	int8 AllocationSpace;
-	UPROPERTY()
-	int8 ProtocolOption;
-	UPROPERTY()
-	int8 Padding;
-
-	TIHMACRO_CHAINBUILDER_SETTER(Protocol);
-	TIHMACRO_CHAINBUILDER_SETTER(ProtocolOption);
-	TIHMACRO_CHAINBUILDER_SETTER(AllocationSpace);
-};
-
 struct FTIHManagedObjectGenerateCompositeOutData
 {
 	USceneComponent* UESceneComponent;
@@ -271,9 +493,6 @@ struct FTIHManagedObjectGenerateCompositeOutData
 		return *this;
 	}
 };
-
-
-
 struct FTIHMngObjGenerateCompositeBFSData
 {
 	int16 StepValue;
@@ -355,7 +574,13 @@ struct FTIHMngObjGenerateCompositeBFSData
 		return *this;
 	}
 };
-
+#pragma endregion Struct Implements
+/*
+┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
+┃									Struct Implements									   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
 class FTIHMngObjGenerateHelper
 {
 public:
@@ -540,6 +765,22 @@ private:
 	TMap< UEObjectHash64, UClass*> mRegistedActorByUEHash;//	for Actor
 	TMap< UClass*, UEObjectHash64 > mSwapActorHashByUClass;//	for Actor
 };
+//--	----	----	----	----	----	----	----	----	----	----	----
+
+/*
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃																						   ┃
+┃										Command Datas									   ┃
+┃																						   ┃
+┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
+*/
+#pragma region Command Datas
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+										NewAlloc Prepare
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 
 USTRUCT()
 struct FTIHNewAllocPrepareData
@@ -640,27 +881,11 @@ struct FTIHNewAllocPrepareData
 		AddOrder = 1;
 	}
 };
-
-
-
-//
-//USTRUCT()
-//struct FTIHMngObjPoolingDatas
-//{
-//	GENERATED_BODY()
-//
-//	UPROPERTY()
-//	int8 AllocationSpace;
-//
-//	UPROPERTY()
-//	int8 UEObjectBase;
-//
-//	UPROPERTY()
-//	int16 PoolingCount;
-//
-//	UPROPERTY()
-//	TIHObjectHash64 UEObjectHash;
-//};
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+									Assign Pool
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 USTRUCT()
 struct FTIHCommandCreateAssignPoolDatas
 {
@@ -687,85 +912,15 @@ struct FTIHCommandCreateAssignPoolDatas
 	TIHMACRO_CHAINBUILDER_SETTER(DataCount);
 	TIHMACRO_CHAINBUILDER_SETTER(DataOption);
 };
-
-class FTIHUnionFind
-{
-public:
-	void ReserveArray(int16 size)
-	{
-		mParentArray.Reserve(size);
-		mRankArray.Reserve(size);
-		mElementCountArray.Reserve(size);
-	}
+#pragma endregion Command Datas
+/*
+┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
+┃										Command Datas									   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
 
 
-	void InitUnionFind()
-	{
-		mParentArray.Reset();
-		mRankArray.Reset();
-
-		int32 arraiesMax = mParentArray.Max();
-
-		for (int32 i = 0; i < arraiesMax; ++i)
-		{
-			mParentArray.Add(i);
-			mRankArray.Add(0);
-			mElementCountArray.Add(1);
-		}
-	}
-
-	int16 FindParent(int16 checkIndex)
-	{
-		int16 reValue = checkIndex;
-		int16 parentIndex = mParentArray[reValue];
-		if (reValue != parentIndex)
-		{
-			mParentArray[reValue] = FindParent(parentIndex);
-			reValue = mParentArray[reValue];
-		}
-		return reValue;
-	}
-	void UnionIndex(int16 leftIndex, int16 rightIndex)
-	{
-		leftIndex = FindParent(leftIndex);
-		rightIndex = FindParent(rightIndex);
-
-		if (leftIndex != rightIndex)
-		{
-			if (mRankArray[leftIndex] < mRankArray[rightIndex])
-			{
-				mParentArray[leftIndex] = rightIndex;
-			}
-			else
-			{
-				mParentArray[rightIndex] = leftIndex;
-
-				if (mRankArray[leftIndex] == mRankArray[rightIndex])
-				{
-					++mRankArray[leftIndex];
-				}
-			}
-		}
-	}
-	int16 UnionAndElementCount(int16 leftIndex, int16 rightIndex)
-	{
-		leftIndex = FindParent(leftIndex);
-		rightIndex = FindParent(rightIndex);
-
-		if (leftIndex != rightIndex)
-		{
-			mParentArray[rightIndex] = leftIndex;
-			mElementCountArray[leftIndex] += mElementCountArray[rightIndex];
-			mElementCountArray[rightIndex] = 1;
-		}
-		return mElementCountArray[leftIndex];
-	}
-
-private:
-	TArray<int16> mParentArray;
-	TArray<int16> mRankArray;
-	TArray<int16> mElementCountArray;
-};
 class FTIHMngObjTempDatas
 {
 public:
@@ -903,7 +1058,20 @@ private:
 	TDeque< FTIHMngObjComposite*> mEmptyComposites;
 };
 
-
+/*
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃																						   ┃
+┃								ManagedObject Components								   ┃
+┃																						   ┃
+┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
+*/
+#pragma region ManagedObject Components
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+								managedObject Component base
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 class FTIHMngObjComponent
 {
 public:
@@ -952,9 +1120,6 @@ public:
 	{
 		return mSelfIndex;
 	}
-
-
-
 	/*
 		case managedComposite
 			mOwnerIndex is my managedObject's index in WholeDatas in ManagedPool
@@ -1016,7 +1181,11 @@ private:
 
 };
 
-
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+								managedObject Composite base
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 class FTIHMngObjComposite :public FTIHMngObjComponent
 {
 public:
@@ -1140,6 +1309,11 @@ protected:
 	USceneComponent* mUESceneComponent;
 };
 
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+								managedObject Leaf base
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 class FTIHMngObjLeaf :public FTIHMngObjComponent
 {
 public:
@@ -1176,9 +1350,6 @@ protected:
 	int16 mCompositeIndexInManagedObjectArray;
 	//	이걸 넣으면 tagHelper 에서 여기에 관련된 배열을 넘겨준
 };
-
-
-
 template<typename TIHTemplateType>
 class TTIManagedObjectLeaf : public FTIHMngObjLeaf
 {
@@ -1200,6 +1371,16 @@ public:
 protected:
 	TIHTemplateType* mCastedComponent;
 };
+#pragma endregion ManagedObject Components
+/*
+┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
+┃								ManagedObject Components								   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
+//--	----	----	----	----	----	----	----	----	----	----	----
+
+
 
 
 class FTIHMeshPool
@@ -1212,16 +1393,32 @@ public:
 	}
 	TSoftObjectPtr<UStaticMesh> GetStaticMeshByPath(const FString& meshPath);
 	TSoftObjectPtr<USkeletalMesh> GetSkeletalMeshByPath(const FString& meshPath);
+
 private:
 };
 
+//--	----	----	----	----	----	----	----	----	----	----	----
 
+/*
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃																						   ┃
+┃									Managed Object										   ┃
+┃																						   ┃
+┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
+*/
+#pragma region Managed Object
 
 
 class FTIHMngObj
 {
 	static FTIHMngObjPoolCenter* gPoolCenter;
 public:
+	/*
+	┌──────────────────────────────────────────────────────────────────────────────────────────┐
+											Sub_Title
+	└──────────────────────────────────────────────────────────────────────────────────────────┘
+	*/
 	static void SetManagedObjectPoolCenter(FTIHMngObjPoolCenter* poolCenter)
 	{
 		gPoolCenter = poolCenter;
@@ -1342,9 +1539,9 @@ public:
 	}
 
 private:
-	FTIHMngObjHeader mManagedObjectHeader;//	get set
-	UObject* mManagedUEObect;				//	get set
-	TIHHash64 mManagedUEObjectHash;			//	get set
+	FTIHMngObjHeader mManagedObjectHeader;
+	UObject* mManagedUEObect;				
+	TIHHash64 mManagedUEObjectHash;			
 	
 	FTIHState mStateDetail;					//	interface	get
 
@@ -1353,11 +1550,31 @@ private:
 
 	TArray<FTIHMngObjComposite*> mCompositeArray;	//	add
 	TSet<TIHHash64> mHashTable;
-
-	
 };
 FTIHMngObjPoolCenter* FTIHMngObj::gPoolCenter = nullptr;
+#pragma endregion Managed Object
+/*
+┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
+┃									Managed Object										   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
+//--	----	----	----	----	----	----	----	----	----	----	----
 
+/*
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃																						   ┃
+┃								Managed Object Pools									   ┃
+┃																						   ┃
+┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
+*/
+#pragma region Managed Object Pools
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+								Managed Object Pool
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 class FTIHMngObjPool
 {
 public:
@@ -1385,8 +1602,6 @@ public:
 		tset 에 top 이있나?
 	*/
 
-
-#pragma region Object Assgin and NewAlloc
 public:
 
 
@@ -1497,7 +1712,7 @@ protected:
 	*/
 	FTIHMngObjPoolConfigure mManagedObjectPoolConfigure;
 
-#pragma endregion
+
 
 	TDeque< FTIHNewAllocPrepareData> mPrepareManagedObjects;
 
@@ -1513,7 +1728,11 @@ protected:
 
 	FTIHMngObjTempDatas mTempDatasForNewAlloc;
 };
-
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+								Managed Object Pool Center
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 class FTIHMngObjPoolCenter
 {
 	/*
@@ -1584,5 +1803,11 @@ private:
 	TMap<UEObjectHash64, UClass*> mUeClassHashToUClass;
 
 	TMap<int8, FTIHMngObjPool*> mManagedObjectPools;
-
 };
+#pragma endregion Managed Object Pools
+/*
+┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
+┃								Managed Object Pools									   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/

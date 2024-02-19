@@ -10,6 +10,7 @@
 			"TIHCommands.cpp.obj",
 			"TIHGameInstance.cpp.obj",
 			"TIHLibraryEntry.cpp.obj",
+			"TIHManagedObjectLeafs.cpp.obj",
 			"TIHManagedObjects.cpp.obj",
 			"TIHNetworks.cpp.obj",
 			"TIHStationCore.cpp.obj",

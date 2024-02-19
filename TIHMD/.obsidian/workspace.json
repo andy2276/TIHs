@@ -18,8 +18,33 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "e947b0df5bb86907",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "앞으로 해야할것 기록.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "b303440e4e02ad07",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "설계/하우징 설계.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
         ],
+        "currentTab": 2,
         "stacked": true
       }
     ],
@@ -86,7 +111,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "할일 정리.md",
+                "file": "설계/하우징 설계.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +128,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "할일 정리.md",
+                "file": "설계/하우징 설계.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +151,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "할일 정리.md"
+                "file": "설계/하우징 설계.md"
               }
             }
           }
@@ -147,10 +172,13 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "f2f7423c64bec7e6",
+  "active": "b303440e4e02ad07",
   "lastOpenFiles": [
-    "리프,커맨드,스트라테지 현황판.md",
+    "앞으로 해야할것 기록.md",
+    "설계/하우징 설계.md",
+    "설계",
     "할일 정리.md",
+    "리프,커맨드,스트라테지 현황판.md",
     "무제 파일.md",
     "헬퍼만들어야할때.md",
     "TIH Library.md",
@@ -174,8 +202,6 @@
     "TIH/FTIHManagedObjectBase.md",
     "DevelopLog/Logs/24-01_17.md",
     "DevelopLog/Logs/24-01_16.md",
-    "TIH/FTIHNetWork.md",
-    "TIH/Life Cycle.md",
     "TIH",
     "DevelopLog/Template",
     "DevelopLog/Logs",

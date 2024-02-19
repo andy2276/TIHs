@@ -6,7 +6,22 @@
 #include "TIHManagedObjects.h"
 
 #include "TIHCommands.generated.h"
+//--	----	----	----	----	----	----	----	----	----	----	----
 
+/*
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃																						   ┃
+┃									Forward Declares									   ┃
+┃																						   ┃
+┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
+*/
+#pragma region Forward Declares
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+										Class
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 class FTIHCommander;
 class FTIHCommandBase;
 template<typename TIHTemplateType>class TTIHCommand;
@@ -34,8 +49,6 @@ class FTIHCommandPathBoard;
 class FTIHCommandList;
 template<typename TIHTemplateType>class TTIHCommandFunctorWrapper;
 
-
-
 /*이거는 strategy 때문에 이렇게 해줌.근데 커맨더를 다른곳에 빼도 될거같긴한데 일단은*/
 class FTIHCommanderStrategyCreateNewAlloc;
 class FTIHCommanderStrategyCreateAssignPool;
@@ -50,17 +63,20 @@ class FTIHCommanderStrategyModifyValue;
 class FTIHCommanderStrategyInOutReadAndSave;
 class FTIHCommanderStrategyInOutWriteAndModify;
 class FTIHCommanderExtentionForExeCmdStrategy;
-
-
-
-
-
-
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+										Unions
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 union FUnionTIHCommandResult;
 union FUnionTIHDataBoardResult;
 union FUnionTIHCommandFactoryResult;
 union FUnionTIHCommandListResult;
-
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+										Structures
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 struct FTIHCommandHeader;
 struct FTIHCommandMethod;
 struct FTIHCommandServerConnectDatas;
@@ -75,6 +91,31 @@ struct FTIHCommandInOutReadAndSaveDatas;
 struct FTIHCommandInOutWriteAndModifyDatas;
 struct FTIHCommandFactoryBuilders;
 struct FTIHCommandFunctorHeader;
+
+#pragma endregion Forward Declares
+/*
+┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
+┃									Forward Declares									   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
+
+//--	----	----	----	----	----	----	----	----	----	----	----
+
+/*
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃																						   ┃
+┃									Command Meta Infos									   ┃
+┃																						   ┃
+┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
+*/
+#pragma region Command Meta Infos
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+										Sub_Title
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 
 union FUnionTIHCommandResult
 {
@@ -182,7 +223,30 @@ struct FTIHCommandMethod
 	TIHMACRO_CHAINBUILDER_SETTER(CompleteFunctorIndex);
 	TIHMACRO_CHAINBUILDER_SETTER(CommandProgressionProtocol);
 };
+#pragma endregion Command Meta Infos
+/*
+┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
+┃									Command Meta Infos									   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
 
+//--	----	----	----	----	----	----	----	----	----	----	----
+
+/*
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃																						   ┃
+┃										Commands										   ┃
+┃																						   ┃
+┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
+*/
+#pragma region Commands
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+									CommandBase
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
 class FTIHCommandBase
 {
 	TIHMACRO_CLASS_STATIC_NAME_HASH(FTIHCommandBase)
@@ -271,10 +335,19 @@ TIHTemplateType* GenerateTemplateThisClass()
 {
 	return new TIHTemplateType();
 }
-
-
-
-class FTIHCommandCreateNewAllocPrepare : public TTIHCommand<FTIHNewAllocPrepareData>
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+										Command Datas
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
+using FTIHNewAllocPrepareDatas = FTIHNewAllocPrepareData;
+using FTIHNewAllocOnGenerateDatas = FTIHMngObjPoolConfigureDatas;
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+										Command Implement
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
+class FTIHCommandCreateNewAllocPrepare : public TTIHCommand<FTIHNewAllocPrepareDatas>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCommandCreateNewAllocPrepare);
 public:
@@ -452,6 +525,13 @@ public:
 	FTIHCommandInOutWriteAndModify();
 	virtual ~FTIHCommandInOutWriteAndModify();
 };
+#pragma endregion Commands
+/*
+┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
+┃										Commands										   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
 class FTIHCommandFactoryConfigure 
 {
 public:
