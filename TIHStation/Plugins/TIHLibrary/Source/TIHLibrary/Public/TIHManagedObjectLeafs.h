@@ -3,15 +3,10 @@
 #include "TIHStationCoreDefines.h"
 #include "TIHManagedObjects.h"
 
-
-
-
 class FTIHMngObjLeafMovement : public TTIManagedObjectLeaf<USceneComponent>
 {
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafMovement)
 public:
-	void InitSetting() override;
-
 	void SetWorldLocation(const FVector& value)
 	{
 		check(mCastedComponent != nullptr);
@@ -68,11 +63,12 @@ public:
 		mCastedComponent->AddRelativeRotation(value.ToOrientationQuat());
 	}
 };
+
 class FTIHMngObjLeafPretty : public TTIManagedObjectLeaf<UMeshComponent>
 {
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafMovement)
 public:
-	void InitSetting() override;
+
 
 	void SetMaterial(const FString& path)
 	{
@@ -84,7 +80,7 @@ class FTIHMngObjLeafStMesh : public TTIManagedObjectLeaf<UStaticMeshComponent>
 {
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafStMesh)
 public:
-	void InitSetting() override;
+
 
 	void SetStMesh(const FString& path)
 	{
@@ -97,7 +93,6 @@ class FTIHMngObjLeafSkMesh : public TTIManagedObjectLeaf<USkeletalMeshComponent>
 {
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafStMesh)
 public:
-	void InitSetting() override;
 
 	void SetSkMesh(const FString& path)
 	{

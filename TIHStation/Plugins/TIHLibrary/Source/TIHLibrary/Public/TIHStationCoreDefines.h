@@ -336,7 +336,10 @@ static TIHReturn64 TIHClassNameHash()\
 static TIHReturn64 reValue = ClassNameHashImplement(TEXT( #thisClass ) ); \
 return reValue; }
 
-//	반드시 InitSetting 을 구현해야한다
+/*
+	InitSetting == abstract function
+	PostLinkTargetImplement == StaticPolymorphism
+*/
 #define TIHMACRO_MANAGED_LEAF_FEATURES( thisClass )\
 TIHMACRO_CLASS_STATIC_NAME_HASH( thisClass )\
 static FTIHMngObjLeaf* GenerateLeaf()\
@@ -346,6 +349,8 @@ static FTIHMngObjLeaf* GenerateLeaf()\
 	reValue->InitSetting();\
 	return reValue;\
 }\
+void InitSetting() override;\
+void PostLinkTargetImplement();\
 private:
 
 #define TIHMACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION( thisClass )\

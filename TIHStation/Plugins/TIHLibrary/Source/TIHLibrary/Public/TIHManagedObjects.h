@@ -226,6 +226,24 @@ public:
 	}
 private:
 };
+/*
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+										Helper
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+*/
+class FTIHMeshPool
+{
+public:
+	static FTIHMeshPool* GetSingle()
+	{
+		static FTIHMeshPool meshPool;
+		return &meshPool;
+	}
+	TSoftObjectPtr<UStaticMesh> GetStaticMeshByPath(const FString& meshPath);
+	TSoftObjectPtr<USkeletalMesh> GetSkeletalMeshByPath(const FString& meshPath);
+
+private:
+};
 
 #pragma endregion Miscellaneous
 /*
@@ -1135,7 +1153,6 @@ public:
 		return mOwnerIndex;
 	}
 	virtual void InitSetting() = 0;
-
 private:
 	FTIHMngObjComponentHeader mComponentHeader;
 	TIHHash64 mHashValue;
@@ -1357,6 +1374,7 @@ public:
 	void SetManagedSceneComponentAndCasting(USceneComponent* targetScene) override
 	{
 		mCastedComponent = Cast<TIHTemplateType>(targetScene);
+		PostLinkTargetImplement(mCastedComponent);
 	}
 
 	USceneComponent* GetManagedSceneComponent() override
@@ -1367,9 +1385,13 @@ public:
 	TIHTemplateType* GetManagedSceneComponentCastedScene()
 	{
 		return mCastedComponent;
+	}	
+	void PostLinkTargetImplement()
+	{
 	}
 protected:
 	TIHTemplateType* mCastedComponent;
+private:
 };
 #pragma endregion ManagedObject Components
 /*
@@ -1378,25 +1400,6 @@ protected:
 ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 */
-//--	----	----	----	----	----	----	----	----	----	----	----
-
-
-
-
-class FTIHMeshPool
-{
-public:
-	static FTIHMeshPool* GetSingle()
-	{
-		static FTIHMeshPool meshPool;
-		return &meshPool;
-	}
-	TSoftObjectPtr<UStaticMesh> GetStaticMeshByPath(const FString& meshPath);
-	TSoftObjectPtr<USkeletalMesh> GetSkeletalMeshByPath(const FString& meshPath);
-
-private:
-};
-
 //--	----	----	----	----	----	----	----	----	----	----	----
 
 /*
