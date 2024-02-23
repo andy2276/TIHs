@@ -627,3 +627,176 @@ FTIHMngObj* FTIHMngObjComposite::GetOwnerManagedObject()
 	return FTIHMngObjPoolCenter::GetSingle().GetManagedObjectPool(GetManagedObjectComponentHeader().AllocationSpace)->GetWholeManagedObjectArray()[GetOwnerIndex()];
 	return nullptr;
 }
+
+TTIHMeshCapsule<UStaticMesh>* FTIHMeshPool::GenerateStaticMeshCapsules(const FString& path)
+{
+	static FTIHTickTock& tickTock = TIHSTATION.GetTickTock();
+	TTIHMeshCapsule<UStaticMesh>* capsule = new TTIHMeshCapsule<UStaticMesh>(tickTock.GetTick(),path);
+	return capsule;
+}
+
+void FTIHMeshPool::PrepareStaticMeshDataByPath(const FString& meshPath)
+{
+	if(mStagingStMeshTable.Contains(meshPath) == false)
+	{
+		TTIHMeshCapsule<UStaticMesh>* capsule = GenerateStaticMeshCapsules(meshPath);
+		int16 index = mStagingStMeshs.Add(MakeShareable(capsule));
+		mStagingStMeshTable.Add(meshPath, index);
+	}
+}
+
+void FTIHMeshPool::PrepareStMeshDatasByList(const TArray<FString>& stMeshList)
+{
+	for(const FString& curPath : stMeshList)
+	{
+		PrepareStaticMeshDataByPath(curPath);
+	}
+}
+
+void FTIHMeshPool::OnLoadStMeshsBySlidingWindow()
+{
+	/*
+		어떤 타입의 슬라이딩윈도우인지
+		몇개씩 나눌건지.
+	*/
+}
+
+void FTIHSlidingWindowSlack::SlidingRight(int16 value)
+{
+	const int16 rangeStartIndex = GetRangeStartIndex();
+	const int16 rangeEndIndex = GetRangeEndIndex();
+	const int16 rangeCount = GetRangeCount();
+	const int16 changeValue = value % rangeCount;
+	
+	if(IsSlidingWindowDone() == true)
+	{
+		return;
+	}
+
+	AddSlidingWindow(std::abs(changeValue) );
+
+	bool isOver = not IsInIndexFunc(rangeStartIndex, mSlidingPointer.Detail.RightIndex, rangeEndIndex);
+	if(isOver == true)
+	{
+		mSlidingPointer.Detail.RightIndex = rangeEndIndex;
+		if(rangeEndIndex < mSlidingPointer.Detail.LeftIndex)
+		{
+			CallBackRightAdd();
+			SetRangeCount(0);
+			SetSlidingWindowDoneState
+			(
+				(int8)ETIHSlidingWindowDoneStateTypes::ESlackEndDone |
+				(int8)ETIHSlidingWindowDoneStateTypes::EWhenRightAdd
+			);
+		}
+	}
+}
+
+void FTIHSlidingWindowSlack::SlidingLeft(int16 value)
+{
+	const int16 rangeStartIndex = GetRangeStartIndex();
+	const int16 rangeEndIndex = GetRangeEndIndex();
+	const int16 rangeCount = GetRangeCount();
+	const int16 changeValue = value % rangeCount;
+
+	if (IsSlidingWindowDone() == true)
+	{
+		return;
+	}
+	MinusSlidingWindow(std::abs( changeValue));
+	bool isOver = not IsInIndexFunc(rangeStartIndex, mSlidingPointer.Detail.LeftIndex, rangeEndIndex);
+	if(isOver == true)
+	{
+		mSlidingPointer.Detail.LeftIndex = rangeStartIndex;
+		if (mSlidingPointer.Detail.RightIndex < rangeStartIndex)
+		{
+			CallBackLeftAdd();
+			SetRangeCount(0);
+			SetSlidingWindowDoneState
+			(
+				(int8)ETIHSlidingWindowDoneStateTypes::ESlackEndDone |
+				(int8)ETIHSlidingWindowDoneStateTypes::EWhenLeftAdd
+			);
+		}
+	}
+}
+
+bool FTIHSlidingWindowSlack::IsInIndex(int16 index)
+{
+	bool reValue = false;
+	if(IsSlidingWindowDone() == false)
+	{
+		reValue = IsInIndexFunc(mSlidingPointer.Detail.LeftIndex, index, mSlidingPointer.Detail.RightIndex);
+	}
+	return reValue;
+}
+
+int32 FTIHSlidingWindowSlack::GetIndexArray(TArray<int16>& arr)
+{
+	int32 outIndex = -1;
+	if (IsSlidingWindowDone() == false)
+	{
+		if(GetRangeCount() - 1 < arr.Num())
+		{
+			for(int16 i = mSlidingPointer.Detail.LeftIndex; i <= mSlidingPointer.Detail.RightIndex; ++i)
+			{
+				++outIndex;
+				arr[outIndex] = i;
+			}
+		}
+	}
+	return outIndex;
+}
+
+FTIHSlidingWindowBase::FTIHSlidingWindowBase() :
+	mSlidingWindowType((int8)ETIHSlidingWindowTypes::EStuckEnd),
+	mSlidingWindowDoneState(0),
+	mRangeCount(INT16_MAX),
+	mRangeStartIndex(0),
+	mRangeEndIndex(INT16_MAX)
+{
+	mOverCallBackLeftAdd = DefaultLeftOverFunction;
+	mOverCallBackRightAdd = DefalutRightOverFunction;
+}
+
+void FTIHSlidingWindowStuck::SlidingRight(int16 value)
+{
+	const int16 rangeCount = GetRangeCount();
+	const int16 changeValue = value % rangeCount;
+	const int16 endRangeIndex = GetRangeEndIndex();
+
+	AddSlidingWindow(std::abs(changeValue));
+	if (endRangeIndex < mSlidingPointer.Detail.RightIndex)
+	{
+		mSlidingPointer.Detail.RightIndex = endRangeIndex;
+		mSlidingPointer.Detail.LeftIndex = mSlidingPointer.Detail.RightIndex - (rangeCount - 1);
+		CallBackRightAdd();
+		SetSlidingWindowDoneState
+		(
+			(int8)ETIHSlidingWindowDoneStateTypes::EStuckEndDone |
+			(int8)ETIHSlidingWindowDoneStateTypes::EWhenRightAdd
+
+		);
+	}
+}
+
+void FTIHSlidingWindowStuck::SlidingLeft(int16 value)
+{
+	const int16 rangeCount = GetRangeCount();
+	const int16 changeValue = value % rangeCount;
+	const int16 startRangeIndex = GetRangeStartIndex();
+
+	MinusSlidingWindow(std::abs(changeValue));
+
+	if (mSlidingPointer.Detail.LeftIndex < startRangeIndex)
+	{
+		mSlidingPointer.Detail.LeftIndex = startRangeIndex;
+		mSlidingPointer.Detail.RightIndex = mSlidingPointer.Detail.LeftIndex + (rangeCount - 1);
+		CallBackLeftAdd();
+		SetSlidingWindowDoneState
+		(
+			(int8)ETIHSlidingWindowDoneStateTypes::EStuckEndDone |
+			(int8)ETIHSlidingWindowDoneStateTypes::EWhenLeftAdd
+		);
+	}
+}

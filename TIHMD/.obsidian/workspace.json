@@ -8,19 +8,7 @@
         "type": "tabs",
         "children": [
           {
-            "id": "f2f7423c64bec7e6",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "할일 정리.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "e947b0df5bb86907",
+            "id": "e0da06c61067f567",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -30,21 +18,8 @@
                 "source": false
               }
             }
-          },
-          {
-            "id": "b303440e4e02ad07",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "설계/하우징 설계.md",
-                "mode": "source",
-                "source": false
-              }
-            }
           }
         ],
-        "currentTab": 1,
         "stacked": true
       }
     ],
@@ -172,14 +147,15 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "e947b0df5bb86907",
+  "active": "e0da06c61067f567",
   "lastOpenFiles": [
     "설계/하우징 설계.md",
     "앞으로 해야할것 기록.md",
+    "무제 파일.md",
+    "리프,커맨드,스트라테지 현황판.md",
+    "구현해야하는 기능.md",
     "설계",
     "할일 정리.md",
-    "리프,커맨드,스트라테지 현황판.md",
-    "무제 파일.md",
     "헬퍼만들어야할때.md",
     "TIH Library.md",
     "DevelopLog/Template/commandTemplate.md",
@@ -201,7 +177,6 @@
     "TIH/FTIHManagedObjectComposite.md",
     "TIH/FTIHManagedObjectBase.md",
     "DevelopLog/Logs/24-01_17.md",
-    "DevelopLog/Logs/24-01_16.md",
     "TIH",
     "DevelopLog/Template",
     "DevelopLog/Logs",

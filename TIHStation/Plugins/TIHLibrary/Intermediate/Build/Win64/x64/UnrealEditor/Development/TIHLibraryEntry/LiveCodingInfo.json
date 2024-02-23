@@ -10,12 +10,12 @@
 			"TIHCommands.cpp.obj",
 			"TIHGameInstance.cpp.obj",
 			"TIHLibraryEntry.cpp.obj",
+			"TIHNetworks.cpp.obj",
+			"TIHStrategies.cpp.obj",
 			"TIHManagedObjectLeafs.cpp.obj",
 			"TIHManagedObjects.cpp.obj",
-			"TIHNetworks.cpp.obj",
 			"TIHStationCore.cpp.obj",
-			"TIHStationCoreDefines.cpp.obj",
-			"TIHStrategies.cpp.obj"
+			"TIHStationCoreDefines.cpp.obj"
 		]
 	}
 }

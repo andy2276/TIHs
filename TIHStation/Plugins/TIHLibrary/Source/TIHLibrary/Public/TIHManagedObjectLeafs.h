@@ -69,7 +69,6 @@ class FTIHMngObjLeafPretty : public TTIManagedObjectLeaf<UMeshComponent>
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafMovement)
 public:
 
-
 	void SetMaterial(const FString& path)
 	{
 
@@ -84,7 +83,7 @@ public:
 
 	void SetStMesh(const FString& path)
 	{
-		TSoftObjectPtr<UStaticMesh> stMeshPtr = FTIHMeshPool::GetSingle()->GetStaticMeshByPath(path);
+		TSoftObjectPtr<UStaticMesh> stMeshPtr = FTIHMeshPool::GetSingle()->PrepareStaticMeshDataByPath(path);
 		//	여기에서 stmeshPool 을 들고온다. 
 		mCastedComponent->SetStaticMesh(stMeshPtr.Get());
 	}
@@ -96,7 +95,7 @@ public:
 
 	void SetSkMesh(const FString& path)
 	{
-		TSoftObjectPtr<USkeletalMesh> skMeshPtr = FTIHMeshPool::GetSingle()->GetSkeletalMeshByPath(path);
+		TSoftObjectPtr<USkeletalMesh> skMeshPtr = FTIHMeshPool::GetSingle()->GetPrepareSkeletalMeshByPath(path);
 		//	여기에서 stmeshPool 을 들고온다. 
 		mCastedComponent->SetSkeletalMesh(skMeshPtr.Get());
 	}

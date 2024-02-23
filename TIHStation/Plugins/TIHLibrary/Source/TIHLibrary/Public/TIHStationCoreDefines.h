@@ -166,12 +166,17 @@ union FUnionTIHStateValue
 */
 #pragma region Type Defines
 typedef int32 TIHReturn32;
+typedef uint32 TIHTick32;
+
 typedef signed long long TIHReturn64;
 typedef signed long long TIHSummary64;
 
 typedef signed long long TIHHash64 ;
 typedef signed long long UEObjectHash64 ;
 typedef signed long long TIHObjectHash64 ;
+
+extern const uint32 TIHYear = 3784320000;
+
 
 #pragma endregion Type Defines
 /*
@@ -195,6 +200,33 @@ typedef signed long long TIHObjectHash64 ;
 
 class FTIHHashClass;
 TIHReturn64 ClassNameHashImplement(const TCHAR* clsName);
+
+template<typename TIHTemplateType>
+TIHTemplateType FastAbsIntTemplate(TIHTemplateType x)
+{
+	TIHTemplateType reValue;
+	const bitCount = (sizeof(TIHTemplateType) * 8) - 1;
+	TIHTemplateType y = (x >> bitCount);
+	reValue = (x + y) ^ y;
+	return reValue;
+}
+
+int8 FastAbs8(int8 x)
+{
+	return FastAbsIntTemplate(x);
+}
+int16 FastAbs16(int16 x)
+{
+	return FastAbsIntTemplate(x);
+}
+int32 FastAbs32(int32 x)
+{
+	return FastAbsIntTemplate(x);
+}
+int64 FastAbs64(int64 x)
+{
+	return FastAbsIntTemplate(x);
+}
 
 
 #pragma endregion Helper Declares
@@ -337,8 +369,8 @@ static TIHReturn64 reValue = ClassNameHashImplement(TEXT( #thisClass ) ); \
 return reValue; }
 
 /*
-	InitSetting == abstract function
-	PostLinkTargetImplement == StaticPolymorphism
+	InitSetting() == abstract function
+	PostLinkTargetImplement() == StaticPolymorphism
 */
 #define TIHMACRO_MANAGED_LEAF_FEATURES( thisClass )\
 TIHMACRO_CLASS_STATIC_NAME_HASH( thisClass )\
@@ -1123,6 +1155,25 @@ class FTIHCommandFactory;
 class FTIHCommandResultBoard;
 class FTIHCommandPathBoard;
 
+class FTIHTickTock
+{
+public:
+	void UpdataTick()
+	{
+		++mTickTime;
+		if(TIHYear < mTickTime)
+		{
+			mTickTime = 0;
+		}
+	}
+	TIHTick32 GetTick() const
+	{
+		return mTickTime;
+	}
+private:
+	TIHTick32 mTickTime;
+};
+
 class FTIHStationBase
 {
 public:
@@ -1164,6 +1215,21 @@ public:
 	{
 		return *mMngObjGenerateHelper;
 	}
+	FTIHTickTock& GetTickTock()
+	{
+		return mTickTock;
+	}
+	void UpdateTickTock()
+	{
+		mTickTock.UpdataTick();
+	}
+	TIHTick32 GetTickCount() const
+	{
+		return mTickTock.GetTick();
+	}
+
+	
+
 protected:
 	FTIHNetwork* mNetwork;
 	/*!
@@ -1199,6 +1265,8 @@ protected:
 	//	시발 이거 합칠까
 	TUniquePtr<FTIHMngObjGenerateHelper> mMngObjGenerateHelper;
 	TUniquePtr<FTIHSettingHelper> mSettingHelper;
+
+	FTIHTickTock mTickTock;
 private:
 };
 

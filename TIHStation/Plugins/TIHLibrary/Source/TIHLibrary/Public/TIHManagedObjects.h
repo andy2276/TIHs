@@ -175,27 +175,255 @@ enum class ETIHSlidingWindowTypes : int8
 	ESlackEnd,//	option is Direction
 	ECircling,//	option is not
 };
+enum class ETIHSlidingWindowDoneStateTypes : int8
+{
+	ENotDone = 0,
+	EStuckEndDone =1 << 0,
+	EInfiniteEndDone = 1<<1,
+	ESlackEndDone = 1 << 2,
+	ECircleEndDone = 1 <<3,
+	EWhenRightAdd = 1 <<4,
+	EWhenLeftAdd = 1<< 5
+};
 
+void DefalutRightOverFunction()
+{
+
+}
+void DefaultLeftOverFunction()
+{
+
+}
 class FTIHSlidingWindowBase
 {
 public:
+	FTIHSlidingWindowBase();
 
 	virtual void SlidingRight(int16 value) = 0;
 	virtual void SlidingLeft(int16 value) = 0;
-
 	virtual bool IsInIndex(int16 index) = 0;
+	virtual int32 GetIndexArray(TArray<int16>& arr) = 0;
 
+	int8 GetSlidingWindowTypeInt8()
+	{
+		return mSlidingWindowType;
+	}
+	ETIHSlidingWindowTypes GetSlidingWindowTypeEnum()
+	{
+		ETIHSlidingWindowTypes reValue = ETIHSlidingWindowTypes::EStuckEnd;
 
+		switch (mSlidingWindowType)
+		{
+		case (int8)ETIHSlidingWindowTypes::EStuckEnd:
+			reValue = ETIHSlidingWindowTypes::EStuckEnd;
+			break;
+		case (int8)ETIHSlidingWindowTypes::EInfiniteEnd:
+			reValue = ETIHSlidingWindowTypes::EInfiniteEnd;
+			break;
+		case (int8)ETIHSlidingWindowTypes::ESlackEnd:
+			reValue = ETIHSlidingWindowTypes::ESlackEnd;
+			break;
+		case (int8)ETIHSlidingWindowTypes::ECircling:
+			reValue = ETIHSlidingWindowTypes::ECircling;
+			break;
+		}
+		return reValue;
+	}
+	int8 GetSlidingWindowDoneState()
+	{
+		return mSlidingWindowDoneState;
+	}
+	int16 GetRangeCount()
+	{
+		return mRangeCount;
+	}
+
+	void SetSlidingWindowTypeEnum(ETIHSlidingWindowTypes value)
+	{
+		switch (value)
+		{
+		case ETIHSlidingWindowTypes::EStuckEnd:
+			mSlidingWindowType = (int8)ETIHSlidingWindowTypes::EStuckEnd;
+			break;
+		case ETIHSlidingWindowTypes::EInfiniteEnd:
+			mSlidingWindowType = (int8)ETIHSlidingWindowTypes::EInfiniteEnd;
+			break;
+		case ETIHSlidingWindowTypes::ESlackEnd:
+			mSlidingWindowType = (int8)ETIHSlidingWindowTypes::ESlackEnd;
+			break;
+		case ETIHSlidingWindowTypes::ECircling:
+			mSlidingWindowType = (int8)ETIHSlidingWindowTypes::ECircling;
+			break;
+		}
+	}
+	void SetSlidingWindowType(int8 value)
+	{
+		mSlidingWindowType = value;
+	}
+	void SetSlidingWindowDoneState(int8 value)
+	{
+		mSlidingWindowDoneState = value;
+	}
+	void SetSlidingWindowDoneStateStuckEnd()
+	{
+		mSlidingWindowDoneState |= (int8)ETIHSlidingWindowDoneStateTypes::EStuckEndDone;
+	}
+	void SetSlidingWindowDoneStateInfiniteEnd()
+	{
+		mSlidingWindowDoneState |= (int8)ETIHSlidingWindowDoneStateTypes::EInfiniteEndDone;
+	}
+	void SetSlidingWindowDoneStateSlackEnd()
+	{
+		mSlidingWindowDoneState |= (int8)ETIHSlidingWindowDoneStateTypes::ESlackEndDone;
+	}
+	void SetSlidingWindowDoneStateCircleEnd()
+	{
+		mSlidingWindowDoneState |= (int8)ETIHSlidingWindowDoneStateTypes::ECircleEndDone;
+	}
+	void SetSlidingWindowDoneStateWhenRightAdd()
+	{
+		mSlidingWindowDoneState |= (int8)ETIHSlidingWindowDoneStateTypes::EWhenRightAdd;
+	}
+	void SetSlidingWindowDoneStateWhenLeftAdd()
+	{
+		mSlidingWindowDoneState |= (int8)ETIHSlidingWindowDoneStateTypes::EWhenLeftAdd;
+	}
+	void SetSlidingWindowDoneStateReset()
+	{
+		mSlidingWindowDoneState = (int8)ETIHSlidingWindowDoneStateTypes::ENotDone;
+	}
+	bool IsSlidingWindowDone()
+	{
+		bool reValue = false;
+		if((int8)ETIHSlidingWindowDoneStateTypes::ENotDone < mSlidingWindowDoneState )
+		{
+			reValue = true;
+		}
+		return reValue;
+	}
+	void SetRangeCount(int16 value)
+	{
+		if( mRangeCount < value)
+		{
+			mRangeCount = value;
+		}
+	}
+	void SetStartIndex(int16 value)
+	{
+		if (value < mRangeEndIndex)
+		{
+			mRangeStartIndex = value;
+		}
+	}
+	void SetEndIndex(int16 value)
+	{
+		if ( mRangeStartIndex < value)
+		{
+			mRangeEndIndex = value;
+		}
+	}
+	int16 GetRangeStartIndex()
+	{
+		return mRangeStartIndex;
+	}
+	int16 GetRangeEndIndex()
+	{
+		return mRangeEndIndex;
+	}
+	void AddSlidingWindow(int16 value)
+	{
+		
+			mSlidingPointer.Detail.LeftIndex += value;
+			mSlidingPointer.Detail.RightIndex += value;
+		
+	}
+	void MinusSlidingWindow(int16 value)
+	{
+		
+			mSlidingPointer.Detail.LeftIndex -= value;
+			mSlidingPointer.Detail.RightIndex -= value;
+		
+	}
+	FUnionTIHSlidingPointer GetCurSlidingPointer()
+	{
+		return mSlidingPointer;
+	}
+	void InitSlidingWindow(int8 slidingWindowType,int16 startIndex,int16 rangeCount)
+	{
+		mSlidingWindowType = slidingWindowType;
+		mRangeStartIndex = startIndex;
+		mRangeCount = rangeCount;
+
+		mRangeEndIndex = mRangeStartIndex + mRangeCount - 1;
+	}
+	void SetCallBackRightAdd(TFunction<void()> func)
+	{
+		mOverCallBackRightAdd = func;
+	}
+	void SetCallBackLeftAdd(TFunction<void()> func)
+	{
+		mOverCallBackLeftAdd = func;
+	}
+
+	void CallBackRightAdd()
+	{
+		mOverCallBackRightAdd();
+	}
+	void CallBackLeftAdd()
+	{
+		mOverCallBackLeftAdd();
+	}
+	bool IsDone()
+	{
+		
+	}
 private:
 	int8 mSlidingWindowType;
-	int8 mSlidingWindowTypeOption;
+	int8 mSlidingWindowDoneState;//{}
 	int16 mRangeCount;
+	
+	int16 mRangeStartIndex;
+	int16 mRangeEndIndex;
 
+	TFunction<void()> mOverCallBackRightAdd;
+	TFunction<void()> mOverCallBackLeftAdd;
+protected:
 	FUnionTIHSlidingPointer mSlidingPointer;
+
+	bool IsInIndexFunc(const int16 leftEndIndex,const int16 index,const int16 rightEndIndex)
+	{
+		bool reValue = not(index < leftEndIndex || rightEndIndex < index);
+		return reValue;
+	}
 };
 class FTIHSlidingWindowStuck : public FTIHSlidingWindowBase
 {
+public:
+	void SlidingRight(int16 value) override;
+	void SlidingLeft(int16 value) override;
+	bool IsInIndex(int16 index) override
+	{
+		bool reValue = false;
+		if(IsInIndexFunc(mSlidingPointer.Detail.LeftIndex,index,mSlidingPointer.Detail.RightIndex) == true)
+		{
+			reValue = true;
+		}
+		return reValue;
+	}
 
+	int32 GetIndexArray(TArray<int16>& arr) override
+	{
+		int32 lastIndex = -1;
+		if( GetRangeCount() <= arr.Num())
+		{
+			for (int16 i = mSlidingPointer.Detail.LeftIndex; i <= mSlidingPointer.Detail.RightIndex; ++i)
+			{
+				++lastIndex;
+				arr[lastIndex] = i;
+			}
+		}
+		return lastIndex;
+	}
 };
 class FTIHSlidingWindowInfinite : public FTIHSlidingWindowBase
 {
@@ -203,6 +431,16 @@ class FTIHSlidingWindowInfinite : public FTIHSlidingWindowBase
 };
 class FTIHSlidingWindowSlack : public FTIHSlidingWindowBase
 {
+
+public:
+	void SlidingRight(int16 value) override;
+
+	void SlidingLeft(int16 value) override;
+
+	bool IsInIndex(int16 index) override;
+
+	int32 GetIndexArray(TArray<int16>& arr) override;
+
 
 };
 
@@ -212,25 +450,190 @@ class FTIHSlidingWindowCircling : public FTIHSlidingWindowBase
 public:
 	void SlidingRight(int16 value) override
 	{
+		int16 endRangeIndex = GetRangeEndIndex();
+		const int16 rangeCount = GetRangeCount();
 
+		int16 changeValue = value% GetRangeCount();
+
+		//mSlidingPointer.Detail.LeftIndex += changeValue;
+		//mSlidingPointer.Detail.RightIndex += changeValue;
+		AddSlidingWindow(changeValue);
+
+		if(endRangeIndex < mSlidingPointer.Detail.RightIndex)
+		{
+			
+			mIsCircling = true;
+			mSlidingPointer.Detail.RightIndex = endRangeIndex;
+			int16 mainSlideCount = mSlidingPointer.Detail.RightIndex - mSlidingPointer.Detail.LeftIndex + 1;
+			int16 subSlideCountAdd = rangeCount - mainSlideCount;
+
+			mDoublePointer.Detail.LeftIndex = GetRangeStartIndex();
+			mDoublePointer.Detail.RightIndex = mDoublePointer.Detail.LeftIndex + (subSlideCountAdd - 1);
+
+			
+			if (mSlidingPointer.Detail.RightIndex < mSlidingPointer.Detail.LeftIndex)
+			{
+				mIsCircling = false;
+				mSlidingPointer.WholeData = mDoublePointer.WholeData;
+			}
+			else
+			{
+				CallBackRightAdd();
+			}
+		}
 	}
-
 	void SlidingLeft(int16 value) override
 	{
+		int16 startRangeIndex = GetRangeStartIndex();
+		const int16 rangeCount = GetRangeCount();
 
+		int16 changeValue = value % rangeCount;
+
+		//mSlidingPointer.Detail.LeftIndex -= changeValue;
+		//mSlidingPointer.Detail.RightIndex -= changeValue;
+		MinusSlidingWindow(changeValue);
+
+		if (mSlidingPointer.Detail.LeftIndex < startRangeIndex )
+		{
+			mIsCircling = true;
+			mSlidingPointer.Detail.LeftIndex = startRangeIndex;
+			int16 mainSlideCount = mSlidingPointer.Detail.RightIndex - mSlidingPointer.Detail.LeftIndex + 1;
+			int16 subSlideCountAdd = rangeCount - mainSlideCount;
+
+			mDoublePointer.Detail.RightIndex = GetRangeEndIndex();
+			mDoublePointer.Detail.LeftIndex = mDoublePointer.Detail.RightIndex - (subSlideCountAdd-1);
+
+			
+			if (mSlidingPointer.Detail.RightIndex < mSlidingPointer.Detail.LeftIndex)
+			{
+				mIsCircling = false;
+				mSlidingPointer.WholeData = mDoublePointer.WholeData;
+			}
+			else
+			{
+				CallBackLeftAdd();
+			}
+		}
 	}
-
 	bool IsInIndex(int16 index) override
 	{
-
+		bool reValue = false;
+		if(IsInIndexFunc(mSlidingPointer.Detail.LeftIndex, index, mSlidingPointer.Detail.RightIndex) == true
+			|| IsInIndexFunc(mDoublePointer.Detail.LeftIndex, index, mDoublePointer.Detail.RightIndex) == true)
+		{
+			reValue = true;
+		}
+		return reValue;
 	}
+	//	must reseved array
+	int32 GetIndexArray(TArray<int16>& arr) override
+	{
+		int32 outArrIndex = -1;
+		if(GetRangeCount() <= arr.Num())
+		{
+			for (int16 i = mSlidingPointer.Detail.LeftIndex; i <= mSlidingPointer.Detail.RightIndex; ++i)
+			{
+				++outArrIndex;
+				arr[outArrIndex] = i;
+			}
+			if (mIsCircling == true)
+			{
+				for (int16 i = mDoublePointer.Detail.LeftIndex; i <= mDoublePointer.Detail.RightIndex; ++i)
+				{
+					++outArrIndex;
+					arr[outArrIndex] = i;
+				}
+			}
+		}
+		return outArrIndex;
+	}
+
+	bool IsCircling()
+	{
+		return mIsCircling;
+	}
+
 private:
+	bool mIsCircling;
+	FUnionTIHSlidingPointer mDoublePointer;
 };
 /*
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐
 										Helper
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
+template<typename TIHTemplateType>
+class TTIHMeshCapsule
+{
+public:
+	TTIHMeshCapsule() = delete;
+	TTIHMeshCapsule(TIHTick32 tick)
+		:
+		mSelfTick(tick)
+	{}
+	TTIHMeshCapsule(TIHTick32 tick,const FString& path)
+		:
+		mSelfTick(tick),
+		mMeshPathData(path)
+	{}
+	void SetSelfTick(TIHTick32 tick)
+	{
+		mSelfTick = tick;
+	}
+	const TIHTick32 GetSelfTick()
+	{
+		return mSelfTick;
+	}
+	TSoftObjectPtr<TIHTemplateType>& GetMeshPathData()
+	{
+		return mMeshPathData;
+	}
+	void SetMeshPathData(TSoftObjectPtr<TIHTemplateType> meshData)
+	{
+		mMeshPathData = meshData;
+	}
+	TIHTemplateType* GetMeshData()
+	{
+		return mMeshData;
+	}
+	void SyncLoad()
+	{
+		if(mMeshPathData->IsValid() == true)
+		{
+			mMeshData = mMeshPathData.LoadSynchronous();
+		}
+	}
+	bool IsLoadedMesh()
+	{
+		bool reValue = false;
+		if (mMeshData != nullptr)
+		{
+			reValue = true;
+		}
+		return reValue;
+	}
+private:
+	TIHTick32 mSelfTick;
+	TIHTemplateType* mMeshData;
+	TSoftObjectPtr<TIHTemplateType> mMeshPathData;
+}; 
+class FTIHMeshPoolConfigure
+{
+public:
+
+private:
+	/*
+		무슨 슬라이딩 윈도우를 쓸건지
+		나누는 방법은 무엇인지
+			균등하게 나눈다
+			그냥 정적 숫자로 나눈다.
+			다이나믹으로 만든다.
+			오토 == 한번에 설정하는곳에서 설정한다.
+		어디서 프리페어를 불러올지
+		불러올곳의 위치는 어디인가.
+	*/
+};
+
 class FTIHMeshPool
 {
 public:
@@ -239,10 +642,87 @@ public:
 		static FTIHMeshPool meshPool;
 		return &meshPool;
 	}
-	TSoftObjectPtr<UStaticMesh> GetStaticMeshByPath(const FString& meshPath);
-	TSoftObjectPtr<USkeletalMesh> GetSkeletalMeshByPath(const FString& meshPath);
+	TTIHMeshCapsule<UStaticMesh>* GenerateStaticMeshCapsules(const FString& path);
+
+	void PrepareStaticMeshDataByPath(const FString& meshPath);
+	void PrepareStMeshDatasByList(const TArray<FString>& stMeshList);//	이거도 스테이션의prepare 부분에서 해주자.
+	void PrepareStMeshDatasByConfiguParser();
+	void PrepareStMeshDatasByServer();
+
+	void OnLoadStMeshsBySlidingWindow();
+
+	UStaticMesh* GetLoadedStaticMeshByIndex(int16 index)
+	{
+		UStaticMesh* reValue = nullptr;
+		if (mStagingStMeshs.IsValidIndex(index) == true)
+		{
+			if (mStagingStMeshs[index]->IsLoadedMesh() == true)
+			{
+				reValue = mStagingStMeshs[index]->GetMeshData();
+			}
+		}
+		return reValue;
+	}
+	UStaticMesh* GetLoadedStaticMeshByPath(const FString& meshPath)
+	{
+		UStaticMesh* reValue = nullptr;
+		if(mStagingStMeshTable.Contains(meshPath) == true)
+		{
+			reValue = GetLoadedStaticMeshByIndex(mStagingStMeshTable[meshPath]);
+		}
+		return reValue;
+	}
+
+	void GetPrepareSkeletalMeshByPath(const FString& meshPath);
+
+	/*
+		PrepareStMeshDatasByList 는 단순하게 리스트에서 메쉬캡슐을 로드하는 녀석이다.
+		PrepareStMeshDatasByConfiguParser 는 외부의 데이터를 읽어와서 메쉬캡슐을 로드하는 녀석이다.
+			이녀석은 로컬에서 자료를 저장해서 로드하는것임
+		PrepareStMeshDatasByServer 는 서버에서 불러와서 로드하는것이다.
+			이녀석은 외부에서 자료를 저장해서 로드하는것임
+		근데 모두 공통적으로 PrepareStMeshDatasByList 를 통해서만 캡슐의 제작이 가능하다.
+		즉 접근 통로가 직접이냐 하나를 거쳐가느냐이다.
+
+		GenerateMeshCapsules 는 직접적으로 캡슐을 만드는 녀석이다.
+		이녀석은 내부에 tick 을 불러오고 만드는데, 해당 틱은 관리에 사용이 되며 id 로 사용되는게 아니다.
+		그러므로 구지 외부로 호출할 필요가 없다. 근데도 32로 한이유는 내부에 저장할때 용량을 좀 줄이고싶어서.
+		그럼 이제 station 에 get
+	*/
 
 private:
+	/*
+		1.  요청이 들어오면 그걸 전부 스테이징 테이블에 넣는다
+		2.	넣으면서 해당 경로를 저장해놓는다
+		3.	
+	
+	*/
+	TMap<FString, int16> mStagingStMeshTable;
+	TArray< TSharedPtr< TTIHMeshCapsule<UStaticMesh>>> mStagingStMeshs;
+	
+	TMap<FString, int16> mStagingSkMeshTable;
+	TArray< TSharedPtr<TTIHMeshCapsule<USkeletalMesh>>> mStagingSkMeshs;
+
+	FTIHSlidingWindowBase* mSlidingWindow;
+	TArray<int16> mCandidateArray;
+	/*
+		그니깐 지금 어떻게 하고 싶은가.
+		매쉬를 많이 로드해놓으면 그만큼 데이터를 많이 먹는다. 
+		그래서 스테이징 되어있는 것과 아닌것을 구분해야한다.
+		필요한 메쉬를 요청하면 그게 있는지 확인하고 올려주는데, 시간별로 쪼개서 해당 메쉬가 사용되는지
+		아닌지 확인해야한다.
+		내가 지금 메쉬의 근처에 있는것이 호출될것이다라는걸 알 방법은 없다.,
+		근데 메쉬들의 목록을 스트링으로 받아오는게 맞는가? 메쉬들의 목록을 장전시켜놓고 만약
+		사용하지 않는다든가(몇틱 혹은 몇시간?)그러면 로드 스테이지에서 내리는 것을 해야한다.
+		즉 바로 찾게끔 메모리에 올려주는 녀석(메모리에 로드된걸 올려주는 녀석)
+		과 해당 메모리에 물체를 탐색하는 녀석이 필요하다.
+		그럼 TArray 로 전체를 탐색하는것이 필요할 거 같은데, 로드 된타이밍의 틱번호를 가져와야한다.
+	
+		이거를 스테이션에 넣어놓고
+		커맨더에서 해당 부분에 해당 녀석들의 path 들을 들고와라라고 명령을 내리고
+		load 는 tickable 이나 뭐 그런걸로 처리하는 커맨드도 만들고,
+		어디서 무엇을 해야하는지를 좀있다 쓰자
+	*/
 };
 
 #pragma endregion Miscellaneous
@@ -1374,7 +1854,7 @@ public:
 	void SetManagedSceneComponentAndCasting(USceneComponent* targetScene) override
 	{
 		mCastedComponent = Cast<TIHTemplateType>(targetScene);
-		PostLinkTargetImplement(mCastedComponent);
+		PostLinkTargetImplement();
 	}
 
 	USceneComponent* GetManagedSceneComponent() override

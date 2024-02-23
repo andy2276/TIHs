@@ -182,9 +182,7 @@ TIHReturn64 FTIHCommanderStrategyTestDelay::ExecuteStrategy(FTIHCommandBase* cmd
 
 	return 0;
 }
-void FTIHMngObjLeafTestDelay::InitSetting()
-{
-}
+
 
 void FTIHSettingHelper::FTIHManagedObjectSettings::RegistUEActorByUEHash(UClass* ueActorUcls)
 {

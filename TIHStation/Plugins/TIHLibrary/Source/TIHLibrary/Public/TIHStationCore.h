@@ -444,18 +444,6 @@ private:
 */
 
 
-class FTIHMngObjLeafTestDelay : public TTIManagedObjectLeaf<UStaticMeshComponent>
-{
-	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafTestDelay)
-public:
-	void InitSetting() override;
-};
-
-/*
-	이제 좀 나눠놓고 변경을 하자.
-*/
-
-
 class FTIHSettingHelper
 {
 	class FTIHManagedObjectSettings;
@@ -481,7 +469,7 @@ private:
 		}
 
 		void RegistTIHMngObjLeafGenerateFunc(TIHHash64 tihHash, TFunction < FTIHMngObjLeaf* ()> generateFunc);
-		template<typename TIHTemplateType = FTIHMngObjLeafTestDelay>
+		template<typename TIHTemplateType>
 		void RegistTIHMngObjLeafGenerateFuncTemplate()
 		{
 			RegistTIHMngObjLeafGenerateFunc(TIHTemplateType::TIHClassNameHash(), &TIHTemplateType::GenerateLeaf);
