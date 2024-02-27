@@ -155,7 +155,7 @@ TIHReturn64 FTIHCommanderStrategyModifyValue::ExecuteCommandStaticPolymorph(FTIH
 
 	if(cmdHeader.ProtocolOption == 0)
 	{
-		FTIHCommandModifyValue* modifValue = static_cast<FTIHCommandModifyValue*>(modifValue);
+		//FTIHCommandModifyValue* modifValue = static_cast<FTIHCommandModifyValue*>(modifValue);
 		/*
 			int16 pathIndex = modifValue.feature.pathIndex
 			TIHReturn64 targetMngLeafType = 

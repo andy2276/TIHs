@@ -21,7 +21,7 @@ public:
 
 
 private:
-	TUniquePtr<FTIHDefaultStation> mTIHStation;
+	FTIHDefaultStation* mTIHStation;
 	//	여기에 TIHStationCore 가 들어갈것이다.
 	//	빠른접근을 위해서 내부의 기능들을 저장해놓을것이다.
 	//	어차피 게임인스턴스는 무조건 1개만 존재할것이므로 중복을 생각하지 않아도 된다.

@@ -375,7 +375,12 @@ public:
 	}
 	bool IsDone()
 	{
-		
+		bool reValue = true;
+		if(mSlidingWindowDoneState == (int8)ETIHSlidingWindowDoneStateTypes::ENotDone)
+		{
+			reValue = false;
+		}
+		return reValue;
 	}
 private:
 	int8 mSlidingWindowType;
@@ -598,7 +603,7 @@ public:
 	}
 	void SyncLoad()
 	{
-		if(mMeshPathData->IsValid() == true)
+		if(mMeshPathData.IsValid() == true)
 		{
 			mMeshData = mMeshPathData.LoadSynchronous();
 		}
@@ -1900,17 +1905,17 @@ public:
 			근데 나는 composite 를 추천 근데 접근 인터페이스는 mng  에 있어야함.,
 
 	*/
-	template<typename TIHTemplateType>
-	TIHTemplateType* TryGetCastedLeaf()
-	{
-		TIHTemplateType* reValue = nullptr;
-		TIHHash64 checkHash = TIHTemplateType::TIHClassNameHash();
-		if(mLeafMap.Contains(checkHash) == true)
-		{
-			reValue = static_cast<TIHTemplateType*>(mLeafMap[checkHash]);
-		}
-		return reValue;
-	}
+	//template<typename TIHTemplateType>
+	//TIHTemplateType* TryGetCastedLeaf()
+	//{
+	//	TIHTemplateType* reValue = nullptr;
+	//	TIHHash64 checkHash = TIHTemplateType::TIHClassNameHash();
+	//	if(mLeafMap.Contains(checkHash) == true)
+	//	{
+	//		reValue = static_cast<TIHTemplateType*>(mLeafMap[checkHash]);
+	//	}
+	//	return reValue;
+	//}
 	FTIHMngObjLeaf* TryGetLeafByHash(TIHHash64 checkHash)
 	{
 		FTIHMngObjLeaf* reValue = nullptr;
@@ -2424,7 +2429,7 @@ public:
 		UWorld* spawnSpace,
 		AActor* ownerActor,
 		const FTransform& defaultTransform = FTransform::Identity,
-		int8 ifAddCapacityCount = 256
+		const int8 ifAddCapacityCount = int8(127)
 	);
 	FTIHMngObj* PoolingManagedObject(int8 allocationSpace, int8 ueObjBase, TIHObjectHash64 ueObjHash);
 

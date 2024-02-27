@@ -71,7 +71,7 @@ public:
 
 	void SetMaterial(const FString& path)
 	{
-
+		
 	}
 };
 

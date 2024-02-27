@@ -44,6 +44,7 @@
             }
           }
         ],
+        "currentTab": 1,
         "stacked": true
       }
     ],
@@ -110,7 +111,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "앞으로 해야할것 기록.md",
+                "file": "구조.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -127,7 +128,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "앞으로 해야할것 기록.md",
+                "file": "구조.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -150,7 +151,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "앞으로 해야할것 기록.md"
+                "file": "구조.md"
               }
             }
           }
@@ -171,11 +172,11 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "e0da06c61067f567",
+  "active": "d62f4fed16debee7",
   "lastOpenFiles": [
+    "앞으로 해야할것 기록.md",
     "구조.md",
     "제작상황 확인.md",
-    "앞으로 해야할것 기록.md",
     "무제 파일.md",
     "TIH Library.md",
     "헬퍼만들어야할때.md",

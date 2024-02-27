@@ -9,7 +9,7 @@ void UTIHGameInstance::Init()
 	Super::Init();
 	UE_LOG(LogTemp, Warning, TEXT("Gimochi"));
 
-	mTIHStation = MakeUnique<FTIHDefaultStation>();
+	mTIHStation = new FTIHDefaultStation;
 	mTIHStation->PrepareStation();
 
 	//	이거는 커맨더로 넘길까?

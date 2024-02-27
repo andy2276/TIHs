@@ -368,10 +368,6 @@ static TIHReturn64 TIHClassNameHash()\
 static TIHReturn64 reValue = ClassNameHashImplement(TEXT( #thisClass ) ); \
 return reValue; }
 
-/*
-	InitSetting() == abstract function
-	PostLinkTargetImplement() == StaticPolymorphism
-*/
 #define TIHMACRO_MANAGED_LEAF_FEATURES( thisClass )\
 TIHMACRO_CLASS_STATIC_NAME_HASH( thisClass )\
 static FTIHMngObjLeaf* GenerateLeaf()\

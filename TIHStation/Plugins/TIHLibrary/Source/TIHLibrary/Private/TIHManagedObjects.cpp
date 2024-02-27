@@ -2,6 +2,7 @@
 #include "TIHCommands.h"
 #include "TIHStationCoreDefines.h"
 #include "TIHStationCore.h"
+#include "TIHManagedObjectLeafs.h"
 
 FTIHGenerateCandidateLeaves FTIHGenerateCandidateLeaves::gErrorReference = {};
 
@@ -450,7 +451,9 @@ FTIHMngObjLeaf* FTIHMngObjPoolCenter::GenerateManagedComponentByTIHHash(TIHObjec
 	return reValue;
 }
 
-FTIHMngObjPool* FTIHMngObjPoolCenter::CreateManagedObjectPool(int8 allocationSpace, int16 wholeMngObjCapacity, int16 processingPhaseCount, UWorld* spawnSpace, AActor* ownerActor, const FTransform& defaultTransform /*= FTransform::Identity*/, int8 ifAddCapacityCount /*= 256 */)
+FTIHMngObjPool* FTIHMngObjPoolCenter::CreateManagedObjectPool(
+	int8 allocationSpace, int16 wholeMngObjCapacity, int16 processingPhaseCount, UWorld* spawnSpace, AActor* ownerActor,
+	const FTransform& defaultTransform /*= FTransform::Identity*/,const int8 ifAddCapacityCount /*= 256 */)
 {
 	return nullptr;
 }
@@ -630,23 +633,23 @@ FTIHMngObj* FTIHMngObjComposite::GetOwnerManagedObject()
 
 FTIHMngObjLeafMovement* FTIHMngObjComposite::TryGetLeafForMovement()
 {
-	return TryGetCastedLeaf<FTIHMngObjLeafMovement>();
+	return static_cast<FTIHMngObjLeafMovement*>(TryGetLeafByHash(FTIHMngObjLeafMovement::TIHClassNameHash()));
 }
 
 FTIHMngObjLeafPretty* FTIHMngObjComposite::TryGetLeafForPretty()
 {
-	return TryGetCastedLeaf<FTIHMngObjLeafPretty>();
+	return static_cast<FTIHMngObjLeafPretty*>(TryGetLeafByHash(FTIHMngObjLeafPretty::TIHClassNameHash()));
 }
 
 FTIHMngObjLeafStMesh* FTIHMngObjComposite::TryGetLeafForStMesh()
 {
-	return TryGetCastedLeaf<FTIHMngObjLeafStMesh>();
+	return static_cast<FTIHMngObjLeafStMesh*>(TryGetLeafByHash(FTIHMngObjLeafStMesh::TIHClassNameHash()));
 }
 
 FTIHMngObjLeafSkMesh* FTIHMngObjComposite::TryGetLeafForSkMesh()
 {
-	//TryGetLeafByHash(FTIHMngObjLeafSkMesh::TIHClassNameHash());
-	return TryGetCastedLeaf<FTIHMngObjLeafSkMesh>();
+	
+	return static_cast<FTIHMngObjLeafSkMesh*>(TryGetLeafByHash(FTIHMngObjLeafSkMesh::TIHClassNameHash()));
 }
 
 TTIHMeshCapsule<UStaticMesh>* FTIHMeshPool::GenerateStaticMeshCapsules(const FString& path)
