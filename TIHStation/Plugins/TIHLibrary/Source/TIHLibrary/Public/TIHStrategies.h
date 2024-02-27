@@ -5,10 +5,6 @@
 //#include "TIHStrategies.generated.h"
 
 
-
-
-
-
 class FTIHCommanderStrategyCreateAssignPool :public TTIHCommandStrategyCRTP<FTIHCommanderStrategyCreateAssignPool>
 {
 public:

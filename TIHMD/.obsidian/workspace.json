@@ -18,6 +18,30 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "d62f4fed16debee7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "구조.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "b3e373cc4e6c4b6a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "제작상황 확인.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
         ],
         "stacked": true
@@ -149,15 +173,17 @@
   },
   "active": "e0da06c61067f567",
   "lastOpenFiles": [
-    "설계/하우징 설계.md",
+    "구조.md",
+    "제작상황 확인.md",
     "앞으로 해야할것 기록.md",
     "무제 파일.md",
+    "TIH Library.md",
+    "헬퍼만들어야할때.md",
     "리프,커맨드,스트라테지 현황판.md",
+    "할일 정리.md",
+    "설계/하우징 설계.md",
     "구현해야하는 기능.md",
     "설계",
-    "할일 정리.md",
-    "헬퍼만들어야할때.md",
-    "TIH Library.md",
     "DevelopLog/Template/commandTemplate.md",
     "Ideas/각 역할정하기.md",
     "TIH/combine-ExecuteStrategy.md",
@@ -175,8 +201,6 @@
     "TIH/FTIHManagedObjectPool.md",
     "Ideas",
     "TIH/FTIHManagedObjectComposite.md",
-    "TIH/FTIHManagedObjectBase.md",
-    "DevelopLog/Logs/24-01_17.md",
     "TIH",
     "DevelopLog/Template",
     "DevelopLog/Logs",

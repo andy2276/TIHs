@@ -35,7 +35,9 @@ TIHReturn64 FTIHCommander::ExecuteCommands()
 				Runable 이 모여있는 거에 해당 델리게이트 실행
 			*/
 		}
-
+		/*
+			simpleResult 가 뭐냐에 따라서 결과를 도출해냄
+		*/
 		cmdResult.WholeData = SequenceCommand(cmdResult.WholeData, primitiveCmd);
 
 		if ((int8)ETIHCommandResultBitMask::EAsyncTask & cmdResult.ResultDetail.ProcessingResult0)
@@ -108,7 +110,7 @@ TIHReturn64 FTIHCommander::ExecuteCommandByCmdProtocolEnum(FTIHCommandBase* prim
 {
 	TIHReturn64 reValue = 0;
 
-	ExecuteCommandStaticPolymorph(mStrategyCreateNewAlloc, primitiveCmd);
+	//ExecuteCommandStaticPolymorph(mStrategyCreateNewAlloc, primitiveCmd);
 
 	const FTIHCommandHeader& cmdHeader = primitiveCmd->GetCommandHeader();
 		switch (cmdHeader.Protocol)

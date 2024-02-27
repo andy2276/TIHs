@@ -153,9 +153,35 @@ TIHReturn64 FTIHCommanderStrategyModifyValue::ExecuteCommandStaticPolymorph(FTIH
 	const FTIHCommandHeader& cmdHeader = cmdBase->GetCommandHeader();
 	const FTIHCommandMethod& cmdMethod = cmdBase->GetCommandMethod();
 
+	if(cmdHeader.ProtocolOption == 0)
+	{
+		FTIHCommandModifyValue* modifValue = static_cast<FTIHCommandModifyValue*>(modifValue);
+		/*
+			int16 pathIndex = modifValue.feature.pathIndex
+			TIHReturn64 targetMngLeafType = 
+			int16 targetMngCompositeIndex = modifValue.feature.MngComposite
+			int16 targetMngObjIndex = modifValue.feature.MngObjIndex
+			int16 targetMngObjSpace = modifValue.feature.allocateSpace;
+			mngCenter.
+			getObjPool(targetMngObjSpace).
+			GetMngObj()[targetMngObjIndex].
+			Commanding(modifValue.feature.ModifyValueTarget00)
+		*/
+		//FTIHMngObj* mng = poolCenter.GetManagedObjectPool(targetMngObjSpace)->GetMngObj(targetMngObjIndex);
+		//TIHReturn64 searchType = FTIHMngObjLeafStMesh::TIHClassNameHash();
+		//int16 index = mng->QueryExistedCompositeFirstMatch(searchType);
+		///*
+		//	여기서 매쉬풀에서 들고온다.
+		//*/
+		//mng->TryGetCastedLeaf<FTIHMngObjLeafStMesh>(index)->SetStMesh();
+	}
+	else if(cmdHeader.ProtocolOption == 1)
+	{
+
+	}
 
 
-		return reValue;
+	return reValue;
 }
 /*
 	----	----	----	----	----	----	----	----	----	----	----	----	----	----	----

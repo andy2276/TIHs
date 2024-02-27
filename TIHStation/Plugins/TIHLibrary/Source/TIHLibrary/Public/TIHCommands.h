@@ -769,15 +769,6 @@ union FUnionTIHCommandFactoryResult
 class FTIHCommandFactory
 {
 public:
-	
-
-	/*
-		HelperFunc
-
-
-	*/
-
-
 
 	void CopyBuilderToCommandHeader(const FTIHCommandHeader& source, FTIHCommandBase* target)
 	{
@@ -926,18 +917,6 @@ public:
 	TArray<FName> mClassNamesForCreateCommand;
 	TMap<FName, TIHReturn64> mClassNameHashsForCreateCommand;
 	TMap<TIHReturn64, TFunction<FTIHCommandBase* ()>> mGenerateCommandFunctions;
-
-	/*
-		GetCurrBuildersCommandHeader
-		GetCurrBuildersCommandMethod
-		GetCurrBuildersCommandData
-
-	*/
-
-
-
-
-
 
 	TIHReturn64 ReserveArrayForCommandMetaDatasByGrowing();
 	//	이거는 제거를 하자.
@@ -1585,13 +1564,6 @@ public:
 		mStrategyInOutWriteAndModify = value;
 		return *this;
 	}
-
-
-	/*
-
-
-
-	*/
 
 private:
 	int32 mCurrentCommandListIndex;

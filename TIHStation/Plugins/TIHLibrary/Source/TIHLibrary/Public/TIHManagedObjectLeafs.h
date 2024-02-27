@@ -75,28 +75,18 @@ public:
 	}
 };
 
+
 class FTIHMngObjLeafStMesh : public TTIManagedObjectLeaf<UStaticMeshComponent>
 {
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafStMesh)
 public:
-
-
-	void SetStMesh(const FString& path)
+	void SetStMesh(UStaticMesh* stMesh)
 	{
-		TSoftObjectPtr<UStaticMesh> stMeshPtr = FTIHMeshPool::GetSingle()->PrepareStaticMeshDataByPath(path);
-		//	여기에서 stmeshPool 을 들고온다. 
-		mCastedComponent->SetStaticMesh(stMeshPtr.Get());
+		mCastedComponent->SetStaticMesh(stMesh);
 	}
 };
 class FTIHMngObjLeafSkMesh : public TTIManagedObjectLeaf<USkeletalMeshComponent>
 {
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafStMesh)
 public:
-
-	void SetSkMesh(const FString& path)
-	{
-		TSoftObjectPtr<USkeletalMesh> skMeshPtr = FTIHMeshPool::GetSingle()->GetPrepareSkeletalMeshByPath(path);
-		//	여기에서 stmeshPool 을 들고온다. 
-		mCastedComponent->SetSkeletalMesh(skMeshPtr.Get());
-	}
 };

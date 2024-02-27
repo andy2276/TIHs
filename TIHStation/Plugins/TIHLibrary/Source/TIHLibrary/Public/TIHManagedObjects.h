@@ -617,22 +617,101 @@ private:
 	TIHTemplateType* mMeshData;
 	TSoftObjectPtr<TIHTemplateType> mMeshPathData;
 }; 
-class FTIHMeshPoolConfigure
-{
-public:
 
-private:
-	/*
-		무슨 슬라이딩 윈도우를 쓸건지
-		나누는 방법은 무엇인지
-			균등하게 나눈다
-			그냥 정적 숫자로 나눈다.
-			다이나믹으로 만든다.
-			오토 == 한번에 설정하는곳에서 설정한다.
-		어디서 프리페어를 불러올지
-		불러올곳의 위치는 어디인가.
-	*/
+USTRUCT()
+struct FTIHMeshPoolConfigure
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int8 SlidingWindowType;
+	UPROPERTY()
+	int8 SlidingWindowSplitType;
+	UPROPERTY()
+	int16 SlidingWindowSplitValue;
+
+	UPROPERTY()
+	int8 SlindingWindowDirection;
+	UPROPERTY()
+	int8 PrepareLoadPathType;
+	UPROPERTY()
+	int16 PrepareLoadPathDataIndex;
+
 };
+
+//class FTIHMeshPoolConfigure
+//{
+//public:
+//	int8 GetSlidingWindowType()
+//	{
+//		return mSlidingWindowType;
+//	}
+//	int8 GetSlidingWindowSplitType()
+//	{
+//		return mSlidingWindowSplitType;
+//	}
+//	int16 GetSlidingWindowSplitValue()
+//	{
+//		return mSlidingWindowSplitValue;
+//	}
+//
+//	int8 GetSlindingWindowDirection()
+//	{
+//		return mSlindingWindowDirection;
+//	}
+//	int8 GetPrepareLoadPathType()
+//	{
+//		return mPrepareLoadPathType;
+//	}
+//	int8 GetPrepareLoadPathDataIndex()
+//	{
+//		return mPrepareLoadPathDataIndex;
+//	}
+//
+//	void SetSlidingWindowType(int8 slidingWindowType)
+//	{
+//		mSlidingWindowType = slidingWindowType;
+//	}
+//	void SetSlidingWindowSplitType(int8 slidingWindowSplitType)
+//	{
+//		mSlidingWindowSplitType = slidingWindowSplitType;
+//	}
+//	void SetSlidingWindowSplitValue(int16 slidingWindowSplitValue)
+//	{
+//		mSlidingWindowSplitValue = slidingWindowSplitValue;
+//	}
+//
+//	void SetSlindingWindowDirection(int8 dir)
+//	{
+//		mSlindingWindowDirection = dir;
+//	}
+//	void SetPrepareLoadPathType(int8 loadPathType)
+//	{
+//		mPrepareLoadPathType = loadPathType;
+//	}
+//	void SetPrepareLoadPathDataIndex(int16 index)
+//	{
+//		mPrepareLoadPathDataIndex = index;
+//	}
+//private:
+//	/*
+//		무슨 슬라이딩 윈도우를 쓸건지
+//		나누는 방법은 무엇인지
+//			균등하게 나눈다
+//			그냥 정적 숫자로 나눈다.
+//			다이나믹으로 만든다.
+//			오토 == 한번에 설정하는곳에서 설정한다.
+//		어디서 프리페어를 불러올지
+//		불러올곳의 위치는 어디인가.
+//	*/
+//	int8 mSlidingWindowType;
+//	int8 mSlidingWindowSplitType;
+//	int16 mSlidingWindowSplitValue;
+//
+//	int8 mSlindingWindowDirection;
+//	int8 mPrepareLoadPathType;
+//	int16 mPrepareLoadPathDataIndex;
+//};
 
 class FTIHMeshPool
 {
@@ -646,11 +725,11 @@ public:
 
 	void PrepareStaticMeshDataByPath(const FString& meshPath);
 	void PrepareStMeshDatasByList(const TArray<FString>& stMeshList);//	이거도 스테이션의prepare 부분에서 해주자.
-	void PrepareStMeshDatasByConfiguParser();
+	void PrepareStMeshDatasByLocal();
 	void PrepareStMeshDatasByServer();
 
 	void OnLoadStMeshsBySlidingWindow();
-
+	
 	UStaticMesh* GetLoadedStaticMeshByIndex(int16 index)
 	{
 		UStaticMesh* reValue = nullptr;
@@ -673,8 +752,24 @@ public:
 		return reValue;
 	}
 
-	void GetPrepareSkeletalMeshByPath(const FString& meshPath);
+	UStaticMesh* GetTryLoadedStaticMeshByPath(const FString& meshPath)
+	{
+		UStaticMesh* reValue = nullptr;
+		
+		if (mStagingStMeshTable.Contains(meshPath) == false)
+		{
+			PrepareStaticMeshDataByPath(meshPath);
+		}
+		reValue = GetLoadedStaticMeshByIndex(mStagingStMeshTable[meshPath]);
+		return reValue;
+	}
 
+
+	void GetPrepareSkeletalMeshByPath(const FString& meshPath);
+	FTIHMeshPoolConfigure& GetMeshPoolConfig()
+	{
+		return mMeshPoolConfig;
+	}
 	/*
 		PrepareStMeshDatasByList 는 단순하게 리스트에서 메쉬캡슐을 로드하는 녀석이다.
 		PrepareStMeshDatasByConfiguParser 는 외부의 데이터를 읽어와서 메쉬캡슐을 로드하는 녀석이다.
@@ -695,7 +790,6 @@ private:
 		1.  요청이 들어오면 그걸 전부 스테이징 테이블에 넣는다
 		2.	넣으면서 해당 경로를 저장해놓는다
 		3.	
-	
 	*/
 	TMap<FString, int16> mStagingStMeshTable;
 	TArray< TSharedPtr< TTIHMeshCapsule<UStaticMesh>>> mStagingStMeshs;
@@ -705,6 +799,10 @@ private:
 
 	FTIHSlidingWindowBase* mSlidingWindow;
 	TArray<int16> mCandidateArray;
+
+	FTIHMeshPoolConfigure mMeshPoolConfig;
+
+	TFunction<void()> mMeshLoadingDone;
 	/*
 		그니깐 지금 어떻게 하고 싶은가.
 		매쉬를 많이 로드해놓으면 그만큼 데이터를 많이 먹는다. 
@@ -1704,7 +1802,6 @@ public:
 		AddLeaf
 		GetLeaf
 		GetOwnerManagedObject
-
 	*/
 	void AddLeaf(FTIHMngObjLeaf* leaf);
 	FTIHMngObjLeaf* GetLeaf(TIHHash64 tihHash);
@@ -1797,7 +1894,55 @@ public:
 		GetOwnerManagedObject();
 
 	}
+	/*
+		1안 전략에서 수정
+			그럼  composite 든 mngObj 든 해당 기능을 try 로 가져올 수 있어야함.
+			근데 나는 composite 를 추천 근데 접근 인터페이스는 mng  에 있어야함.,
 
+	*/
+	template<typename TIHTemplateType>
+	TIHTemplateType* TryGetCastedLeaf()
+	{
+		TIHTemplateType* reValue = nullptr;
+		TIHHash64 checkHash = TIHTemplateType::TIHClassNameHash();
+		if(mLeafMap.Contains(checkHash) == true)
+		{
+			reValue = static_cast<TIHTemplateType*>(mLeafMap[checkHash]);
+		}
+		return reValue;
+	}
+	FTIHMngObjLeaf* TryGetLeafByHash(TIHHash64 checkHash)
+	{
+		FTIHMngObjLeaf* reValue = nullptr;
+		if (mLeafMap.Contains(checkHash) == true)
+		{
+			reValue = mLeafMap[checkHash];
+		}
+		return reValue;
+	}
+	FTIHMngObjLeafMovement* TryGetLeafForMovement()
+	{
+		return TryGetCastedLeaf<FTIHMngObjLeafMovement>();
+	}
+	FTIHMngObjLeafPretty* TryGetLeafForPretty()
+	{
+		return TryGetCastedLeaf<FTIHMngObjLeafPretty>();
+	}
+	FTIHMngObjLeafStMesh* TryGetLeafForStMesh()
+	{
+		return TryGetCastedLeaf<FTIHMngObjLeafStMesh>();
+	}
+	FTIHMngObjLeafSkMesh* TryGetLeafForSkMesh()
+	{
+		return TryGetCastedLeaf<FTIHMngObjLeafSkMesh>();
+	}
+	/*
+		그냥 결정하다
+		한번 물어봤으면 캐싱을 하자. 
+		그니깐 Query 를 할건데 컴포지트에서 리프들에게 물어볼거임. 해당 기능이 되는가?
+		그럼 query 를 좀더 상세히 해야함. 즉 처음에 물어보고 배치할때만 좀 버벅이면된다.
+
+	*/
 protected:
 	int16 mParentIndex;
 	int16 mStep;
@@ -1825,10 +1970,7 @@ public:
 	{
 		return GetOwnerIndex();
 	}
-	const TSet<TIHHash64>& GetLeafTags()
-	{
-		//	FTIHTAgHelper
-	}
+	
 	virtual void SetManagedSceneComponentAndCasting(USceneComponent* targetScene) = 0;
 	virtual USceneComponent* GetManagedSceneComponent()
 	{
@@ -1977,7 +2119,7 @@ public:
 	{
 		mManagedObjectHeader.AllocationSpace = allocationSpace;
 	}
-	void InitMngObj(AActor* targetActor,int16 parentIndex,int8 allocationSpace)
+	void InitMngObj(AActor* targetActor, int16 parentIndex, int8 allocationSpace)
 	{
 		SetManagedUObject(targetActor);
 		SetManagedObjectParent(parentIndex);
@@ -2000,18 +2142,17 @@ public:
 	{
 		return mStateDetail;
 	}
-	
+
 	TIHReturn64 TryPooling()
 	{
 		TIHReturn64 reValue = 0;
-		if(mStateDetail.IsStateReady() == true)
+		if (mStateDetail.IsStateReady() == true)
 		{
 			mStateDetail.ChangeStateReadyToRunning();
 		}
 		return reValue;
 	}
 
-	
 	void SetUEObjectHash(UEObjectHash64 value)
 	{
 		mManagedUEObjectHash = value;
@@ -2019,6 +2160,32 @@ public:
 	UEObjectHash64 GetUEObjectHash()
 	{
 		return mManagedUEObjectHash;
+	}
+	
+	int16 QueryExistedCompositeFirstMatch(TIHHash64 clsHash)
+	{
+		int16 reValue = -1;
+		for (FTIHMngObjComposite* compo : mCompositeArray)
+		{
+			if (compo->GetHashValue() == clsHash)
+			{
+				reValue = compo->GetIndexInManagedObjectCompositeArray();
+				break;
+			}
+		}
+		return reValue;
+	}
+
+
+	template<typename TIHTemplateType>
+	TIHTemplateType* TryGetCastedLeaf(int16 compositeIndex)
+	{
+		TIHTemplateType* reValue = nullptr;
+		if(mCompositeArray.IsValidIndex(compositeIndex) == true)
+		{
+			reValue = mCompositeArray[compositeIndex].TryGetCastedLeaf<TIHTemplateType>();
+		}
+		return reValue;
 	}
 
 private:
@@ -2060,6 +2227,14 @@ FTIHMngObjPoolCenter* FTIHMngObj::gPoolCenter = nullptr;
 */
 class FTIHMngObjPool
 {
+/*
+		PoolingManagedObject 로 대표가 된다.
+		영역과 오브젝트 base, 그리고 연결된 오브젝트 해쉬를 넣어주면 지금 상태가 올바른
+		것만을 리턴한다
+
+		내부에 좀 복잡하게 되어있지만 사용하기 위해서는 config 만을 설정해주면 된다.
+		그럼 내부에서 reserve 가 자동으로 이루어지고,
+*/
 public:
 
 	FTIHMngObjPool(FTIHMngObjPoolCenter& center)
@@ -2079,18 +2254,9 @@ public:
 	{
 		return mPoolCenter;
 	}
-	/*
-		self 인덱스가 필요한가? 어차피 지금 객체를 특정짓는건 불가능하잖아. 그럼tarray 로 그냥 넣는게 맞지않나?
-		근데 remove 를 위해서는 있어야하긴하네.
-		tset 에 top 이있나?
-	*/
-
 public:
-
-
 	void SetManagedPoolSpace(int8 managedSpace)
 	{
-
 		mManagedObjectPoolConfigure.PoolDatas.AllocationSpace = managedSpace;
 	}
 
@@ -2221,14 +2387,15 @@ class FTIHMngObjPoolCenter
 	/*
 		사실 여기서 하고싶은건 ObjectPool 의 공통기능 및 공유 기능을 만드는건데,
 		특히 prepare 이거를 하는거다.
-
-
 	*/
 public:
 	static FTIHMngObjPoolCenter& GetSingle();
 	void MergeSamePrepareDatas();
 
-	TDeque<FTIHNewAllocPrepareData>& GetPrepareDataQueue();
+	TDeque<FTIHNewAllocPrepareData>& GetPrepareDataQueue()
+	{
+		return mPrepareDatas;
+	}
 	void EmplaceAddMngObjPrepareData
 	(
 		int8 TargetClassType, UEObjectHash64 TargetClassHash,
@@ -2243,8 +2410,6 @@ public:
 	int8 RegistManagedObjectPool(ETIHManagedObjectSpace managedObjectSpace, FTIHMngObjPool* managedObjectPool);
 
 	FTIHMngObjPool* GetManagedObjectPool(int8 objectPoolSpace);
-
-
 
 	void RegistUEClassForGenerate(UClass* ucls);
 	void RegistFunctionForManagedComponentGeneration(TIHReturn64 managedCompHash, TFunction< FTIHMngObjLeaf* ()> func);
@@ -2262,18 +2427,17 @@ public:
 	const FTIHGenerateCandidateLeaves& GetTIHHashArrayByUEHash(UEObjectHash64 ueHash);
 	FTIHMngObjLeaf* GenerateManagedComponentByTIHHash(TIHObjectHash64 ueHash);
 	/*
-		그래서 이거는 어디서? 바로 원하는 곳에서 호출해주면 된다. 대신 prepare 들 이전에 호출해줘야함.
-
+		
 	*/
-	//FTIHMngObjPool* CreateManagedObjectPool(
-	//	int8 allocationSpace,
-	//	int16 wholeMngObjCapacity,
-	//	int16 processingPhaseCount,
-	//	UWorld* spawnSpace,
-	//	AActor* ownerActor,
-	//	const FTransform& defaultTransform = FTransform::Identity,
-	//	int8 ifAddCapacityCount = 256
-	//);
+	FTIHMngObjPool* CreateManagedObjectPool(
+		int8 allocationSpace,
+		int16 wholeMngObjCapacity,
+		int16 processingPhaseCount,
+		UWorld* spawnSpace,
+		AActor* ownerActor,
+		const FTransform& defaultTransform = FTransform::Identity,
+		int8 ifAddCapacityCount = 256
+	);
 	FTIHMngObj* PoolingManagedObject(int8 allocationSpace, int8 ueObjBase, TIHObjectHash64 ueObjHash);
 
 private:

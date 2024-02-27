@@ -306,11 +306,6 @@ FTIHMngObjPoolCenter& FTIHMngObjPoolCenter::GetSingle()
 	return SelfObject;
 }
 
-TDeque<FTIHNewAllocPrepareData>& FTIHMngObjPoolCenter::GetPrepareDataQueue()
-{
-	return mPrepareDatas;
-}
-
 void FTIHMngObjPoolCenter::EmplaceAddMngObjPrepareData(int8 TargetClassType, UEObjectHash64 TargetClassHash, int16 CallParentIndex, int16 AllocateCount)
 {
 	//mPrepareDatas.EmplaceLast(FTIHNewAllocPrepareData( TargetClassType ,AllocateCount ,CallParentIndex ,TargetClassHash ));
@@ -453,6 +448,11 @@ FTIHMngObjLeaf* FTIHMngObjPoolCenter::GenerateManagedComponentByTIHHash(TIHObjec
 	reValue = mTIHClassHashToGenerateFunction[ueHash]();
 
 	return reValue;
+}
+
+FTIHMngObjPool* FTIHMngObjPoolCenter::CreateManagedObjectPool(int8 allocationSpace, int16 wholeMngObjCapacity, int16 processingPhaseCount, UWorld* spawnSpace, AActor* ownerActor, const FTransform& defaultTransform /*= FTransform::Identity*/, int8 ifAddCapacityCount /*= 256 */)
+{
+	return nullptr;
 }
 
 FTIHMngObj* FTIHMngObjPoolCenter::PoolingManagedObject(int8 allocationSpace, int8 ueObjBase, TIHObjectHash64 ueObjHash)
@@ -655,10 +655,37 @@ void FTIHMeshPool::PrepareStMeshDatasByList(const TArray<FString>& stMeshList)
 
 void FTIHMeshPool::OnLoadStMeshsBySlidingWindow()
 {
-	/*
-		어떤 타입의 슬라이딩윈도우인지
-		몇개씩 나눌건지.
-	*/
+	check(mSlidingWindow != nullptr);
+	const FTIHMeshPoolConfigure& meshPoolConfig = GetMeshPoolConfig();
+	const int8 slidingWindowType = meshPoolConfig.SlidingWindowType;
+	const int8 slindingSplitType = meshPoolConfig.SlidingWindowSplitType;
+	const int16 slidingSplitValue = meshPoolConfig.SlidingWindowSplitValue;
+	const int8 slidingWindowDir = meshPoolConfig.SlindingWindowDirection;
+
+	mSlidingWindow->GetIndexArray(mCandidateArray);
+
+	for(int16& index : mCandidateArray)
+	{
+		if(mStagingStMeshs[index]->IsLoadedMesh() == true)
+		{
+			continue;
+		}
+		mStagingStMeshs[index]->SyncLoad();
+	}
+	
+	if(0< slidingWindowDir)
+	{
+		mSlidingWindow->SlidingRight(slidingSplitValue);
+	}
+	else
+	{
+		mSlidingWindow->SlidingLeft(slidingSplitValue);
+	}
+
+	if(mSlidingWindow->IsDone() == true)
+	{
+		mMeshLoadingDone();
+	}
 }
 
 void FTIHSlidingWindowSlack::SlidingRight(int16 value)
