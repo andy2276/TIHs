@@ -1920,22 +1920,10 @@ public:
 		}
 		return reValue;
 	}
-	FTIHMngObjLeafMovement* TryGetLeafForMovement()
-	{
-		return TryGetCastedLeaf<FTIHMngObjLeafMovement>();
-	}
-	FTIHMngObjLeafPretty* TryGetLeafForPretty()
-	{
-		return TryGetCastedLeaf<FTIHMngObjLeafPretty>();
-	}
-	FTIHMngObjLeafStMesh* TryGetLeafForStMesh()
-	{
-		return TryGetCastedLeaf<FTIHMngObjLeafStMesh>();
-	}
-	FTIHMngObjLeafSkMesh* TryGetLeafForSkMesh()
-	{
-		return TryGetCastedLeaf<FTIHMngObjLeafSkMesh>();
-	}
+	FTIHMngObjLeafMovement* TryGetLeafForMovement();
+	FTIHMngObjLeafPretty* TryGetLeafForPretty();
+	FTIHMngObjLeafStMesh* TryGetLeafForStMesh();
+	FTIHMngObjLeafSkMesh* TryGetLeafForSkMesh();
 	/*
 		그냥 결정하다
 		한번 물어봤으면 캐싱을 하자. 

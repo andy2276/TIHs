@@ -205,7 +205,7 @@ template<typename TIHTemplateType>
 TIHTemplateType FastAbsIntTemplate(TIHTemplateType x)
 {
 	TIHTemplateType reValue;
-	const bitCount = (sizeof(TIHTemplateType) * 8) - 1;
+	const int32 bitCount = (sizeof(TIHTemplateType) * 8) - 1;
 	TIHTemplateType y = (x >> bitCount);
 	reValue = (x + y) ^ y;
 	return reValue;

@@ -628,6 +628,27 @@ FTIHMngObj* FTIHMngObjComposite::GetOwnerManagedObject()
 	return nullptr;
 }
 
+FTIHMngObjLeafMovement* FTIHMngObjComposite::TryGetLeafForMovement()
+{
+	return TryGetCastedLeaf<FTIHMngObjLeafMovement>();
+}
+
+FTIHMngObjLeafPretty* FTIHMngObjComposite::TryGetLeafForPretty()
+{
+	return TryGetCastedLeaf<FTIHMngObjLeafPretty>();
+}
+
+FTIHMngObjLeafStMesh* FTIHMngObjComposite::TryGetLeafForStMesh()
+{
+	return TryGetCastedLeaf<FTIHMngObjLeafStMesh>();
+}
+
+FTIHMngObjLeafSkMesh* FTIHMngObjComposite::TryGetLeafForSkMesh()
+{
+	//TryGetLeafByHash(FTIHMngObjLeafSkMesh::TIHClassNameHash());
+	return TryGetCastedLeaf<FTIHMngObjLeafSkMesh>();
+}
+
 TTIHMeshCapsule<UStaticMesh>* FTIHMeshPool::GenerateStaticMeshCapsules(const FString& path)
 {
 	static FTIHTickTock& tickTock = TIHSTATION.GetTickTock();

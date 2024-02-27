@@ -55,6 +55,9 @@
     <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHLibraryEntry.cpp">
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHManagedObjectLeafs.cpp">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHManagedObjects.cpp">
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
     </ClCompile>
@@ -80,6 +83,9 @@
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHLibraryEntry.h">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHManagedObjectLeafs.h">
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHManagedObjects.h">
@@ -279,16 +285,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\TIHStation\Public\TIHTestPlayerControl.h">
       <Filter>Source\TIHStation\Public</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHManagedObjectLeafs.cpp">
-      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHManagedObjectLeafs.h">
-      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
