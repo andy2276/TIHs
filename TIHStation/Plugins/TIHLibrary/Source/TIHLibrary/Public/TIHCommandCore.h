@@ -1,3 +1,4 @@
+#pragma once
 #include "CoreMinimal.h"
 #include "Containers/Deque.h"
 #include "TIHStationCoreDefines.h"
@@ -22,6 +23,21 @@ union FUnionTIHCommandListResult;
 struct FTIHCommandHeader;
 struct FTIHCommandMethod;
 struct FTIHCommandFactoryBuilders;
+
+class FTIHCommanderStrategyCreateNewAlloc;
+class FTIHCommanderStrategyCreateAssignPool;
+class FTIHCommanderStrategyServerConnect;
+class FTIHCommanderStrategyServerSend;
+class FTIHCommanderStrategyServerListen;
+class FTIHCommanderStrategyServerDisConnect;
+class FTIHCommanderStrategyDeleteRejectPool;
+class FTIHCommanderStrategyDeleteDestory;
+class FTIHCommanderStrategyModifyTransform;
+class FTIHCommanderStrategyModifyValue;
+class FTIHCommanderStrategyInOutReadAndSave;
+class FTIHCommanderStrategyInOutWriteAndModify;
+class FTIHCommanderExtentionForExeCmdStrategy;
+
 
 union FUnionTIHCommandResult
 {
@@ -905,6 +921,216 @@ private:
 	bool mExecuteCommaderLoop;
 	int32 mPrevCommandIndex;
 	int32 mCurrCommandState;
+};
+
+class FTIHCommandDataBoard
+{
+public:
+	TIHReturn64 ReserveForArrayInt8ByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<int8>>(size, mInt8Array);
+	}
+	TIHReturn64 ReserveForArrayInt16ByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<int16>>(size, mInt16Array);
+	}
+	TIHReturn64 ReserveForArrayInt32ByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<int32>>(size, mInt32Array);
+	}
+	TIHReturn64 ReserveForArrayInt64ByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<int64>>(size, mInt64Array);
+	}
+	TIHReturn64 ReserveForArrayFloatByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<float>>(size, mFloatArray);
+	}
+	TIHReturn64 ReserveForArrayDoubleByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<double>>(size, mDoubleArray);
+	}
+	TIHReturn64 ReserveForArrayVector3fByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<FVector>>(size, mVectorArray);
+	}
+	TIHReturn64 ReserveForArrayTransformByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<FTransform>>(size, mTransformArray);
+	}
+	TIHReturn64 ReserveForArrayStringByGrowing(int32 size)
+	{
+		return ReserveForArrayByGrowing<TArray<FString>>(size, mStringArray);
+	}
+
+	TIHReturn64 RegisterToArrayAsInt8(const int8& value)
+	{
+		return RegisterToArray<int8, TArray<int8>>(value, mInt8Array);
+	}
+	TIHReturn64 RegisterToArrayAsInt16(const int16& value)
+	{
+		return RegisterToArray<int16, TArray<int16>>(value, mInt16Array);
+	}
+	TIHReturn64 RegisterToArrayAsInt32(const int32& value)
+	{
+		return RegisterToArray<int32, TArray<int32>>(value, mInt32Array);
+	}
+	TIHReturn64 RegisterToArrayAsInt64(const int64& value)
+	{
+		return RegisterToArray<int64, TArray<int64>>(value, mInt64Array);
+	}
+	TIHReturn64 RegisterToArrayAsFloat(const float& value)
+	{
+		return RegisterToArray<float, TArray<float>>(value, mFloatArray);
+	}
+	TIHReturn64 RegisterToArrayAsDouble(const double& value)
+	{
+		return RegisterToArray<double, TArray<double>>(value, mDoubleArray);
+	}
+	TIHReturn64 RegisterToArrayAsVector(const FVector& value)
+	{
+		return RegisterToArray<FVector, TArray<FVector>>(value, mVectorArray);
+	}
+	TIHReturn64 RegisterToArrayAsTransform(const FTransform& value)
+	{
+		return RegisterToArray<FTransform, TArray<FTransform>>(value, mTransformArray);
+	}
+	TIHReturn64 RegisterToArrayAsString(const FString& value)
+	{
+		return RegisterToArray<FString, TArray<FString>>(value, mStringArray);
+	}
+
+
+	const int32 GetDataInInt8Array(int32 index)
+	{
+		return mInt8Array[index];
+	}
+	const int64 GetDataInInt16Array(int32 index)
+	{
+		return mInt16Array[index];
+	}
+
+	const int32 GetDataInInt32Array(int32 index)
+	{
+		return mInt32Array[index];
+	}
+	const int64 GetDataInInt64Array(int32 index)
+	{
+		return mInt64Array[index];
+	}
+	const float GetDataInFloatArray(int32 index)
+	{
+		return mFloatArray[index];
+	}
+	const double GetDataInDoubleArray(int32 index)
+	{
+		return mDoubleArray[index];
+	}
+	const FVector& GetDataInVectorArray(int32 index)
+	{
+		return mVectorArray[index];
+	}
+	const FTransform& GetDataInTransformArray(int32 index)
+	{
+		return mTransformArray[index];
+	}
+	const FString& GetDataInStringArray(int32 index)
+	{
+		return mStringArray[index];
+	}
+
+
+private:
+	TArray<int8> mInt8Array;
+	TArray<int16> mInt16Array;
+	TArray<int32> mInt32Array;
+	TArray<int64> mInt64Array;
+	TArray<float> mFloatArray;
+	TArray<double> mDoubleArray;
+	TArray<FVector> mVectorArray;
+	TArray<FTransform> mTransformArray;
+	TArray<FString> mStringArray;
+	template<typename TIHTemplateType = TArray<int32>>
+	TIHReturn64 ReserveForArrayByGrowing(int32 size, TIHTemplateType& memeberArray)
+	{
+		FUnionTIHDataBoardResult reValue;
+		reValue.ReserveDetail.Protocol = (int8)ETIHResultDetailProtocols::EReserve;
+		reValue.ReserveDetail.PreMax = memeberArray.Max();
+
+		int16 reserveValue = size - reValue.ReserveDetail.PreMax;
+		if (reserveValue < 1)
+		{
+			if (reserveValue == 0)
+			{
+				reValue.ReserveDetail.SimpleResult = (int32)ETIHReturn32Semantic::Void;
+			}
+			else
+			{
+				reValue.ReserveDetail.SimpleResult = (int32)ETIHReturn32Semantic::Fail;
+			}
+		}
+		else
+		{
+			reValue.ReserveDetail.SimpleResult = (int32)ETIHReturn32Semantic::Success;
+			memeberArray.Reserve(size);
+			//reValue.ReserveDetail.CurMax = memeberArray.Max();
+		}
+		return reValue.WholeData;
+	}
+
+	template<typename TIHTemplateValueType = int32, typename TIHTemplateArrayType = TArray<int32>>
+	TIHReturn64 RegisterToArray(const TIHTemplateValueType& value, TIHTemplateArrayType& memberArray)
+	{
+		FUnionTIHDataBoardResult reValue;
+		reValue.RegisterDetail.Protocol = (int8)ETIHResultDetailProtocols::ERegister;
+		reValue.RegisterDetail.SimpleResult = (int32)ETIHReturn32Semantic::Fail;
+		int32 curPushIndex = memberArray.Num();
+		if (curPushIndex < memberArray.Max())
+		{
+			reValue.RegisterDetail.RegistedIndex = memberArray.Add(value);
+		}
+		return reValue.WholeData;
+	}
+};
+class FTIHCommandDataBoardCenter
+{
+public:
+
+
+};
+
+
+class FTIHCommandShareBoard
+{
+public:
+	FTIHCommandShareBoard() {};
+	~FTIHCommandShareBoard() {};
+
+	//	샤딩을 넣는다면 여기에 넣어야겠지?
+
+	FTIHCommandDataBoard mBoard;
+};
+
+class FTIHCommandResultBoard
+{
+public:
+	FTIHCommandResultBoard() {};
+	~FTIHCommandResultBoard() {};
+
+
+
+	FTIHCommandDataBoard mBoard;
+};
+
+class FTIHCommandPathBoard
+{
+public:
+	FTIHCommandPathBoard() {};
+	~FTIHCommandPathBoard() {};
+
+	TMap<FName, FString> mPathAddtions;
+
+	FTIHCommandDataBoard mBoard;
 };
 
 class FTIHCommander

@@ -6,6 +6,7 @@
 #include "Containers/Deque.h"
 #include "TIHStationCoreDefines.h"
 
+#include "TIHCommandCore.h"
 #include "TIHCommands.h"
 #include "TIHStrategies.h"
 #include "TIHNetworks.h"

@@ -2187,7 +2187,8 @@ public:
 		TIHTemplateType* reValue = nullptr;
 		if(mCompositeArray.IsValidIndex(compositeIndex) == true)
 		{
-			reValue = mCompositeArray[compositeIndex].TryGetCastedLeaf<TIHTemplateType>();
+			FTIHMngObjLeaf* leaf = mCompositeArray[compositeIndex]->TryGetLeafByHash(TIHTemplateType::TIHClassNameHash());
+			reValue = static_cast<TIHTemplateType*>(leaf);
 		}
 		return reValue;
 	}

@@ -159,29 +159,29 @@ TIHReturn64 FTIHCommandFactoryForDefaultStation::InstantiateCommandsInMetaArray(
 #pragma endregion
 
 
-TIHReturn64 FTIHCommanderStrategyTestDelay::ExecuteStrategy(FTIHCommandBase* cmdBase)
-{
-	TIHReturn64 reValue = 0;
-	/*
-		여기에 다음 행동할것에 대한 내용을 넣는다.
-		그리고 작동을 시켜주는 것이다.
-		그럼 여기는 아마 딜레이겠지?
-		만약 load 였다하면?
-	*/
-	TIHSTATION_TYPE& defaultStation = TIHSTATION;
-	
-	const FTIHCommandHeader cmdHeader = cmdBase->GetCommandHeader();
-	const FTIHCommandMethod cmdMethod = cmdBase->GetCommandMethod();
-
-	FTIHCommandTestDelay* testDelay = static_cast<FTIHCommandTestDelay*>(cmdBase);
-	FTIHCommandTestDelayDatas& feature = testDelay->GetCommandFeature();
-
-	int8 checkTimeIndex = feature.Test00;
-	float checkTimeValue = defaultStation.GetCommandPathBoard().mBoard.GetDataInFloatArray(checkTimeIndex);
-
-
-	return 0;
-}
+//TIHReturn64 FTIHCommanderStrategyTestDelay::ExecuteStrategy(FTIHCommandBase* cmdBase)
+//{
+//	TIHReturn64 reValue = 0;
+//	/*
+//		여기에 다음 행동할것에 대한 내용을 넣는다.
+//		그리고 작동을 시켜주는 것이다.
+//		그럼 여기는 아마 딜레이겠지?
+//		만약 load 였다하면?
+//	*/
+//	TIHSTATION_TYPE& defaultStation = TIHSTATION;
+//	
+//	const FTIHCommandHeader cmdHeader = cmdBase->GetCommandHeader();
+//	const FTIHCommandMethod cmdMethod = cmdBase->GetCommandMethod();
+//
+//	FTIHCommandTestDelay* testDelay = static_cast<FTIHCommandTestDelay*>(cmdBase);
+//	FTIHCommandTestDelayDatas& feature = testDelay->GetCommandFeature();
+//
+//	int8 checkTimeIndex = feature.Test00;
+//	float checkTimeValue = defaultStation.GetCommandPathBoard().mBoard.GetDataInFloatArray(checkTimeIndex);
+//
+//
+//	return 0;
+//}
 
 
 void FTIHSettingHelper::FTIHManagedObjectSettings::RegistUEActorByUEHash(UClass* ueActorUcls)
