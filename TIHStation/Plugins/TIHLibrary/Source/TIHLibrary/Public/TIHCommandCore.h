@@ -177,7 +177,10 @@ public:
 	{
 		return 0;
 	}
-
+	virtual TIHReturn64 ExecuteVirtualSelfFunction()
+	{
+		return 0;
+	}
 	/*
 		strategy 에 데이터를 넣고 이걸 처리할거임.
 		단순하게 header 와 method 만 보고 해당 부분으로 데이터를 넘길거고

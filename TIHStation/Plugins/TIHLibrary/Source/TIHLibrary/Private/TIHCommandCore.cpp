@@ -36,6 +36,10 @@ TIHReturn64 FTIHCommander::ExecuteCommands()
 				Runable 이 모여있는 거에 해당 델리게이트 실행
 			*/
 		}
+		else if((int8)ETIHCommandMethodProcessingProtocols::ESelfFunction == cmdMethod.CommandProcessingProtocol)
+		{
+			cmdResult.WholeData = primitiveCmd->ExecuteVirtualSelfFunction();
+		}
 		/*
 			simpleResult 가 뭐냐에 따라서 결과를 도출해냄
 		*/

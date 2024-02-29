@@ -199,7 +199,7 @@ extern const uint32 TIHYear = 3784320000;
 #pragma region Helper Declares
 
 class FTIHHashClass;
-TIHReturn64 ClassNameHashImplement(const TCHAR* clsName);
+
 
 template<typename TIHTemplateType>
 TIHTemplateType FastAbsIntTemplate(TIHTemplateType x)
@@ -248,6 +248,8 @@ int64 FastAbs64(int64 x)
 ┃▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼┃
 */
 #pragma region TIH Macro
+
+#define TIHVALUE_MAX_HASH_COUNT 64
 
 #define TIHSETTING_STATION_IS_DEFAULT
 
@@ -524,6 +526,7 @@ enum class ETIHCommandMethodProcessingProtocols : int8
 	EStrategies = 0,
 	EDelegates,
 	EMultiThreading,
+	ESelfFunction,
 };
 /*!
 *	@brief 커맨드의 진행 방법에 대한 프로토콜
@@ -671,15 +674,58 @@ enum class EPrepareClassType : int8
 									General Helpers
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
+
 class FTIHHashClass
 {
 public:
+	static int64 FNV1aHash54Signed(const TCHAR* clsName)
+	{
+		const uint64 FNV_prime = 1099511628211u;
+		const uint64 offset_basis = 14695981039346656037u;
+		
+		int32 clsNameIndex = 0;
+		uint64 hashValue = offset_basis;
+		FString originValue(clsName);
 
-
-
+		bool isError = false;
+		while(true)
+		{
+			if(clsName == nullptr ||TIHVALUE_MAX_HASH_COUNT <= clsNameIndex )
+			{
+				isError = true;
+				break;
+			}
+			else if (clsName[clsNameIndex] == '\0' || clsName[clsNameIndex] == '\n')
+			{
+				isError = true;
+				break;
+			}
+			hashValue ^= (uint64)clsName[clsNameIndex];
+			hashValue *= FNV_prime;
+			++clsNameIndex;
+		}
+		int64 reValue = static_cast<int64>(hashValue);
+		
+		//	베제고릴라
+		//if(IsCollision(reValue) == true)
+		//{
+		//}
+		return reValue;
+	}
+	bool IsCollision(int64 value)
+	{
+		return false;
+	}
+	
 private:
 
 };
+inline TIHReturn64 ClassNameHashImplement(const TCHAR* clsName)
+{
+	static FTIHHashClass hashCls;
+	TIHReturn64 reValue = hashCls.FNV1aHash54Signed(clsName);
+	return reValue;
+}
 
 /*
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐

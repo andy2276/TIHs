@@ -368,8 +368,8 @@ class FTIHCommandInOutWriteAndModify : public TTIHCommand<FTIHCommandInOutWriteA
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCommandInOutWriteAndModify);
 public:
-	FTIHCommandInOutWriteAndModify();
-	virtual ~FTIHCommandInOutWriteAndModify();
+	FTIHCommandInOutWriteAndModify() {};
+	virtual ~FTIHCommandInOutWriteAndModify() {};
 };
 #pragma endregion Commands
 /*
@@ -378,3 +378,57 @@ public:
 ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 */
+/*
+## 새로운 커맨드 제작
+	1. feature 가 중요하다
+	2. 피처들은 모두 언리얼꺼로 만든다. 물론 핏하게 만든다.
+	3. 어차피 대부분의 것들은 strategy 에서 처리해줄거임
+	4. 내용
+		+ FTIHCommandModifyConfigure
+		+ FTIHCommandModifyPrepareMesh
+			+ 복수형은 FTIHCommandModifyPrepareMeshes
+		+ FTIHCommandModifyLoadMesh
+			+ 복숳형은 FTIHCommandModifyLoadMeshes
+		+ FTIHCommandModifyLoadMeshes
+		+ FTIHCommandCreateNewAllocConfig
+		+ FTIHCommandCreateNewAllocPrepare
+		+ FTIHCommandCreateNewAllocOnGenerate
+		+ FTIHCommandMngObjPooling
+		+ FTIHCommandMngObjReject
+	5. TIHCmd라고 이름을 바꾼걸 cmd 로 쓸거임. 이게 모든것의 명령임
+	6. 일단 만들고나서 연결이 가능한것들은 연결을 할거임.
+*/
+
+/*
+	이거 쓸까? 쓰지말자
+*/
+#define TIHMACRO_COMMAND_CLASS_TEMPLATE_CUSTOM_BEGIN(thisClass , thisClassFeatureStruct )\
+class thisClass : public TTIHCommand<thisClassFeatureStruct>\
+{\
+TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(thisClass);
+
+#define TIHMACRO_COMMAND_CLASS_TEMPLATE_CUSTOM_END(thisClass)\
+}
+
+#define TIHMACRO_COMMAND_CLASS_TEMPLATE( thisClass , thisClassFeatureStruct ) \
+class thisClass : public TTIHCommand<thisClassFeatureStruct>\
+{\
+TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(thisClass);\
+public:\
+thisClass(){};\
+virtual ~thisClass(){};\
+}\
+
+USTRUCT()
+struct FTIHCmdModifyMeshPoolConfigureDatas
+{
+	GENERATED_BODY()
+};
+
+class FTIHCmdModifyMeshPoolConfigureSetting : public TTIHCommand<FTIHCmdModifyMeshPoolConfigureDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdModifyMeshPoolConfigureSetting);
+public:
+	FTIHCmdModifyMeshPoolConfigureSetting() {};
+	virtual ~FTIHCmdModifyMeshPoolConfigureSetting() {};
+};

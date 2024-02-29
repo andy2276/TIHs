@@ -32,7 +32,6 @@
             }
           }
         ],
-        "currentTab": 1,
         "stacked": true
       }
     ],
@@ -99,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "앞으로 해야할것 기록.md",
+                "file": "생각정리.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -116,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "앞으로 해야할것 기록.md",
+                "file": "생각정리.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -139,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "앞으로 해야할것 기록.md"
+                "file": "생각정리.md"
               }
             }
           }
@@ -160,10 +159,10 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "b3e373cc4e6c4b6a",
+  "active": "f7eb8f596d39e214",
   "lastOpenFiles": [
-    "생각정리.md",
     "앞으로 해야할것 기록.md",
+    "생각정리.md",
     "무제 파일.md",
     "리프,커맨드,스트라테지 현황판.md",
     "구현해야하는 기능.md",

@@ -9,6 +9,7 @@
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeTIHCommands() {}
 // Cross Module References
+	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHCmdModifyMeshPoolConfigureDatas();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHCommandDeleteRejectPoolDatas();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHCommandInOutReadAndSaveDatas();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHCommandInOutWriteAndModifyDatas();
@@ -753,6 +754,57 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHCommandInOutWrite
 		}
 		return Z_Registration_Info_UScriptStruct_TIHCommandInOutWriteAndModifyDatas.InnerSingleton;
 	}
+	static FStructRegistrationInfo Z_Registration_Info_UScriptStruct_TIHCmdModifyMeshPoolConfigureDatas;
+class UScriptStruct* FTIHCmdModifyMeshPoolConfigureDatas::StaticStruct()
+{
+	if (!Z_Registration_Info_UScriptStruct_TIHCmdModifyMeshPoolConfigureDatas.OuterSingleton)
+	{
+		Z_Registration_Info_UScriptStruct_TIHCmdModifyMeshPoolConfigureDatas.OuterSingleton = GetStaticStruct(Z_Construct_UScriptStruct_FTIHCmdModifyMeshPoolConfigureDatas, (UObject*)Z_Construct_UPackage__Script_TIHLibraryEntry(), TEXT("TIHCmdModifyMeshPoolConfigureDatas"));
+	}
+	return Z_Registration_Info_UScriptStruct_TIHCmdModifyMeshPoolConfigureDatas.OuterSingleton;
+}
+template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHCmdModifyMeshPoolConfigureDatas>()
+{
+	return FTIHCmdModifyMeshPoolConfigureDatas::StaticStruct();
+}
+	struct Z_Construct_UScriptStruct_FTIHCmdModifyMeshPoolConfigureDatas_Statics
+	{
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam Struct_MetaDataParams[];
+#endif
+		static void* NewStructOps();
+		static const UECodeGen_Private::FStructParams ReturnStructParams;
+	};
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHCmdModifyMeshPoolConfigureDatas_Statics::Struct_MetaDataParams[] = {
+		{ "ModuleRelativePath", "Public/TIHCommands.h" },
+	};
+#endif
+	void* Z_Construct_UScriptStruct_FTIHCmdModifyMeshPoolConfigureDatas_Statics::NewStructOps()
+	{
+		return (UScriptStruct::ICppStructOps*)new UScriptStruct::TCppStructOps<FTIHCmdModifyMeshPoolConfigureDatas>();
+	}
+	const UECodeGen_Private::FStructParams Z_Construct_UScriptStruct_FTIHCmdModifyMeshPoolConfigureDatas_Statics::ReturnStructParams = {
+		(UObject* (*)())Z_Construct_UPackage__Script_TIHLibraryEntry,
+		nullptr,
+		&NewStructOps,
+		"TIHCmdModifyMeshPoolConfigureDatas",
+		nullptr,
+		0,
+		sizeof(FTIHCmdModifyMeshPoolConfigureDatas),
+		alignof(FTIHCmdModifyMeshPoolConfigureDatas),
+		RF_Public|RF_Transient|RF_MarkAsNative,
+		EStructFlags(0x00000001),
+		METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHCmdModifyMeshPoolConfigureDatas_Statics::Struct_MetaDataParams), Z_Construct_UScriptStruct_FTIHCmdModifyMeshPoolConfigureDatas_Statics::Struct_MetaDataParams)
+	};
+	UScriptStruct* Z_Construct_UScriptStruct_FTIHCmdModifyMeshPoolConfigureDatas()
+	{
+		if (!Z_Registration_Info_UScriptStruct_TIHCmdModifyMeshPoolConfigureDatas.InnerSingleton)
+		{
+			UECodeGen_Private::ConstructUScriptStruct(Z_Registration_Info_UScriptStruct_TIHCmdModifyMeshPoolConfigureDatas.InnerSingleton, Z_Construct_UScriptStruct_FTIHCmdModifyMeshPoolConfigureDatas_Statics::ReturnStructParams);
+		}
+		return Z_Registration_Info_UScriptStruct_TIHCmdModifyMeshPoolConfigureDatas.InnerSingleton;
+	}
 	struct Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommands_h_Statics
 	{
 		static const FStructRegisterCompiledInInfo ScriptStructInfo[];
@@ -770,8 +822,9 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHCommandInOutWrite
 		{ FTIHCommandModifyValueDatas::StaticStruct, Z_Construct_UScriptStruct_FTIHCommandModifyValueDatas_Statics::NewStructOps, TEXT("TIHCommandModifyValueDatas"), &Z_Registration_Info_UScriptStruct_TIHCommandModifyValueDatas, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHCommandModifyValueDatas), 1646058626U) },
 		{ FTIHCommandInOutReadAndSaveDatas::StaticStruct, Z_Construct_UScriptStruct_FTIHCommandInOutReadAndSaveDatas_Statics::NewStructOps, TEXT("TIHCommandInOutReadAndSaveDatas"), &Z_Registration_Info_UScriptStruct_TIHCommandInOutReadAndSaveDatas, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHCommandInOutReadAndSaveDatas), 508582326U) },
 		{ FTIHCommandInOutWriteAndModifyDatas::StaticStruct, Z_Construct_UScriptStruct_FTIHCommandInOutWriteAndModifyDatas_Statics::NewStructOps, TEXT("TIHCommandInOutWriteAndModifyDatas"), &Z_Registration_Info_UScriptStruct_TIHCommandInOutWriteAndModifyDatas, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHCommandInOutWriteAndModifyDatas), 894517057U) },
+		{ FTIHCmdModifyMeshPoolConfigureDatas::StaticStruct, Z_Construct_UScriptStruct_FTIHCmdModifyMeshPoolConfigureDatas_Statics::NewStructOps, TEXT("TIHCmdModifyMeshPoolConfigureDatas"), &Z_Registration_Info_UScriptStruct_TIHCmdModifyMeshPoolConfigureDatas, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHCmdModifyMeshPoolConfigureDatas), 3729779767U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommands_h_2313739243(TEXT("/Script/TIHLibraryEntry"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommands_h_3478817655(TEXT("/Script/TIHLibraryEntry"),
 		nullptr, 0,
 		Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommands_h_Statics::ScriptStructInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommands_h_Statics::ScriptStructInfo),
 		nullptr, 0);
