@@ -89,3 +89,14 @@ class FTIHCommanderExtentionForExeCmdStrategy
 public:
 	virtual TIHReturn64 ExecuteCommandInheritance(FTIHCommandBase* primitiveCmd) = 0;
 };
+
+/*
+	새롭게 만들자.
+	여기에서 처리하는거임.
+	근데 종류를 좀더 줄여야할거같음.
+*/
+class FTIHCommanderStrategyNewAlloc :public TTIHCommandStrategyCRTP<FTIHCommanderStrategyInOutWriteAndModify>
+{
+public:
+	TIHReturn64 ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase);
+};

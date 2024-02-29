@@ -1,5 +1,7 @@
 
 #include "TIHStrategies.h"
+#include "TIHManagedObjects.h"
+#include "TIHManagedObjectLeafs.h"
 #include "TIHStationCore.h"
 
 
@@ -149,31 +151,26 @@ TIHReturn64 FTIHCommanderStrategyModifyValue::ExecuteCommandStaticPolymorph(FTIH
 {
 	TIHReturn64 reValue = 0;
 	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+	static FTIHMeshPool& meshPool = *FTIHMeshPool::GetSingle();
 
 	const FTIHCommandHeader& cmdHeader = cmdBase->GetCommandHeader();
 	const FTIHCommandMethod& cmdMethod = cmdBase->GetCommandMethod();
 
 	if(cmdHeader.ProtocolOption == 0)
 	{
-		//FTIHCommandModifyValue* modifValue = static_cast<FTIHCommandModifyValue*>(modifValue);
+		FTIHCommandModifyMesh* modifyValue = static_cast<FTIHCommandModifyMesh*>(cmdBase);
+		const FTIHCommandModifyMeshData& modifyData = modifyValue->GetCommandFeature();
+		const int16 targetMngObjSpace = modifyData.MngObjPoolAllocationSpace;
+		const int16 targetMngObjIndex = modifyData.MngObjIndex;
+		const int16 targetMngObjCompositeIndex = modifyData.MngObjCompositeIndex;
+		const int16 targetMeshIndex = modifyData.LoadedMeshIndex;
+		FTIHMngObj* mngObj = poolCenter.GetManagedObjectPool(targetMngObjSpace)->GetMngObj(targetMngObjIndex);
+		FTIHMngObjLeafStMesh* tryLeaf = mngObj->TryGetCastedLeaf<FTIHMngObjLeafStMesh>(targetMngObjCompositeIndex);
+		check(tryLeaf != nullptr);
 		/*
-			int16 pathIndex = modifValue.feature.pathIndex
-			TIHReturn64 targetMngLeafType = 
-			int16 targetMngCompositeIndex = modifValue.feature.MngComposite
-			int16 targetMngObjIndex = modifValue.feature.MngObjIndex
-			int16 targetMngObjSpace = modifValue.feature.allocateSpace;
-			mngCenter.
-			getObjPool(targetMngObjSpace).
-			GetMngObj()[targetMngObjIndex].
-			Commanding(modifValue.feature.ModifyValueTarget00)
+			tihReturn 을 통합해보자.
 		*/
-		//FTIHMngObj* mng = poolCenter.GetManagedObjectPool(targetMngObjSpace)->GetMngObj(targetMngObjIndex);
-		//TIHReturn64 searchType = FTIHMngObjLeafStMesh::TIHClassNameHash();
-		//int16 index = mng->QueryExistedCompositeFirstMatch(searchType);
-		///*
-		//	여기서 매쉬풀에서 들고온다.
-		//*/
-		//mng->TryGetCastedLeaf<FTIHMngObjLeafStMesh>(index)->SetStMesh();
+		tryLeaf->SetStMesh(meshPool.GetLoadedStaticMeshByIndex((targetMeshIndex)));
 	}
 	else if(cmdHeader.ProtocolOption == 1)
 	{

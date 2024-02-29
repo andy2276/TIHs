@@ -357,6 +357,11 @@
     <None Include="..\..\Config\DefaultGame.ini"/>
     <None Include="..\..\Config\DefaultInput.ini"/>
     <None Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\TIHLibraryEntry.Build.cs"/>
+    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHCommandCore.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
+      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHCommands.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
@@ -402,6 +407,7 @@
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHCommandCore.h"/>
     <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHCommands.h"/>
     <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHGameInstance.h"/>
     <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHLibraryEntry.h"/>

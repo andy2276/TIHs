@@ -1742,6 +1742,8 @@ private:
 	int16 mOwnerIndex;//InManagedObjectPool
 	int16 mSelfIndex;//InManagedObject
 };
+
+
 class FTIHMngObjFactory
 {
 	/*
@@ -1765,21 +1767,30 @@ public:
 		actor->SetActorTickEnabled(false);
 		return actor;
 	}
-	void OnGeneratePipeLining(FTIHMngObjPool* targetPool);
+	virtual void OnGeneratePipeLining(FTIHMngObjPool* targetPool);
 	//	
-	void GenerateUEActorBaseByPrepareData(int16 allocount, UEObjectHash64 ueObjHash, FTIHMngObjTempDatas& tempDatas, bool isChild);
+	virtual void GenerateUEActorBaseByPrepareData(int16 allocount, UEObjectHash64 ueObjHash, FTIHMngObjTempDatas& tempDatas, bool isChild);
 
-	void GenerateManagedObjectByActorArray(FTIHMngObjTempDatas& tempDatas, int16 parentData);
+	virtual void GenerateManagedObjectByActorArray(FTIHMngObjTempDatas& tempDatas, int16 parentData);
 
-	void GenerateManagedObjectCompositeArray(FTIHMngObjTempDatas& tempDatas);
+	virtual void GenerateManagedObjectCompositeArray(FTIHMngObjTempDatas& tempDatas);
 
-	void GenerateUEChildActorBy(UChildActorComponent* childActorScene, FTIHMngObj* currManagedObject, FTIHMngObjTempDatas& tempDatas);
+	virtual void GenerateUEChildActorBy(UChildActorComponent* childActorScene, FTIHMngObj* currManagedObject, FTIHMngObjTempDatas& tempDatas);
 
-	void GenerateManagedObjectLeafArray(FTIHMngObjTempDatas& tempDatas);
+	virtual void GenerateManagedObjectLeafArray(FTIHMngObjTempDatas& tempDatas);
 private:
 	FTIHMngObjPool* mCurrManagedObjectPool;
-
+	
 };
+/*
+	GenerateManagedObjectCompositeArray 의 237 라인에서 특수처리할건지 선택하게 하는 코드를 넣을것이다.
+		넣을땐 FTIHMngObjTempDatas& 를 자료형으로 넣는데, 중요한건 이걸 composite 에서 처리하게 만들면 된다는것이다.
+		즉 composite 를 상속받게 만들거나 혹은 음...아 시발 아니면 팩토리를 새롭게 만들까?
+		그게 더 빠를거 같기도 한데 어차피 시발 virtual 해도 이게 매번 불리는게 아니잖아. 그럼 배제 배제고릴라.
+		이거 custom component 를 만들면 하자.
+
+*/
+
 
 /*
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐
@@ -2203,6 +2214,15 @@ FTIHMngObjPoolCenter* FTIHMngObj::gPoolCenter = nullptr;
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 */
 //--	----	----	----	----	----	----	----	----	----	----	----
+
+class FTIHPathPool
+{
+public:
+
+private:
+
+};
+
 
 /*
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓

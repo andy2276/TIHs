@@ -69,9 +69,9 @@ class FTIHMngObjLeafPretty : public TTIManagedObjectLeaf<UMeshComponent>
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafMovement)
 public:
 
-	void SetMaterial(const FString& path)
+	void SetMaterial(int32 index,UMaterialInterface* materialInterface)
 	{
-		
+		mCastedComponent->SetMaterial(index, materialInterface);
 	}
 };
 
@@ -87,6 +87,11 @@ public:
 };
 class FTIHMngObjLeafSkMesh : public TTIManagedObjectLeaf<USkeletalMeshComponent>
 {
-	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafStMesh)
+	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafSkMesh)
 public:
+	void SetSkMesh(USkeletalMesh* skMesh)
+	{
+		mCastedComponent->SetSkeletalMesh(skMesh);
+	}
+
 };
