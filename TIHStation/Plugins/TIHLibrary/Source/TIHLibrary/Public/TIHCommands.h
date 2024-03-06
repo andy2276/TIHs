@@ -443,131 +443,130 @@ virtual ~thisClass(){};\
 
 
 */
-//USTRUCT()
-//struct FTIHTemplateDatas
-//{
-//	GENERATED_BODY()
-//
-//	UPROPERTY()
-//	int32 a;
-//};
+USTRUCT()
+struct FTIHTemplateDatas
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int32 a;
+};
 
 
-//	MngAlloc
-//class FTIHCmdMngObjAllocPoolCenterSetConfigure : public TTIHCommand<FTIHTempDatas>
-//{
-//	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocPoolCenterSetConfigure);
-//public:
-//	FTIHCmdMngObjAllocPoolCenterSetConfigure() 
-//	{
-//		//mCmdHeader.SetProtocol((int8)ETIHCommandHeaderProtocols::EManagedObject);
-//
-//	};
-//	virtual ~FTIHCmdMngObjAllocPoolCenterSetConfigure() {};
-//};
-//
-//class FTIHCmdMngObjAllocPoolReserve : public TTIHCommand<FTIHTempDatas>
-//{
-//	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocPoolReserve);
-//public:
-//	FTIHCmdMngObjAllocPoolReserve() {};
-//	virtual ~FTIHCmdMngObjAllocPoolReserve() {};
-//};
-//
-//using FTIHCmdMngObjAllocPrepareDatasDatas = FTIHNewAllocPrepareData;
-//
-//class FTIHCmdMngObjAllocPrepareDatas : public TTIHCommand<FTIHCmdMngObjAllocPrepareDatasDatas>
-//{
-//	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocPrepareDatas);
-//public:
-//	FTIHCmdMngObjAllocPrepareDatas() {};
-//	virtual ~FTIHCmdMngObjAllocPrepareDatas() {};
-//};
-//
-//using FTIHCmdMngObjAllocOnGenerate = FTIHMngObjPoolConfigureDatas;
-//
-//class FTIHCmdMngObjAllocOnGenerate : public TTIHCommand<FTIHTempDatas>
-//{
-//	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocOnGenerate);
-//public:
-//	FTIHCmdMngObjAllocOnGenerate() {};
-//	virtual ~FTIHCmdMngObjAllocOnGenerate() {};
-//};
-//
-////	stmesh
-//class FTIHCmdMeshPoolSetConfigure : public TTIHCommand<FTIHTempDatas>
-//{
-//	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMeshPoolSetConfigure);
-//public:
-//	FTIHCmdMeshPoolSetConfigure() {};
-//	virtual ~FTIHCmdMeshPoolSetConfigure() {};
-//};
-//
-//class FTIHCmdStMeshPathListLoadByServer : public TTIHCommand<FTIHTempDatas>
-//{
-//	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshPathListLoadByServer);
-//public:
-//	FTIHCmdStMeshPathListLoadByServer() {};
-//	virtual ~FTIHCmdStMeshPathListLoadByServer() {};
-//};
-//
-//class FTIHCmdStMeshPathListLoadByConfigObject: public TTIHCommand<FTIHTempDatas>
-//{
-//	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshPathListLoadByConfigObject);
-//public:
-//	FTIHCmdStMeshPathListLoadByConfigObject() {};
-//	virtual ~FTIHCmdStMeshPathListLoadByConfigObject() {};
-//};
-//
-//class FTIHCmdStMeshPathListLoadBySpecial: public TTIHCommand<FTIHTempDatas>
-//{
-//	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshPathListLoadBySpecial);
-//public:
-//	FTIHCmdStMeshPathListLoadBySpecial() {};
-//	virtual ~FTIHCmdStMeshPathListLoadBySpecial() {};
-//};
-//
-//class FTIHCmdStMeshesLoadBySlidingWindow : public TTIHCommand<FTIHTempDatas>
-//{
-//	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshesLoadBySlidingWindow);
-//public:
-//	FTIHCmdStMeshesLoadBySlidingWindow() {};
-//	virtual ~FTIHCmdStMeshesLoadBySlidingWindow() {};
-//};
-//
-//class FTIHCmdStMeshesLoadByList : public TTIHCommand<FTIHTempDatas>
-//{
-//	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshesLoadByList);
-//public:
-//	FTIHCmdStMeshesLoadByList() {};
-//	virtual ~FTIHCmdStMeshesLoadByList() {};
-//};
-//
-//class FTIHCmdStMeshesLoadAll : public TTIHCommand<FTIHTempDatas>
-//{
-//	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshesLoadAll);
-//public:
-//	FTIHCmdStMeshesLoadAll() {};
-//	virtual ~FTIHCmdStMeshesLoadAll() {};
-//};
-//
-//class FTIHCmdStMeshQuery : public TTIHCommand<FTIHTempDatas>
-//{
-//	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshQuery);
-//public:
-//	FTIHCmdStMeshQuery() {};
-//	virtual ~FTIHCmdStMeshQuery() {};
-//};
+class FTIHCmdMngObjAllocPoolCenterSetConfigure : public TTIHCommand<FTIHTemplateDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocPoolCenterSetConfigure);
+public:
+	FTIHCmdMngObjAllocPoolCenterSetConfigure() 
+	{
+		//mCmdHeader.SetProtocol((int8)ETIHCommandHeaderProtocols::EManagedObject);
 
-//
-//class FTIHCmdStMeshModifyMeshes : public TTIHCommand<FTIHTempDatas>
-//{
-//	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshModifyMeshes);
-//public:
-//	FTIHCmdStMeshModifyMeshes() {};
-//	virtual ~FTIHCmdStMeshModifyMeshes() {};
-//};
-//
-//
-//
+	};
+	virtual ~FTIHCmdMngObjAllocPoolCenterSetConfigure() {};
+};
+
+class FTIHCmdMngObjAllocPoolReserve : public TTIHCommand<FTIHTemplateDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocPoolReserve);
+public:
+	FTIHCmdMngObjAllocPoolReserve() {};
+	virtual ~FTIHCmdMngObjAllocPoolReserve() {};
+};
+
+using FTIHCmdMngObjAllocPrepareDatasDatas = FTIHNewAllocPrepareData;
+
+class FTIHCmdMngObjAllocPrepareDatas : public TTIHCommand<FTIHCmdMngObjAllocPrepareDatasDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocPrepareDatas);
+public:
+	FTIHCmdMngObjAllocPrepareDatas() {};
+	virtual ~FTIHCmdMngObjAllocPrepareDatas() {};
+};
+
+using FTIHCmdMngObjAllocOnGenerate = FTIHMngObjPoolConfigureDatas;
+
+class FTIHCmdMngObjAllocOnGenerate : public TTIHCommand<FTIHTemplateDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocOnGenerate);
+public:
+	FTIHCmdMngObjAllocOnGenerate() {};
+	virtual ~FTIHCmdMngObjAllocOnGenerate() {};
+};
+
+//	stmesh
+class FTIHCmdMeshPoolSetConfigure : public TTIHCommand<FTIHTemplateDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMeshPoolSetConfigure);
+public:
+	FTIHCmdMeshPoolSetConfigure() {};
+	virtual ~FTIHCmdMeshPoolSetConfigure() {};
+};
+
+class FTIHCmdStMeshPathListLoadByServer : public TTIHCommand<FTIHTemplateDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshPathListLoadByServer);
+public:
+	FTIHCmdStMeshPathListLoadByServer() {};
+	virtual ~FTIHCmdStMeshPathListLoadByServer() {};
+};
+
+class FTIHCmdStMeshPathListLoadByConfigObject: public TTIHCommand<FTIHTemplateDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshPathListLoadByConfigObject);
+public:
+	FTIHCmdStMeshPathListLoadByConfigObject() {};
+	virtual ~FTIHCmdStMeshPathListLoadByConfigObject() {};
+};
+
+class FTIHCmdStMeshPathListLoadBySpecial: public TTIHCommand<FTIHTemplateDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshPathListLoadBySpecial);
+public:
+	FTIHCmdStMeshPathListLoadBySpecial() {};
+	virtual ~FTIHCmdStMeshPathListLoadBySpecial() {};
+};
+
+class FTIHCmdStMeshesLoadBySlidingWindow : public TTIHCommand<FTIHTemplateDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshesLoadBySlidingWindow);
+public:
+	FTIHCmdStMeshesLoadBySlidingWindow() {};
+	virtual ~FTIHCmdStMeshesLoadBySlidingWindow() {};
+};
+
+class FTIHCmdStMeshesLoadByList : public TTIHCommand<FTIHTemplateDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshesLoadByList);
+public:
+	FTIHCmdStMeshesLoadByList() {};
+	virtual ~FTIHCmdStMeshesLoadByList() {};
+};
+
+class FTIHCmdStMeshesLoadAll : public TTIHCommand<FTIHTemplateDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshesLoadAll);
+public:
+	FTIHCmdStMeshesLoadAll() {};
+	virtual ~FTIHCmdStMeshesLoadAll() {};
+};
+
+class FTIHCmdStMeshQuery : public TTIHCommand<FTIHTemplateDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshQuery);
+public:
+	FTIHCmdStMeshQuery() {};
+	virtual ~FTIHCmdStMeshQuery() {};
+};
+
+
+class FTIHCmdStMeshModifyMeshes : public TTIHCommand<FTIHTemplateDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshModifyMeshes);
+public:
+	FTIHCmdStMeshModifyMeshes() {};
+	virtual ~FTIHCmdStMeshModifyMeshes() {};
+};
+
+
+
 
