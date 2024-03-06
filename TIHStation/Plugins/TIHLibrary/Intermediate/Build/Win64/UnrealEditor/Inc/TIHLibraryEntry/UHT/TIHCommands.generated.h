@@ -21,6 +21,13 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<struct FTemplateStruct>();
 
+#define FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommands_h_468_GENERATED_BODY \
+	friend struct Z_Construct_UScriptStruct_FTIHCmdMngObjAllocPoolReserveDatas_Statics; \
+	TIHLIBRARYENTRY_API static class UScriptStruct* StaticStruct();
+
+
+template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<struct FTIHCmdMngObjAllocPoolReserveDatas>();
+
 #undef CURRENT_FILE_ID
 #define CURRENT_FILE_ID FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommands_h
 

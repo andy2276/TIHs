@@ -13,6 +13,7 @@ void EmptyLinkFunctionForGeneratedCodeTIHManagedObjects() {}
 	ENGINE_API UClass* Z_Construct_UClass_AActor_NoRegister();
 	ENGINE_API UClass* Z_Construct_UClass_UWorld_NoRegister();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHCommandCreateAssignPoolDatas();
+	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHMeshPoolConfigure();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHMngObjComponentHeader();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHMngObjHeader();
@@ -141,6 +142,72 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHMeshPoolConfigure
 			UECodeGen_Private::ConstructUScriptStruct(Z_Registration_Info_UScriptStruct_TIHMeshPoolConfigure.InnerSingleton, Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::ReturnStructParams);
 		}
 		return Z_Registration_Info_UScriptStruct_TIHMeshPoolConfigure.InnerSingleton;
+	}
+	static FStructRegistrationInfo Z_Registration_Info_UScriptStruct_TIHMeshPoolCenterConfigure;
+class UScriptStruct* FTIHMeshPoolCenterConfigure::StaticStruct()
+{
+	if (!Z_Registration_Info_UScriptStruct_TIHMeshPoolCenterConfigure.OuterSingleton)
+	{
+		Z_Registration_Info_UScriptStruct_TIHMeshPoolCenterConfigure.OuterSingleton = GetStaticStruct(Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure, (UObject*)Z_Construct_UPackage__Script_TIHLibraryEntry(), TEXT("TIHMeshPoolCenterConfigure"));
+	}
+	return Z_Registration_Info_UScriptStruct_TIHMeshPoolCenterConfigure.OuterSingleton;
+}
+template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHMeshPoolCenterConfigure>()
+{
+	return FTIHMeshPoolCenterConfigure::StaticStruct();
+}
+	struct Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics
+	{
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam Struct_MetaDataParams[];
+#endif
+		static void* NewStructOps();
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_OrderType_MetaData[];
+#endif
+		static const UECodeGen_Private::FInt8PropertyParams NewProp_OrderType;
+		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+		static const UECodeGen_Private::FStructParams ReturnStructParams;
+	};
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::Struct_MetaDataParams[] = {
+		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+	};
+#endif
+	void* Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::NewStructOps()
+	{
+		return (UScriptStruct::ICppStructOps*)new UScriptStruct::TCppStructOps<FTIHMeshPoolCenterConfigure>();
+	}
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::NewProp_OrderType_MetaData[] = {
+		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+	};
+#endif
+	const UECodeGen_Private::FInt8PropertyParams Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::NewProp_OrderType = { "OrderType", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int8, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMeshPoolCenterConfigure, OrderType), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::NewProp_OrderType_MetaData), Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::NewProp_OrderType_MetaData) };
+	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::PropPointers[] = {
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::NewProp_OrderType,
+	};
+	const UECodeGen_Private::FStructParams Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::ReturnStructParams = {
+		(UObject* (*)())Z_Construct_UPackage__Script_TIHLibraryEntry,
+		nullptr,
+		&NewStructOps,
+		"TIHMeshPoolCenterConfigure",
+		Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::PropPointers,
+		UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::PropPointers),
+		sizeof(FTIHMeshPoolCenterConfigure),
+		alignof(FTIHMeshPoolCenterConfigure),
+		RF_Public|RF_Transient|RF_MarkAsNative,
+		EStructFlags(0x00000001),
+		METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::Struct_MetaDataParams), Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::Struct_MetaDataParams)
+	};
+	static_assert(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::PropPointers) < 2048);
+	UScriptStruct* Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure()
+	{
+		if (!Z_Registration_Info_UScriptStruct_TIHMeshPoolCenterConfigure.InnerSingleton)
+		{
+			UECodeGen_Private::ConstructUScriptStruct(Z_Registration_Info_UScriptStruct_TIHMeshPoolCenterConfigure.InnerSingleton, Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::ReturnStructParams);
+		}
+		return Z_Registration_Info_UScriptStruct_TIHMeshPoolCenterConfigure.InnerSingleton;
 	}
 	static FStructRegistrationInfo Z_Registration_Info_UScriptStruct_TIHMngObjHeader;
 class UScriptStruct* FTIHMngObjHeader::StaticStruct()
@@ -841,6 +908,7 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHCommandCreateAssi
 	};
 	const FStructRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_Statics::ScriptStructInfo[] = {
 		{ FTIHMeshPoolConfigure::StaticStruct, Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewStructOps, TEXT("TIHMeshPoolConfigure"), &Z_Registration_Info_UScriptStruct_TIHMeshPoolConfigure, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMeshPoolConfigure), 673746872U) },
+		{ FTIHMeshPoolCenterConfigure::StaticStruct, Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::NewStructOps, TEXT("TIHMeshPoolCenterConfigure"), &Z_Registration_Info_UScriptStruct_TIHMeshPoolCenterConfigure, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMeshPoolCenterConfigure), 3803875223U) },
 		{ FTIHMngObjHeader::StaticStruct, Z_Construct_UScriptStruct_FTIHMngObjHeader_Statics::NewStructOps, TEXT("TIHMngObjHeader"), &Z_Registration_Info_UScriptStruct_TIHMngObjHeader, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMngObjHeader), 3848569410U) },
 		{ FTIHMngObjComponentHeader::StaticStruct, Z_Construct_UScriptStruct_FTIHMngObjComponentHeader_Statics::NewStructOps, TEXT("TIHMngObjComponentHeader"), &Z_Registration_Info_UScriptStruct_TIHMngObjComponentHeader, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMngObjComponentHeader), 418840677U) },
 		{ FTIHMngObjPoolConfigureDatas::StaticStruct, Z_Construct_UScriptStruct_FTIHMngObjPoolConfigureDatas_Statics::NewStructOps, TEXT("TIHMngObjPoolConfigureDatas"), &Z_Registration_Info_UScriptStruct_TIHMngObjPoolConfigureDatas, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMngObjPoolConfigureDatas), 1452902779U) },
@@ -848,7 +916,7 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHCommandCreateAssi
 		{ FTIHNewAllocPrepareData::StaticStruct, Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewStructOps, TEXT("TIHNewAllocPrepareData"), &Z_Registration_Info_UScriptStruct_TIHNewAllocPrepareData, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHNewAllocPrepareData), 314283191U) },
 		{ FTIHCommandCreateAssignPoolDatas::StaticStruct, Z_Construct_UScriptStruct_FTIHCommandCreateAssignPoolDatas_Statics::NewStructOps, TEXT("TIHCommandCreateAssignPoolDatas"), &Z_Registration_Info_UScriptStruct_TIHCommandCreateAssignPoolDatas, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHCommandCreateAssignPoolDatas), 1400191168U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_2544342400(TEXT("/Script/TIHLibraryEntry"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_3114642254(TEXT("/Script/TIHLibraryEntry"),
 		nullptr, 0,
 		Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_Statics::ScriptStructInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_Statics::ScriptStructInfo),
 		nullptr, 0);

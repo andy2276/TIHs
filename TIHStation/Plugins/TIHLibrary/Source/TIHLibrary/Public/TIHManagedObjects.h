@@ -641,7 +641,15 @@ struct FTIHMeshPoolConfigure
 	int8 PrepareLoadPathType;
 	UPROPERTY()
 	int16 PrepareLoadPathDataIndex;
+};
 
+USTRUCT()
+struct FTIHMeshPoolCenterConfigure
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int8 OrderType;//{CreateMeshPool,}
 };
 
 //class FTIHMeshPoolConfigure

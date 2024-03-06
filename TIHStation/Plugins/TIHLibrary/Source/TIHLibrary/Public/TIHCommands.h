@@ -448,12 +448,8 @@ struct FTemplateStruct
 			TryActor
 
 		스테이션에 있는 strategy 를 변경해야한다
-
-
 */
-
-
-
+//	이게 필요한가? 일단 배제때려
 class FTIHCmdMngObjAllocPoolCenterSetConfigure : public TTIHCommand<FTemplateStruct>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocPoolCenterSetConfigure);
@@ -466,7 +462,20 @@ public:
 	virtual ~FTIHCmdMngObjAllocPoolCenterSetConfigure() {};
 };
 
-class FTIHCmdMngObjAllocPoolReserve : public TTIHCommand<FTemplateStruct>
+USTRUCT()
+struct FTIHCmdMngObjAllocPoolReserveDatas
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int16 ReserveCount;
+
+	UPROPERTY()
+	int16 Padding0;
+};
+
+//	이거도 필요한가? 이건 필요하지
+class FTIHCmdMngObjAllocPoolReserve : public TTIHCommand<FTIHCmdMngObjAllocPoolReserveDatas>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocPoolReserve);
 public:
