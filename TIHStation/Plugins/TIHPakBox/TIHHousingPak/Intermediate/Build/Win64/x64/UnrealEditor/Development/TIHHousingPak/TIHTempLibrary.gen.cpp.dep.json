@@ -1,0 +1,22 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\unrealeditor\\inc\\tihhousingpak\\uht\\tihtemplibrary.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "e:\\uegit\\unrealengine\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
+        "Includes": [
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\tihhousingpak\\definitions.tihhousingpak.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\source\\tihhousingpak\\public\\tihtemplibrary.h",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\coreuobject\\public\\uobject\\noexporttypes.h",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\coreuobject\\public\\uobject\\propertyaccessutil.h",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\coreuobject\\public\\serialization\\testundeclaredscriptstructobjectreferences.h",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\core\\public\\math\\unitconversion.h",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\core\\public\\math\\unitconversion.inl",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\core\\public\\internationalization\\polyglottextdata.h",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\coreuobject\\public\\assetregistry\\arfilter.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\unrealeditor\\inc\\tihhousingpak\\uht\\tihtemplibrary.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
