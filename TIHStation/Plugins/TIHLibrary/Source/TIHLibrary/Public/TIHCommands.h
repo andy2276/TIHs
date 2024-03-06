@@ -6,7 +6,7 @@
 #include "TIHManagedObjects.h"
 #include "TIHCommandCore.h"
 
-#include "TIHCommands.generated.h"
+//#include "TIHCommands.generated.h"
 //--	----	----	----	----	----	----	----	----	----	----	----
 
 /*
@@ -443,14 +443,14 @@ virtual ~thisClass(){};\
 
 
 */
-USTRUCT()
-struct FTIHTempDatas
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	int32 a;
-};
+//USTRUCT()
+//struct FTIHTemplateDatas
+//{
+//	GENERATED_BODY()
+//
+//	UPROPERTY()
+//	int32 a;
+//};
 
 
 //	MngAlloc
