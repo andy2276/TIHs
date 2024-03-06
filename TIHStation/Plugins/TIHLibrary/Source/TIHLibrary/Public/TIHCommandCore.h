@@ -102,7 +102,7 @@ struct FTIHCommandHeader
 
 	void RefreshForReuse()
 	{
-		Protocol = (int8)ETIHCommandHeaderProtocols::ETestDelay;
+		Protocol = (int8)ETIHCommandHeaderProtocols::ECommandUnknown;
 		ProtocolOption = 0;
 		Option0 = 0;
 		Option1 = 0;
@@ -129,7 +129,7 @@ struct FTIHCommandMethod
 	
 
 	FTIHCommandMethod() :
-		CommandProcessingProtocol( (int8)ETIHCommandHeaderProtocols::ETestDelay),
+		CommandProcessingProtocol( (int8)ETIHCommandHeaderProtocols::ECommandUnknown),
 		CompleteFunctorIndex(-1),
 		CommandProgressionProtocol(-1)
 		
@@ -137,7 +137,7 @@ struct FTIHCommandMethod
 	};
 	void RefreshForReuse()
 	{
-		CommandProcessingProtocol = (int8)ETIHCommandHeaderProtocols::ETestDelay;
+		CommandProcessingProtocol = (int8)ETIHCommandHeaderProtocols::ECommandUnknown;
 		CompleteFunctorIndex = -1;
 		CommandProgressionProtocol = -1;
 	};
@@ -212,7 +212,13 @@ public:
 	TIHMACRO_CHAINBUILDER_SETTER_FUNCNAME(CompleteCallBack, mCompleteCallBack);
 	TIHMACRO_CHAINBUILDER_SETTER_FUNCNAME(ErrorCallBack, mErrorCallBack);
 
-private:
+	virtual int32 GetCommandFeatureSize() override
+	{
+		int32 reValue = sizeof(mCmdFeature);
+		return reValue;
+	}
+
+protected:
 	//	이걸 왜 포인터로 했더라...
 	//	포인터 제거
 	TIHTemplateType mCmdFeature;

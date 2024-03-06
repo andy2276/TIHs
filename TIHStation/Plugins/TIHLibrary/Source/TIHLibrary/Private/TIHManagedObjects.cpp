@@ -659,16 +659,6 @@ TTIHMeshCapsule<UStaticMesh>* FTIHMeshPool::GenerateStaticMeshCapsules(const FSt
 	return capsule;
 }
 
-void FTIHMeshPool::PrepareStaticMeshDataByPath(const FString& meshPath)
-{
-	if(mStagingStMeshTable.Contains(meshPath) == false)
-	{
-		TTIHMeshCapsule<UStaticMesh>* capsule = GenerateStaticMeshCapsules(meshPath);
-		int16 index = mStagingStMeshs.Add(MakeShareable(capsule));
-		mStagingStMeshTable.Add(meshPath, index);
-	}
-}
-
 void FTIHMeshPool::PrepareStMeshDatasByList(const TArray<FString>& stMeshList)
 {
 	for(const FString& curPath : stMeshList)

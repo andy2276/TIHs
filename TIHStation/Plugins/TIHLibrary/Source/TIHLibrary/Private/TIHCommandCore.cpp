@@ -3,6 +3,9 @@
 #include "TIHStationCore.h"
 
 
+
+
+
 void FTIHCommander::TestSettingCommandList()
 {
 
@@ -118,51 +121,54 @@ TIHReturn64 FTIHCommander::ExecuteCommandByCmdProtocolEnum(FTIHCommandBase* prim
 	//ExecuteCommandStaticPolymorph(mStrategyCreateNewAlloc, primitiveCmd);
 
 	const FTIHCommandHeader& cmdHeader = primitiveCmd->GetCommandHeader();
-	switch (cmdHeader.Protocol)
-	{
-	case (int8)ETIHCommandHeaderProtocols::ECreateAssignPool:
-		reValue = mStrategyCreateNewAlloc->ExecuteCommandStaticPolymorph(primitiveCmd);
-		break;
-	case (int8)ETIHCommandHeaderProtocols::ECreateNewAlloc:
-		reValue = mStrategyCreateAssignPool->ExecuteCommandStaticPolymorph(primitiveCmd);
-		break;
-	case (int8)ETIHCommandHeaderProtocols::EServerConnect:
-		reValue = mStrategyServerConnect->ExecuteCommandStaticPolymorph(primitiveCmd);
-		break;
-	case (int8)ETIHCommandHeaderProtocols::EServerSend:
-		reValue = mStrategyServerSend->ExecuteCommandStaticPolymorph(primitiveCmd);
-		break;
-	case (int8)ETIHCommandHeaderProtocols::EServerListen:
-		reValue = mStrategyServerListen->ExecuteCommandStaticPolymorph(primitiveCmd);
-		break;
-	case (int8)ETIHCommandHeaderProtocols::EServerDisConnect:
-		reValue = mStrategyServerDisConnect->ExecuteCommandStaticPolymorph(primitiveCmd);
-		break;
-	case (int8)ETIHCommandHeaderProtocols::EDeleteRejectPool:
-		reValue = mStrategyDeleteRejectPool->ExecuteCommandStaticPolymorph(primitiveCmd);
-		break;
-	case (int8)ETIHCommandHeaderProtocols::EDeleteDestory:
-		reValue = mStrategyDeleteDestory->ExecuteCommandStaticPolymorph(primitiveCmd);
-		break;
-	case (int8)ETIHCommandHeaderProtocols::EModifyTransform:
-		reValue = mStrategyModifyTransform->ExecuteCommandStaticPolymorph(primitiveCmd);
-		break;
-	case (int8)ETIHCommandHeaderProtocols::EModifyValue:
-		reValue = mStrategyModifyValue->ExecuteCommandStaticPolymorph(primitiveCmd);
-		break;
-	case (int8)ETIHCommandHeaderProtocols::EInOutReadAndSave:
-		reValue = mStrategyInOutReadAndSave->ExecuteCommandStaticPolymorph(primitiveCmd);
-		break;
-	case (int8)ETIHCommandHeaderProtocols::EInOutWriteAndModify:
-		reValue = mStrategyInOutWriteAndModify->ExecuteCommandStaticPolymorph(primitiveCmd);
-		break;
-	case (int8)ETIHCommandHeaderProtocols::EExtendStratey:
-		check(mStrategyExention != nullptr);
-		reValue = mStrategyExention->ExecuteCommandInheritance(primitiveCmd);
-		break;
-	case (int8)ETIHCommandHeaderProtocols::MaxLength:
-		break;
-	}
+
+
+
+	//switch (cmdHeader.Protocol)
+	//{
+	//case (int8)ETIHCommandHeaderProtocols::ECreateAssignPool:
+	//	reValue = mStrategyCreateNewAlloc->ExecuteCommandStaticPolymorph(primitiveCmd);
+	//	break;
+	//case (int8)ETIHCommandHeaderProtocols::ECreateNewAlloc:
+	//	reValue = mStrategyCreateAssignPool->ExecuteCommandStaticPolymorph(primitiveCmd);
+	//	break;
+	//case (int8)ETIHCommandHeaderProtocols::EServerConnect:
+	//	reValue = mStrategyServerConnect->ExecuteCommandStaticPolymorph(primitiveCmd);
+	//	break;
+	//case (int8)ETIHCommandHeaderProtocols::EServerSend:
+	//	reValue = mStrategyServerSend->ExecuteCommandStaticPolymorph(primitiveCmd);
+	//	break;
+	//case (int8)ETIHCommandHeaderProtocols::EServerListen:
+	//	reValue = mStrategyServerListen->ExecuteCommandStaticPolymorph(primitiveCmd);
+	//	break;
+	//case (int8)ETIHCommandHeaderProtocols::EServerDisConnect:
+	//	reValue = mStrategyServerDisConnect->ExecuteCommandStaticPolymorph(primitiveCmd);
+	//	break;
+	//case (int8)ETIHCommandHeaderProtocols::EDeleteRejectPool:
+	//	reValue = mStrategyDeleteRejectPool->ExecuteCommandStaticPolymorph(primitiveCmd);
+	//	break;
+	//case (int8)ETIHCommandHeaderProtocols::EDeleteDestory:
+	//	reValue = mStrategyDeleteDestory->ExecuteCommandStaticPolymorph(primitiveCmd);
+	//	break;
+	//case (int8)ETIHCommandHeaderProtocols::EModifyTransform:
+	//	reValue = mStrategyModifyTransform->ExecuteCommandStaticPolymorph(primitiveCmd);
+	//	break;
+	//case (int8)ETIHCommandHeaderProtocols::EModifyValue:
+	//	reValue = mStrategyModifyValue->ExecuteCommandStaticPolymorph(primitiveCmd);
+	//	break;
+	//case (int8)ETIHCommandHeaderProtocols::EInOutReadAndSave:
+	//	reValue = mStrategyInOutReadAndSave->ExecuteCommandStaticPolymorph(primitiveCmd);
+	//	break;
+	//case (int8)ETIHCommandHeaderProtocols::EInOutWriteAndModify:
+	//	reValue = mStrategyInOutWriteAndModify->ExecuteCommandStaticPolymorph(primitiveCmd);
+	//	break;
+	//case (int8)ETIHCommandHeaderProtocols::EExtendStratey:
+	//	check(mStrategyExention != nullptr);
+	//	reValue = mStrategyExention->ExecuteCommandInheritance(primitiveCmd);
+	//	break;
+	//case (int8)ETIHCommandHeaderProtocols::MaxLength:
+	//	break;
+	//}
 	return reValue;
 }
 

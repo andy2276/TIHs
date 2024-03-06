@@ -8,12 +8,24 @@
         "type": "tabs",
         "children": [
           {
-            "id": "f7eb8f596d39e214",
+            "id": "53cd03e9be452c01",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "생각정리.md",
+                "file": "Command.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "13d5c8f8d8bfa4c9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Template/기능설계.md",
                 "mode": "source",
                 "source": false
               }
@@ -32,7 +44,6 @@
             }
           }
         ],
-        "currentTab": 1,
         "stacked": true
       }
     ],
@@ -99,7 +110,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "앞으로 해야할것 기록.md",
+                "file": "Command.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -116,7 +127,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "앞으로 해야할것 기록.md",
+                "file": "Command.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -139,7 +150,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "앞으로 해야할것 기록.md"
+                "file": "Command.md"
               }
             }
           }
@@ -160,14 +171,17 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "b3e373cc4e6c4b6a",
+  "active": "53cd03e9be452c01",
   "lastOpenFiles": [
+    "TIH Library.md",
+    "Command.md",
+    "Template/기능설계.md",
     "생각정리.md",
+    "Template",
     "앞으로 해야할것 기록.md",
     "무제 파일.md",
     "리프,커맨드,스트라테지 현황판.md",
     "구현해야하는 기능.md",
-    "TIH Library.md",
     "헬퍼만들어야할때.md",
     "할일 정리.md",
     "제작상황 확인.md",
@@ -187,8 +201,6 @@
     "Ideas/CheckManagedObjectPool.md",
     "DevelopLog/Logs/24-01_18.md",
     "DevelopLog/Template/02LifeCycleTemplate.md",
-    "TIH/FTIHManagedObjectHeader.md",
-    "TIH/FTIHManagedObjectPool.md",
     "Ideas",
     "TIH",
     "DevelopLog/Template",

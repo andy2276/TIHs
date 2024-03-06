@@ -25,35 +25,35 @@ TIHReturn64 FTIHCommanderStrategyCreateAssignPool::ExecuteCommandStaticPolymorph
 TIHReturn64 FTIHCommanderStrategyCreateNewAlloc::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
-	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+	//static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
 
-	const FTIHCommandHeader& cmdHeader = cmdBase->GetCommandHeader();
-	const FTIHCommandMethod& cmdMethod = cmdBase->GetCommandMethod();
+	//const FTIHCommandHeader& cmdHeader = cmdBase->GetCommandHeader();
+	//const FTIHCommandMethod& cmdMethod = cmdBase->GetCommandMethod();
 
-	//	원래는 option 으로 특징을 확인하는 과정이 있어야하지만 기본으로 제공되는거에 그게 필요한가?
-	//	필요함. prepare 과정과 execute과정은 나눠져 있어야함.
+	////	원래는 option 으로 특징을 확인하는 과정이 있어야하지만 기본으로 제공되는거에 그게 필요한가?
+	////	필요함. prepare 과정과 execute과정은 나눠져 있어야함.
 
-	if (cmdHeader.ProtocolOption == 0)/*prepare*/
-	{
-		FTIHCommandCreateNewAllocPrepare* createNewAlloc = static_cast<FTIHCommandCreateNewAllocPrepare*>(cmdBase);
+	//if (cmdHeader.ProtocolOption == 0)/*prepare*/
+	//{
+	//	FTIHCommandCreateNewAllocPrepare* createNewAlloc = static_cast<FTIHCommandCreateNewAllocPrepare*>(cmdBase);
 
-		const FTIHNewAllocPrepareData& feature = createNewAlloc->GetCommandFeature();
-		poolCenter.EmplaceAddMngObjPrepareData(feature.TargetClassType, feature.TargetClassHash, -1, feature.AllocateCount);
-	}
-	else if (cmdHeader.ProtocolOption == 1)
-	{
-		FTIHCommandCreateNewAllocOnGenerate* createNewAlloc = static_cast<FTIHCommandCreateNewAllocOnGenerate*>(cmdBase);
+	//	const FTIHNewAllocPrepareData& feature = createNewAlloc->GetCommandFeature();
+	//	poolCenter.EmplaceAddMngObjPrepareData(feature.TargetClassType, feature.TargetClassHash, -1, feature.AllocateCount);
+	//}
+	//else if (cmdHeader.ProtocolOption == 1)
+	//{
+	//	FTIHCommandCreateNewAllocOnGenerate* createNewAlloc = static_cast<FTIHCommandCreateNewAllocOnGenerate*>(cmdBase);
 
-		const FTIHMngObjPoolConfigureDatas& onGenerateData = createNewAlloc->GetCommandFeature();
+	//	const FTIHMngObjPoolConfigureDatas& onGenerateData = createNewAlloc->GetCommandFeature();
 
-		int8 allocationSpace = onGenerateData.AllocationSpace;
-		if (onGenerateData.Option0 != 0)
-		{
-			poolCenter.GetManagedObjectPool(allocationSpace)->SetObjectPoolConfigure(onGenerateData);
-		}
+	//	int8 allocationSpace = onGenerateData.AllocationSpace;
+	//	if (onGenerateData.Option0 != 0)
+	//	{
+	//		poolCenter.GetManagedObjectPool(allocationSpace)->SetObjectPoolConfigure(onGenerateData);
+	//	}
 
-		poolCenter.OnGeneratePipeLining(allocationSpace);
-	}
+	//	poolCenter.OnGeneratePipeLining(allocationSpace);
+	//}
 
 	return reValue;
 }
@@ -150,32 +150,32 @@ TIHReturn64 FTIHCommanderStrategyModifyTransform::ExecuteCommandStaticPolymorph(
 TIHReturn64 FTIHCommanderStrategyModifyValue::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
-	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
-	static FTIHMeshPool& meshPool = *FTIHMeshPool::GetSingle();
+	//static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+	//static FTIHMeshPool& meshPool = *FTIHMeshPool::GetSingle();
 
-	const FTIHCommandHeader& cmdHeader = cmdBase->GetCommandHeader();
-	const FTIHCommandMethod& cmdMethod = cmdBase->GetCommandMethod();
+	//const FTIHCommandHeader& cmdHeader = cmdBase->GetCommandHeader();
+	//const FTIHCommandMethod& cmdMethod = cmdBase->GetCommandMethod();
 
-	if(cmdHeader.ProtocolOption == 0)
-	{
-		FTIHCommandModifyMesh* modifyValue = static_cast<FTIHCommandModifyMesh*>(cmdBase);
-		const FTIHCommandModifyMeshData& modifyData = modifyValue->GetCommandFeature();
-		const int16 targetMngObjSpace = modifyData.MngObjPoolAllocationSpace;
-		const int16 targetMngObjIndex = modifyData.MngObjIndex;
-		const int16 targetMngObjCompositeIndex = modifyData.MngObjCompositeIndex;
-		const int16 targetMeshIndex = modifyData.LoadedMeshIndex;
-		FTIHMngObj* mngObj = poolCenter.GetManagedObjectPool(targetMngObjSpace)->GetMngObj(targetMngObjIndex);
-		FTIHMngObjLeafStMesh* tryLeaf = mngObj->TryGetCastedLeaf<FTIHMngObjLeafStMesh>(targetMngObjCompositeIndex);
-		check(tryLeaf != nullptr);
-		/*
-			tihReturn 을 통합해보자.
-		*/
-		tryLeaf->SetStMesh(meshPool.GetLoadedStaticMeshByIndex((targetMeshIndex)));
-	}
-	else if(cmdHeader.ProtocolOption == 1)
-	{
+	//if(cmdHeader.ProtocolOption == 0)
+	//{
+	//	FTIHCommandModifyMesh* modifyValue = static_cast<FTIHCommandModifyMesh*>(cmdBase);
+	//	const FTIHCommandModifyMeshData& modifyData = modifyValue->GetCommandFeature();
+	//	const int16 targetMngObjSpace = modifyData.MngObjPoolAllocationSpace;
+	//	const int16 targetMngObjIndex = modifyData.MngObjIndex;
+	//	const int16 targetMngObjCompositeIndex = modifyData.MngObjCompositeIndex;
+	//	const int16 targetMeshIndex = modifyData.LoadedMeshIndex;
+	//	FTIHMngObj* mngObj = poolCenter.GetManagedObjectPool(targetMngObjSpace)->GetMngObj(targetMngObjIndex);
+	//	FTIHMngObjLeafStMesh* tryLeaf = mngObj->TryGetCastedLeaf<FTIHMngObjLeafStMesh>(targetMngObjCompositeIndex);
+	//	check(tryLeaf != nullptr);
+	//	/*
+	//		tihReturn 을 통합해보자.
+	//	*/
+	//	tryLeaf->SetStMesh(meshPool.GetLoadedStaticMeshByIndex((targetMeshIndex)));
+	//}
+	//else if(cmdHeader.ProtocolOption == 1)
+	//{
 
-	}
+	//}
 
 
 	return reValue;
@@ -225,5 +225,43 @@ void FTIHMngObjPoolCenter::MergeSamePrepareDatas()
 	}
 
 	//mPrepareDatas.PushLast(mergeDataA);
+
+}
+
+TIHReturn64 FTIHStrategyCmdMngObj::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
+{
+	TIHReturn64 reValue = 0;
+	//static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+
+	//const FTIHCommandHeader& cmdHeader = cmdBase->GetCommandHeader();
+	//const FTIHCommandMethod& cmdMethod = cmdBase->GetCommandMethod();
+
+	//if (cmdHeader.ProtocolOption == 0)/*prepare*/
+	//{
+	//	FTIHCmdMngObjAllocPrepareDatas* createNewAlloc = static_cast<FTIHCmdMngObjAllocPrepareDatas*>(cmdBase);
+
+	//	const FTIHNewAllocPrepareData& feature = createNewAlloc->GetCommandFeature();
+	//	poolCenter.EmplaceAddMngObjPrepareData(feature.TargetClassType, feature.TargetClassHash, -1, feature.AllocateCount);
+	//}
+	//else if (cmdHeader.ProtocolOption == 1)
+	//{
+	//	FTIHCommandCreateNewAllocOnGenerate* createNewAlloc = static_cast<FTIHCommandCreateNewAllocOnGenerate*>(cmdBase);
+
+	//	const FTIHMngObjPoolConfigureDatas& onGenerateData = createNewAlloc->GetCommandFeature();
+
+	//	int8 allocationSpace = onGenerateData.AllocationSpace;
+	//	if (onGenerateData.Option0 != 0)
+	//	{
+	//		poolCenter.GetManagedObjectPool(allocationSpace)->SetObjectPoolConfigure(onGenerateData);
+	//	}
+
+	//	poolCenter.OnGeneratePipeLining(allocationSpace);
+	//}
+
+	return reValue;
+}
+
+TIHReturn64 FTIHStrategyLoadMesh::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
+{
 
 }

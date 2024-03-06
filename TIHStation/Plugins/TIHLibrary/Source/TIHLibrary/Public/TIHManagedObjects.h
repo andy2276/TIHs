@@ -728,7 +728,17 @@ public:
 	}
 	TTIHMeshCapsule<UStaticMesh>* GenerateStaticMeshCapsules(const FString& path);
 
-	void PrepareStaticMeshDataByPath(const FString& meshPath);
+	void PrepareStaticMeshDataByPath(const FString& meshPath)
+	{
+
+		if (mStagingStMeshTable.Contains(meshPath) == false)
+		{
+			TTIHMeshCapsule<UStaticMesh>* capsule = GenerateStaticMeshCapsules(meshPath);
+			int16 index = mStagingStMeshs.Add(MakeShareable(capsule));
+			mStagingStMeshTable.Add(meshPath, index);
+		}
+	}
+
 	void PrepareStMeshDatasByList(const TArray<FString>& stMeshList);//	이거도 스테이션의prepare 부분에서 해주자.
 	void PrepareStMeshDatasByLocal();
 	void PrepareStMeshDatasByServer();
@@ -796,6 +806,14 @@ private:
 		2.	넣으면서 해당 경로를 저장해놓는다
 		3.	
 	*/
+
+	struct InnerQuery
+	{
+		int16 InnerQueryType; // {}
+		int16 IntDataType;//{startEndIndex,PerIndex}
+		TArray<int16> IntData;
+	};
+
 	TMap<FString, int16> mStagingStMeshTable;
 	TArray< TSharedPtr< TTIHMeshCapsule<UStaticMesh>>> mStagingStMeshs;
 	
@@ -806,6 +824,13 @@ private:
 	TArray<int16> mCandidateArray;
 
 	FTIHMeshPoolConfigure mMeshPoolConfig;
+
+
+	/*
+		category 단위로 저장을 한다면
+			1. 키만알면 사실 load 하기 편하다.
+				그럼 staging 된것들만 
+	*/
 
 	TFunction<void()> mMeshLoadingDone;
 	/*

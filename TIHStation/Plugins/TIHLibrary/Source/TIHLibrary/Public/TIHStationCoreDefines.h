@@ -495,28 +495,51 @@ enum class ETIHManagedObjectStepState : int16
 */
 enum class ETIHCommandHeaderProtocols : int8
 {
-	ETestDelay = 0,
+	ECommandUnknown = 0,
 
-	ECreateAssignPool,
-	ECreateNewAlloc,
+	EManagedObject,
+	EMeshLoad,
 
-	EServerConnect,
-	EServerSend,
-	EServerListen,
-	EServerDisConnect,
-
-	EDeleteRejectPool,
-	EDeleteDestory,
-
-	EModifyTransform,
-	EModifyValue,
-
-	EInOutReadAndSave,
-	EInOutWriteAndModify,
-
-	EExtendStratey,
 	MaxLength,
 };
+/*
+	0306 이제 이걸로 변경을 할것이다.
+*/
+//namespace TIHNameSpaceCommandType
+//{
+//	namespace Headers
+//	{
+//		extern const int8 UnknownType;
+//		extern const int8 ManagedObjectType;
+//		extern const int8 MeshLoadType;
+//		extern const int8 MaxCount;
+//	};
+//	namespace OptionManagedObject
+//	{
+//		extern const int8 UnkownType;
+//		extern const int8 PoolCenterSetConfigure;
+//		extern const int8 PoolReserve;
+//		extern const int8 PrepareDatas;
+//		extern const int8 OnGenerate;
+//		extern const int8 MaxCount;
+//	}
+//	namespace OptionMeshLoad
+//	{
+//		extern const int8 UnkownType;
+//		extern const int8 MeshPoolSetConfigure;
+//		extern const int8 StMeshPathListLoadByServer;
+//		extern const int8 StMeshPathListLoadByConfigObject;
+//		extern const int8 StMeshPathListLoadBySpecial;
+//		extern const int8 StMeshesLoadBySlidingWindow;
+//		extern const int8 StMeshesLoadByList;
+//		extern const int8 StMeshesLoadAll;
+//		extern const int8 StMeshQuery;
+//		extern const int8 StMeshModifyMeshes;
+//		extern const int8 MaxCount;
+//	}
+//};
+//
+
 /*!
 *	@brief 커맨드의 처리 방법에 대한 프로토콜
 *	@detail 해당 커맨드를 어떤 함수를 사용해서 처리할것인가
