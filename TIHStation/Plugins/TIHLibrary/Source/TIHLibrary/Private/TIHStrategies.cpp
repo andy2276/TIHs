@@ -240,12 +240,12 @@ TIHReturn64 FTIHStrategyCmdMngObj::ExecuteCommandStaticPolymorph(FTIHCommandBase
 	{
 		FTIHCmdMngObjAllocPrepareDatas* createNewAlloc = static_cast<FTIHCmdMngObjAllocPrepareDatas*>(cmdBase);
 
-		const FTIHNewAllocPrepareData& feature = createNewAlloc->GetCommandFeature();
+		const FTIHCmdMngObjAllocPrepareDatasDatas& feature = createNewAlloc->GetCommandFeature();
 		poolCenter.EmplaceAddMngObjPrepareData(feature.TargetClassType, feature.TargetClassHash, -1, feature.AllocateCount);
 	}
 	else if (cmdHeader.ProtocolOption == 1)
 	{
-		FTIHCommandCreateNewAllocOnGenerate* createNewAlloc = static_cast<FTIHCommandCreateNewAllocOnGenerate*>(cmdBase);
+		FTIHCmdMngObjAllocOnGenerate* createNewAlloc = static_cast<FTIHCmdMngObjAllocOnGenerate*>(cmdBase);
 
 		const FTIHMngObjPoolConfigureDatas& onGenerateData = createNewAlloc->GetCommandFeature();
 

@@ -6,7 +6,7 @@
 #include "TIHManagedObjects.h"
 #include "TIHCommandCore.h"
 
-//#include "TIHCommands.generated.h"
+#include "TIHCommands.generated.h"
 //--	----	----	----	----	----	----	----	----	----	----	----
 
 /*
@@ -402,26 +402,34 @@ struct FTIHCommandFunctorHeader;
 	6. 일단 만들고나서 연결이 가능한것들은 연결을 할거임.
 */
 
+
+USTRUCT()
+struct FTemplateStruct
+{
+	GENERATED_BODY()
+};
+
 /*
 	이거 쓸까? 쓰지말자
 */
-#define TIHMACRO_COMMAND_CLASS_TEMPLATE_CUSTOM_BEGIN(thisClass , thisClassFeatureStruct )\
-class thisClass : public TTIHCommand<thisClassFeatureStruct>\
-{\
-TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(thisClass);
-
-//#define TIHMACRO_COMMAND_CLASS_TEMPLATE_CUSTOM_END(thisClass)\
-//int32 GetCommandSize(){ int32 reValue = sizeof( thisClass );return reValue;}\
+//#define TIHMACRO_COMMAND_CLASS_TEMPLATE_CUSTOM_BEGIN(thisClass , thisClassFeatureStruct )\
+//class thisClass : public TTIHCommand<thisClassFeatureStruct>\
+//{\
+//TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(thisClass);
+//
+////#define TIHMACRO_COMMAND_CLASS_TEMPLATE_CUSTOM_END(thisClass)\
+////int32 GetCommandSize(){ int32 reValue = sizeof( thisClass );return reValue;}\
+////}
+//
+//#define TIHMACRO_COMMAND_CLASS_TEMPLATE( thisClass , thisClassFeatureStruct ) \
+//class thisClass : public TTIHCommand<thisClassFeatureStruct>\
+//{\
+//TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(thisClass);\
+//public:\
+//thisClass(){};\
+//virtual ~thisClass(){};\
 //}
 
-#define TIHMACRO_COMMAND_CLASS_TEMPLATE( thisClass , thisClassFeatureStruct ) \
-class thisClass : public TTIHCommand<thisClassFeatureStruct>\
-{\
-TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(thisClass);\
-public:\
-thisClass(){};\
-virtual ~thisClass(){};\
-}\
 /*
 	필요한 컨셉을 써보고 뇌코딩
 		뇌코딩시에는
@@ -443,17 +451,10 @@ virtual ~thisClass(){};\
 
 
 */
-USTRUCT()
-struct FTIHTemplateDatas
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	int32 a;
-};
 
 
-class FTIHCmdMngObjAllocPoolCenterSetConfigure : public TTIHCommand<FTIHTemplateDatas>
+
+class FTIHCmdMngObjAllocPoolCenterSetConfigure : public TTIHCommand<FTemplateStruct>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocPoolCenterSetConfigure);
 public:
@@ -465,7 +466,7 @@ public:
 	virtual ~FTIHCmdMngObjAllocPoolCenterSetConfigure() {};
 };
 
-class FTIHCmdMngObjAllocPoolReserve : public TTIHCommand<FTIHTemplateDatas>
+class FTIHCmdMngObjAllocPoolReserve : public TTIHCommand<FTemplateStruct>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocPoolReserve);
 public:
@@ -483,9 +484,9 @@ public:
 	virtual ~FTIHCmdMngObjAllocPrepareDatas() {};
 };
 
-using FTIHCmdMngObjAllocOnGenerate = FTIHMngObjPoolConfigureDatas;
+using FTIHCmdMngObjAllocOnGenerateDatas = FTIHMngObjPoolConfigureDatas;
 
-class FTIHCmdMngObjAllocOnGenerate : public TTIHCommand<FTIHTemplateDatas>
+class FTIHCmdMngObjAllocOnGenerate : public TTIHCommand<FTIHCmdMngObjAllocOnGenerateDatas>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocOnGenerate);
 public:
@@ -494,7 +495,7 @@ public:
 };
 
 //	stmesh
-class FTIHCmdMeshPoolSetConfigure : public TTIHCommand<FTIHTemplateDatas>
+class FTIHCmdMeshPoolSetConfigure : public TTIHCommand<FTemplateStruct>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMeshPoolSetConfigure);
 public:
@@ -502,7 +503,7 @@ public:
 	virtual ~FTIHCmdMeshPoolSetConfigure() {};
 };
 
-class FTIHCmdStMeshPathListLoadByServer : public TTIHCommand<FTIHTemplateDatas>
+class FTIHCmdStMeshPathListLoadByServer : public TTIHCommand<FTemplateStruct>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshPathListLoadByServer);
 public:
@@ -510,7 +511,7 @@ public:
 	virtual ~FTIHCmdStMeshPathListLoadByServer() {};
 };
 
-class FTIHCmdStMeshPathListLoadByConfigObject: public TTIHCommand<FTIHTemplateDatas>
+class FTIHCmdStMeshPathListLoadByConfigObject: public TTIHCommand<FTemplateStruct>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshPathListLoadByConfigObject);
 public:
@@ -518,7 +519,7 @@ public:
 	virtual ~FTIHCmdStMeshPathListLoadByConfigObject() {};
 };
 
-class FTIHCmdStMeshPathListLoadBySpecial: public TTIHCommand<FTIHTemplateDatas>
+class FTIHCmdStMeshPathListLoadBySpecial: public TTIHCommand<FTemplateStruct>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshPathListLoadBySpecial);
 public:
@@ -526,7 +527,7 @@ public:
 	virtual ~FTIHCmdStMeshPathListLoadBySpecial() {};
 };
 
-class FTIHCmdStMeshesLoadBySlidingWindow : public TTIHCommand<FTIHTemplateDatas>
+class FTIHCmdStMeshesLoadBySlidingWindow : public TTIHCommand<FTemplateStruct>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshesLoadBySlidingWindow);
 public:
@@ -534,7 +535,7 @@ public:
 	virtual ~FTIHCmdStMeshesLoadBySlidingWindow() {};
 };
 
-class FTIHCmdStMeshesLoadByList : public TTIHCommand<FTIHTemplateDatas>
+class FTIHCmdStMeshesLoadByList : public TTIHCommand<FTemplateStruct>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshesLoadByList);
 public:
@@ -542,7 +543,7 @@ public:
 	virtual ~FTIHCmdStMeshesLoadByList() {};
 };
 
-class FTIHCmdStMeshesLoadAll : public TTIHCommand<FTIHTemplateDatas>
+class FTIHCmdStMeshesLoadAll : public TTIHCommand<FTemplateStruct>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshesLoadAll);
 public:
@@ -550,7 +551,7 @@ public:
 	virtual ~FTIHCmdStMeshesLoadAll() {};
 };
 
-class FTIHCmdStMeshQuery : public TTIHCommand<FTIHTemplateDatas>
+class FTIHCmdStMeshQuery : public TTIHCommand<FTemplateStruct>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshQuery);
 public:
@@ -559,7 +560,7 @@ public:
 };
 
 
-class FTIHCmdStMeshModifyMeshes : public TTIHCommand<FTIHTemplateDatas>
+class FTIHCmdStMeshModifyMeshes : public TTIHCommand<FTemplateStruct>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshModifyMeshes);
 public:
