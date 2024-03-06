@@ -263,5 +263,5 @@ TIHReturn64 FTIHStrategyCmdMngObj::ExecuteCommandStaticPolymorph(FTIHCommandBase
 
 TIHReturn64 FTIHStrategyLoadMesh::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
-
+	return 0;
 }

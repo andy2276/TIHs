@@ -1,0 +1,26 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\source\\tihlibrary\\private\\tihstrategies.cpp",
+        "ProvidedModule": "",
+        "PCH": "e:\\uegit\\unrealengine\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
+        "Includes": [
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\tihlibraryentry\\definitions.tihlibraryentry.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\source\\tihlibrary\\public\\tihstrategies.h",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\core\\public\\containers\\deque.h",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\core\\public\\containers\\iteratoradapter.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\source\\tihlibrary\\public\\tihcommands.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\source\\tihlibrary\\public\\tihstationcoredefines.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\source\\tihlibrary\\public\\tihmanagedobjects.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\intermediate\\build\\win64\\unrealeditor\\inc\\tihlibraryentry\\uht\\tihmanagedobjects.generated.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\source\\tihlibrary\\public\\tihcommandcore.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\intermediate\\build\\win64\\unrealeditor\\inc\\tihlibraryentry\\uht\\tihcommandcore.generated.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\source\\tihlibrary\\public\\tihmanagedobjectleafs.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\source\\tihlibrary\\public\\tihstationcore.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\source\\tihlibrary\\public\\tihnetworks.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\intermediate\\build\\win64\\unrealeditor\\inc\\tihlibraryentry\\uht\\tihstationcore.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
