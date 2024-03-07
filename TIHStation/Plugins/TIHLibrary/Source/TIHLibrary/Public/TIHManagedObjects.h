@@ -50,7 +50,7 @@ class FTIHMngObjLeafMovement;
 class FTIHMngObjLeafPretty;
 class FTIHMngObjLeafStMesh;
 class FTIHMngObjLeafSkMesh;
-class FTIHMngObjTempDatas;
+class FTIHMngObjGenerateQueues;
 class FTIHMngObj;
 class FTIHMngObjFactory;
 #pragma endregion Forward Declares
@@ -644,7 +644,7 @@ struct FTIHMeshPoolConfigure
 };
 
 USTRUCT()
-struct FTIHMeshPoolCenterConfigure
+struct FTIHMeshPoolCenterConfigure	//	이거는 결국 매쉬풀을 만들기위한 정보가 들어가야한다.
 {
 	GENERATED_BODY()
 
@@ -1555,7 +1555,7 @@ struct FTIHCommandCreateAssignPoolDatas
 */
 
 
-class FTIHMngObjTempDatas
+class FTIHMngObjGenerateQueues
 {
 public:
 
@@ -1777,6 +1777,7 @@ private:
 };
 
 
+
 class FTIHMngObjFactory
 {
 	/*
@@ -1802,18 +1803,20 @@ public:
 	}
 	virtual void OnGeneratePipeLining(FTIHMngObjPool* targetPool);
 	//	
-	virtual void GenerateUEActorBaseByPrepareData(int16 allocount, UEObjectHash64 ueObjHash, FTIHMngObjTempDatas& tempDatas, bool isChild);
+	virtual void GenerateUEActorBaseByPrepareData(int16 allocount, UEObjectHash64 ueObjHash, FTIHMngObjGenerateQueues& tempDatas, bool isChild);
 
-	virtual void GenerateManagedObjectByActorArray(FTIHMngObjTempDatas& tempDatas, int16 parentData);
+	virtual void GenerateManagedObjectByActorArray(FTIHMngObjGenerateQueues& generateQueues, int16 parentData);
 
-	virtual void GenerateManagedObjectCompositeArray(FTIHMngObjTempDatas& tempDatas);
+	virtual void GenerateManagedObjectCompositeArray(FTIHMngObjGenerateQueues& genereteQueues);
 
-	virtual void GenerateUEChildActorBy(UChildActorComponent* childActorScene, FTIHMngObj* currManagedObject, FTIHMngObjTempDatas& tempDatas);
+	virtual void GenerateUEChildActorBy(UChildActorComponent* childActorScene, FTIHMngObj* currManagedObject, FTIHMngObjGenerateQueues& tempDatas);
 
-	virtual void GenerateManagedObjectLeafArray(FTIHMngObjTempDatas& tempDatas);
+	virtual void GenerateManagedObjectLeafArray(FTIHMngObjGenerateQueues& genereteQueues);
 private:
+
+
 	FTIHMngObjPool* mCurrManagedObjectPool;
-	
+
 };
 /*
 	GenerateManagedObjectCompositeArray 의 237 라인에서 특수처리할건지 선택하게 하는 코드를 넣을것이다.
@@ -2328,7 +2331,7 @@ public:
 	{
 		return mWholeManagedObjects;
 	}
-	FTIHMngObjTempDatas& GetTempDatas()
+	FTIHMngObjGenerateQueues& GetTempDatas()
 	{
 		return mTempDatasForNewAlloc;
 	}
@@ -2422,7 +2425,7 @@ protected:
 	*/
 	TMap<int8, TMap< TIHHash64, TDeque<int16>>> mManagedObjectStateReadyIndices;
 
-	FTIHMngObjTempDatas mTempDatasForNewAlloc;
+	FTIHMngObjGenerateQueues mTempDatasForNewAlloc;
 };
 /*
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐

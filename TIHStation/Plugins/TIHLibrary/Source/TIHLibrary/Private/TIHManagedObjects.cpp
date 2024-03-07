@@ -19,7 +19,7 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 	TDeque<FTIHNewAllocPrepareData>& prepareQueue = poolCenter.GetPrepareDataQueue();
 	int32 prepareNum = prepareQueue.Num();
 	const TArray<FTIHMngObj*>& wholeArray = targetPool->GetWholeManagedObjectArray();
-	FTIHMngObjTempDatas& tempDatas = targetPool->GetTempDatas();
+	FTIHMngObjGenerateQueues& GenerateQues = targetPool->GetTempDatas();
 
 	int32 wholeObjNum = 0;
 	const int32 wholeObjMax = wholeArray.Max();
@@ -114,10 +114,10 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 
 		if (currPrepareData.TargetClassType == (int8)ETIHMngObjHeaderProcotols::EActorBase)
 		{
-			managedObjectFactory.GenerateUEActorBaseByPrepareData(currAllocateCount, currPrepareData.TargetClassHash, tempDatas, isChildActor);
-			managedObjectFactory.GenerateManagedObjectByActorArray(tempDatas, currPrepareData.CallParentIndex);
-			managedObjectFactory.GenerateManagedObjectCompositeArray(tempDatas);
-			managedObjectFactory.GenerateManagedObjectLeafArray(tempDatas);
+			managedObjectFactory.GenerateUEActorBaseByPrepareData(currAllocateCount, currPrepareData.TargetClassHash, GenerateQues, isChildActor);
+			managedObjectFactory.GenerateManagedObjectByActorArray(GenerateQues, currPrepareData.CallParentIndex);
+			managedObjectFactory.GenerateManagedObjectCompositeArray(GenerateQues);
+			managedObjectFactory.GenerateManagedObjectLeafArray(GenerateQues);
 
 			prepareQueue.PopFirst();
 		}
@@ -149,7 +149,7 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 
 }
 
-void FTIHMngObjFactory::GenerateUEActorBaseByPrepareData(int16 allocount, UEObjectHash64 ueObjHash, FTIHMngObjTempDatas& tempDatas, bool isChild)
+void FTIHMngObjFactory::GenerateUEActorBaseByPrepareData(int16 allocount, UEObjectHash64 ueObjHash, FTIHMngObjGenerateQueues& generateQueues, bool isChild)
 {
 	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
 	static FTIHMngObjGenerateHelper& tagHelper = TIHSTATION.GetGenerateHelper();
@@ -168,17 +168,17 @@ void FTIHMngObjFactory::GenerateUEActorBaseByPrepareData(int16 allocount, UEObje
 		{
 			AActor* newActor = spawnWorld->SpawnActor(spawnClass, &spawnTransform);
 			ConvertPoolableActor(newActor);
-			tempDatas.PushBackActor(newActor, ueObjHash);
+			generateQueues.PushBackActor(newActor, ueObjHash);
 		}
 	}
 
 }
 
-void FTIHMngObjFactory::GenerateManagedObjectByActorArray(FTIHMngObjTempDatas& tempDatas, int16 parentData)
+void FTIHMngObjFactory::GenerateManagedObjectByActorArray(FTIHMngObjGenerateQueues& generateQueues, int16 parentData)
 {
 	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
 
-	int32 actorArrayNum = tempDatas.GetNumInActorQueue();
+	int32 actorArrayNum = generateQueues.GetNumInActorQueue();
 	//	나중에 업데이트 할때 해주자
 	//	액터도 같은 수끼리 묶어주는 작업해놓으면 됨. 그리고 prepare 만들어서 넣어주면 된다.
 
@@ -187,11 +187,11 @@ void FTIHMngObjFactory::GenerateManagedObjectByActorArray(FTIHMngObjTempDatas& t
 
 	while (true)
 	{
-		if (tempDatas.IsEmptyActorQueue() == true)
+		if (generateQueues.IsEmptyActorQueue() == true)
 		{
 			break;
 		}
-		TTIHMngObjTempDataPair<UEObjectHash64, AActor*> currActor = tempDatas.GetTopAndPopActorPairQueue();
+		TTIHMngObjTempDataPair<UEObjectHash64, AActor*> currActor = generateQueues.GetTopAndPopActorPairQueue();
 		USceneComponent* rootScene = currActor.UEValueType->GetRootComponent();
 
 		FTIHMngObj* newManagedObject = new FTIHMngObj();
@@ -200,7 +200,7 @@ void FTIHMngObjFactory::GenerateManagedObjectByActorArray(FTIHMngObjTempDatas& t
 
 		if (rootScene != nullptr)
 		{
-			tempDatas.PushBackPrepareDataForComposite({ 0 , -1, rootScene ,newManagedObject });
+			generateQueues.PushBackPrepareDataForComposite({ 0 , -1, rootScene ,newManagedObject });
 		}
 		else
 		{
@@ -214,7 +214,7 @@ void FTIHMngObjFactory::GenerateManagedObjectByActorArray(FTIHMngObjTempDatas& t
 	}
 }
 
-void FTIHMngObjFactory::GenerateManagedObjectCompositeArray(FTIHMngObjTempDatas& tempDatas)
+void FTIHMngObjFactory::GenerateManagedObjectCompositeArray(FTIHMngObjGenerateQueues& generateQueues)
 {
 	FTIHCommander& commander = TIHSTATION.GetCommander();
 
@@ -224,20 +224,21 @@ void FTIHMngObjFactory::GenerateManagedObjectCompositeArray(FTIHMngObjTempDatas&
 
 	while (true)
 	{
-		if (tempDatas.IsEmptyPrepareDataForCompositeQueue() == true)
+		if (generateQueues.IsEmptyPrepareDataForCompositeQueue() == true)
 		{
 			break;
 		}
-		FTIHMngObjGenerateCompositeBFSData&& currGenData = tempDatas.GetTopAndPopPrepareDataForCompositeQueue();
+		FTIHMngObjGenerateCompositeBFSData&& currGenData = generateQueues.GetTopAndPopPrepareDataForCompositeQueue();
 		int16 StepValue = currGenData.StepValue;
 		int16 ParentCompositeIndex = currGenData.ParentCompositeIndex;
 		FTIHMngObj* currManagedObject = currGenData.TIHManagedObject;
 		USceneComponent* currScene = currGenData.UESceneComponent;
 
-		if (currScene->StaticClass() == UChildActorComponent::StaticClass())
+		if(currScene->StaticClass() == UChildActorComponent::StaticClass())
 		{
-			GenerateUEChildActorBy(Cast<UChildActorComponent>(currScene), currManagedObject, tempDatas);
+			GenerateUEChildActorBy(Cast<UChildActorComponent>(currScene), currManagedObject, generateQueues);
 		}
+		//	그냥 여기에 childrenActorComponent 를 추가하자.
 
 		FTIHMngObjComposite* newComposite = new FTIHMngObjComposite();
 		newComposite->InitMngObjComposite(currAllocationSpace, currScene, ParentCompositeIndex, StepValue);
@@ -246,15 +247,22 @@ void FTIHMngObjFactory::GenerateManagedObjectCompositeArray(FTIHMngObjTempDatas&
 		const TArray<TObjectPtr<USceneComponent>>& childScenes = currScene->GetAttachChildren();
 
 		for (const TObjectPtr<USceneComponent>& childScene : childScenes)
-		{
-			//													level						parentIndex == curCompositeIndex		attachScenes	managedObject
-			tempDatas.PushBackPrepareDataForComposite({ StepValue + 1 ,newComposite->GetIndexInManagedObjectCompositeArray(),childScene ,currManagedObject });
+		{		
+			generateQueues.PushBackPrepareDataForComposite
+			(
+				{ 
+					StepValue + 1 ,	//	level
+					newComposite->GetIndexInManagedObjectCompositeArray(),	//	parentIndex == curCompositeIndex
+					childScene ,	//	attachScenes
+					currManagedObject	//	managedObject
+				}
+			);
 		}
-		tempDatas.PushBackEmptyComposite(newComposite);
+		generateQueues.PushBackEmptyComposite(newComposite);
 	}
 }
 
-void FTIHMngObjFactory::GenerateUEChildActorBy(UChildActorComponent* childActorScene, FTIHMngObj* currManagedObject, FTIHMngObjTempDatas& tempDatas)
+void FTIHMngObjFactory::GenerateUEChildActorBy(UChildActorComponent* childActorScene, FTIHMngObj* currManagedObject, FTIHMngObjGenerateQueues& genereteQueues)
 {
 	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
 	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
@@ -270,13 +278,13 @@ void FTIHMngObjFactory::GenerateUEChildActorBy(UChildActorComponent* childActorS
 
 	check(ueChildActorCls != genHelper.GetNoRegistTag());
 
-	tempDatas.PushBackActor(childActor, ueChildActorCls);
+	genereteQueues.PushBackActor(childActor, ueChildActorCls);
 	UEObjectHash64 chileActorHash = genHelper.GetUESceneComponentHashByUClass(childActorClass);
 	int16 parentIndex = currManagedObject->GetSelfIndexInWholeArray();
 	poolCenter.EmplaceAddMngObjPrepareDataForChildActor(chileActorHash, parentIndex);
 }
 
-void FTIHMngObjFactory::GenerateManagedObjectLeafArray(FTIHMngObjTempDatas& tempDatas)
+void FTIHMngObjFactory::GenerateManagedObjectLeafArray(FTIHMngObjGenerateQueues& tempDatas)
 {
 	static FTIHMngObjPoolCenter& poolCenter = FTIHDefaultStation::GetSingle().GetManagedObjectPoolCenter();
 

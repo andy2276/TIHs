@@ -13,6 +13,8 @@ void FTIHCommander::TestSettingCommandList()
 
 TIHReturn64 FTIHCommander::ExecuteCommands()
 {
+	using namespace TIHNameSpaceCommandType;
+
 	static TIHSETTING_CURRURNT_STATION& station = TIHSETTING_CURRURNT_STATION::GetSingle();
 
 	FUnionTIHCommandResult cmdResult;
@@ -23,25 +25,25 @@ TIHReturn64 FTIHCommander::ExecuteCommands()
 
 		const FTIHCommandMethod& cmdMethod = primitiveCmd->GetCommandMethod();
 
-		if ((int8)ETIHCommandMethodProcessingProtocols::EStrategies == cmdMethod.CommandProcessingProtocol)
+		if (MethodProcessingProtocol::UseStrategy == cmdMethod.CommandProcessingProtocol)
 		{
 			cmdResult.WholeData = ExecuteCommandByCmdProtocolEnum(primitiveCmd);
 		}
-		else if ((int8)ETIHCommandMethodProcessingProtocols::EDelegates == cmdMethod.CommandProcessingProtocol)
+		else if (MethodProcessingProtocol::UseDelegate == cmdMethod.CommandProcessingProtocol)
 		{
 			/*
 				loopReValue = 커맨더 안에 있는 실행 델리게이트 실행
 			*/
 		}
-		else if ((int8)ETIHCommandMethodProcessingProtocols::EMultiThreading == cmdMethod.CommandProcessingProtocol)
+		else if (MethodProcessingProtocol::UseMultiThread == cmdMethod.CommandProcessingProtocol)
 		{
 			/*
 				Runable 이 모여있는 거에 해당 델리게이트 실행
 			*/
 		}
-		else if((int8)ETIHCommandMethodProcessingProtocols::ESelfFunction == cmdMethod.CommandProcessingProtocol)
+		else if(MethodProcessingProtocol::UseCommandSelfFunction == cmdMethod.CommandProcessingProtocol)
 		{
-			cmdResult.WholeData = primitiveCmd->ExecuteVirtualSelfFunction();
+			cmdResult.WholeData = primitiveCmd->ExecuteCommandSelfFunction();
 		}
 		/*
 			simpleResult 가 뭐냐에 따라서 결과를 도출해냄
@@ -174,80 +176,92 @@ TIHReturn64 FTIHCommander::ExecuteCommandByCmdProtocolEnum(FTIHCommandBase* prim
 
 TIHReturn64 FTIHCommander::SequenceCommand(TIHReturn64 result, FTIHCommandBase* primitiveCmd)
 {
+	using namespace TIHNameSpaceCommandType;
 	FUnionTIHCommandResult reValue;
 	reValue.WholeData = result;
 	reValue.ResultDetail.ProcessingResult1 = 0;
 
 	const FTIHCommandMethod& cmdMethod = primitiveCmd->GetCommandMethod();
 
-	if ((int8)ETIHCommandMethodProgressionProtocols::EContinue == cmdMethod.CommandProgressionProtocol)
+	if (MethodProgessionProtocol::RunContinue == cmdMethod.CommandProgressionProtocol)
 	{
 		switch (reValue.ResultDetail.SimpleResult)
 		{
 		case (int32)ETIHReturn32Semantic::Fail:
 		case (int32)ETIHReturn32Semantic::Void:
 			reValue.ResultDetail.CommandResult0 =
-				(int8)ETIHCommandResultBitMask::EOnPopFornt
-				| (int8)ETIHCommandResultBitMask::ECallingErrorFunction;
+			(
+				MethodResultBitMask::OnPopFront| MethodResultBitMask::CallingErrorFunction
+			);
 			break;
 		case (int32)ETIHReturn32Semantic::Success:
 			reValue.ResultDetail.CommandResult0 =
-				(int8)ETIHCommandResultBitMask::EOnExecuteLoop
-				| (int8)ETIHCommandResultBitMask::EOnNext
-				| (int8)ETIHCommandResultBitMask::EOnPopFornt
-				| (int8)ETIHCommandResultBitMask::ECallingCompleteFunction;
+			(
+				MethodResultBitMask::OnLoop |
+				MethodResultBitMask::OnNext |
+				MethodResultBitMask::OnPopFront |
+				MethodResultBitMask::CallingCompleteFunction
+			);
 			break;
 		default:
 			break;
 		}
 	}
-	else if ((int8)ETIHCommandMethodProgressionProtocols::ETickable == cmdMethod.CommandProgressionProtocol)
+	else if (MethodProgessionProtocol::RunTickable == cmdMethod.CommandProgressionProtocol)
 	{
 		switch (reValue.ResultDetail.SimpleResult)
 		{
 		case (int32)ETIHReturn32Semantic::Fail:
 		case (int32)ETIHReturn32Semantic::Void:
 			reValue.ResultDetail.CommandResult0 =
-				(int8)ETIHCommandResultBitMask::EOnPopFornt
-				| (int8)ETIHCommandResultBitMask::ECallingErrorFunction;
+			(
+				MethodResultBitMask::OnPopFront |
+				MethodResultBitMask::CallingErrorFunction
+			);
 			break;
 		case (int32)ETIHReturn32Semantic::Success:
 			reValue.ResultDetail.CommandResult0 =
-				(int8)ETIHCommandResultBitMask::EOnNext
-				| (int8)ETIHCommandResultBitMask::EOnPopFornt
-				| (int8)ETIHCommandResultBitMask::ECallingCompleteFunction;
+			(
+				MethodResultBitMask::OnNext |
+				MethodResultBitMask::OnPopFront | 
+				MethodResultBitMask::CallingCompleteFunction
+			);
 			break;
 		default:
 			break;
 		}
 
 	}
-	else if ((int8)ETIHCommandMethodProgressionProtocols::EReapeate == cmdMethod.CommandProgressionProtocol)
+	else if (MethodProgessionProtocol::RunRepeate == cmdMethod.CommandProgressionProtocol)
 	{
 		switch (reValue.ResultDetail.SimpleResult)
 		{
 		case (int32)ETIHReturn32Semantic::Fail:
 			reValue.ResultDetail.CommandResult0 =
-				(int8)ETIHCommandResultBitMask::EOnPopFornt
-				| (int8)ETIHCommandResultBitMask::ECallingErrorFunction;
+			(
+				MethodResultBitMask::OnPopFront |
+				MethodResultBitMask::CallingErrorFunction
+			);
 			break;
 		case (int32)ETIHReturn32Semantic::Void:
-			reValue.ResultDetail.CommandResult0 = 0;
+			reValue.ResultDetail.CommandResult0 = MethodResultBitMask::ResetZero;
 			break;
 		case (int32)ETIHReturn32Semantic::Success:
 			reValue.ResultDetail.CommandResult0 =
-				(int8)ETIHCommandResultBitMask::EOnNext
-				| (int8)ETIHCommandResultBitMask::EOnExecuteLoop
-				| (int8)ETIHCommandResultBitMask::EOnPopFornt
-				| (int8)ETIHCommandResultBitMask::ECallingCompleteFunction;
+			(
+				MethodResultBitMask::OnNext |
+				MethodResultBitMask::OnLoop | 
+				MethodResultBitMask::OnPopFront |
+				MethodResultBitMask::CallingCompleteFunction
+			);
 			break;
 		default:
 			break;
 		}
 	}
-	else if ((int8)ETIHCommandMethodProgressionProtocols::EAsyncDonCare == cmdMethod.CommandProgressionProtocol)
+	else if (MethodProgessionProtocol::RunAsyncDontCare == cmdMethod.CommandProgressionProtocol)
 	{
-		reValue.ResultDetail.CommandResult0 = (int8)ETIHCommandResultBitMask::EAsyncTask;
+		reValue.ResultDetail.CommandResult0 = MethodResultBitMask::OnAsyncTask;
 	}
 	return reValue.WholeData;
 }

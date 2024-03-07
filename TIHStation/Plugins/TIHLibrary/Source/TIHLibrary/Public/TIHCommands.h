@@ -503,14 +503,26 @@ public:
 	virtual ~FTIHCmdMngObjAllocOnGenerate() {};
 };
 
+using FTIHCmdMeshPoolSetConfigureDatas = FTIHMeshPoolConfigure;
+
 //	stmesh
-class FTIHCmdMeshPoolSetConfigure : public TTIHCommand<FTemplateStruct>
+class FTIHCmdMeshPoolSetConfigure : public TTIHCommand<FTIHCmdMeshPoolSetConfigureDatas>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMeshPoolSetConfigure);
 public:
 	FTIHCmdMeshPoolSetConfigure() {};
 	virtual ~FTIHCmdMeshPoolSetConfigure() {};
 };
+
+/*
+	여기에 관한 데이터는 UrlCenter 로 만들거나 PathCenter 로 만들자.
+	
+
+*/
+
+
+
+
 
 class FTIHCmdStMeshPathListLoadByServer : public TTIHCommand<FTemplateStruct>
 {
@@ -519,7 +531,15 @@ public:
 	FTIHCmdStMeshPathListLoadByServer() {};
 	virtual ~FTIHCmdStMeshPathListLoadByServer() {};
 };
+/*
+	이거는 UClass* 나 그것에 관한 해쉬를 가지게 하자. 그럼 이것에 대한 모음집을 만들어야한다.
+	ConfigObjectCeneter 이걸로 만들자. 이걸 만들고 해당 오브젝트들을 저장해놓자.
+	그리고 그것에 관한 UClass* 를 지정하게 만들자. 그리고 그것에 관한 전용 클래스를 저장하게 하자.
+	어차피 이것들은 전부 전용 클래스일것이고 하나만 존재해도 문제 없을것이다.
 
+	하여튼 그것에 관한 인덱스 혹은 해시를 가지는 데이터로써 존재하면된다.
+
+*/
 class FTIHCmdStMeshPathListLoadByConfigObject: public TTIHCommand<FTemplateStruct>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshPathListLoadByConfigObject);

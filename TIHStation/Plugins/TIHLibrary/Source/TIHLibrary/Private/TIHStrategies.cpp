@@ -254,7 +254,7 @@ TIHReturn64 FTIHStrategyCmdMngObj::ExecuteCommandStaticPolymorph(FTIHCommandBase
 		{
 			poolCenter.GetManagedObjectPool(allocationSpace)->SetObjectPoolConfigure(onGenerateData);
 		}
-
+		
 		poolCenter.OnGeneratePipeLining(allocationSpace);
 	}
 

@@ -117,13 +117,13 @@ TIHReturn64 FTIHDefaultStation::PrepareStation()
 		로딩이 
 	*/
 
-	mCommander = MakeUnique<FTIHCommander>();
+	mCommander = new FTIHCommander;
 
-	mObjectPoolCenter = MakeUnique<FTIHMngObjPoolCenter>();
-	FTIHState::SetManagedObjectPoolCenter(mObjectPoolCenter.Get());
-	FTIHMngObj::SetManagedObjectPoolCenter(mObjectPoolCenter.Get());
+	//mObjectPoolCenter = MakeUnique<FTIHMngObjPoolCenter>();
+	FTIHState::SetManagedObjectPoolCenter(mPoolCenter);
+	FTIHMngObj::SetManagedObjectPoolCenter(mPoolCenter);
 
-	mMngObjGenerateHelper = MakeUnique<FTIHMngObjGenerateHelper>();
+	mMngObjGenerateHelper = new FTIHMngObjGenerateHelper;
 
 	//FTIHMngObjPoolCenter& poolCeneter = GetManagedObjectPoolCenter();
 	//mSettingHelper->MngObjSetting().RegistUEActorTemplate<AActor>();

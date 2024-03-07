@@ -177,7 +177,7 @@ public:
 	{
 		return 0;
 	}
-	virtual TIHReturn64 ExecuteVirtualSelfFunction()
+	virtual TIHReturn64 ExecuteCommandSelfFunction()
 	{
 		return 0;
 	}
@@ -545,12 +545,6 @@ public:
 	{
 		return SetCommandDataMetaDataBuilderTemplate<TIHTemplateCmdDataType>().BegineChain();
 	}
-
-
-
-	//	만약 새롭게 할당해야하면 할당하고 아니면 다음으로 넘어가는 기능이지 
-
-
 	//template<typename TIHTemplateType>
 	//TIHReturn64 BeginRegistCommandMetaDataUseTemp();
 	/*
@@ -644,7 +638,7 @@ public:
 	virtual TIHReturn64 InstantiateCommandsInMetaArray(FTIHCommander& commander) = 0;
 
 	FTIHCommandFactory();
-	virtual ~FTIHCommandFactory() = 0
+	virtual ~FTIHCommandFactory()
 	{
 
 	};

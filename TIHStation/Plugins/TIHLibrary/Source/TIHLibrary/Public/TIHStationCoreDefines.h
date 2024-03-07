@@ -502,43 +502,6 @@ enum class ETIHCommandHeaderProtocols : int8
 
 	MaxLength,
 };
-/*
-	0306 이제 이걸로 변경을 할것이다.
-*/
-namespace TIHNameSpaceCommandType
-{
-	namespace Headers
-	{
-		extern const int8 UnknownType;
-		extern const int8 ManagedObjectType;
-		extern const int8 MeshLoadType;
-		extern const int8 MaxCount;
-	};
-	namespace OptionManagedObject
-	{
-		extern const int8 UnkownType;
-		extern const int8 PoolCenterSetConfigure;
-		extern const int8 PoolReserve;
-		extern const int8 PrepareDatas;
-		extern const int8 OnGenerate;
-		extern const int8 MaxCount;
-	}
-	namespace OptionMeshLoad
-	{
-		extern const int8 UnkownType;
-		extern const int8 MeshPoolSetConfigure;
-		extern const int8 StMeshPathListLoadByServer;
-		extern const int8 StMeshPathListLoadByConfigObject;
-		extern const int8 StMeshPathListLoadBySpecial;
-		extern const int8 StMeshesLoadBySlidingWindow;
-		extern const int8 StMeshesLoadByList;
-		extern const int8 StMeshesLoadAll;
-		extern const int8 StMeshQuery;
-		extern const int8 StMeshModifyMeshes;
-		extern const int8 MaxCount;
-	}
-};
-
 
 /*!
 *	@brief 커맨드의 처리 방법에 대한 프로토콜
@@ -562,6 +525,85 @@ enum class ETIHCommandMethodProgressionProtocols : int8
 	EReapeate,		//	complete 든 error 든 나올때까지 계속 해당 커맨드를 반복
 	EAsyncDonCare,
 };
+enum class ETIHCommandResultBitMask : int8
+{
+	EOnExecuteLoop = 1 << 0,
+	EOnNext = 1 << 2,
+	EOnPopFornt = 1 << 3,
+	EOnPopBack = 1 << 4,
+	ECallingCompleteFunction = 1 << 6,
+	ECallingErrorFunction = -2,
+	EAsyncTask = -1 //이거 - 일거라 그냥 확인만 하면 됨.
+};
+/*
+	0306 이제 이걸로 변경을 할것이다.
+*/
+namespace TIHNameSpaceCommandType
+{
+	namespace HeaderProtocol
+	{
+		extern const int8 UnknownType;
+		extern const int8 ManagedObjectType;
+		extern const int8 MeshLoadType;
+		extern const int8 DefaultMaxCount;
+	};
+	namespace OptionManagedObject
+	{
+		extern const int8 UnkownType;
+		extern const int8 PoolCenterSetConfigure;
+		extern const int8 PoolReserve;
+		extern const int8 PrepareDatas;
+		extern const int8 OnGenerate;
+		extern const int8 DefaultMaxCount;
+	};
+	namespace OptionMeshLoad
+	{
+		extern const int8 UnkownType;
+		extern const int8 MeshPoolSetConfigure;
+		extern const int8 StMeshPathListLoadByServer;
+		extern const int8 StMeshPathListLoadByConfigObject;
+		extern const int8 StMeshPathListLoadBySpecial;
+		extern const int8 StMeshesLoadBySlidingWindow;
+		extern const int8 StMeshesLoadByList;
+		extern const int8 StMeshesLoadAll;
+		extern const int8 StMeshQuery;
+		extern const int8 StMeshModifyMeshes;
+		extern const int8 DefaultMaxCount;
+	};
+	namespace MethodProcessingProtocol
+	{
+		extern const int8 UnkownType;
+		extern const int8 UseStrategy;
+		extern const int8 UseDelegate;
+		extern const int8 UseMultiThread;
+		extern const int8 UseCommandSelfFunction;
+		extern const int8 DefaultMaxCount;
+	};
+	namespace MethodProgessionProtocol
+	{
+		extern const int8 UnkownType;
+		extern const int8 RunContinue;
+		extern const int8 RunTickable;
+		extern const int8 RunRepeate;
+		extern const int8 RunAsyncDontCare;
+		extern const int8 DefaultMaxCount;
+	};
+	namespace MethodResultBitMask
+	{
+		extern const int8 OnAsyncTask;
+		extern const int8 ResetZero;
+		extern const int8 OnLoop;
+		extern const int8 OnNext;
+		extern const int8 OnPopFront;
+		extern const int8 OnPopBack;
+		extern const int8 CallingCompleteFunction;
+		extern const int8 CallingErrorFunction;
+	}
+};
+
+
+
+
 enum class ETIHResultDetailProtocols : int8
 {
 	EEmpty = 0,
@@ -614,16 +656,7 @@ enum class ETIHResultDetailProtocols : int8
 	MaxLength
 };
 
-enum class ETIHCommandResultBitMask : int8
-{
-	EOnExecuteLoop = 1 << 0,
-	EOnNext = 1 << 2,
-	EOnPopFornt = 1 << 3,
-	EOnPopBack = 1 << 4,
-	ECallingCompleteFunction = 1 << 6,
-	ECallingErrorFunction = -2,
-	EAsyncTask = -1 //이거 - 일거라 그냥 확인만 하면 됨.
-};
+
 const int8 MaxObjectPoolSlotCount = 8;
 enum class ETIHManagedObjectSpace : int8
 {
@@ -1219,6 +1252,7 @@ class FTIHSettingHelper;
 class FTIHCommandFactory;
 class FTIHCommandResultBoard;
 class FTIHCommandPathBoard;
+class FTIHPathCenter;
 
 class FTIHTickTock
 {
@@ -1242,6 +1276,8 @@ private:
 class FTIHStationBase
 {
 public:
+	FTIHStationBase();
+	virtual ~FTIHStationBase();
 	FTIHCommandFactory& GetCommandFactory()
 	{
 		return *mCommandFactory;
@@ -1250,22 +1286,22 @@ public:
 
 	//FTIHCommandBase* GenerateCommandByCommandHeader(const FTIHCommandHeader cmdHeader);
 
-	FTIHCommandShareBoard& GetCommandShaderBoard()
-	{
-		return *mShareBoard;
-	}
-	FTIHCommandResultBoard& GetCommandResultBoard()
-	{
-		return *mResultBoard.Get();
-	}
-	FTIHCommandPathBoard& GetCommandPathBoard()
-	{
-		return *mPathBoard;
-	}
-	FTIHMngObjPool& GetObjectPool()
-	{
-		return *mGlobalObjectPool;
-	}
+	//FTIHCommandShareBoard& GetCommandShaderBoard()
+	//{
+	//	return *mShareBoard;
+	//}
+	//FTIHCommandResultBoard& GetCommandResultBoard()
+	//{
+	//	return *mResultBoard.Get();
+	//}
+	//FTIHCommandPathBoard& GetCommandPathBoard()
+	//{
+	//	return *mPathBoard;
+	//}
+	//FTIHMngObjPool& GetObjectPool()
+	//{
+	//	return *mGlobalObjectPool;
+	//}
 
 	FTIHCommander& GetCommander()
 	{
@@ -1274,7 +1310,11 @@ public:
 
 	FTIHMngObjPoolCenter& GetManagedObjectPoolCenter()
 	{
-		return *mObjectPoolCenter;
+		return *mPoolCenter;
+	}
+	FTIHPathCenter& GetPathCenter()
+	{
+		return *mPathCenter;
 	}
 	FTIHMngObjGenerateHelper& GetGenerateHelper()
 	{
@@ -1304,34 +1344,43 @@ protected:
 	//FTIHManagedObjectPool* mGlobalObjectPool;
 	//FTIHManagedObjectPool* mLocalObjectPool;
 
-	TUniquePtr<FTIHMngObjPool> mGlobalObjectPool;
-	TUniquePtr<FTIHMngObjPool> mLocalObjectPool;
+	//TUniquePtr<FTIHMngObjPool> mGlobalObjectPool;
+	//TUniquePtr<FTIHMngObjPool> mLocalObjectPool;
 
-	TUniquePtr< FTIHMngObjPoolCenter> mObjectPoolCenter;
+	//TUniquePtr< FTIHMngObjPoolCenter> mObjectPoolCenter;
 
 	//FTIHCommandShareBoard mShareBoard;
 	//FTIHCommandResultBoard mResultBoard;
 	//FTIHCommandPathBoard mPathBoard;
 
-	TUniquePtr<FTIHCommandShareBoard> mShareBoard;
-	TUniquePtr<FTIHCommandResultBoard> mResultBoard;
-	TUniquePtr<FTIHCommandPathBoard> mPathBoard;
+	//TUniquePtr<FTIHCommandShareBoard> mShareBoard;
+	//TUniquePtr<FTIHCommandResultBoard> mResultBoard;
+	//TUniquePtr<FTIHCommandPathBoard> mPathBoard;
 
 	//FTIHCommander mCommander;
 
-	TUniquePtr<FTIHCommander> mCommander;
+	//TUniquePtr<FTIHCommander> mCommander;
 
 	int64 mTickTime;
 	int64 mTickTimeRunning;
 	int64 mTickTimeStarted;
 
-	FTIHCommandFactory* mCommandFactory;
+	//FTIHCommandFactory* mCommandFactory;
 
 	//	시발 이거 합칠까
-	TUniquePtr<FTIHMngObjGenerateHelper> mMngObjGenerateHelper;
-	TUniquePtr<FTIHSettingHelper> mSettingHelper;
+	//TUniquePtr<FTIHMngObjGenerateHelper> mMngObjGenerateHelper;
+	//TUniquePtr<FTIHSettingHelper> mSettingHelper;
 
 	FTIHTickTock mTickTock;
+
+	class FTIHMngObjGenerateHelper* mMngObjGenerateHelper;
+	class FTIHSettingHelper* mSettingHelper;
+
+	class FTIHCommandFactory* mCommandFactory;
+	class FTIHCommander* mCommander;
+	class FTIHMngObjPoolCenter* mPoolCenter;
+	class FTIHPathCenter* mPathCenter;
+
 private:
 };
 
@@ -1507,6 +1556,7 @@ protected:
 	////	시발 이거 합칠까
 	//TUniquePtr<FTIHMngObjGenerateHelper> mMngObjGenerateHelper;
 	//TUniquePtr<FTIHSettingHelper> mSettingHelper;
+
 };
 
 
@@ -1606,3 +1656,53 @@ protected:
 ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 */
+
+class FTIHPathCenter
+{
+public:
+	static FTIHPathCenter& GetSingle();
+
+	void ReserveUrlArray(int16 value)
+	{
+		if (mUrlArray.Max() < value)
+		{
+			mUrlArray.Reserve(value);
+			mUrlArray.Reserve(value);
+		}
+	}
+	void ReservePathArray(int16 value)
+	{
+		if (mPathArray.Max() < value)
+		{
+			mPathArray.Reserve(value);
+			mPathTable.Reserve(value);
+		}
+	}
+
+	int16 RegistUrl(const FString& value)
+	{
+		int16 reValue = -1;
+		if (mUrlTable.Contains(value) == false)
+		{
+			reValue = mUrlArray.Add(value);
+			mUrlTable.Add(value, reValue);
+		}
+		return reValue;
+	}
+	int16 RegistPath(const FString& value)
+	{
+		int16 reValue = -1;
+		if (mPathTable.Contains(value) == false)
+		{
+			reValue = mUrlArray.Add(value);
+			mPathTable.Add(value, reValue);
+		}
+		return reValue;
+	}
+private:
+	TMap<FString, int16> mUrlTable;
+	TArray<FString> mUrlArray;
+
+	TMap<FString, int16> mPathTable;
+	TArray<FString> mPathArray;
+};
