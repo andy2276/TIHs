@@ -635,7 +635,7 @@ public:
 	virtual TIHReturn64 PrevRegistCommand();
 
 	//	생성시 전략
-	virtual TIHReturn64 InstantiateCommandsInMetaArray(FTIHCommander& commander) = 0;
+	virtual TIHReturn64 InstantiateCommandsInMetaArray(FTIHCommander& commander);
 
 	FTIHCommandFactory();
 	virtual ~FTIHCommandFactory()
@@ -1153,6 +1153,12 @@ public:
 class FTIHCommander
 {
 public:
+	FTIHCommander()
+	{
+		mCommandLists.Reserve(4);
+		mCommandLists.AddDefaulted(4);
+	}
+
 	void TestSettingCommandList();
 
 	FTIHCommandExecutionState& GetCommandExecutionState()

@@ -1,0 +1,34 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\unrealeditor\\inc\\tihhousingpak\\uht\\tihhousebuilderpawn.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "e:\\uegit\\unrealengine\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
+        "Includes": [
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\tihhousingpak\\definitions.tihhousingpak.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\source\\tihhousingpak\\public\\tihhousebuilderpawn.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\source\\tihhousingpak\\public\\tihhousepawn.h",
+            "e:\\uegit\\unrealengine\\engine\\plugins\\enhancedinput\\source\\enhancedinput\\public\\inputaction.h",
+            "e:\\uegit\\unrealengine\\engine\\plugins\\enhancedinput\\source\\enhancedinput\\public\\inputmodifiers.h",
+            "e:\\uegit\\unrealengine\\engine\\plugins\\enhancedinput\\source\\enhancedinput\\public\\inputactionvalue.h",
+            "e:\\uegit\\unrealengine\\engine\\plugins\\enhancedinput\\intermediate\\build\\win64\\unrealeditor\\inc\\enhancedinput\\uht\\inputactionvalue.generated.h",
+            "e:\\uegit\\unrealengine\\engine\\plugins\\enhancedinput\\intermediate\\build\\win64\\unrealeditor\\inc\\enhancedinput\\uht\\inputmodifiers.generated.h",
+            "e:\\uegit\\unrealengine\\engine\\plugins\\enhancedinput\\source\\enhancedinput\\public\\inputtriggers.h",
+            "e:\\uegit\\unrealengine\\engine\\plugins\\enhancedinput\\intermediate\\build\\win64\\unrealeditor\\inc\\enhancedinput\\uht\\inputtriggers.generated.h",
+            "e:\\uegit\\unrealengine\\engine\\plugins\\enhancedinput\\intermediate\\build\\win64\\unrealeditor\\inc\\enhancedinput\\uht\\inputaction.generated.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\source\\tihhousingpak\\public\\tihtemplibrary.h",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\coreuobject\\public\\uobject\\noexporttypes.h",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\coreuobject\\public\\uobject\\propertyaccessutil.h",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\coreuobject\\public\\serialization\\testundeclaredscriptstructobjectreferences.h",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\core\\public\\math\\unitconversion.h",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\core\\public\\math\\unitconversion.inl",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\core\\public\\internationalization\\polyglottextdata.h",
+            "e:\\uegit\\unrealengine\\engine\\source\\runtime\\coreuobject\\public\\assetregistry\\arfilter.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\unrealeditor\\inc\\tihhousingpak\\uht\\tihtemplibrary.generated.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\unrealeditor\\inc\\tihhousingpak\\uht\\tihhousepawn.generated.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\unrealeditor\\inc\\tihhousingpak\\uht\\tihhousebuilderpawn.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

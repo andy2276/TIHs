@@ -106,7 +106,22 @@ Create -> MngObj 로변경
 + 
 3. Implementation
 
-/*
-	FTIHCmdMngObjAllocPrepareDatas -> FTIHCmdMeshPoolSetConfigure -> FTIHCmdMngObjAllocOnGenerate ->
+	FTIHCmdMngObjAllocPrepareDatas -> FTIHCmdMeshPoolSetConfigure -> FTIHCmdMngObjAllocOnGenerate
+### mngObj PrepareData 설정방법
+```c++
+FTIHNewAllocPrepareData temp;
+temp.
+SetTargetUEClassBase(TIHNameSpaceManagedObject::UEClassBaseType::ActorBase).
+	SetTargetClassHash(mPoolCenter->RegistUEClassForGenerate(AActor::StaticClass())).
+	SetAllocationSpace(TIHNameSpaceManagedObject::AllocationSpaceType::LocalSpace).
+	SetAllocateCount(256);
+prepareQue.EmplaceLast(temp);
 
-*/
+
+```
+### CommandList 넣는 방법.
+```cpp
+FTIHCommandList& cmdList = mCommander->GetCommandList();
+cmdList.PushBackCommandPtr();
+
+```

@@ -4,6 +4,7 @@
 #include "TIHStationCore.h"
 #include "Engine/StreamableManager.h"
 #include "Components/Widget.h"
+#include "TIHCommandCore.h"
 
 
 #pragma region DefaultStation Functions
@@ -100,7 +101,14 @@ TIHReturn64 FTIHDefaultStation::InstantiateStation()
 {
 	TIHReturn64 reValue = 0;
 
+	mMngObjGenerateHelper = new FTIHMngObjGenerateHelper;
+	mSettingHelper = new FTIHSettingHelper;
 
+	mCommandFactory = new FTIHCommandFactory;
+	mCommander = new FTIHCommander;
+	
+	mPoolCenter = new FTIHMngObjPoolCenter;
+	mPathCenter = new FTIHPathCenter;
 
 	return reValue;
 }
@@ -117,25 +125,13 @@ TIHReturn64 FTIHDefaultStation::PrepareStation()
 		로딩이 
 	*/
 
-	mCommander = new FTIHCommander;
-	mMngObjGenerateHelper = new FTIHMngObjGenerateHelper;
-	mPoolCenter = new FTIHMngObjPoolCenter;
+	
 
-	//mObjectPoolCenter = MakeUnique<FTIHMngObjPoolCenter>();
+
 	FTIHState::SetManagedObjectPoolCenter(mPoolCenter);
 	FTIHMngObj::SetManagedObjectPoolCenter(mPoolCenter);
 
 	
-	TDeque<FTIHNewAllocPrepareData>&  prepareQue = mPoolCenter->GetPrepareDataQueue();
-	FTIHNewAllocPrepareData temp;
-	temp.
-		SetTargetUEClassBase(TIHNameSpaceManagedObject::UEClassBaseType::ActorBase).
-		SetTargetClassHash(mPoolCenter->RegistUEClassForGenerate(AActor::StaticClass())).
-		SetAllocationSpace(TIHNameSpaceManagedObject::AllocationSpaceType::LocalSpace).
-		SetAllocateCount(256);
-	prepareQue.EmplaceLast(temp);
-
-
 	return reValue;
 	
 }

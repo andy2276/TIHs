@@ -51,13 +51,14 @@ TIHReturn64 FTIHCommander::ExecuteCommands()
 		*/
 		cmdResult.WholeData = SequenceCommand(cmdResult.WholeData, primitiveCmd);
 
-		if ((int8)ETIHCommandResultBitMask::EAsyncTask & cmdResult.ResultDetail.ProcessingResult0)
+
+		if (MethodResultBitMask::OnAsyncTask & cmdResult.ResultDetail.ProcessingResult0)
 		{
 
 		}
 		else
 		{
-			if ((int8)ETIHCommandResultBitMask::EOnExecuteLoop & cmdResult.ResultDetail.ProcessingResult0)
+			if (MethodResultBitMask::OnLoop & cmdResult.ResultDetail.ProcessingResult0)
 			{
 				GetCommandExecutionState().StartCommanderLoop();
 			}
@@ -65,15 +66,15 @@ TIHReturn64 FTIHCommander::ExecuteCommands()
 			{
 				GetCommandExecutionState().StopCommaderLoop();
 			}
-			if ((int8)ETIHCommandResultBitMask::EOnPopFornt & cmdResult.ResultDetail.ProcessingResult0)
+			if (MethodResultBitMask::OnPopFront & cmdResult.ResultDetail.ProcessingResult0)
 			{
 				GetCommandList().PopFrontCommand();
 			}
-			if ((int8)ETIHCommandResultBitMask::EOnNext & cmdResult.ResultDetail.ProcessingResult0)
+			if (MethodResultBitMask::OnNext & cmdResult.ResultDetail.ProcessingResult0)
 			{
 				GetCommandList().NextCommand();
 			}
-			if ((int8)ETIHCommandResultBitMask::EOnPopBack & cmdResult.ResultDetail.ProcessingResult0)
+			if (MethodResultBitMask::OnPopBack & cmdResult.ResultDetail.ProcessingResult0)
 			{
 				//GetCommandList().popBackCommand();
 				/*
@@ -86,11 +87,11 @@ TIHReturn64 FTIHCommander::ExecuteCommands()
 						아 컴포넌트에서 호출하면 되는거잖아.시발 이생각을 왜 못햇지?
 				*/
 			}
-			if ((int8)ETIHCommandResultBitMask::ECallingCompleteFunction & cmdResult.ResultDetail.ProcessingResult0)
+			if (MethodResultBitMask::CallingCompleteFunction & cmdResult.ResultDetail.ProcessingResult0)
 			{
 				CheckCallingCompleteFunctions(primitiveCmd);
 			}
-			else if ((int8)ETIHCommandResultBitMask::ECallingErrorFunction & cmdResult.ResultDetail.ProcessingResult0)
+			else if (MethodResultBitMask::CallingErrorFunction & cmdResult.ResultDetail.ProcessingResult0)
 			{
 				CheckCallingErrorFunctions(primitiveCmd);
 			}
