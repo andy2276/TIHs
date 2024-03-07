@@ -2,12 +2,14 @@
 	"RemapUnityFiles": 
 	{
 		"Module.TIHLibraryEntry.cpp.obj": [
+			"TIHCommandCore.cpp.obj",
 			"TIHCommands.cpp.obj",
 			"TIHGameInstance.cpp.obj",
 			"TIHLibraryEntry.cpp.obj",
 			"TIHManagedObjectLeafs.cpp.obj",
 			"TIHManagedObjects.cpp.obj",
 			"TIHNetworks.cpp.obj",
+			"TIHStationCore.cpp.obj",
 			"TIHStationCoreDefines.cpp.obj",
 			"TIHStrategies.cpp.obj",
 			"TIHCommandCore.gen.cpp.obj",
@@ -15,9 +17,7 @@
 			"TIHGameInstance.gen.cpp.obj",
 			"TIHLibraryEntry.init.gen.cpp.obj",
 			"TIHManagedObjects.gen.cpp.obj",
-			"TIHStationCore.gen.cpp.obj",
-			"TIHCommandCore.cpp.obj",
-			"TIHStationCore.cpp.obj"
+			"TIHStationCore.gen.cpp.obj"
 		]
 	}
 }
