@@ -542,62 +542,62 @@ namespace TIHNameSpaceCommandType
 {
 	namespace HeaderProtocol
 	{
-		extern const int8 UnknownType;
-		extern const int8 ManagedObjectType;
-		extern const int8 MeshLoadType;
-		extern const int8 DefaultMaxCount;
+		extern const signed char UnknownType;
+		extern const signed char ManagedObjectType;
+		extern const signed char MeshLoadType;
+		extern const signed char DefaultMaxCount;
 	};
 	namespace OptionManagedObject
 	{
-		extern const int8 UnkownType;
-		extern const int8 PoolCenterSetConfigure;
-		extern const int8 PoolReserve;
-		extern const int8 PrepareDatas;
-		extern const int8 OnGenerate;
-		extern const int8 DefaultMaxCount;
+		extern const signed char UnkownType;
+		extern const signed char PoolCenterSetConfigure;
+		extern const signed char PoolReserve;
+		extern const signed char PrepareDatas;
+		extern const signed char OnGenerate;
+		extern const signed char DefaultMaxCount;
 	};
 	namespace OptionMeshLoad
 	{
-		extern const int8 UnkownType;
-		extern const int8 MeshPoolSetConfigure;
-		extern const int8 StMeshPathListLoadByServer;
-		extern const int8 StMeshPathListLoadByConfigObject;
-		extern const int8 StMeshPathListLoadBySpecial;
-		extern const int8 StMeshesLoadBySlidingWindow;
-		extern const int8 StMeshesLoadByList;
-		extern const int8 StMeshesLoadAll;
-		extern const int8 StMeshQuery;
-		extern const int8 StMeshModifyMeshes;
-		extern const int8 DefaultMaxCount;
+		extern const signed char UnkownType;
+		extern const signed char MeshPoolSetConfigure;
+		extern const signed char StMeshPathListLoadByServer;
+		extern const signed char StMeshPathListLoadByConfigObject;
+		extern const signed char StMeshPathListLoadBySpecial;
+		extern const signed char StMeshesLoadBySlidingWindow;
+		extern const signed char StMeshesLoadByList;
+		extern const signed char StMeshesLoadAll;
+		extern const signed char StMeshQuery;
+		extern const signed char StMeshModifyMeshes;
+		extern const signed char DefaultMaxCount;
 	};
 	namespace MethodProcessingProtocol
 	{
-		extern const int8 UnkownType;
-		extern const int8 UseStrategy;
-		extern const int8 UseDelegate;
-		extern const int8 UseMultiThread;
-		extern const int8 UseCommandSelfFunction;
-		extern const int8 DefaultMaxCount;
+		extern const signed char UnkownType;
+		extern const signed char UseStrategy;
+		extern const signed char UseDelegate;
+		extern const signed char UseMultiThread;
+		extern const signed char UseCommandSelfFunction;
+		extern const signed char DefaultMaxCount;
 	};
 	namespace MethodProgessionProtocol
 	{
-		extern const int8 UnkownType;
-		extern const int8 RunContinue;
-		extern const int8 RunTickable;
-		extern const int8 RunRepeate;
-		extern const int8 RunAsyncDontCare;
-		extern const int8 DefaultMaxCount;
+		extern const signed char UnkownType;
+		extern const signed char RunContinue;
+		extern const signed char RunTickable;
+		extern const signed char RunRepeate;
+		extern const signed char RunAsyncDontCare;
+		extern const signed char DefaultMaxCount;
 	};
 	namespace MethodResultBitMask
 	{
-		extern const int8 OnAsyncTask;
-		extern const int8 ResetZero;
-		extern const int8 OnLoop;
-		extern const int8 OnNext;
-		extern const int8 OnPopFront;
-		extern const int8 OnPopBack;
-		extern const int8 CallingCompleteFunction;
-		extern const int8 CallingErrorFunction;
+		extern const signed char OnAsyncTask;
+		extern const signed char ResetZero;
+		extern const signed char OnLoop;
+		extern const signed char OnNext;
+		extern const signed char OnPopFront;
+		extern const signed char OnPopBack;
+		extern const signed char CallingCompleteFunction;
+		extern const signed char CallingErrorFunction;
 	}
 };
 

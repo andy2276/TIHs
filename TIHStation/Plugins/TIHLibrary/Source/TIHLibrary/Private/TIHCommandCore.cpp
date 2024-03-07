@@ -1,4 +1,5 @@
 #include "TIHCommandCore.h"
+#include "TIHStationCoreDefines.h"
 #include "TIHStrategies.h"
 #include "TIHStationCore.h"
 
