@@ -477,16 +477,6 @@ enum class ETIHCommandFunctorProtocolOptions
 };
 
 
-enum class ETIHManagedObjectStepState : int16
-{
-	ENotUse = 0b0000000000000000,		//	0
-	ETraceFail = 0b0000000000000001,	//	1
-	EAllocated = 0b0000000100000001,	//	257
-	EReady = 0b0000001000000001,		//	513
-	ERunning = 0b0000001100000001,		//	769
-	EWaiting = 0b0000010000000001,		//	1025
-	ETermination = 0b0000010100000001,	//	1281
-};
 
 
 /*!
@@ -535,9 +525,35 @@ enum class ETIHCommandResultBitMask : int8
 	ECallingErrorFunction = -2,
 	EAsyncTask = -1 //이거 - 일거라 그냥 확인만 하면 됨.
 };
-/*
-	0306 이제 이걸로 변경을 할것이다.
-*/
+const int8 MaxObjectPoolSlotCount = 8;
+enum class ETIHManagedObjectSpace : int8
+{
+	ENotRegistSpace = -1,
+	EAbsoluteSpace = 0,
+	ELoaclSpace = 1,//1~8
+	ESharedSpace = (int8)ELoaclSpace + MaxObjectPoolSlotCount,//9~16
+	EGlobalSpace = (int8)ESharedSpace + MaxObjectPoolSlotCount,//17~24
+	ESystemSpace = (int8)EGlobalSpace + MaxObjectPoolSlotCount,//25
+};
+enum class ETIHManagedObjectHeaderProtocols
+{
+	ENotUse,
+	EActorBase,
+	EWidgetBase,
+	ESystem,
+	EAuto,
+};
+enum class ETIHManagedObjectStepState : int16
+{
+	ENotUse = 0b0000000000000000,		//	0
+	ETraceFail = 0b0000000000000001,	//	1
+	EAllocated = 0b0000000100000001,	//	257
+	EReady = 0b0000001000000001,		//	513
+	ERunning = 0b0000001100000001,		//	769
+	EWaiting = 0b0000010000000001,		//	1025
+	ETermination = 0b0000010100000001,	//	1281
+};
+
 namespace TIHNameSpaceCommandType
 {
 	namespace HeaderProtocol
@@ -600,7 +616,39 @@ namespace TIHNameSpaceCommandType
 		extern const int8 CallingErrorFunction;
 	}
 };
+namespace TIHNameSpaceManagedObject
+{
+	namespace AllocationSpaceValue
+	{
+		extern const int8 MaxObjectPoolSlotCount;
+	}
+	namespace AllocationSpaceType
+	{
+		extern const int8 UnknownSpace;
+		extern const int8 AdminSpace;
+		extern const int8 SystemSpace;
+		extern const int8 GlobalSpace;
+		extern const int8 SharedSpace;
+		extern const int8 LocalSpace;
+	}
+	namespace UEClassBaseType
+	{
+		extern const int8 UnknownBase;
+		extern const int8 ActorBase;
+		extern const int8 WidgetBase;
+		extern const int8 SystemBase;
+		extern const int8 AnyObject;
+	}
+	namespace UEClassBaseType
+	{
+		extern const int8 UnknownBase;
+		extern const int8 ActorBase;
+		extern const int8 WidgetBase;
+		extern const int8 SystemBase;
+		extern const int8 AnyObject;
+	}
 
+}
 
 
 
@@ -657,24 +705,8 @@ enum class ETIHResultDetailProtocols : int8
 };
 
 
-const int8 MaxObjectPoolSlotCount = 8;
-enum class ETIHManagedObjectSpace : int8
-{
-	ENotRegistSpace = -1,
-	EAbsoluteSpace = 0,
-	ELoaclSpace = 1,//1~8
-	ESharedSpace = (int8)ELoaclSpace + MaxObjectPoolSlotCount,//9~16
-	EGlobalSpace = (int8)ESharedSpace + MaxObjectPoolSlotCount,
-	ESystemSpace = (int8)EGlobalSpace + MaxObjectPoolSlotCount,
-};
-enum class ETIHManagedObjectHeaderProtocols
-{
-	ENotUse,
-	EActorBase,
-	EWidgetBase,
-	ESystem,
-	EAuto,
-};
+
+
 enum class ETIHMngObjHeaderProcotols
 {
 	ENotUse,

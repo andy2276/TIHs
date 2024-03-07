@@ -66,7 +66,31 @@ namespace TIHNameSpaceCommandType
 		const int8 CallingCompleteFunction = 1<<4;
 	}
 };
+namespace TIHNameSpaceManagedObject
+{
+	namespace AllocationSpaceValue
+	{
+		const int8 MaxObjectPoolSlotCount = 8;
+	}
+	namespace AllocationSpaceType
+	{
+		const int8 UnknownSpace = 0;
+		const int8 AdminSpace = 1;
+		const int8 SystemSpace = 2;
+		const int8 GlobalSpace = SystemSpace + 1;//3~10
+		const int8 SharedSpace = GlobalSpace + AllocationSpaceValue::MaxObjectPoolSlotCount;//11~18
+		const int8 LocalSpace = SharedSpace + AllocationSpaceValue::MaxObjectPoolSlotCount;//19~26
+	}
+	namespace UEClassBaseType
+	{
+		const int8 UnknownBase = 0;
+		const int8 ActorBase = 1;
+		const int8 WidgetBase = 2;
+		const int8 SystemBase = 3;
+		const int8 AnyObject = 4;
+	}
 
+}
 FTIHStationBase::FTIHStationBase()
 	:
 	mMngObjGenerateHelper(nullptr),

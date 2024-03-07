@@ -241,7 +241,7 @@ TIHReturn64 FTIHStrategyCmdMngObj::ExecuteCommandStaticPolymorph(FTIHCommandBase
 		FTIHCmdMngObjAllocPrepareDatas* createNewAlloc = static_cast<FTIHCmdMngObjAllocPrepareDatas*>(cmdBase);
 
 		const FTIHCmdMngObjAllocPrepareDatasDatas& feature = createNewAlloc->GetCommandFeature();
-		poolCenter.EmplaceAddMngObjPrepareData(feature.TargetClassType, feature.TargetClassHash, -1, feature.AllocateCount);
+		poolCenter.EmplaceAddMngObjPrepareData(feature.TargetUEClassBase, feature.TargetClassHash, -1, feature.AllocateCount);
 	}
 	else if (cmdHeader.ProtocolOption == 1)
 	{
@@ -256,6 +256,11 @@ TIHReturn64 FTIHStrategyCmdMngObj::ExecuteCommandStaticPolymorph(FTIHCommandBase
 		}
 		
 		poolCenter.OnGeneratePipeLining(allocationSpace);
+	}
+	else if(cmdHeader.ProtocolOption == 2)
+	{
+
+
 	}
 
 	return reValue;

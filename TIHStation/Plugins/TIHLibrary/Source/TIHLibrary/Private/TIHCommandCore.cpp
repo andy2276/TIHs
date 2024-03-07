@@ -19,7 +19,7 @@ TIHReturn64 FTIHCommander::ExecuteCommands()
 	static TIHSETTING_CURRURNT_STATION& station = TIHSETTING_CURRURNT_STATION::GetSingle();
 
 	FUnionTIHCommandResult cmdResult;
-
+	cmdResult.WholeData = 0;
 	while (mCommaderExecutionState.CheckExecuteCommanderLoop())
 	{
 		FTIHCommandBase* primitiveCmd = mCommandLists[mCurrCommandListIndex].GetCurrentCommand();
@@ -109,7 +109,7 @@ TIHReturn64 FTIHCommander::ExecuteCommandDirect(FTIHCommandBase* curCommand)
 	FTIHCommandFactory& factory = TIHSTATION.GetCommandFactory();
 	FTIHCommander& commander = TIHSTATION.GetCommander();
 
-
+	
 
 	return reValue;
 }

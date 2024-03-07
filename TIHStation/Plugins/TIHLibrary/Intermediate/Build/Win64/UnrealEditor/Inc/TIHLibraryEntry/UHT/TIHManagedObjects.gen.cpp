@@ -674,9 +674,9 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHNewAllocPrepareDa
 #endif
 		static void* NewStructOps();
 #if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam NewProp_TargetClassType_MetaData[];
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_TargetUEClassBase_MetaData[];
 #endif
-		static const UECodeGen_Private::FInt8PropertyParams NewProp_TargetClassType;
+		static const UECodeGen_Private::FInt8PropertyParams NewProp_TargetUEClassBase;
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_AllocationSpace_MetaData[];
 #endif
@@ -716,11 +716,11 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHNewAllocPrepareDa
 		return (UScriptStruct::ICppStructOps*)new UScriptStruct::TCppStructOps<FTIHNewAllocPrepareData>();
 	}
 #if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_TargetClassType_MetaData[] = {
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_TargetUEClassBase_MetaData[] = {
 		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
 	};
 #endif
-	const UECodeGen_Private::FInt8PropertyParams Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_TargetClassType = { "TargetClassType", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int8, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHNewAllocPrepareData, TargetClassType), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_TargetClassType_MetaData), Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_TargetClassType_MetaData) };
+	const UECodeGen_Private::FInt8PropertyParams Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_TargetUEClassBase = { "TargetUEClassBase", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int8, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHNewAllocPrepareData, TargetUEClassBase), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_TargetUEClassBase_MetaData), Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_TargetUEClassBase_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_AllocationSpace_MetaData[] = {
 		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
@@ -752,7 +752,7 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHNewAllocPrepareDa
 #endif
 	const UECodeGen_Private::FInt64PropertyParams Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_TargetClassHash = { "TargetClassHash", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int64, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHNewAllocPrepareData, TargetClassHash), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_TargetClassHash_MetaData), Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_TargetClassHash_MetaData) };
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::PropPointers[] = {
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_TargetClassType,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_TargetUEClassBase,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_AllocationSpace,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_AllocateCount,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewProp_CallParentIndex,
@@ -919,10 +919,10 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHCommandCreateAssi
 		{ FTIHMngObjComponentHeader::StaticStruct, Z_Construct_UScriptStruct_FTIHMngObjComponentHeader_Statics::NewStructOps, TEXT("TIHMngObjComponentHeader"), &Z_Registration_Info_UScriptStruct_TIHMngObjComponentHeader, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMngObjComponentHeader), 418840677U) },
 		{ FTIHMngObjPoolConfigureDatas::StaticStruct, Z_Construct_UScriptStruct_FTIHMngObjPoolConfigureDatas_Statics::NewStructOps, TEXT("TIHMngObjPoolConfigureDatas"), &Z_Registration_Info_UScriptStruct_TIHMngObjPoolConfigureDatas, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMngObjPoolConfigureDatas), 1452902779U) },
 		{ FTIHMngObjPoolConfigure::StaticStruct, Z_Construct_UScriptStruct_FTIHMngObjPoolConfigure_Statics::NewStructOps, TEXT("TIHMngObjPoolConfigure"), &Z_Registration_Info_UScriptStruct_TIHMngObjPoolConfigure, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMngObjPoolConfigure), 497407313U) },
-		{ FTIHNewAllocPrepareData::StaticStruct, Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewStructOps, TEXT("TIHNewAllocPrepareData"), &Z_Registration_Info_UScriptStruct_TIHNewAllocPrepareData, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHNewAllocPrepareData), 314283191U) },
+		{ FTIHNewAllocPrepareData::StaticStruct, Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewStructOps, TEXT("TIHNewAllocPrepareData"), &Z_Registration_Info_UScriptStruct_TIHNewAllocPrepareData, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHNewAllocPrepareData), 3937283054U) },
 		{ FTIHCommandCreateAssignPoolDatas::StaticStruct, Z_Construct_UScriptStruct_FTIHCommandCreateAssignPoolDatas_Statics::NewStructOps, TEXT("TIHCommandCreateAssignPoolDatas"), &Z_Registration_Info_UScriptStruct_TIHCommandCreateAssignPoolDatas, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHCommandCreateAssignPoolDatas), 1400191168U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_745975401(TEXT("/Script/TIHLibraryEntry"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_3634769238(TEXT("/Script/TIHLibraryEntry"),
 		nullptr, 0,
 		Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_Statics::ScriptStructInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_Statics::ScriptStructInfo),
 		nullptr, 0);

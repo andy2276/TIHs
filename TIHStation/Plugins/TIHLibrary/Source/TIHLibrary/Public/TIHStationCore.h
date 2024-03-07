@@ -443,17 +443,6 @@ struct FTIHManagedObjectComponentStatus
 
 
 #pragma endregion
-class FTIHCommandHelper
-{
-public:
-	void DictateCommandCreateNewAllocPrepare();
-	void DictateCommandCreateNewAllocOnGenerate();
-
-	void DictateCommandCreatePooling();
-	void DictateCommandCreateReject();
-
-	void DictateCommandLoadMesh();
-};
 
 
 #pragma endregion

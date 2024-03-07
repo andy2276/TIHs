@@ -112,7 +112,7 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 		}
 		++currPhaseCount;
 
-		if (currPrepareData.TargetClassType == (int8)ETIHMngObjHeaderProcotols::EActorBase)
+		if (currPrepareData.TargetUEClassBase == (int8)ETIHMngObjHeaderProcotols::EActorBase)
 		{
 			managedObjectFactory.GenerateUEActorBaseByPrepareData(currAllocateCount, currPrepareData.TargetClassHash, GenerateQues, isChildActor);
 			managedObjectFactory.GenerateManagedObjectByActorArray(GenerateQues, currPrepareData.CallParentIndex);
@@ -121,15 +121,15 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 
 			prepareQueue.PopFirst();
 		}
-		else if (currPrepareData.TargetClassType == (int8)ETIHMngObjHeaderProcotols::EWidgetBase)
+		else if (currPrepareData.TargetUEClassBase == (int8)ETIHMngObjHeaderProcotols::EWidgetBase)
 		{
 
 		}
-		else if (currPrepareData.TargetClassType == (int8)ETIHMngObjHeaderProcotols::ESystem)
+		else if (currPrepareData.TargetUEClassBase == (int8)ETIHMngObjHeaderProcotols::ESystem)
 		{
 
 		}
-		else if (currPrepareData.TargetClassType == (int8)ETIHMngObjHeaderProcotols::EAuto)
+		else if (currPrepareData.TargetUEClassBase == (int8)ETIHMngObjHeaderProcotols::EAuto)
 		{
 
 		}
@@ -358,7 +358,7 @@ FTIHMngObjPool* FTIHMngObjPoolCenter::GetManagedObjectPool(int8 objectPoolSpace)
 	return reValue;
 }
 
-void FTIHMngObjPoolCenter::RegistUEClassForGenerate(UClass* ucls)
+UEObjectHash64 FTIHMngObjPoolCenter::RegistUEClassForGenerate(UClass* ucls)
 {
 	check(ucls != nullptr);
 	FName uclassName = ucls->GetClassPathName().GetAssetName();
@@ -374,8 +374,10 @@ void FTIHMngObjPoolCenter::RegistUEClassForGenerate(UClass* ucls)
 		/*
 			중복! 에대한 로그를 넘긴다.
 		*/
+		
 		check(false);
 	}
+	return newHash;
 }
 
 

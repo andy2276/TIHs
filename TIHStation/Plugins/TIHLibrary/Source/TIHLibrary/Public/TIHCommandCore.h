@@ -1135,6 +1135,20 @@ public:
 
 	FTIHCommandDataBoard mBoard;
 };
+class FTIHCommandHelper
+{
+public:
+	void DictateCommandCreateNewAllocPrepare();
+	void DictateCommandCreateNewAllocOnGenerate();
+
+	void DictateCommandCreatePooling();
+	void DictateCommandCreateReject();
+
+	void DictateCommandLoadMesh();
+
+	
+};
+
 
 class FTIHCommander
 {

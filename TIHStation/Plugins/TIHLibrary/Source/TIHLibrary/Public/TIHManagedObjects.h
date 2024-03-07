@@ -1422,7 +1422,7 @@ struct FTIHNewAllocPrepareData
 	GENERATED_BODY()
 
 	UPROPERTY()
-	int8 TargetClassType;
+	int8 TargetUEClassBase;
 
 	UPROPERTY()
 	int8 AllocationSpace;
@@ -1440,7 +1440,7 @@ struct FTIHNewAllocPrepareData
 	int64 TargetClassHash;
 
 	FTIHNewAllocPrepareData() :
-		TargetClassType((int8)ETIHManagedObjectHeaderProtocols::ENotUse),
+		TargetUEClassBase((int8)ETIHManagedObjectHeaderProtocols::ENotUse),
 		AllocateCount(0),
 		CallParentIndex(-1),
 		TargetClassHash(FTIHMngObjGenerateHelper::GetSingle().GetNoRegistTag())
@@ -1450,14 +1450,14 @@ struct FTIHNewAllocPrepareData
 		int8 targetClassType, int16 allocateCount,
 		int16 callParentIndex, UEObjectHash64 targetClassHash
 	) :
-		TargetClassType(targetClassType),
+		TargetUEClassBase(targetClassType),
 		AllocateCount(allocateCount),
 		CallParentIndex(callParentIndex),
 		TargetClassHash(targetClassHash)
 	{
 	};
 	FTIHNewAllocPrepareData(const FTIHNewAllocPrepareData& rvalue):
-		TargetClassType(rvalue.TargetClassType),
+		TargetUEClassBase(rvalue.TargetUEClassBase),
 		AllocateCount(rvalue.AllocateCount),
 		CallParentIndex(rvalue.CallParentIndex),
 		TargetClassHash(rvalue.TargetClassHash),
@@ -1465,7 +1465,7 @@ struct FTIHNewAllocPrepareData
 	{
 	}
 	FTIHNewAllocPrepareData(FTIHNewAllocPrepareData&& rvalue) :
-		TargetClassType(rvalue.TargetClassType),
+		TargetUEClassBase(rvalue.TargetUEClassBase),
 		AllocateCount(rvalue.AllocateCount),
 		CallParentIndex(rvalue.CallParentIndex),
 		TargetClassHash(rvalue.TargetClassHash),
@@ -1478,7 +1478,7 @@ struct FTIHNewAllocPrepareData
 	}
 	FTIHNewAllocPrepareData& operator=(const FTIHNewAllocPrepareData& rvalue)
 	{
-		TargetClassType = rvalue.TargetClassType;
+		TargetUEClassBase = rvalue.TargetUEClassBase;
 		AllocateCount = rvalue.AllocateCount;
 		CallParentIndex = rvalue.CallParentIndex;
 		TargetClassHash = rvalue.TargetClassHash;
@@ -1489,7 +1489,7 @@ struct FTIHNewAllocPrepareData
 
 	FTIHNewAllocPrepareData& operator=(FTIHNewAllocPrepareData&& rvalue)
 	{
-		TargetClassType = std::move(rvalue.TargetClassType);
+		TargetUEClassBase = std::move(rvalue.TargetUEClassBase);
 		AllocationSpace = std::move(rvalue.AllocationSpace);
 		AllocateCount = std::move(rvalue.AllocateCount);
 		CallParentIndex = std::move(rvalue.CallParentIndex);
@@ -1503,7 +1503,7 @@ struct FTIHNewAllocPrepareData
 	{
 		bool reValue =
 			(
-				compareOther.TargetClassType == TargetClassType &&
+				compareOther.TargetUEClassBase == TargetUEClassBase &&
 				compareOther.AllocationSpace == AllocationSpace &&
 				compareOther.CallParentIndex == CallParentIndex &&
 				compareOther.TargetClassHash == TargetClassHash
@@ -1514,6 +1514,23 @@ struct FTIHNewAllocPrepareData
 	{
 		AddOrder = 1;
 	}
+
+	TIHMACRO_CHAINBUILDER_SETTER(TargetUEClassBase);
+	TIHMACRO_CHAINBUILDER_SETTER(AllocationSpace);
+	TIHMACRO_CHAINBUILDER_SETTER(AllocateCount);
+	TIHMACRO_CHAINBUILDER_SETTER(CallParentIndex);
+	TIHMACRO_CHAINBUILDER_SETTER(AddOrder);
+	TIHMACRO_CHAINBUILDER_SETTER(TargetClassHash);
+
+	/*
+		지금 고민되는게 이제 prepare 을 설정해야하는데, 이걸 유저 로컬에서 가져와야한다.
+		TargetClassType 어떤것 베이스인가. actorBase 인가 ui 인가 를 결정
+		AllocationSpace 어디에 놓을것인가. admin 인가 시스템인가 글로벌인가.
+		AllocateCount 그 양은 얼마나 되는가? 베이스에서 시작해야한다. 
+		AddOrder 순서인데 이게 뭐였지 일단 이거 관련된건 없음. 거의 padding인듯
+		TargetClassHash 그 타겟의 UClass 가 할당된곳을 찾아야한다.
+	*/
+
 };
 /*
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐
@@ -1784,7 +1801,7 @@ class FTIHMngObjFactory
 		매니지드 오브젝트는 무조건 tickable 로 만든다.
 	*/
 public:
-
+	
 	FTIHMngObjPool* GetCurrentManagedObjectPool()
 	{
 		return mCurrManagedObjectPool;
@@ -2164,7 +2181,7 @@ public:
 		SetManagedUObject(targetActor);
 		SetManagedObjectParent(parentIndex);
 		ChainManagedObjectHeader()
-			.SetProtocol((int8)ETIHManagedObjectHeaderProtocols::EActorBase)
+			.SetProtocol(TIHNameSpaceManagedObject::UEClassBaseType::ActorBase)
 			.SetManagedObjectState((int8)ETIHManagedObjectStepState::ENotUse);
 		SetAllocSpace(allocationSpace);
 		//mStateDetail.StartStateTracing();
@@ -2461,7 +2478,7 @@ public:
 
 	FTIHMngObjPool* GetManagedObjectPool(int8 objectPoolSpace);
 
-	void RegistUEClassForGenerate(UClass* ucls);
+	UEObjectHash64 RegistUEClassForGenerate(UClass* ucls);
 	void RegistFunctionForManagedComponentGeneration(TIHReturn64 managedCompHash, TFunction< FTIHMngObjLeaf* ()> func);
 	/*void RegistLinkUEClassAndManagedComponentByUEClass(UClass* ucls, const TArray<TIHReturn64>& tihHashs)
 	{

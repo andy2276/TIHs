@@ -479,7 +479,13 @@ class FTIHCmdMngObjAllocPoolReserve : public TTIHCommand<FTIHCmdMngObjAllocPoolR
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocPoolReserve);
 public:
-	FTIHCmdMngObjAllocPoolReserve() {};
+	FTIHCmdMngObjAllocPoolReserve()
+	{
+		mCmdHeader.SetProtocol(TIHNameSpaceCommandType::HeaderProtocol::ManagedObjectType)
+			.SetProtocolOption(TIHNameSpaceCommandType::OptionManagedObject::PoolReserve);
+		mCmdMethod.SetCommandProcessingProtocol(TIHNameSpaceCommandType::MethodProcessingProtocol::UseStrategy)
+			.SetCommandProgressionProtocol(TIHNameSpaceCommandType::MethodProgessionProtocol::RunContinue);
+	};
 	virtual ~FTIHCmdMngObjAllocPoolReserve() {};
 };
 
@@ -489,7 +495,10 @@ class FTIHCmdMngObjAllocPrepareDatas : public TTIHCommand<FTIHCmdMngObjAllocPrep
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocPrepareDatas);
 public:
-	FTIHCmdMngObjAllocPrepareDatas() {};
+	FTIHCmdMngObjAllocPrepareDatas() 
+	{
+
+	};
 	virtual ~FTIHCmdMngObjAllocPrepareDatas() {};
 };
 
@@ -499,7 +508,10 @@ class FTIHCmdMngObjAllocOnGenerate : public TTIHCommand<FTIHCmdMngObjAllocOnGene
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMngObjAllocOnGenerate);
 public:
-	FTIHCmdMngObjAllocOnGenerate() {};
+	FTIHCmdMngObjAllocOnGenerate() 
+	{
+
+	};
 	virtual ~FTIHCmdMngObjAllocOnGenerate() {};
 };
 
@@ -519,12 +531,14 @@ public:
 	
 
 */
+USTRUCT()
+struct FTIHCmdStMeshPathListLoadByServerDatas
+{
+	GENERATED_BODY()
 
-
-
-
-
-class FTIHCmdStMeshPathListLoadByServer : public TTIHCommand<FTemplateStruct>
+	//	여기에 서버 요청에 대한 config 가 들어가야한다
+};
+class FTIHCmdStMeshPathListLoadByServer : public TTIHCommand<FTIHCmdStMeshPathListLoadByServerDatas>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshPathListLoadByServer);
 public:

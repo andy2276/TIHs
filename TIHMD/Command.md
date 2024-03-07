@@ -105,4 +105,8 @@ Create -> MngObj 로변경
 2. Validation
 + 
 3. Implementation
-+ 
+
+/*
+	FTIHCmdMngObjAllocPrepareDatas -> FTIHCmdMeshPoolSetConfigure -> FTIHCmdMngObjAllocOnGenerate ->
+
+*/

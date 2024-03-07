@@ -56,7 +56,6 @@
             }
           }
         ],
-        "currentTab": 1,
         "stacked": true
       }
     ],
@@ -123,7 +122,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "하우징설계.md",
+                "file": "Command.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -140,7 +139,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "하우징설계.md",
+                "file": "Command.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -163,7 +162,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "하우징설계.md"
+                "file": "Command.md"
               }
             }
           }
@@ -184,10 +183,10 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "c470e6323b670d53",
+  "active": "53cd03e9be452c01",
   "lastOpenFiles": [
-    "Command.md",
     "하우징설계.md",
+    "Command.md",
     "TIH Library.md",
     "Template/기능설계.md",
     "생각정리.md",
