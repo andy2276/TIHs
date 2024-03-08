@@ -16,9 +16,14 @@
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "TIHHousingPak",
+			"Name": "TIHLibraryEntry",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "TIHHousingPak",
+			"Type": "Runtime",
+			"LoadingPhase": "PostDefault"
 		}
 	],
 	"Plugins": [
