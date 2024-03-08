@@ -1380,7 +1380,7 @@ protected:
 	class FTIHMngObjPoolCenter* mPoolCenter;
 	class FTIHPathCenter* mPathCenter;
 
-	TMap <FString, FTIHPakInfra* > mPaks;
+	//TMap <FString, FTIHPakInfra* > mPaks;
 private:
 };
 

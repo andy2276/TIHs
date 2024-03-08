@@ -1,0 +1,8 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.TIHHousingPak.cpp.obj": [
+			"TIHHousingPak.cpp.obj"
+		]
+	}
+}
