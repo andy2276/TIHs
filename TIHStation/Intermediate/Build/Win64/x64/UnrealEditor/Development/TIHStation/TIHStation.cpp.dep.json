@@ -1,0 +1,14 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\source\\tihstation\\tihstation.cpp",
+        "ProvidedModule": "",
+        "PCH": "e:\\uegit\\unrealengine\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
+        "Includes": [
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\tihstation\\definitions.tihstation.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\source\\tihstation\\tihstation.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
