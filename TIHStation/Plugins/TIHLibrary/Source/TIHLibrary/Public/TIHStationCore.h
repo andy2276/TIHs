@@ -486,4 +486,6 @@ public:
 	virtual ~FTIHDefaultStation();
 
 	TIHMACRO_STATION_HELPER_LIFECYCLE_FUNCTIONS(FTIHDefaultStation);
+
 };
+

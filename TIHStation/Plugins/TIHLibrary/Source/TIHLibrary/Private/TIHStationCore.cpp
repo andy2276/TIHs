@@ -125,9 +125,6 @@ TIHReturn64 FTIHDefaultStation::PrepareStation()
 		로딩이 
 	*/
 
-	
-
-
 	FTIHState::SetManagedObjectPoolCenter(mPoolCenter);
 	FTIHMngObj::SetManagedObjectPoolCenter(mPoolCenter);
 

@@ -611,6 +611,22 @@ public:
 	virtual ~FTIHCmdStMeshModifyMeshes() {};
 };
 
+class FTIHCmdHelper
+{
+public:
 
+
+};
+
+
+/*
+## 필요한 다른 기능
+	커맨더들을 뭉쳐서 쓸수있는 곳
+	
+## 만들어야하는 커맨드
+	팩을 실행시키는 커맨드
+	prepareData | OnGenerate | Pooling 까지바로 되는 커맨드 
+
+*/
 
 

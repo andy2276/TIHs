@@ -1344,3 +1344,12 @@ protected:
 	FTIHStationBase* mTIHStation;
 	FTIHStationPolymorphInterface mStaticPolymorph;
 };
+
+class	FTIHPakInfra
+{
+public:
+
+private:
+	FTIHStationBase* mStationPtr;
+	FTIHStationPolymorphInterface mStationPolymorph;
+};

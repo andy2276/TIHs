@@ -18,14 +18,25 @@ class TIHLIBRARYENTRY_API UTIHGameInstance : public UGameInstance
 	
 public:
 	//FTIHDefaultStation* mTIHStation;
-
-
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> mTest;
 private:
 	FTIHDefaultStation* mTIHStation;
-	//	여기에 TIHStationCore 가 들어갈것이다.
-	//	빠른접근을 위해서 내부의 기능들을 저장해놓을것이다.
-	//	어차피 게임인스턴스는 무조건 1개만 존재할것이므로 중복을 생각하지 않아도 된다.
-	//	어차피 로컬유저가 서버로부터 데이터를 받는것으로 구현되므로 해당부분만 신경쓰면 된다.
+	/*
+		스테이션에 팩을 갈아끼는 기능이 있어야함.
+		팩인서트 같은 함수를 만들고 해당 함수가 호출이 되면 해당 팩을 생성하는 함수를 호출
+		어차피 그 팩은 에디터에서 호출하는걸로.
+
+		그리고 게임 팩을 인서트 하는 거는 언리얼 오브젝트로 만들어서 실행하는걸로하자.
+		그럼 순환 참조 비슷하게 될거같긴한데 그럼 해당 레벨로할까? 레벨의 시작에서 팩에 대한 정보를 들고오고
+		그 정보를 가진 게임오브젝트를 생성-> 그럼 그 게임 오브젝트에서 station 을 불러서 station 에 
+		자신이 가진 팩을 실행. 이럼 에디터상에서 만들어지기는 하는데, 
+		해당 레벨에서 스타트 함수에 해당 팩 스타터 언리얼오브젝트 생성. 
+		해당 언리얼 오브젝트의 인서트 팩실행
+		인서트 팩에는 station 에게 지금 자신이 가지고 있는 pack 을 전달하는역할. 그럼 인서터는 무조건 팩마다하나.
+
+	*/
+	
 
 	void Init() override;
 

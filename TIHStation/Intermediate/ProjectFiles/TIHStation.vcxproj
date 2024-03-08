@@ -428,120 +428,12 @@
     <None Include="..\..\Plugins\TIHPakBox\TIHHousingPak\TIHHousingPak.uplugin"/>
     <None Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Resources\Icon128.png"/>
     <None Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\TIHHousingPak.Build.cs"/>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseBuilder.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseBuilderPawn.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseBuildPlayerController.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseCommander.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseMatter.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseMouseComponent.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseNode.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseNodeLinkComponent.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHousePawn.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHousePlayerController.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseStuff.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseStuffArray.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseStuffChildsComponent.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseStuffProcessor.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseTag.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHouseUserProcessor.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHousingPak.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHousingPakProcessor.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHTempLibrary.cpp">
-      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
-      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseBuilder.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseBuilderPawn.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseBuildPlayerController.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseCommander.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseMatter.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseMouseComponent.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseNode.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseNodeLinkComponent.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousePawn.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousePlayerController.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseStuff.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseStuffArray.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseStuffChildsComponent.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseStuffProcessor.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseTag.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHouseUserProcessor.h"/>
     <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousingPak.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousingPakProcessor.h"/>
-    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHTempLibrary.h"/>
     <None Include="..\..\Source\TIHStation\TIHStation.Build.cs"/>
     <ClCompile Include="..\..\Source\TIHStation\TIHStation.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_2)</AdditionalIncludeDirectories>

@@ -1316,25 +1316,6 @@ public:
 	}
 	void SetCommandFactory(FTIHCommandFactory* cmdFactory);
 
-	//FTIHCommandBase* GenerateCommandByCommandHeader(const FTIHCommandHeader cmdHeader);
-
-	//FTIHCommandShareBoard& GetCommandShaderBoard()
-	//{
-	//	return *mShareBoard;
-	//}
-	//FTIHCommandResultBoard& GetCommandResultBoard()
-	//{
-	//	return *mResultBoard.Get();
-	//}
-	//FTIHCommandPathBoard& GetCommandPathBoard()
-	//{
-	//	return *mPathBoard;
-	//}
-	//FTIHMngObjPool& GetObjectPool()
-	//{
-	//	return *mGlobalObjectPool;
-	//}
-
 	FTIHCommander& GetCommander()
 	{
 		return *mCommander;
@@ -1364,7 +1345,11 @@ public:
 	{
 		return mTickTock.GetTick();
 	}
-
+	/*
+		스테이션에서 
+		애초에 다른 팩이 추가되면 그 팩에 있는 오브젝트에 접근을 해야하는데 어떻게 하지?
+		
+	*/
 	
 
 protected:
@@ -1395,6 +1380,7 @@ protected:
 	class FTIHMngObjPoolCenter* mPoolCenter;
 	class FTIHPathCenter* mPathCenter;
 
+	TMap <FString, FTIHPakInfra* > mPaks;
 private:
 };
 
@@ -1493,84 +1479,6 @@ public:
 	{
 		return 0;
 	}
-	//FTIHCommandFactory& GetCommandFactory()
-	//{
-	//	return *mCommandFactory;
-	//}
-	//void SetCommandFactory(FTIHCommandFactory* cmdFactory)
-	//{
-	//	SafeDeletePtr(mCommandFactory);
-	//	mCommandFactory = cmdFactory;
-	//}
-
-	////FTIHCommandBase* GenerateCommandByCommandHeader(const FTIHCommandHeader cmdHeader);
-
-	//FTIHCommandShareBoard& GetCommandShaderBoard()
-	//{
-	//	return *mShareBoard;
-	//}
-	//FTIHCommandResultBoard& GetCommandResultBoard()
-	//{
-	//	return *mResultBoard.Get();
-	//}
-	//FTIHCommandPathBoard& GetCommandPathBoard()
-	//{
-	//	return *mPathBoard;
-	//}
-	//FTIHMngObjPool& GetObjectPool()
-	//{
-	//	return *mGlobalObjectPool;
-	//}
-
-	//FTIHCommander& GetCommander()
-	//{
-	//	return *mCommander;
-	//}
-
-	//FTIHMngObjPoolCenter& GetManagedObjectPoolCenter()
-	//{
-	//	return *mObjectPoolCenter;
-	//}
-	//FTIHMngObjGenerateHelper& GetGenerateHelper()
-	//{
-	//	return *mMngObjGenerateHelper;
-	//}
-protected:
-	//FTIHNetwork* mNetwork;
-	///*!
-	//*	@brief 명령을 위한
-	//*	@detail
-	//*/
-	////FTIHManagedObjectPool* mGlobalObjectPool;
-	////FTIHManagedObjectPool* mLocalObjectPool;
-
-	//TUniquePtr<FTIHMngObjPool> mGlobalObjectPool;
-	//TUniquePtr<FTIHMngObjPool> mLocalObjectPool;
-
-	//TUniquePtr< FTIHMngObjPoolCenter> mObjectPoolCenter;
-
-	////FTIHCommandShareBoard mShareBoard;
-	////FTIHCommandResultBoard mResultBoard;
-	////FTIHCommandPathBoard mPathBoard;
-
-	//TUniquePtr<FTIHCommandShareBoard> mShareBoard;
-	//TUniquePtr<FTIHCommandResultBoard> mResultBoard;
-	//TUniquePtr<FTIHCommandPathBoard> mPathBoard;
-
-	////FTIHCommander mCommander;
-
-	//TUniquePtr<FTIHCommander> mCommander;
-
-	//int64 mTickTime;
-	//int64 mTickTimeRunning;
-	//int64 mTickTimeStarted;
-
-	//FTIHCommandFactory* mCommandFactory;
-
-	////	시발 이거 합칠까
-	//TUniquePtr<FTIHMngObjGenerateHelper> mMngObjGenerateHelper;
-	//TUniquePtr<FTIHSettingHelper> mSettingHelper;
-
 };
 
 
