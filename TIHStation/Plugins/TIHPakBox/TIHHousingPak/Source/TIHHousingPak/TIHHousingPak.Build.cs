@@ -26,10 +26,10 @@ public class TIHHousingPak : ModuleRules
 			new string[]
 			{
 				"Core",
-				"TIHLibraryEntry",
 				"InputCore",
 				"EnhancedInput",
-				"UMG"
+				"UMG",
+				"TIHLibrary",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
