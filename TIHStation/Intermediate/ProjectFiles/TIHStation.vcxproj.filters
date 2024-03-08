@@ -46,6 +46,9 @@
     <Filter Include="Plugins\TIHLibrary\Source\TIHLibrary\Private">
       <UniqueIdentifier>{13058E4D-012A-386A-BFCB-97437FAFC804}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHChildrenActorComponent.cpp">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHCommandCore.cpp">
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
     </ClCompile>
@@ -79,6 +82,9 @@
     <Filter Include="Plugins\TIHLibrary\Source\TIHLibrary\Public">
       <UniqueIdentifier>{EB8266E3-769F-3D5B-B5EF-13365F3A3ACD}</UniqueIdentifier>
     </Filter>
+    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHChildrenActorComponent.h">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHCommandCore.h">
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
     </ClInclude>

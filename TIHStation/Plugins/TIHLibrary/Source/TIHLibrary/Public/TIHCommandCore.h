@@ -1320,3 +1320,27 @@ private:
 
 	FTIHCommanderExtentionForExeCmdStrategy*	mStrategyExention;
 };
+
+class FTIHTickableScheduler : public FTickableGameObject
+{
+public:
+	void SetStation(FTIHStationBase* station)
+	{
+		mTIHStation = station;
+	}
+
+	void Tick(float DeltaTime) override;
+	TStatId GetStatId() const override
+	{
+		RETURN_QUICK_DECLARE_CYCLE_STAT(FTIHTickableScheduler, STATGROUP_Tickables);
+	}
+
+
+	bool IsTickable() const override
+	{
+		return true;
+	}
+protected:
+	FTIHStationBase* mTIHStation;
+	FTIHStationPolymorphInterface mStaticPolymorph;
+};

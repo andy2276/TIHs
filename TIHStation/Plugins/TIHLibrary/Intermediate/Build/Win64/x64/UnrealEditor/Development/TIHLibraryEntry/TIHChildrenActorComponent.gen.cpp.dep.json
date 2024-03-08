@@ -1,0 +1,15 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\intermediate\\build\\win64\\unrealeditor\\inc\\tihlibraryentry\\uht\\tihchildrenactorcomponent.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "e:\\uegit\\unrealengine\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
+        "Includes": [
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\tihlibraryentry\\definitions.tihlibraryentry.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\source\\tihlibrary\\public\\tihchildrenactorcomponent.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\intermediate\\build\\win64\\unrealeditor\\inc\\tihlibraryentry\\uht\\tihchildrenactorcomponent.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

@@ -1373,25 +1373,7 @@ protected:
 	*	@brief 명령을 위한
 	*	@detail
 	*/
-	//FTIHManagedObjectPool* mGlobalObjectPool;
-	//FTIHManagedObjectPool* mLocalObjectPool;
-
-	//TUniquePtr<FTIHMngObjPool> mGlobalObjectPool;
-	//TUniquePtr<FTIHMngObjPool> mLocalObjectPool;
-
-	//TUniquePtr< FTIHMngObjPoolCenter> mObjectPoolCenter;
-
-	//FTIHCommandShareBoard mShareBoard;
-	//FTIHCommandResultBoard mResultBoard;
-	//FTIHCommandPathBoard mPathBoard;
-
-	//TUniquePtr<FTIHCommandShareBoard> mShareBoard;
-	//TUniquePtr<FTIHCommandResultBoard> mResultBoard;
-	//TUniquePtr<FTIHCommandPathBoard> mPathBoard;
-
-	//FTIHCommander mCommander;
-
-	//TUniquePtr<FTIHCommander> mCommander;
+	
 
 	int64 mTickTime;
 	int64 mTickTimeRunning;

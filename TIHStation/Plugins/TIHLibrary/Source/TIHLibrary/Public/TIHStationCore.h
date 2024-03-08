@@ -316,7 +316,7 @@ public:
 *	@detail 
 */
 
-
+//	이거는 삭제 예정
 /*!
 *	@brief 
 *	@detail https://benui.ca/unreal/tickable-object/
@@ -365,7 +365,19 @@ private:
 										 여기 아래서 부터 다시한다
 =================================================================================================================================================
 */
+/*
+	이게 실시간으로 확인을 할거임
+		예를 들자면 지금 스테이션의 상태를 보고 tickable 을 실행해야할지 혹은 지금 mng 에 있는 오브젝트를 줄여야할지
 
+
+*/
+class FTIHStationIntellisense
+{
+public:
+
+private:
+
+};
 
 class FTIHSettingHelper
 {

@@ -666,3 +666,13 @@ bool FTIHCommandFunctorWrapperBase::IsValidFunctor()
 	}
 	return reValue;
 }
+
+void FTIHTickableScheduler::Tick(float DeltaTime)
+{
+	mTIHStation->UpdateTickTock();
+	/*
+		지금 작동시켜도 되는건지 확인하는 함수가 필요하다.
+	*/
+	mStaticPolymorph.CarryOutExecuteStation(TIHSTATION);
+}
+
