@@ -29,7 +29,7 @@ public class TIHHousingPak : ModuleRules
 				"InputCore",
 				"EnhancedInput",
 				"UMG",
-				"TIHLibrary",
+				"TIHLibraryEntry",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
