@@ -30,7 +30,7 @@ public:
 	{
 		AddChildActorClass(InClass, nullptr);
 	}
-	void AddChildActorClass(TSubclassOf<AActor> InClass, AActor* NewChildActorTemplate);
+	void AddChildActorClass(TSubclassOf<AActor> InClass, AActor* NewChildActorTemplate) {};
 	
 	TSubclassOf<AActor> GetChildActorClass(int32 index) const 
 	{ 
