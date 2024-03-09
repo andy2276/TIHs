@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Containers/Deque.h"
-//#include "TIHStationCoreDefines.generated.h"
+#include "TIHStationCoreDefines.generated.h"
 //--	----	----	----	----	----	----	----	----	----	----	----
 
 /*
@@ -1304,7 +1304,7 @@ public:
 private:
 	TIHTick32 mTickTime;
 };
-
+class ATIHPakBase;
 class FTIHStationBase
 {
 public:
@@ -1380,6 +1380,8 @@ protected:
 	class FTIHMngObjPoolCenter* mPoolCenter;
 	class FTIHPathCenter* mPathCenter;
 
+	TMap<FString, ATIHPakBase*> mPakBox;
+	class ATIHPakBase* mCurrPak;
 	//TMap <FString, FTIHPakInfra* > mPaks;
 private:
 };
@@ -1627,4 +1629,33 @@ private:
 
 	TMap<FString, int16> mPathTable;
 	TArray<FString> mPathArray;
+};
+//	차라리 레벨에 넣어놓자.
+//	station 은 만들어진 상태일거고
+//	
+//UCLASS(Blueprintable)
+//class ATIHPakBase : public AActor
+//{
+//	GENERATED_BODY()
+//
+//public:
+//	UFUNCTION(BlueprintCallable)
+//	void ConnectingStation() {};
+//
+//	UFUNCTION(BlueprintCallable)
+//	virtual void InsertThisPak() {};	//	팩을 낄때 사용. 사용하면 station을 콜하고 
+//	UFUNCTION(BlueprintCallable)
+//	virtual void DropThisPak() {};	//	팩을 뺄때 사용.
+//};
+
+
+class FTIHPakStaticPolymorphInterface
+{
+public:
+	template<typename TIHTemplateType>
+	void PreparePakCarryOut(TIHTemplateType* value)
+	{
+	
+	}
+
 };
