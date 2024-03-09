@@ -70,6 +70,9 @@
     <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHNetworks.cpp">
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHPakBase.cpp">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Private\TIHStationCore.cpp">
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Private</Filter>
     </ClCompile>
@@ -104,6 +107,9 @@
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHNetworks.h">
+      <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHPakBase.h">
       <Filter>Plugins\TIHLibrary\Source\TIHLibrary\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Plugins\TIHLibrary\Source\TIHLibrary\Public\TIHStationCore.h">
