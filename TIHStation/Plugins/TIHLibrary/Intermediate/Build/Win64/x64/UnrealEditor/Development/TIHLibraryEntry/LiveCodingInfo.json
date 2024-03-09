@@ -6,10 +6,8 @@
 			"TIHCommandCore.gen.cpp.obj",
 			"TIHCommands.gen.cpp.obj",
 			"TIHGameInstance.gen.cpp.obj",
-			"TIHLibraryEntry.init.gen.cpp.obj",
 			"TIHManagedObjects.gen.cpp.obj",
 			"TIHStationCore.gen.cpp.obj",
-			"TIHStationCoreDefines.gen.cpp.obj",
 			"TIHChildrenActorComponent.cpp.obj",
 			"TIHCommandCore.cpp.obj",
 			"TIHCommands.cpp.obj",
@@ -20,6 +18,7 @@
 			"TIHNetworks.cpp.obj",
 			"TIHStationCore.cpp.obj",
 			"TIHStrategies.cpp.obj",
+			"TIHLibraryEntry.init.gen.cpp.obj",
 			"TIHStationCoreDefines.cpp.obj"
 		]
 	}
