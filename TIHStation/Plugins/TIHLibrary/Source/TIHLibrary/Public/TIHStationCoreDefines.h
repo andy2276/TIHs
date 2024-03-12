@@ -553,103 +553,232 @@ enum class ETIHManagedObjectStepState : int16
 	EWaiting = 0b0000010000000001,		//	1025
 	ETermination = 0b0000010100000001,	//	1281
 };
-
+//
+//namespace TIHNameSpaceCommandType
+//{
+//	namespace HeaderProtocol
+//	{
+//		extern const int8 UnknownType;
+//		extern const int8 ManagedObjectType;
+//		extern const int8 MeshLoadType;
+//		extern const int8 DefaultMaxCount;
+//	};
+//	namespace OptionManagedObject
+//	{
+//		extern const int8 UnknownType;
+//		extern const int8 PoolCenterSetConfigure;
+//		extern const int8 PoolReserve;
+//		extern const int8 PrepareDatas;
+//		extern const int8 OnGenerate;
+//		extern const int8 DefaultMaxCount;
+//	};
+//	namespace OptionMeshLoad
+//	{
+//		extern const int8 UnknownType;
+//		extern const int8 MeshPoolSetConfigure;
+//		extern const int8 StMeshPathListLoadByServer;
+//		extern const int8 StMeshPathListLoadByConfigObject;
+//		extern const int8 StMeshPathListLoadBySpecial;
+//		extern const int8 StMeshesLoadBySlidingWindow;
+//		extern const int8 StMeshesLoadByList;
+//		extern const int8 StMeshesLoadAll;
+//		extern const int8 StMeshQuery;
+//		extern const int8 StMeshModifyMeshes;
+//		extern const int8 DefaultMaxCount;
+//	};
+//	namespace MethodProcessingProtocol
+//	{
+//		extern const int8 UnknownType;
+//		extern const int8 UseStrategy;
+//		extern const int8 UseDelegate;
+//		extern const int8 UseMultiThread;
+//		extern const int8 UseCommandSelfFunction;
+//		extern const int8 DefaultMaxCount;
+//	};
+//	namespace MethodProgessionProtocol
+//	{
+//		extern const int8 UnknownType;
+//		extern const int8 RunContinue;
+//		extern const int8 RunTickable;
+//		extern const int8 RunRepeate;
+//		extern const int8 RunAsyncDontCare;
+//		extern const int8 DefaultMaxCount;
+//	};
+//	namespace MethodResultBitMask
+//	{
+//		extern const int8 OnAsyncTask;
+//		extern const int8 ResetZero;
+//		extern const int8 OnLoop;
+//		extern const int8 OnNext;
+//		extern const int8 OnPopFront;
+//		extern const int8 OnPopBack;
+//		extern const int8 CallingCompleteFunction;
+//		extern const int8 CallingErrorFunction;
+//	}
+//};
+//namespace TIHNameSpaceManagedObject
+//{
+//	namespace AllocationSpaceValue
+//	{
+//		extern const int8 MaxObjectPoolSlotCount;
+//	}
+//	namespace AllocationSpaceType
+//	{
+//		extern const int8 UnknownSpace;
+//		extern const int8 AdminSpace;
+//		extern const int8 SystemSpace;
+//		extern const int8 GlobalSpace;
+//		extern const int8 SharedSpace;
+//		extern const int8 LocalSpace;
+//	}
+//	namespace UEClassBaseType
+//	{
+//		extern const int8 UnknownBase;
+//		extern const int8 ActorBase;
+//		extern const int8 WidgetBase;
+//		extern const int8 SystemBase;
+//		extern const int8 AnyObject;
+//	}
+//	namespace UEClassBaseType
+//	{
+//		extern const int8 UnknownBase;
+//		extern const int8 ActorBase;
+//		extern const int8 WidgetBase;
+//		extern const int8 SystemBase;
+//		extern const int8 AnyObject;
+//	}
+//}
+enum class ETIHManagedObjectStepState : int16
+{
+	ENotUse = 0b0000000000000000,		//	0
+	ETraceFail = 0b0000000000000001,	//	1
+	EAllocated = 0b0000000100000001,	//	257
+	EReady = 0b0000001000000001,		//	513
+	ERunning = 0b0000001100000001,		//	769
+	EWaiting = 0b0000010000000001,		//	1025
+	ETermination = 0b0000010100000001,	//	1281
+};
+namespace TIHNameSpaceCommon
+{
+	namespace QueryType
+	{
+		const int8 UnknownType = 0;
+		const int8 StartEnd = 1;
+		const int8 PerElement = 2;
+	}
+	namespace Common
+	{
+		namespace Int8s
+		{
+			const int8 MinValue = -127;
+			const int8 ErrorValue = -1;
+			const int8 UnknownValue= 0;
+			const int8 NotYetValue = 0;
+			const int8 ZeroValue = 0;
+			const int8 FalseValue = 0;
+			const int8 TrueValue = 1;
+			const int8 MaxValue = 127;
+		}
+	}
+}
 namespace TIHNameSpaceCommandType
 {
 	namespace HeaderProtocol
 	{
-		extern const int8 UnknownType;
-		extern const int8 ManagedObjectType;
-		extern const int8 MeshLoadType;
-		extern const int8 DefaultMaxCount;
+		const int8 UnknownType = 0;
+		const int8 ManagedObjectType = 1;
+		const int8 MeshLoadType = 2;
+		const int8 DefaultMaxCount = MeshLoadType + 1;
 	};
 	namespace OptionManagedObject
 	{
-		extern const int8 UnknownType;
-		extern const int8 PoolCenterSetConfigure;
-		extern const int8 PoolReserve;
-		extern const int8 PrepareDatas;
-		extern const int8 OnGenerate;
-		extern const int8 DefaultMaxCount;
-	};
+		const int8 UnknownType = 0;
+		const int8 PoolCenterSetConfigure = 1;
+		const int8 PoolReserve = 2;
+		const int8 PrepareDatas = 3;
+		const int8 OnGenerate = 4;
+		const int8 DefaultMaxCount = OnGenerate + 1;
+	}
 	namespace OptionMeshLoad
 	{
-		extern const int8 UnknownType;
-		extern const int8 MeshPoolSetConfigure;
-		extern const int8 StMeshPathListLoadByServer;
-		extern const int8 StMeshPathListLoadByConfigObject;
-		extern const int8 StMeshPathListLoadBySpecial;
-		extern const int8 StMeshesLoadBySlidingWindow;
-		extern const int8 StMeshesLoadByList;
-		extern const int8 StMeshesLoadAll;
-		extern const int8 StMeshQuery;
-		extern const int8 StMeshModifyMeshes;
-		extern const int8 DefaultMaxCount;
-	};
+		const int8 UnknownType = 0;
+		const int8 MeshPoolSetConfigure = UnknownType + 1;
+		const int8 StMeshPathListLoadByServer = MeshPoolSetConfigure + 1;
+		const int8 StMeshPathListLoadByConfigObject = StMeshPathListLoadByServer + 1;
+		const int8 StMeshPathListLoadBySpecial = StMeshPathListLoadByConfigObject + 1;
+		const int8 StMeshPathListLoadByImbeding = StMeshPathListLoadBySpecial + 1,
+		const int8 StMeshesLoadBySlidingWindow = StMeshPathListLoadByImbeding + 1;
+		const int8 StMeshesLoadByList = StMeshesLoadBySlidingWindow + 1;
+		const int8 StMeshesLoadAll = StMeshesLoadByList + 1;
+		const int8 StMeshQuery = StMeshesLoadAll + 1;
+		const int8 StMeshModifyMeshes = StMeshQuery + 1;
+		const int8 DefaultMaxCount = StMeshModifyMeshes + 1;
+	}
 	namespace MethodProcessingProtocol
 	{
-		extern const int8 UnknownType;
-		extern const int8 UseStrategy;
-		extern const int8 UseDelegate;
-		extern const int8 UseMultiThread;
-		extern const int8 UseCommandSelfFunction;
-		extern const int8 DefaultMaxCount;
-	};
+		const int8 UnknownType = 0;
+		const int8 UseStrategy = 1;
+		const int8 UseDelegate = 2;
+		const int8 UseMultiThread = 3;
+		const int8 UseCommandSelfFunction = 4;
+		const int8 DefaultMaxCount = UseCommandSelfFunction + 1;
+	}
 	namespace MethodProgessionProtocol
 	{
-		extern const int8 UnknownType;
-		extern const int8 RunContinue;
-		extern const int8 RunTickable;
-		extern const int8 RunRepeate;
-		extern const int8 RunAsyncDontCare;
-		extern const int8 DefaultMaxCount;
-	};
+		const int8 UnknownType = 0;
+		const int8 RunContinue = UnknownType + 1;
+		const int8 RunTickable = RunContinue + 1;
+		const int8 RunRepeate = RunTickable + 1;
+		const int8 RunAsyncDontCare = RunRepeate + 1;
+		const int8 DefaultMaxCount = RunAsyncDontCare + 1;
+	}
 	namespace MethodResultBitMask
 	{
-		extern const int8 OnAsyncTask;
-		extern const int8 ResetZero;
-		extern const int8 OnLoop;
-		extern const int8 OnNext;
-		extern const int8 OnPopFront;
-		extern const int8 OnPopBack;
-		extern const int8 CallingCompleteFunction;
-		extern const int8 CallingErrorFunction;
+		const int8 CallingErrorFunction = -2;
+		const int8 OnAsyncTask = -1;
+		const int8 ResetZero = 0;
+		const int8 OnLoop = 1 << 0;
+		const int8 OnNext = 1 << 1;
+		const int8 OnPopFront = 1 << 2;
+		const int8 OnPopBack = 1 << 3;
+		const int8 CallingCompleteFunction = 1 << 4;
 	}
 };
 namespace TIHNameSpaceManagedObject
 {
 	namespace AllocationSpaceValue
 	{
-		extern const int8 MaxObjectPoolSlotCount;
+		const int8 MaxObjectPoolSlotCount = 8;
 	}
 	namespace AllocationSpaceType
 	{
-		extern const int8 UnknownSpace;
-		extern const int8 AdminSpace;
-		extern const int8 SystemSpace;
-		extern const int8 GlobalSpace;
-		extern const int8 SharedSpace;
-		extern const int8 LocalSpace;
+		const int8 UnknownSpace = 0;
+		const int8 AdminSpace = 1;
+		const int8 SystemSpace = 2;
+		const int8 GlobalSpace = SystemSpace + 1;//3~10
+		const int8 SharedSpace = GlobalSpace + AllocationSpaceValue::MaxObjectPoolSlotCount;//11~18
+		const int8 LocalSpace = SharedSpace + AllocationSpaceValue::MaxObjectPoolSlotCount;//19~26
 	}
 	namespace UEClassBaseType
 	{
-		extern const int8 UnknownBase;
-		extern const int8 ActorBase;
-		extern const int8 WidgetBase;
-		extern const int8 SystemBase;
-		extern const int8 AnyObject;
+		const int8 UnknownBase = 0;
+		const int8 ActorBase = 1;
+		const int8 WidgetBase = 2;
+		const int8 SystemBase = 3;
+		const int8 AnyObject = 4;
 	}
-	namespace UEClassBaseType
-	{
-		extern const int8 UnknownBase;
-		extern const int8 ActorBase;
-		extern const int8 WidgetBase;
-		extern const int8 SystemBase;
-		extern const int8 AnyObject;
-	}
-
 }
-
+namespace TIHNameSpaceMesh
+{
+	namespace MeshPoolQueryStateBitMask
+	{
+		const int8 ResetZero = 0;
+		const int8 LoadedPath = 1 << 0;
+		const int8 LoadedMesh = 1 << 1;
+		const int8 HasCategory = 1 << 2;
+		const int8 HasTickTime = 1 << 3;
+	}
+}
 
 
 enum class ETIHResultDetailProtocols : int8
@@ -1285,6 +1414,7 @@ class FTIHCommandFactory;
 class FTIHCommandResultBoard;
 class FTIHCommandPathBoard;
 class FTIHPathCenter;
+class FTIHMeshPool;
 
 class FTIHTickTock
 {
@@ -1337,6 +1467,10 @@ public:
 	{
 		return mTickTock;
 	}
+	FTIHMeshPool& GetMeshPool()
+	{
+		return *mMeshPool;
+	}
 	void UpdateTickTock()
 	{
 		mTickTock.UpdataTick();
@@ -1382,6 +1516,8 @@ protected:
 
 	TMap<FString, ATIHPakBase*> mPakBox;
 	class ATIHPakBase* mCurrPak;
+
+	class FTIHMeshPool* mMeshPool;
 	//TMap <FString, FTIHPakInfra* > mPaks;
 private:
 };

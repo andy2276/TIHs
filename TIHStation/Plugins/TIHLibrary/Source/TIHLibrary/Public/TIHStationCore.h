@@ -328,7 +328,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual ETickableTickType GetTickableTickType() const override
 	{
-		return ETickableTickType::Always;
+		return ETickableTickType::Conditional;
 	}
 	virtual TStatId GetStatId() const override
 	{
@@ -344,6 +344,7 @@ public:
 	}
 private:
 	uint32 LastFrameNumberWeTicked = INDEX_NONE;
+
 };
 
 /*

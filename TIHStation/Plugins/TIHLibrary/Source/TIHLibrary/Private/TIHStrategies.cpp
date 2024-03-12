@@ -230,20 +230,24 @@ void FTIHMngObjPoolCenter::MergeSamePrepareDatas()
 
 TIHReturn64 FTIHStrategyCmdMngObj::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
+	using namespace TIHNameSpaceCommandType;
 	TIHReturn64 reValue = 0;
 	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
 
 	const FTIHCommandHeader& cmdHeader = cmdBase->GetCommandHeader();
 	const FTIHCommandMethod& cmdMethod = cmdBase->GetCommandMethod();
 
-	if (cmdHeader.ProtocolOption == 0)/*prepare*/
+	if (OptionManagedObject::PrepareDatas == cmdHeader.ProtocolOption)/*prepare*/
 	{
 		FTIHCmdMngObjAllocPrepareDatas* createNewAlloc = static_cast<FTIHCmdMngObjAllocPrepareDatas*>(cmdBase);
 
 		const FTIHCmdMngObjAllocPrepareDatasDatas& feature = createNewAlloc->GetCommandFeature();
 		poolCenter.EmplaceAddMngObjPrepareData(feature.TargetUEClassBase, feature.TargetClassHash, -1, feature.AllocateCount);
 	}
-	else if (cmdHeader.ProtocolOption == 1)
+	else if (OptionManagedObject::PoolCenterSetConfigure == cmdHeader.ProtocolOption)
+	{
+	}
+	else if(OptionManagedObject::OnGenerate == cmdHeader.ProtocolOption)
 	{
 		FTIHCmdMngObjAllocOnGenerate* createNewAlloc = static_cast<FTIHCmdMngObjAllocOnGenerate*>(cmdBase);
 
@@ -254,12 +258,8 @@ TIHReturn64 FTIHStrategyCmdMngObj::ExecuteCommandStaticPolymorph(FTIHCommandBase
 		{
 			poolCenter.GetManagedObjectPool(allocationSpace)->SetObjectPoolConfigure(onGenerateData);
 		}
-		
-		poolCenter.OnGeneratePipeLining(allocationSpace);
-	}
-	else if(cmdHeader.ProtocolOption == 2)
-	{
 
+		poolCenter.OnGeneratePipeLining(allocationSpace);
 
 	}
 
@@ -268,5 +268,47 @@ TIHReturn64 FTIHStrategyCmdMngObj::ExecuteCommandStaticPolymorph(FTIHCommandBase
 
 TIHReturn64 FTIHStrategyLoadMesh::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
-	return 0;
+	using namespace TIHNameSpaceCommandType;
+	TIHReturn64 reValue = 0;
+	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+	static FTIHMeshPool& meshPool = TIHSTATION.GetMeshPool();
+
+	const FTIHCommandHeader& cmdHeader = cmdBase->GetCommandHeader();
+	const FTIHCommandMethod& cmdMethod = cmdBase->GetCommandMethod();
+
+	if(TIHNameSpaceCommandType::OptionMeshLoad::MeshPoolSetConfigure == cmdHeader.ProtocolOption)
+	{
+		FTIHCmdMeshPoolSetConfigure* meshPoolSetConfig = static_cast<FTIHCmdMeshPoolSetConfigure*>(cmdBase);
+
+		const FTIHCmdMeshPoolSetConfigureDatas& setConfigDatas = meshPoolSetConfig->GetCommandFeature();
+		if(0 < setConfigDatas.MeshCategoryName.Len())
+		{
+			meshPool.PushBackCategory(setConfigDatas.MeshCategoryName);
+		}
+		meshPool.SetMeshPoolConfig(setConfigDatas.MeshPoolConfigure);
+		
+	}
+	else if(TIHNameSpaceCommandType::OptionMeshLoad::StMeshPathListLoadByServer == cmdHeader.ProtocolOption)
+	{
+		
+	}
+	else if (TIHNameSpaceCommandType::OptionMeshLoad::StMeshPathListLoadByImbeding == cmdHeader.ProtocolOption)
+	{
+		//	이건 간단하게 string 만 넣어놓자.
+		FTIHCmdStMeshPathListLoadByImbeding* castedCmd = static_cast<FTIHCmdStMeshPathListLoadByImbeding*>(cmdBase);
+		meshPool.PushBackCategory(castedCmd->GetCommandFeature());
+
+		ATIHMeshPoolPathLoadImbeding* imbeding = meshPool.GetMeshPoolPathLoadImbeding();
+		meshPool.PrepareStMeshPathsByList(imbeding->GetMeshPathList());
+	}
+	else if (TIHNameSpaceCommandType::OptionMeshLoad::StMeshPathListLoadByConfigObject == cmdHeader.ProtocolOption)
+	{
+
+	}
+	else if (TIHNameSpaceCommandType::OptionMeshLoad::StMeshPathListLoadBySpecial == cmdHeader.ProtocolOption)
+	{
+
+	}
+
+	return reValue;
 }

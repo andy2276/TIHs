@@ -46,7 +46,7 @@ union FUnionTIHCommandResult
 		int8 CommandResult0;
 		int8 CommandResult1;
 
-		int8 ProcessingResult0;//{NextCommand,PopFornt,ErrorCall}
+		int8 ProcessingResult0;
 		int8 ProcessingResult1;
 
 		int32 SimpleResult;
@@ -218,6 +218,7 @@ public:
 		return reValue;
 	}
 
+	
 protected:
 	//	이걸 왜 포인터로 했더라...
 	//	포인터 제거
@@ -1328,21 +1329,54 @@ public:
 	{
 		mTIHStation = station;
 	}
-
-	void Tick(float DeltaTime) override;
-	TStatId GetStatId() const override
+	virtual ETickableTickType GetTickableTickType() const override
+	{
+		return ETickableTickType::Conditional;
+	}
+	virtual void Tick(float DeltaTime) override;
+	virtual TStatId GetStatId() const override
 	{
 		RETURN_QUICK_DECLARE_CYCLE_STAT(FTIHTickableScheduler, STATGROUP_Tickables);
 	}
-
-
+	bool IsTickableWhenPaused() const
+	{
+		return mIsOnPause;
+	}
 	bool IsTickable() const override
 	{
-		return true;
+		return mIsOnTick;
 	}
+	void OnTick()
+	{
+		mIsOnTick = true;
+	}
+	void OffTick()
+	{
+		mIsOnTick = false;
+	}
+	void ToggleTick()
+	{
+		mIsOnTick = !mIsOnTick;
+	}
+
+	void OnPause()
+	{
+		mIsOnPause = true;
+	}
+	void OffPause()
+	{
+		mIsOnPause = false;
+	}
+	void TogglePause()
+	{
+		mIsOnPause = !mIsOnPause;
+	}
+
 protected:
 	FTIHStationBase* mTIHStation;
 	FTIHStationPolymorphInterface mStaticPolymorph;
+	bool mIsOnTick;
+	bool mIsOnPause;
 };
 
 class	FTIHPakInfra

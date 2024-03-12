@@ -497,9 +497,15 @@ class FTIHCmdMngObjAllocPrepareDatas : public TTIHCommand<FTIHCmdMngObjAllocPrep
 public:
 	FTIHCmdMngObjAllocPrepareDatas() 
 	{
-
+		mCmdHeader.SetProtocol(TIHNameSpaceCommandType::HeaderProtocol::ManagedObjectType)
+			.SetProtocolOption(TIHNameSpaceCommandType::OptionManagedObject::PrepareDatas);
+		mCmdMethod.SetCommandProcessingProtocol(TIHNameSpaceCommandType::MethodProcessingProtocol::UseStrategy)
+			.SetCommandProgressionProtocol(TIHNameSpaceCommandType::MethodProgessionProtocol::RunContinue);
 	};
 	virtual ~FTIHCmdMngObjAllocPrepareDatas() {};
+	/*
+		이걸 할 곳(예를들어서 팩) 에서 
+	*/
 };
 
 using FTIHCmdMngObjAllocOnGenerateDatas = FTIHMngObjPoolConfigureDatas;
@@ -510,21 +516,43 @@ class FTIHCmdMngObjAllocOnGenerate : public TTIHCommand<FTIHCmdMngObjAllocOnGene
 public:
 	FTIHCmdMngObjAllocOnGenerate() 
 	{
-
+		mCmdHeader.SetProtocol(TIHNameSpaceCommandType::HeaderProtocol::ManagedObjectType)
+			.SetProtocolOption(TIHNameSpaceCommandType::OptionManagedObject::OnGenerate);
+		mCmdMethod.SetCommandProcessingProtocol(TIHNameSpaceCommandType::MethodProcessingProtocol::UseStrategy)
+			.SetCommandProgressionProtocol(TIHNameSpaceCommandType::MethodProgessionProtocol::RunTickable);
 	};
 	virtual ~FTIHCmdMngObjAllocOnGenerate() {};
 };
 
-using FTIHCmdMeshPoolSetConfigureDatas = FTIHMeshPoolConfigure;
+USTRUCT()
+struct FTIHCmdMeshPoolSetConfigureDatas
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	
+	FTIHMeshPoolConfigure MeshPoolConfigure;
+
+	UPROPERTY()
+	FString MeshCategoryName;
+};
 
 //	stmesh
 class FTIHCmdMeshPoolSetConfigure : public TTIHCommand<FTIHCmdMeshPoolSetConfigureDatas>
 {
 	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdMeshPoolSetConfigure);
 public:
-	FTIHCmdMeshPoolSetConfigure() {};
+	FTIHCmdMeshPoolSetConfigure() 
+	{
+		//MeshPoolSetConfigure
+		mCmdHeader.SetProtocol(TIHNameSpaceCommandType::HeaderProtocol::MeshLoadType)
+			.SetProtocolOption(TIHNameSpaceCommandType::OptionMeshLoad::MeshPoolSetConfigure);
+		mCmdMethod.SetCommandProcessingProtocol(TIHNameSpaceCommandType::MethodProcessingProtocol::UseStrategy)
+			.SetCommandProgressionProtocol(TIHNameSpaceCommandType::MethodProgessionProtocol::RunContinue);
+	};
 	virtual ~FTIHCmdMeshPoolSetConfigure() {};
 };
+//	category 를 정하고 
 
 /*
 	여기에 관한 데이터는 UrlCenter 로 만들거나 PathCenter 로 만들자.
@@ -560,6 +588,14 @@ class FTIHCmdStMeshPathListLoadByConfigObject: public TTIHCommand<FTemplateStruc
 public:
 	FTIHCmdStMeshPathListLoadByConfigObject() {};
 	virtual ~FTIHCmdStMeshPathListLoadByConfigObject() {};
+};
+
+class FTIHCmdStMeshPathListLoadByImbeding : public TTIHCommand<FString>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshPathListLoadByImbeding);
+public:
+	FTIHCmdStMeshPathListLoadByImbeding() {};
+	virtual ~FTIHCmdStMeshPathListLoadByImbeding() {};
 };
 
 class FTIHCmdStMeshPathListLoadBySpecial: public TTIHCommand<FTemplateStruct>
@@ -614,8 +650,7 @@ public:
 class FTIHCmdHelper
 {
 public:
-
-
+	
 };
 
 

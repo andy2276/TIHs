@@ -669,11 +669,116 @@ TTIHMeshCapsule<UStaticMesh>* FTIHMeshPool::GenerateStaticMeshCapsules(const FSt
 	return capsule;
 }
 
-void FTIHMeshPool::PrepareStMeshDatasByList(const TArray<FString>& stMeshList)
+void FTIHMeshPool::InitMeshPool()
 {
+	mDefaultCategories.Add(0, TEXT("NotAllocCategory"));
+	mDefaultCategories.Add(1, TEXT("Default0"));
+	mDefaultCategories.Add(2, TEXT("Default1"));
+	mDefaultCategories.Add(3, TEXT("Default2"));
+	mDefaultCategories.Add(4, TEXT("Default3"));
+	mDefaultCategories.Add(5, TEXT("StMeshDefault"));
+	mDefaultCategories.Add(6, TEXT("SkMeshDefault"));
+}
+
+void FTIHMeshPool::PrepareStaticMeshPathsByCategory(const FString& cat, const FString& meshPath)
+{
+	using namespace TIHNameSpaceCommon;
+	using namespace TIHNameSpaceMesh;
+
+	//	애초에 들어가 있지 않는다.
+	if (mStagingStMeshTable.Contains(meshPath) == false)
+	{
+		//	여기에서 tick 과 path 가 채워진다.
+		int16 index = mStagingStMeshs.Add(MakeShareable(GenerateStaticMeshCapsules(meshPath)));
+		mStagingStMeshTable.Add(meshPath, index);
+	}
+	TSharedPtr< TTIHMeshCapsule<UStaticMesh>> curMeshCapsule = GetMeshCapsuleByMeshPath(meshPath);
+	int16 lastIndex = GetMeshCapsuleIndexByMeshPath(meshPath);
+	TIHTick32 curTick = curMeshCapsule->GetSelfTick();
+	if (LoadQueryByTick.Contains(curTick) == false)
+	{
+		LoadQueryByTick.Add
+		(
+			curTick,
+			FTIHQueryMeshPool
+			(
+				mMeshPoolConfig.CreateInnerQueryType,
+				TIHNameSpaceMesh::MeshPoolQueryStateBitMask::LoadedPath |
+				TIHNameSpaceMesh::MeshPoolQueryStateBitMask::HasTickTime
+			)
+		);
+
+		int8 queryType = LoadQueryByTick[curTick].InnerQueryType;
+		LoadQueryByTick[curTick].IntData.Add(lastIndex);
+		if (TIHNameSpaceCommon::QueryType::StartEnd == queryType)
+		{
+			LoadQueryByTick[curTick].IntData.Add(lastIndex);//[1]	//	지금 넣을것이 범위의 라스트가 된다.
+		}
+	}
+	else
+	{
+		int8 queryType = LoadQueryByTick[curTick].InnerQueryType;
+		if (TIHNameSpaceCommon::QueryType::StartEnd == queryType)
+		{
+			LoadQueryByTick[curTick].IntData[1] = lastIndex;	//	지금 넣을것이 범위의 라스트가 된다.
+		}
+		else if (TIHNameSpaceCommon::QueryType::PerElement == queryType)
+		{
+			LoadQueryByTick[curTick].IntData.Add(lastIndex);
+		}
+	}
+
+	if (LoadQueryByCategory.Contains(cat) == false)
+	{
+		LoadQueryByCategory.Add
+		(
+			cat,
+			FTIHQueryMeshPool
+			(
+				mMeshPoolConfig.CreateInnerQueryType,
+				TIHNameSpaceMesh::MeshPoolQueryStateBitMask::LoadedPath |
+				TIHNameSpaceMesh::MeshPoolQueryStateBitMask::HasTickTime
+			)
+		);
+		int8 queryType = LoadQueryByCategory[cat].InnerQueryType;
+
+		LoadQueryByCategory[cat].IntData.Add(lastIndex);
+		if (TIHNameSpaceCommon::QueryType::StartEnd == queryType)
+		{
+			LoadQueryByCategory[cat].IntData.Add(lastIndex);//[1]	//	지금 넣을것이 범위의 라스트가 된다.
+		}
+	}
+	else
+	{
+		int8 queryType = LoadQueryByCategory[cat].InnerQueryType;
+
+		if (TIHNameSpaceCommon::QueryType::StartEnd == queryType)
+		{
+			LoadQueryByCategory[cat].IntData[1] = lastIndex;
+		}
+		else if (TIHNameSpaceCommon::QueryType::PerElement == queryType)
+		{
+			LoadQueryByCategory[cat].IntData.Add(lastIndex);
+		}
+	}
+}
+
+void FTIHMeshPool::PrepareStMeshPathsByList(const TArray<FString>& stMeshList)
+{
+	if(mCategoryQueue.IsEmpty() == true)
+	{
+		mCategoryQueue.PushLast(mDefaultCategories[mMeshPoolConfig.CreateCategoryHash]);
+	}
+	const FString& topCat = mCategoryQueue.First();
+	
 	for(const FString& curPath : stMeshList)
 	{
-		PrepareStaticMeshDataByPath(curPath);
+		PrepareStaticMeshPathsByCategory(topCat, curPath);
+	}
+
+	if (0 < mMeshPoolConfig.CreateCategoryPop)
+	{
+		mCategoryQueue.PopFirst();
 	}
 }
 

@@ -53,6 +53,8 @@ class FTIHMngObjLeafSkMesh;
 class FTIHMngObjGenerateQueues;
 class FTIHMngObj;
 class FTIHMngObjFactory;
+
+class ATIHMeshPoolPathLoadImbeding;
 #pragma endregion Forward Declares
 /*
 ┃▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲┃
@@ -178,12 +180,12 @@ enum class ETIHSlidingWindowTypes : int8
 enum class ETIHSlidingWindowDoneStateTypes : int8
 {
 	ENotDone = 0,
-	EStuckEndDone =1 << 0,
-	EInfiniteEndDone = 1<<1,
+	EStuckEndDone = 1 << 0,
+	EInfiniteEndDone = 1 << 1,
 	ESlackEndDone = 1 << 2,
-	ECircleEndDone = 1 <<3,
-	EWhenRightAdd = 1 <<4,
-	EWhenLeftAdd = 1<< 5
+	ECircleEndDone = 1 << 3,
+	EWhenRightAdd = 1 << 4,
+	EWhenLeftAdd = 1 << 5
 };
 
 void DefalutRightOverFunction()
@@ -295,7 +297,7 @@ public:
 	bool IsSlidingWindowDone()
 	{
 		bool reValue = false;
-		if((int8)ETIHSlidingWindowDoneStateTypes::ENotDone < mSlidingWindowDoneState )
+		if ((int8)ETIHSlidingWindowDoneStateTypes::ENotDone < mSlidingWindowDoneState)
 		{
 			reValue = true;
 		}
@@ -303,7 +305,7 @@ public:
 	}
 	void SetRangeCount(int16 value)
 	{
-		if( mRangeCount < value)
+		if (mRangeCount < value)
 		{
 			mRangeCount = value;
 		}
@@ -317,7 +319,7 @@ public:
 	}
 	void SetEndIndex(int16 value)
 	{
-		if ( mRangeStartIndex < value)
+		if (mRangeStartIndex < value)
 		{
 			mRangeEndIndex = value;
 		}
@@ -332,23 +334,23 @@ public:
 	}
 	void AddSlidingWindow(int16 value)
 	{
-		
-			mSlidingPointer.Detail.LeftIndex += value;
-			mSlidingPointer.Detail.RightIndex += value;
-		
+
+		mSlidingPointer.Detail.LeftIndex += value;
+		mSlidingPointer.Detail.RightIndex += value;
+
 	}
 	void MinusSlidingWindow(int16 value)
 	{
-		
-			mSlidingPointer.Detail.LeftIndex -= value;
-			mSlidingPointer.Detail.RightIndex -= value;
-		
+
+		mSlidingPointer.Detail.LeftIndex -= value;
+		mSlidingPointer.Detail.RightIndex -= value;
+
 	}
 	FUnionTIHSlidingPointer GetCurSlidingPointer()
 	{
 		return mSlidingPointer;
 	}
-	void InitSlidingWindow(int8 slidingWindowType,int16 startIndex,int16 rangeCount)
+	void InitSlidingWindow(int8 slidingWindowType, int16 startIndex, int16 rangeCount)
 	{
 		mSlidingWindowType = slidingWindowType;
 		mRangeStartIndex = startIndex;
@@ -376,7 +378,7 @@ public:
 	bool IsDone()
 	{
 		bool reValue = true;
-		if(mSlidingWindowDoneState == (int8)ETIHSlidingWindowDoneStateTypes::ENotDone)
+		if (mSlidingWindowDoneState == (int8)ETIHSlidingWindowDoneStateTypes::ENotDone)
 		{
 			reValue = false;
 		}
@@ -386,7 +388,7 @@ private:
 	int8 mSlidingWindowType;
 	int8 mSlidingWindowDoneState;//{}
 	int16 mRangeCount;
-	
+
 	int16 mRangeStartIndex;
 	int16 mRangeEndIndex;
 
@@ -395,7 +397,7 @@ private:
 protected:
 	FUnionTIHSlidingPointer mSlidingPointer;
 
-	bool IsInIndexFunc(const int16 leftEndIndex,const int16 index,const int16 rightEndIndex)
+	bool IsInIndexFunc(const int16 leftEndIndex, const int16 index, const int16 rightEndIndex)
 	{
 		bool reValue = not(index < leftEndIndex || rightEndIndex < index);
 		return reValue;
@@ -409,7 +411,7 @@ public:
 	bool IsInIndex(int16 index) override
 	{
 		bool reValue = false;
-		if(IsInIndexFunc(mSlidingPointer.Detail.LeftIndex,index,mSlidingPointer.Detail.RightIndex) == true)
+		if (IsInIndexFunc(mSlidingPointer.Detail.LeftIndex, index, mSlidingPointer.Detail.RightIndex) == true)
 		{
 			reValue = true;
 		}
@@ -419,7 +421,7 @@ public:
 	int32 GetIndexArray(TArray<int16>& arr) override
 	{
 		int32 lastIndex = -1;
-		if( GetRangeCount() <= arr.Num())
+		if (GetRangeCount() <= arr.Num())
 		{
 			for (int16 i = mSlidingPointer.Detail.LeftIndex; i <= mSlidingPointer.Detail.RightIndex; ++i)
 			{
@@ -458,15 +460,15 @@ public:
 		int16 endRangeIndex = GetRangeEndIndex();
 		const int16 rangeCount = GetRangeCount();
 
-		int16 changeValue = value% GetRangeCount();
+		int16 changeValue = value % GetRangeCount();
 
 		//mSlidingPointer.Detail.LeftIndex += changeValue;
 		//mSlidingPointer.Detail.RightIndex += changeValue;
 		AddSlidingWindow(changeValue);
 
-		if(endRangeIndex < mSlidingPointer.Detail.RightIndex)
+		if (endRangeIndex < mSlidingPointer.Detail.RightIndex)
 		{
-			
+
 			mIsCircling = true;
 			mSlidingPointer.Detail.RightIndex = endRangeIndex;
 			int16 mainSlideCount = mSlidingPointer.Detail.RightIndex - mSlidingPointer.Detail.LeftIndex + 1;
@@ -475,7 +477,7 @@ public:
 			mDoublePointer.Detail.LeftIndex = GetRangeStartIndex();
 			mDoublePointer.Detail.RightIndex = mDoublePointer.Detail.LeftIndex + (subSlideCountAdd - 1);
 
-			
+
 			if (mSlidingPointer.Detail.RightIndex < mSlidingPointer.Detail.LeftIndex)
 			{
 				mIsCircling = false;
@@ -498,7 +500,7 @@ public:
 		//mSlidingPointer.Detail.RightIndex -= changeValue;
 		MinusSlidingWindow(changeValue);
 
-		if (mSlidingPointer.Detail.LeftIndex < startRangeIndex )
+		if (mSlidingPointer.Detail.LeftIndex < startRangeIndex)
 		{
 			mIsCircling = true;
 			mSlidingPointer.Detail.LeftIndex = startRangeIndex;
@@ -506,9 +508,9 @@ public:
 			int16 subSlideCountAdd = rangeCount - mainSlideCount;
 
 			mDoublePointer.Detail.RightIndex = GetRangeEndIndex();
-			mDoublePointer.Detail.LeftIndex = mDoublePointer.Detail.RightIndex - (subSlideCountAdd-1);
+			mDoublePointer.Detail.LeftIndex = mDoublePointer.Detail.RightIndex - (subSlideCountAdd - 1);
 
-			
+
 			if (mSlidingPointer.Detail.RightIndex < mSlidingPointer.Detail.LeftIndex)
 			{
 				mIsCircling = false;
@@ -523,7 +525,7 @@ public:
 	bool IsInIndex(int16 index) override
 	{
 		bool reValue = false;
-		if(IsInIndexFunc(mSlidingPointer.Detail.LeftIndex, index, mSlidingPointer.Detail.RightIndex) == true
+		if (IsInIndexFunc(mSlidingPointer.Detail.LeftIndex, index, mSlidingPointer.Detail.RightIndex) == true
 			|| IsInIndexFunc(mDoublePointer.Detail.LeftIndex, index, mDoublePointer.Detail.RightIndex) == true)
 		{
 			reValue = true;
@@ -534,7 +536,7 @@ public:
 	int32 GetIndexArray(TArray<int16>& arr) override
 	{
 		int32 outArrIndex = -1;
-		if(GetRangeCount() <= arr.Num())
+		if (GetRangeCount() <= arr.Num())
 		{
 			for (int16 i = mSlidingPointer.Detail.LeftIndex; i <= mSlidingPointer.Detail.RightIndex; ++i)
 			{
@@ -576,7 +578,7 @@ public:
 		:
 		mSelfTick(tick)
 	{}
-	TTIHMeshCapsule(TIHTick32 tick,const FString& path)
+	TTIHMeshCapsule(TIHTick32 tick, const FString& path)
 		:
 		mSelfTick(tick),
 		mMeshPathData(path)
@@ -603,7 +605,7 @@ public:
 	}
 	void SyncLoad()
 	{
-		if(mMeshPathData.IsValid() == true)
+		if (mMeshPathData.IsValid() == true)
 		{
 			mMeshData = mMeshPathData.LoadSynchronous();
 		}
@@ -621,7 +623,7 @@ private:
 	TIHTick32 mSelfTick;
 	TIHTemplateType* mMeshData;
 	TSoftObjectPtr<TIHTemplateType> mMeshPathData;
-}; 
+};
 
 USTRUCT()
 struct FTIHMeshPoolConfigure
@@ -641,8 +643,89 @@ struct FTIHMeshPoolConfigure
 	int8 PrepareLoadPathType;
 	UPROPERTY()
 	int16 PrepareLoadPathDataIndex;
+
+	UPROPERTY()
+	int8 CreateInnerQueryType;
+	UPROPERTY()
+	int8 CreateCategoryPop;
+	UPROPERTY()
+	int16 CreateCategoryHash;
+
+	FTIHMeshPoolConfigure()
+		:
+		SlidingWindowType((int8)ETIHSlidingWindowTypes::ESlackEnd),//	slidingWindowType 필요
+		SlidingWindowSplitType(TIHNameSpaceCommon::Common::Int8s::NotYetValue),
+		SlidingWindowSplitValue(TIHNameSpaceCommon::Common::Int8s::NotYetValue),
+		SlindingWindowDirection(1),
+		PrepareLoadPathType(TIHNameSpaceCommon::Common::Int8s::NotYetValue),
+		PrepareLoadPathDataIndex(TIHNameSpaceCommon::Common::Int8s::NotYetValue),
+		CreateInnerQueryType(TIHNameSpaceCommon::QueryType::UnknownType),
+		CreateCategoryPop(TIHNameSpaceCommon::Common::Int8s::TrueValue),
+		CreateCategoryHash(TIHNameSpaceCommon::Common::Int8s::ZeroValue)
+	{}
+	FTIHMeshPoolConfigure(const FTIHMeshPoolConfigure& copyCtor)
+		:
+		SlidingWindowType(copyCtor.SlidingWindowType),
+		SlidingWindowSplitType(copyCtor.SlidingWindowSplitType),
+		SlidingWindowSplitValue(copyCtor.SlidingWindowSplitValue),
+		SlindingWindowDirection(copyCtor.SlindingWindowDirection),
+		PrepareLoadPathType(copyCtor.PrepareLoadPathType),
+		PrepareLoadPathDataIndex(copyCtor.PrepareLoadPathDataIndex),
+		CreateInnerQueryType(copyCtor.CreateInnerQueryType),
+		CreateCategoryPop(copyCtor.CreateCategoryPop),
+		CreateCategoryHash(copyCtor.CreateCategoryHash)
+	{
+	}
+	FTIHMeshPoolConfigure(FTIHMeshPoolConfigure&& moveCtor)
+		:
+		SlidingWindowType(std::move(moveCtor.SlidingWindowType)),
+		SlidingWindowSplitType(std::move(moveCtor.SlidingWindowSplitType)),
+		SlidingWindowSplitValue(std::move(moveCtor.SlidingWindowSplitValue)),
+		SlindingWindowDirection(std::move(moveCtor.SlindingWindowDirection)),
+		PrepareLoadPathType(std::move(moveCtor.PrepareLoadPathType)),
+		PrepareLoadPathDataIndex(std::move(moveCtor.PrepareLoadPathDataIndex)),
+		CreateInnerQueryType(std::move(moveCtor.CreateInnerQueryType)),
+		CreateCategoryPop(std::move(moveCtor.CreateCategoryPop)),
+		CreateCategoryHash(std::move(moveCtor.CreateCategoryHash))
+	{
+	}
+	FTIHMeshPoolConfigure& operator=(const FTIHMeshPoolConfigure& copyOper)
+	{
+		SlidingWindowType = copyOper.SlidingWindowType;
+		SlidingWindowSplitType = copyOper.SlidingWindowSplitType;
+		SlidingWindowSplitValue = copyOper.SlidingWindowSplitValue;
+		SlindingWindowDirection = copyOper.SlindingWindowDirection;
+		PrepareLoadPathType = copyOper.PrepareLoadPathType;
+		PrepareLoadPathDataIndex = copyOper.PrepareLoadPathDataIndex;
+		CreateInnerQueryType = copyOper.CreateInnerQueryType;
+		CreateCategoryPop = copyOper.CreateCategoryPop;
+		CreateCategoryHash = copyOper.CreateCategoryHash;
+		return *this;
+	}
+	FTIHMeshPoolConfigure& operator=(FTIHMeshPoolConfigure&& moveOper)
+	{
+		SlidingWindowType = std::move(moveOper.SlidingWindowType);
+		SlidingWindowSplitType=std::move(moveOper.SlidingWindowSplitType);
+		SlidingWindowSplitValue=std::move(moveOper.SlidingWindowSplitValue);
+		SlindingWindowDirection=std::move(moveOper.SlindingWindowDirection);
+		PrepareLoadPathType=std::move(moveOper.PrepareLoadPathType);
+		PrepareLoadPathDataIndex=std::move(moveOper.PrepareLoadPathDataIndex);
+		CreateInnerQueryType=std::move(moveOper.CreateInnerQueryType);
+		CreateCategoryPop=std::move(moveOper.CreateCategoryPop);
+		CreateCategoryHash=std::move(moveOper.CreateCategoryHash);
+		return *this;
+	}
+
+	FTIHMeshPoolConfigure& SetCreateCategoryProperties(const FTIHMeshPoolConfigure& copyValue)
+	{
+		CreateInnerQueryType = copyValue.CreateInnerQueryType;
+		CreateCategoryPop = copyValue.CreateCategoryPop;
+		CreateCategoryHash = copyValue.CreateCategoryHash;
+	}
+
 };
 
+//	?? 이거 왜만들엇지?
 USTRUCT()
 struct FTIHMeshPoolCenterConfigure	//	이거는 결국 매쉬풀을 만들기위한 정보가 들어가야한다.
 {
@@ -726,6 +809,73 @@ struct FTIHMeshPoolCenterConfigure	//	이거는 결국 매쉬풀을 만들기위
 //	int16 mPrepareLoadPathDataIndex;
 //};
 
+
+struct FTIHQueryMeshPool
+{
+	int8 InnerQueryType; // {startEndIndex = 0,PerIndex = 1}
+	int8 LoadState;
+	int16 Padding0;
+	TArray<int16> IntData;
+
+	FTIHQueryMeshPool()
+		:
+		InnerQueryType(TIHNameSpaceCommon::QueryType::UnknownType),
+		LoadState(TIHNameSpaceMesh::MeshPoolQueryStateBitMask::ResetZero),
+		Padding0(0)
+	{
+		IntData.Reserve(8);
+	}
+
+	FTIHQueryMeshPool
+	(
+		int16 innerQueryType,
+		int8 loadState = 0,
+		int16 padding0 = 0
+	)
+		:
+		InnerQueryType(innerQueryType),
+		LoadState(loadState),
+		Padding0(padding0)
+	{
+	}
+
+	FTIHQueryMeshPool(const FTIHQueryMeshPool& copyCtor)
+		:
+		InnerQueryType(copyCtor.InnerQueryType),
+		LoadState(copyCtor.LoadState),
+		Padding0(copyCtor.Padding0),
+		IntData(copyCtor.IntData)
+	{
+	}
+	FTIHQueryMeshPool(FTIHQueryMeshPool&& moveCtor)
+		:
+		InnerQueryType(moveCtor.InnerQueryType),
+		LoadState(moveCtor.LoadState),
+		Padding0(moveCtor.Padding0),
+		IntData(moveCtor.IntData)
+	{
+	}
+	~FTIHQueryMeshPool()
+	{
+	}
+	FTIHQueryMeshPool& operator=(const FTIHQueryMeshPool& copyOper)
+	{
+		InnerQueryType = copyOper.InnerQueryType;
+		LoadState = copyOper.LoadState;
+		Padding0 = copyOper.Padding0;
+		IntData = copyOper.IntData;
+		return *this;
+	}
+	FTIHQueryMeshPool& operator=(FTIHQueryMeshPool&& moveOper)
+	{
+		InnerQueryType = std::move(moveOper.InnerQueryType);
+		LoadState = std::move(moveOper.LoadState);
+		Padding0 = std::move(moveOper.Padding0);
+		IntData = std::move(moveOper.IntData);
+		return *this;
+	}
+};
+
 class FTIHMeshPool
 {
 public:
@@ -736,23 +886,67 @@ public:
 	}
 	TTIHMeshCapsule<UStaticMesh>* GenerateStaticMeshCapsules(const FString& path);
 
+	void InitMeshPool();
+
 	void PrepareStaticMeshDataByPath(const FString& meshPath)
 	{
-
+		using namespace TIHNameSpaceCommon;
+		using namespace TIHNameSpaceMesh;
 		if (mStagingStMeshTable.Contains(meshPath) == false)
 		{
 			TTIHMeshCapsule<UStaticMesh>* capsule = GenerateStaticMeshCapsules(meshPath);
 			int16 index = mStagingStMeshs.Add(MakeShareable(capsule));
 			mStagingStMeshTable.Add(meshPath, index);
+			const TIHTick32 curTick = capsule->GetSelfTick();
+			if (LoadQueryByTick.Contains(curTick) == false)
+			{
+				LoadQueryByTick.Add(curTick,
+					FTIHQueryMeshPool
+					(
+						QueryType::StartEnd,
+						MeshPoolQueryStateBitMask::LoadedPath |
+						MeshPoolQueryStateBitMask::HasTickTime
+					)
+				);
+			}
 		}
 	}
+	TSharedPtr< TTIHMeshCapsule<UStaticMesh>> GetMeshCapsuleByMeshPath(const FString& meshPath)
+	{
+		TSharedPtr< TTIHMeshCapsule<UStaticMesh>> reValue = nullptr;
+		if (mStagingStMeshTable.Contains(meshPath) == true)
+		{
+			int16 findIndex = mStagingStMeshTable[meshPath];
+			reValue = mStagingStMeshs[findIndex];
+		}
+		return reValue;
+	}
 
-	void PrepareStMeshDatasByList(const TArray<FString>& stMeshList);//	이거도 스테이션의prepare 부분에서 해주자.
+	int16 GetMeshCapsuleIndexByMeshPath(const FString& meshPath)
+	{
+		int16 reValue = -1;
+		if (mStagingStMeshTable.Contains(meshPath) == true)
+		{
+			reValue = mStagingStMeshTable[meshPath];
+		}
+		return reValue;
+	}
+	void PushBackCategory(const FString& cat)
+	{
+		mCategoryQueue.PushLast(cat);
+	}
+	//	내가 로드 하고싶은 것에 대한 카테고리를 해당 팩이 알고있어야한다.
+	//	그리고 나서 해당 팩의 내용을 써줘야하는데, 이거는 단일이다.
+	//	그럼 리스트를 짜고 카테고리를 넣고 돌리면 된다.
+	void PrepareStaticMeshPathsByCategory(const FString& cat, const FString& meshPath);
+
+	void PrepareStMeshPathsByList(const TArray<FString>& stMeshList);//	이거도 스테이션의prepare 부분에서 해주자.
+
 	void PrepareStMeshDatasByLocal();
 	void PrepareStMeshDatasByServer();
 
 	void OnLoadStMeshsBySlidingWindow();
-	
+
 	UStaticMesh* GetLoadedStaticMeshByIndex(int16 index)
 	{
 		UStaticMesh* reValue = nullptr;
@@ -768,7 +962,7 @@ public:
 	UStaticMesh* GetLoadedStaticMeshByPath(const FString& meshPath)
 	{
 		UStaticMesh* reValue = nullptr;
-		if(mStagingStMeshTable.Contains(meshPath) == true)
+		if (mStagingStMeshTable.Contains(meshPath) == true)
 		{
 			reValue = GetLoadedStaticMeshByIndex(mStagingStMeshTable[meshPath]);
 		}
@@ -778,7 +972,7 @@ public:
 	UStaticMesh* GetTryLoadedStaticMeshByPath(const FString& meshPath)
 	{
 		UStaticMesh* reValue = nullptr;
-		
+
 		if (mStagingStMeshTable.Contains(meshPath) == false)
 		{
 			PrepareStaticMeshDataByPath(meshPath);
@@ -789,42 +983,54 @@ public:
 
 
 	void GetPrepareSkeletalMeshByPath(const FString& meshPath);
+	void SetMeshPoolConfig(const FTIHMeshPoolConfigure& meshPoolConfig)
+	{
+		mMeshPoolConfig = meshPoolConfig;
+	}
+
 	FTIHMeshPoolConfigure& GetMeshPoolConfig()
 	{
 		return mMeshPoolConfig;
 	}
+	
 	/*
-		PrepareStMeshDatasByList 는 단순하게 리스트에서 메쉬캡슐을 로드하는 녀석이다.
-		PrepareStMeshDatasByConfiguParser 는 외부의 데이터를 읽어와서 메쉬캡슐을 로드하는 녀석이다.
-			이녀석은 로컬에서 자료를 저장해서 로드하는것임
-		PrepareStMeshDatasByServer 는 서버에서 불러와서 로드하는것이다.
-			이녀석은 외부에서 자료를 저장해서 로드하는것임
-		근데 모두 공통적으로 PrepareStMeshDatasByList 를 통해서만 캡슐의 제작이 가능하다.
-		즉 접근 통로가 직접이냐 하나를 거쳐가느냐이다.
-
-		GenerateMeshCapsules 는 직접적으로 캡슐을 만드는 녀석이다.
-		이녀석은 내부에 tick 을 불러오고 만드는데, 해당 틱은 관리에 사용이 되며 id 로 사용되는게 아니다.
-		그러므로 구지 외부로 호출할 필요가 없다. 근데도 32로 한이유는 내부에 저장할때 용량을 좀 줄이고싶어서.
-		그럼 이제 station 에 get
+		SetMeshPoolPathLoadImbeding 
+		GetMeshPoolPathLoadImbeding
+		는 자동화가 안된다. 직접 pak 에서 설정해줘야함.
 	*/
+	void SetMeshPoolPathLoadImbeding(ATIHMeshPoolPathLoadImbeding* imbeding)
+	{
+		SafeDeletePtr(mMeshPoolImbeding);
+		mMeshPoolImbeding = imbeding;
+	}
+
+	ATIHMeshPoolPathLoadImbeding* GetMeshPoolPathLoadImbeding()
+	{
+		ATIHMeshPoolPathLoadImbeding* reValue = nullptr;
+		if(mMeshPoolImbeding == nullptr)
+		{
+			mMeshPoolImbeding = new ATIHMeshPoolPathLoadImbeding;
+		}
+		reValue = mMeshPoolImbeding;
+		return mMeshPoolImbeding;
+	}
 
 private:
 	/*
 		1.  요청이 들어오면 그걸 전부 스테이징 테이블에 넣는다
 		2.	넣으면서 해당 경로를 저장해놓는다
-		3.	
+		3.
 	*/
+	TMap<int16, FString> mDefaultCategories;
 
-	struct InnerQuery
-	{
-		int16 InnerQueryType; // {}
-		int16 IntDataType;//{startEndIndex,PerIndex}
-		TArray<int16> IntData;
-	};
-
-	TMap<FString, int16> mStagingStMeshTable;
+	TDeque<FString> mCategoryQueue;
 	TArray< TSharedPtr< TTIHMeshCapsule<UStaticMesh>>> mStagingStMeshs;
-	
+	TMap<FString, int16> mStagingStMeshTable;//	특정 path 가 있는지 확인하는 곳
+	TMap<TIHTick32, FTIHQueryMeshPool> LoadQueryByTick;	//	틱으로 검색하는부분
+	TMap<FString, FTIHQueryMeshPool> LoadQueryByCategory;	//	category를 검색하는 부분
+
+	ATIHMeshPoolPathLoadImbeding* mMeshPoolImbeding;
+
 	TMap<FString, int16> mStagingSkMeshTable;
 	TArray< TSharedPtr<TTIHMeshCapsule<USkeletalMesh>>> mStagingSkMeshs;
 
@@ -837,13 +1043,13 @@ private:
 	/*
 		category 단위로 저장을 한다면
 			1. 키만알면 사실 load 하기 편하다.
-				그럼 staging 된것들만 
+				그럼 staging 된것들만
 	*/
 
 	TFunction<void()> mMeshLoadingDone;
 	/*
 		그니깐 지금 어떻게 하고 싶은가.
-		매쉬를 많이 로드해놓으면 그만큼 데이터를 많이 먹는다. 
+		매쉬를 많이 로드해놓으면 그만큼 데이터를 많이 먹는다.
 		그래서 스테이징 되어있는 것과 아닌것을 구분해야한다.
 		필요한 메쉬를 요청하면 그게 있는지 확인하고 올려주는데, 시간별로 쪼개서 해당 메쉬가 사용되는지
 		아닌지 확인해야한다.
@@ -853,13 +1059,40 @@ private:
 		즉 바로 찾게끔 메모리에 올려주는 녀석(메모리에 로드된걸 올려주는 녀석)
 		과 해당 메모리에 물체를 탐색하는 녀석이 필요하다.
 		그럼 TArray 로 전체를 탐색하는것이 필요할 거 같은데, 로드 된타이밍의 틱번호를 가져와야한다.
-	
+
 		이거를 스테이션에 넣어놓고
 		커맨더에서 해당 부분에 해당 녀석들의 path 들을 들고와라라고 명령을 내리고
 		load 는 tickable 이나 뭐 그런걸로 처리하는 커맨드도 만들고,
 		어디서 무엇을 해야하는지를 좀있다 쓰자
 	*/
 };
+UCLASS(Config = "Game")
+class UTIHMeshPoolConfigObject : public UObject
+{
+	GENERATED_BODY()
+public:
+
+	UPROPERTY(Config)
+	FString mMeshDefaultPath;
+
+	UPROPERTY(Config)
+	int32 mMeshPathCount;
+};
+
+
+class ATIHMeshPoolPathLoadImbeding 
+{
+public:
+	virtual void InitImbeding() {};
+	virtual const TArray<FString>& GetMeshPathList() { return mPathList; };
+	void PushBackPath(const FString& path)
+	{
+		mPathList.Add(path);
+	}
+protected:
+	TArray<FString> mPathList;
+};
+
 
 #pragma endregion Miscellaneous
 /*
@@ -882,7 +1115,7 @@ private:
 #pragma region Struct Implements
 /*
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐
-								ManagedObject Meta Infos 
+								ManagedObject Meta Infos
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
 USTRUCT()
@@ -955,7 +1188,7 @@ struct FTIHMngObjPoolConfigureDatas
 	FTIHMngObjPoolConfigureDatas& operator=(const FTIHMngObjPoolConfigureDatas& otherDatas)
 	{
 		//	WholeManagedObjectMaxCount
-		if(otherDatas.Option0 & 1 << 0 )
+		if (otherDatas.Option0 & 1 << 0)
 		{
 			WholeManagedObjectMaxCount = otherDatas.WholeManagedObjectMaxCount;
 		}
@@ -976,7 +1209,7 @@ struct FTIHMngObjPoolConfigureDatas
 			AllocationSpace = otherDatas.AllocationSpace;
 		}
 		//	Option0
-		if (otherDatas.Option0 < 0 )
+		if (otherDatas.Option0 < 0)
 		{
 			Option0 = otherDatas.Option0;
 		}
@@ -1121,7 +1354,7 @@ struct FTIHManagedObjectGenerateCompositeOutData
 
 		UESceneComponent = std::move(moveOper.UESceneComponent);
 		TIHManagedObject = std::move(moveOper.TIHManagedObject);
-		
+
 		moveOper.UESceneComponent = nullptr;
 		moveOper.TIHManagedObject = nullptr;
 		return *this;
@@ -1435,7 +1668,7 @@ struct FTIHNewAllocPrepareData
 
 	UPROPERTY()
 	int16 AddOrder;
-	
+
 	UPROPERTY()
 	int64 TargetClassHash;
 
@@ -1456,7 +1689,7 @@ struct FTIHNewAllocPrepareData
 		TargetClassHash(targetClassHash)
 	{
 	};
-	FTIHNewAllocPrepareData(const FTIHNewAllocPrepareData& rvalue):
+	FTIHNewAllocPrepareData(const FTIHNewAllocPrepareData& rvalue) :
 		TargetUEClassBase(rvalue.TargetUEClassBase),
 		AllocateCount(rvalue.AllocateCount),
 		CallParentIndex(rvalue.CallParentIndex),
@@ -1474,7 +1707,7 @@ struct FTIHNewAllocPrepareData
 	}
 	~FTIHNewAllocPrepareData()
 	{
-		
+
 	}
 	FTIHNewAllocPrepareData& operator=(const FTIHNewAllocPrepareData& rvalue)
 	{
@@ -1495,10 +1728,10 @@ struct FTIHNewAllocPrepareData
 		CallParentIndex = std::move(rvalue.CallParentIndex);
 		AddOrder = std::move(rvalue.AddOrder);
 		TargetClassHash = std::move(rvalue.TargetClassHash);
-		
+
 		return *this;
 	}
-	
+
 	bool IsSamePrepareData(const FTIHNewAllocPrepareData& compareOther)
 	{
 		bool reValue =
@@ -1526,7 +1759,7 @@ struct FTIHNewAllocPrepareData
 		지금 고민되는게 이제 prepare 을 설정해야하는데, 이걸 유저 로컬에서 가져와야한다.
 		TargetClassType 어떤것 베이스인가. actorBase 인가 ui 인가 를 결정
 		AllocationSpace 어디에 놓을것인가. admin 인가 시스템인가 글로벌인가.
-		AllocateCount 그 양은 얼마나 되는가? 베이스에서 시작해야한다. 
+		AllocateCount 그 양은 얼마나 되는가? 베이스에서 시작해야한다.
 		AddOrder 순서인데 이게 뭐였지 일단 이거 관련된건 없음. 거의 padding인듯
 		TargetClassHash 그 타겟의 UClass 가 할당된곳을 찾아야한다.
 	*/
@@ -1801,7 +2034,7 @@ class FTIHMngObjFactory
 		매니지드 오브젝트는 무조건 tickable 로 만든다.
 	*/
 public:
-	
+
 	FTIHMngObjPool* GetCurrentManagedObjectPool()
 	{
 		return mCurrManagedObjectPool;
@@ -1995,7 +2228,7 @@ public:
 	FTIHMngObjLeafSkMesh* TryGetLeafForSkMesh();
 	/*
 		그냥 결정하다
-		한번 물어봤으면 캐싱을 하자. 
+		한번 물어봤으면 캐싱을 하자.
 		그니깐 Query 를 할건데 컴포지트에서 리프들에게 물어볼거임. 해당 기능이 되는가?
 		그럼 query 를 좀더 상세히 해야함. 즉 처음에 물어보고 배치할때만 좀 버벅이면된다.
 
@@ -2027,7 +2260,7 @@ public:
 	{
 		return GetOwnerIndex();
 	}
-	
+
 	virtual void SetManagedSceneComponentAndCasting(USceneComponent* targetScene) = 0;
 	virtual USceneComponent* GetManagedSceneComponent()
 	{
@@ -2064,7 +2297,7 @@ public:
 	TIHTemplateType* GetManagedSceneComponentCastedScene()
 	{
 		return mCastedComponent;
-	}	
+	}
 	void PostLinkTargetImplement()
 	{
 	}
@@ -2218,7 +2451,7 @@ public:
 	{
 		return mManagedUEObjectHash;
 	}
-	
+
 	int16 QueryExistedCompositeFirstMatch(TIHHash64 clsHash)
 	{
 		int16 reValue = -1;
@@ -2238,7 +2471,7 @@ public:
 	TIHTemplateType* TryGetCastedLeaf(int16 compositeIndex)
 	{
 		TIHTemplateType* reValue = nullptr;
-		if(mCompositeArray.IsValidIndex(compositeIndex) == true)
+		if (mCompositeArray.IsValidIndex(compositeIndex) == true)
 		{
 			FTIHMngObjLeaf* leaf = mCompositeArray[compositeIndex]->TryGetLeafByHash(TIHTemplateType::TIHClassNameHash());
 			reValue = static_cast<TIHTemplateType*>(leaf);
@@ -2248,9 +2481,9 @@ public:
 
 private:
 	FTIHMngObjHeader mManagedObjectHeader;
-	UObject* mManagedUEObect;				
-	TIHHash64 mManagedUEObjectHash;			
-	
+	UObject* mManagedUEObect;
+	TIHHash64 mManagedUEObjectHash;
+
 	FTIHState mStateDetail;					//	interface	get
 
 	int16 mParentIndexInWholeArray;		//	-1 is rootManagedObject  
@@ -2294,14 +2527,14 @@ private:
 */
 class FTIHMngObjPool
 {
-/*
-		PoolingManagedObject 로 대표가 된다.
-		영역과 오브젝트 base, 그리고 연결된 오브젝트 해쉬를 넣어주면 지금 상태가 올바른
-		것만을 리턴한다
+	/*
+			PoolingManagedObject 로 대표가 된다.
+			영역과 오브젝트 base, 그리고 연결된 오브젝트 해쉬를 넣어주면 지금 상태가 올바른
+			것만을 리턴한다
 
-		내부에 좀 복잡하게 되어있지만 사용하기 위해서는 config 만을 설정해주면 된다.
-		그럼 내부에서 reserve 가 자동으로 이루어지고,
-*/
+			내부에 좀 복잡하게 되어있지만 사용하기 위해서는 config 만을 설정해주면 된다.
+			그럼 내부에서 reserve 가 자동으로 이루어지고,
+	*/
 public:
 
 	FTIHMngObjPool(FTIHMngObjPoolCenter& center)
@@ -2367,7 +2600,7 @@ public:
 	/*
 		개별 매니지드 오브젝트 가져오는 함수만들기
 		매니지드 오브젝트 상태확인을 바로하는 거 만들기
-	
+
 	*/
 
 	FTIHMngObj* GetMngObj(int16 index)
@@ -2484,7 +2717,7 @@ public:
 	{
 
 	}*/
-	
+
 	FTIHMngObjFactory& GetFactory();
 	void OnGeneratePipeLining(int8 allocationSpace);
 	void OnSetObjectPoolConfigure(const FTIHMngObjPoolConfigureDatas& data);
@@ -2494,7 +2727,7 @@ public:
 	const FTIHGenerateCandidateLeaves& GetTIHHashArrayByUEHash(UEObjectHash64 ueHash);
 	FTIHMngObjLeaf* GenerateManagedComponentByTIHHash(TIHObjectHash64 ueHash);
 	/*
-		
+
 	*/
 	FTIHMngObjPool* CreateManagedObjectPool(
 		int8 allocationSpace,

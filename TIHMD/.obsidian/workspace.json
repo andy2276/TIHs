@@ -8,48 +8,12 @@
         "type": "tabs",
         "children": [
           {
-            "id": "53cd03e9be452c01",
+            "id": "4adefb5e7acb7da5",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Command.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "c470e6323b670d53",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "하우징설계.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "13d5c8f8d8bfa4c9",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Template/기능설계.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "b3e373cc4e6c4b6a",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "앞으로 해야할것 기록.md",
+                "file": "HousingParser.md",
                 "mode": "source",
                 "source": false
               }
@@ -122,7 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Command.md",
+                "file": "HousingParser.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -139,7 +103,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Command.md",
+                "file": "HousingParser.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -162,7 +126,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Command.md"
+                "file": "HousingParser.md"
               }
             }
           }
@@ -183,20 +147,21 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "53cd03e9be452c01",
+  "active": "4adefb5e7acb7da5",
   "lastOpenFiles": [
-    "하우징설계.md",
+    "할일 정리.md",
+    "헬퍼만들어야할때.md",
+    "HousingParser.md",
+    "앞으로 해야할것 기록.md",
     "Command.md",
+    "하우징설계.md",
     "TIH Library.md",
     "Template/기능설계.md",
     "생각정리.md",
     "Template",
-    "앞으로 해야할것 기록.md",
     "무제 파일.md",
     "리프,커맨드,스트라테지 현황판.md",
     "구현해야하는 기능.md",
-    "헬퍼만들어야할때.md",
-    "할일 정리.md",
     "제작상황 확인.md",
     "구조.md",
     "설계/하우징 설계.md",
@@ -212,7 +177,6 @@
     "Ideas/MangagedObjectPipeline.md",
     "Ideas/GenerateManagedObjectByActor.md",
     "Ideas/CheckManagedObjectPool.md",
-    "DevelopLog/Logs/24-01_18.md",
     "Ideas",
     "TIH",
     "DevelopLog/Template",

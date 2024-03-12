@@ -28,7 +28,14 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<struct FTemplateStruc
 
 template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<struct FTIHCmdMngObjAllocPoolReserveDatas>();
 
-#define FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommands_h_537_GENERATED_BODY \
+#define FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommands_h_530_GENERATED_BODY \
+	friend struct Z_Construct_UScriptStruct_FTIHCmdMeshPoolSetConfigureDatas_Statics; \
+	TIHLIBRARYENTRY_API static class UScriptStruct* StaticStruct();
+
+
+template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<struct FTIHCmdMeshPoolSetConfigureDatas>();
+
+#define FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommands_h_564_GENERATED_BODY \
 	friend struct Z_Construct_UScriptStruct_FTIHCmdStMeshPathListLoadByServerDatas_Statics; \
 	TIHLIBRARYENTRY_API static class UScriptStruct* StaticStruct();
 

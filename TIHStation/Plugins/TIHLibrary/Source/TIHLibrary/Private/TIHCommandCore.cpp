@@ -26,6 +26,9 @@ TIHReturn64 FTIHCommander::ExecuteCommands()
 
 		const FTIHCommandMethod& cmdMethod = primitiveCmd->GetCommandMethod();
 
+		/*
+			커맨더를 처리한다.
+		*/
 		if (MethodProcessingProtocol::UseStrategy == cmdMethod.CommandProcessingProtocol)
 		{
 			cmdResult.WholeData = ExecuteCommandByCmdProtocolEnum(primitiveCmd);
@@ -46,11 +49,12 @@ TIHReturn64 FTIHCommander::ExecuteCommands()
 		{
 			cmdResult.WholeData = primitiveCmd->ExecuteCommandSelfFunction();
 		}
+
+
 		/*
 			simpleResult 가 뭐냐에 따라서 결과를 도출해냄
 		*/
 		cmdResult.WholeData = SequenceCommand(cmdResult.WholeData, primitiveCmd);
-
 
 		if (MethodResultBitMask::OnAsyncTask & cmdResult.ResultDetail.ProcessingResult0)
 		{
@@ -97,6 +101,7 @@ TIHReturn64 FTIHCommander::ExecuteCommands()
 			}
 		}
 	}//whileEnd
+
 	return cmdResult.WholeData;
 }
 
@@ -180,7 +185,7 @@ TIHReturn64 FTIHCommander::SequenceCommand(TIHReturn64 result, FTIHCommandBase* 
 {
 	using namespace TIHNameSpaceCommandType;
 	FUnionTIHCommandResult reValue;
-	reValue.WholeData = result;
+	reValue.WholeData = result;	//	특수한 경우가 아니고서야 이걸 0 으로해준다.보통은 method 로 처리한다. 이거는 한번생각 필요없는거같음
 	reValue.ResultDetail.ProcessingResult1 = 0;
 
 	const FTIHCommandMethod& cmdMethod = primitiveCmd->GetCommandMethod();
@@ -671,7 +676,8 @@ void FTIHTickableScheduler::Tick(float DeltaTime)
 {
 	mTIHStation->UpdateTickTock();
 	/*
-		지금 작동시켜도 되는건지 확인하는 함수가 필요하다.
+		여기를 한번 어떻게 할지 생각은 해보자. 
+		커맨더 리스트에서 이미 커맨더들을 처리한다. 그리고 나오는데, 나온 결과
 	*/
 	mStaticPolymorph.CarryOutExecuteStation(TIHSTATION);
 }

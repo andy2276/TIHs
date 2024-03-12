@@ -15,6 +15,14 @@ public:
 	// Sets default values for this actor's properties
 	ATIHPakBase();
 
+	UFUNCTION(BlueprintCallable)
+	void ConnectingStation() {};
+
+	UFUNCTION(BlueprintCallable)
+	virtual void InsertPak() {};
+
+	UFUNCTION(BlueprintCallable)
+	virtual void DropPak() {};
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
