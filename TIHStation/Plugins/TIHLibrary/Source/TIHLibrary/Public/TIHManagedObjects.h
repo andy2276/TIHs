@@ -1004,16 +1004,7 @@ public:
 		mMeshPoolImbeding = imbeding;
 	}
 
-	ATIHMeshPoolPathLoadImbeding* GetMeshPoolPathLoadImbeding()
-	{
-		ATIHMeshPoolPathLoadImbeding* reValue = nullptr;
-		if(mMeshPoolImbeding == nullptr)
-		{
-			mMeshPoolImbeding = new ATIHMeshPoolPathLoadImbeding;
-		}
-		reValue = mMeshPoolImbeding;
-		return mMeshPoolImbeding;
-	}
+	ATIHMeshPoolPathLoadImbeding* GetMeshPoolPathLoadImbeding();
 
 private:
 	/*

@@ -817,6 +817,17 @@ void FTIHMeshPool::OnLoadStMeshsBySlidingWindow()
 	}
 }
 
+ATIHMeshPoolPathLoadImbeding* FTIHMeshPool::GetMeshPoolPathLoadImbeding()
+{
+	ATIHMeshPoolPathLoadImbeding* reValue = nullptr;
+	if (mMeshPoolImbeding == nullptr)
+	{
+		mMeshPoolImbeding = new ATIHMeshPoolPathLoadImbeding;
+	}
+	reValue = mMeshPoolImbeding;
+	return mMeshPoolImbeding;
+}
+
 void FTIHSlidingWindowSlack::SlidingRight(int16 value)
 {
 	const int16 rangeStartIndex = GetRangeStartIndex();
