@@ -648,16 +648,16 @@ enum class ETIHManagedObjectStepState : int16
 //		extern const int8 AnyObject;
 //	}
 //}
-enum class ETIHManagedObjectStepState : int16
-{
-	ENotUse = 0b0000000000000000,		//	0
-	ETraceFail = 0b0000000000000001,	//	1
-	EAllocated = 0b0000000100000001,	//	257
-	EReady = 0b0000001000000001,		//	513
-	ERunning = 0b0000001100000001,		//	769
-	EWaiting = 0b0000010000000001,		//	1025
-	ETermination = 0b0000010100000001,	//	1281
-};
+//enum class ETIHManagedObjectStepState : int16
+//{
+//	ENotUse = 0b0000000000000000,		//	0
+//	ETraceFail = 0b0000000000000001,	//	1
+//	EAllocated = 0b0000000100000001,	//	257
+//	EReady = 0b0000001000000001,		//	513
+//	ERunning = 0b0000001100000001,		//	769
+//	EWaiting = 0b0000010000000001,		//	1025
+//	ETermination = 0b0000010100000001,	//	1281
+//};
 namespace TIHNameSpaceCommon
 {
 	namespace QueryType
@@ -706,7 +706,7 @@ namespace TIHNameSpaceCommandType
 		const int8 StMeshPathListLoadByServer = MeshPoolSetConfigure + 1;
 		const int8 StMeshPathListLoadByConfigObject = StMeshPathListLoadByServer + 1;
 		const int8 StMeshPathListLoadBySpecial = StMeshPathListLoadByConfigObject + 1;
-		const int8 StMeshPathListLoadByImbeding = StMeshPathListLoadBySpecial + 1,
+		const int8 StMeshPathListLoadByImbeding = StMeshPathListLoadBySpecial + 1;
 		const int8 StMeshesLoadBySlidingWindow = StMeshPathListLoadByImbeding + 1;
 		const int8 StMeshesLoadByList = StMeshesLoadBySlidingWindow + 1;
 		const int8 StMeshesLoadAll = StMeshesLoadByList + 1;
