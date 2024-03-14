@@ -146,7 +146,7 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 		targetPool->OnCompleteCreateNewAlloc();
 		break;
 	}
-
+	
 }
 
 void FTIHMngObjFactory::GenerateUEActorBaseByPrepareData(int16 allocount, UEObjectHash64 ueObjHash, FTIHMngObjGenerateQueues& generateQueues, bool isChild)
