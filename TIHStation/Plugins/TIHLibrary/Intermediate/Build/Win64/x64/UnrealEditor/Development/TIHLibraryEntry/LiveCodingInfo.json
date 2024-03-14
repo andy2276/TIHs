@@ -10,18 +10,18 @@
 			"TIHManagedObjects.gen.cpp.obj",
 			"TIHPakBase.gen.cpp.obj",
 			"TIHStationCore.gen.cpp.obj",
+			"TIHChildrenActorComponent.cpp.obj",
 			"TIHCommandCore.cpp.obj",
+			"TIHCommands.cpp.obj",
 			"TIHGameInstance.cpp.obj",
 			"TIHLibraryEntry.cpp.obj",
 			"TIHManagedObjectLeafs.cpp.obj",
-			"TIHManagedObjects.cpp.obj",
 			"TIHNetworks.cpp.obj",
-			"TIHStationCore.cpp.obj",
-			"TIHChildrenActorComponent.cpp.obj",
-			"TIHCommands.cpp.obj",
 			"TIHPakBase.cpp.obj",
+			"TIHStationCore.cpp.obj",
 			"TIHStationCoreDefines.cpp.obj",
-			"TIHStrategies.cpp.obj"
+			"TIHStrategies.cpp.obj",
+			"TIHManagedObjects.cpp.obj"
 		]
 	}
 }

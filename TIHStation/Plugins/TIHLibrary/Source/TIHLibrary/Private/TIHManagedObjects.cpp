@@ -159,7 +159,6 @@ void FTIHMngObjFactory::GenerateUEActorBaseByPrepareData(int16 allocount, UEObje
 
 	if (isChild == false)
 	{
-		UWidget
 		UWorld* spawnWorld = poolConfigu.SpawnSpace;
 		AActor* spawnOwner = poolConfigu.OwnerActor;
 		FTransform spawnTransform = poolConfigu.DefaultTransform;

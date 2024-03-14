@@ -51,6 +51,7 @@
 		/< type = 'stmesh' mesh = 'contents/stmesh/mesh.ueobject' loc = '12.0,15.5,10.0'  rot = '0,0,0' mat = 'contents/material/wood.mat' />
 	/< type = 'stmesh' mesh = 'contents/stmesh/mesh.ueobject' loc = '12.0,15.5,10.0'  rot = '0,0,0' mat = 'contents/material/wood.mat' />
 ## 시멘틱 종류
++ tag -> 특수한 역할 
 + type
 + path
 + loc == relloc
