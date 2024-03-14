@@ -257,6 +257,7 @@
 /I "Developer\PhysicsUtilities\Public"
 /I "..\Intermediate\Build\Win64\UnrealEditor\Inc\WidgetRegistration\UHT"
 /I "Developer\WidgetRegistration\Public"
+/I "E:\Projects_Rapid\Project\TIH\20231011\TIHStation\Plugins\TIHPakBox\TIHHousingPak\Intermediate\Build\Win64\UnrealEditor\Inc\TIHHousingPak\UHT"
 /I "E:\Projects_Rapid\Project\TIH\20231011\TIHStation\Plugins\TIHPakBox\TIHHousingPak\Source"
 /I "E:\Projects_Rapid\Project\TIH\20231011\TIHStation\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public"
 /I "..\Plugins\EnhancedInput\Intermediate\Build\Win64\UnrealEditor\Inc\EnhancedInput\UHT"

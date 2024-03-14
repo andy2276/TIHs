@@ -159,12 +159,13 @@ void FTIHMngObjFactory::GenerateUEActorBaseByPrepareData(int16 allocount, UEObje
 
 	if (isChild == false)
 	{
+		UWidget
 		UWorld* spawnWorld = poolConfigu.SpawnSpace;
 		AActor* spawnOwner = poolConfigu.OwnerActor;
 		FTransform spawnTransform = poolConfigu.DefaultTransform;
 		UClass* spawnClass = tagHelper.GetUEActorClassByUEHash(ueObjHash);//	GetUEActorByHash 를 넣어주자.
 
-		for (int16 addCount = 0; addCount < allocount; ++allocount)
+		for (int16 addCount = 0; addCount < allocount; ++addCount)
 		{
 			AActor* newActor = spawnWorld->SpawnActor(spawnClass, &spawnTransform);
 			ConvertPoolableActor(newActor);
@@ -565,7 +566,9 @@ void FTIHMngObjPool::OnChangeStateAllocateToReady()
 void FTIHMngObjPool::OnCompleteCreateNewAlloc()
 {
 	OnChangeStateAllocateToReady();
-
+	/*
+		0314 여기서 호출해주자.
+	*/
 }
 
 
@@ -602,6 +605,22 @@ const FTIHGenerateCandidateLeaves& FTIHMngObjGenerateHelper::GetCandidateForMana
 	{
 		return FTIHGenerateCandidateLeaves::gErrorReference;
 	}
+}
+
+void FTIHMngObj::SetManagedObjectParent(int16 parentIndex)
+{
+	static FTIHMngObjGenerateHelper& tagHelper = TIHSTATION.GetGenerateHelper();
+	mParentIndexInWholeArray = parentIndex;
+	//if (-1 < parentIndex)
+	//{
+	//	//mHashTable.Add(HasParent);
+	//	//GetParent()->HasChild
+	//}
+	//else
+	//{
+	//	//mHashTable.Add(Root);
+	//}
+
 }
 
 FTIHMngObjPool* FTIHMngObj::GetMyManagedPool()

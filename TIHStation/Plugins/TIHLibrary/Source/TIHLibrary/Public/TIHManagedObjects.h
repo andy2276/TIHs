@@ -188,6 +188,8 @@ enum class ETIHSlidingWindowDoneStateTypes : int8
 	EWhenLeftAdd = 1 << 5
 };
 
+
+
 void DefalutRightOverFunction()
 {
 
@@ -2382,20 +2384,24 @@ public:
 		GetManagedObjectHeader().ManagedObjectState;
 		mStateDetail.StartStateTracing();
 	}
-	void SetManagedObjectParent(int16 parentIndex)
+	void SetManagedObjectParent(int16 parentIndex);
+
+	void LinkManagedObjectParent(int16 parentIndex)
 	{
-		static FTIHMngObjGenerateHelper& tagHelper = FTIHMngObjGenerateHelper::GetSingle();
-		mParentIndexInWholeArray = parentIndex;
-		if (-1 < parentIndex)
-		{
-			//mHashTable.Add(HasParent);
-			//GetParent()->HasChild
-		}
-		else
-		{
-			//mHashTable.Add(Root);
-		}
+		SetManagedObjectParent(parentIndex);
 	}
+	void UnLinkManagedObjectParent()
+	{
+		/*
+			말하고 나면 머리가 멍해....
+			언링크 할때 주의할게 있나?
+		*/
+		mParentIndexInWholeArray = -1;
+	}
+
+
+	TArray<int16> GetChildMngObjIndices();
+
 	void SetAllocSpace(int8 allocationSpace)
 	{
 		mManagedObjectHeader.AllocationSpace = allocationSpace;
@@ -2408,7 +2414,7 @@ public:
 			.SetProtocol(TIHNameSpaceManagedObject::UEClassBaseType::ActorBase)
 			.SetManagedObjectState((int8)ETIHManagedObjectStepState::ENotUse);
 		SetAllocSpace(allocationSpace);
-		//mStateDetail.StartStateTracing();
+		
 	}
 	void UnionHashTable(const TSet<TIHHash64>& otherSet)
 	{
@@ -2667,6 +2673,9 @@ protected:
 	TMap<int8, TMap< TIHHash64, TDeque<int16>>> mManagedObjectStateReadyIndices;
 
 	FTIHMngObjGenerateQueues mTempDatasForNewAlloc;
+
+	//	0314
+	//TFunction<void()> 
 };
 /*
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐

@@ -613,6 +613,19 @@ public:
 	FTIHCmdStMeshesLoadBySlidingWindow() {};
 	virtual ~FTIHCmdStMeshesLoadBySlidingWindow() {};
 };
+class FTIHCmdStMeshesLoadByCategory : public TTIHCommand<FString>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdStMeshesLoadByCategory);
+public:
+	FTIHCmdStMeshesLoadByCategory() 
+	{
+		mCmdHeader.SetProtocol(TIHNameSpaceCommandType::HeaderProtocol::MeshLoadType)
+			.SetProtocolOption(TIHNameSpaceCommandType::OptionMeshLoad::StMeshesLoadByList);
+		mCmdMethod.SetCommandProcessingProtocol(TIHNameSpaceCommandType::MethodProcessingProtocol::UseStrategy)
+			.SetCommandProgressionProtocol(TIHNameSpaceCommandType::MethodProgessionProtocol::RunContinue);
+	};
+	virtual ~FTIHCmdStMeshesLoadByCategory() {};
+};
 
 class FTIHCmdStMeshesLoadByList : public TTIHCommand<FTemplateStruct>
 {

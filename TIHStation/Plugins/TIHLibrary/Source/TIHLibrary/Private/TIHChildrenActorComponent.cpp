@@ -2,6 +2,9 @@
 
 
 #include "TIHChildrenActorComponent.h"
+#include "Engine/World.h"
+#include "../../../../../../../Source/Runtime/Engine/Classes/Engine/DemoNetDriver.h"
+
 
 // Sets default values for this component's properties
 UTIHChildrenActorComponent::UTIHChildrenActorComponent()
@@ -21,13 +24,3 @@ void UTIHChildrenActorComponent::BeginPlay()
 	// ...
 	
 }
-
-
-// Called every frame
-void UTIHChildrenActorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-

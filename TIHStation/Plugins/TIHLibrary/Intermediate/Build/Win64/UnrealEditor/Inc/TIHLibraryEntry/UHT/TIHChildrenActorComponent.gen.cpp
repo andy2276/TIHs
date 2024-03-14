@@ -6,6 +6,7 @@
 
 #include "UObject/GeneratedCppIncludes.h"
 #include "TIHLibrary/Public/TIHChildrenActorComponent.h"
+#include "Serialization/ArchiveUObjectFromStructuredArchive.h"
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeTIHChildrenActorComponent() {}
 // Cross Module References
@@ -84,6 +85,16 @@ void EmptyLinkFunctionForGeneratedCodeTIHChildrenActorComponent() {}
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_mChildrenActorClassArray_MetaData[];
 #endif
 		static const UECodeGen_Private::FArrayPropertyParams NewProp_mChildrenActorClassArray;
+		static const UECodeGen_Private::FObjectPtrPropertyParams NewProp_ChildrenActorArray_Inner;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_ChildrenActorArray_MetaData[];
+#endif
+		static const UECodeGen_Private::FArrayPropertyParams NewProp_ChildrenActorArray;
+		static const UECodeGen_Private::FObjectPtrPropertyParams NewProp_ChildActorTemplatesArray_Inner;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_ChildActorTemplatesArray_MetaData[];
+#endif
+		static const UECodeGen_Private::FArrayPropertyParams NewProp_ChildActorTemplatesArray;
 		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UECodeGen_Private::FClassParams ClassParams;
@@ -110,16 +121,37 @@ void EmptyLinkFunctionForGeneratedCodeTIHChildrenActorComponent() {}
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_mChildrenActorClassArray_MetaData[] = {
 		{ "AllowPrivateAccess", "true" },
-		{ "Category", "ChildActorComponent" },
-		{ "ForceRebuildProperty", "ChildActorTemplate" },
+		{ "Category", "ChildrenActorComponent" },
 		{ "ModuleRelativePath", "Public/TIHChildrenActorComponent.h" },
 		{ "OnlyPlaceable", "" },
 	};
 #endif
 	const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_mChildrenActorClassArray = { "mChildrenActorClassArray", nullptr, (EPropertyFlags)0x0044000000000015, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UTIHChildrenActorComponent, mChildrenActorClassArray), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_mChildrenActorClassArray_MetaData), Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_mChildrenActorClassArray_MetaData) };
+	const UECodeGen_Private::FObjectPtrPropertyParams Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_ChildrenActorArray_Inner = { "ChildrenActorArray", nullptr, (EPropertyFlags)0x0004000000000000, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UClass_AActor_NoRegister, METADATA_PARAMS(0, nullptr) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_ChildrenActorArray_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "ChildrenActorComponent" },
+		{ "ModuleRelativePath", "Public/TIHChildrenActorComponent.h" },
+	};
+#endif
+	const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_ChildrenActorArray = { "ChildrenActorArray", nullptr, (EPropertyFlags)0x0044800000000014, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UTIHChildrenActorComponent, ChildrenActorArray), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_ChildrenActorArray_MetaData), Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_ChildrenActorArray_MetaData) };
+	const UECodeGen_Private::FObjectPtrPropertyParams Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_ChildActorTemplatesArray_Inner = { "ChildActorTemplatesArray", nullptr, (EPropertyFlags)0x0004000000020000, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UClass_AActor_NoRegister, METADATA_PARAMS(0, nullptr) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_ChildActorTemplatesArray_MetaData[] = {
+		{ "Category", "ChildrenActorComponent" },
+		{ "ModuleRelativePath", "Public/TIHChildrenActorComponent.h" },
+		{ "ShowInnerProperties", "" },
+	};
+#endif
+	const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_ChildActorTemplatesArray = { "ChildActorTemplatesArray", nullptr, (EPropertyFlags)0x0044000000030001, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UTIHChildrenActorComponent, ChildActorTemplatesArray), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_ChildActorTemplatesArray_MetaData), Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_ChildActorTemplatesArray_MetaData) };
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UTIHChildrenActorComponent_Statics::PropPointers[] = {
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_mChildrenActorClassArray_Inner,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_mChildrenActorClassArray,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_ChildrenActorArray_Inner,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_ChildrenActorArray,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_ChildActorTemplatesArray_Inner,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UTIHChildrenActorComponent_Statics::NewProp_ChildActorTemplatesArray,
 	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_UTIHChildrenActorComponent_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<UTIHChildrenActorComponent>::IsAbstract,
@@ -154,14 +186,15 @@ void EmptyLinkFunctionForGeneratedCodeTIHChildrenActorComponent() {}
 	}
 	DEFINE_VTABLE_PTR_HELPER_CTOR(UTIHChildrenActorComponent);
 	UTIHChildrenActorComponent::~UTIHChildrenActorComponent() {}
+	IMPLEMENT_FSTRUCTUREDARCHIVE_SERIALIZER(UTIHChildrenActorComponent)
 	struct Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHChildrenActorComponent_h_Statics
 	{
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHChildrenActorComponent_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_UTIHChildrenActorComponent, UTIHChildrenActorComponent::StaticClass, TEXT("UTIHChildrenActorComponent"), &Z_Registration_Info_UClass_UTIHChildrenActorComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UTIHChildrenActorComponent), 79090233U) },
+		{ Z_Construct_UClass_UTIHChildrenActorComponent, UTIHChildrenActorComponent::StaticClass, TEXT("UTIHChildrenActorComponent"), &Z_Registration_Info_UClass_UTIHChildrenActorComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UTIHChildrenActorComponent), 3933367530U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHChildrenActorComponent_h_510295389(TEXT("/Script/TIHLibraryEntry"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHChildrenActorComponent_h_3659826488(TEXT("/Script/TIHLibraryEntry"),
 		Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHChildrenActorComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHChildrenActorComponent_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

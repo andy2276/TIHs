@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "TIHPakBase.generated.h"
 
+class FTIHStationBase;
+
 UCLASS()
 class TIHLIBRARYENTRY_API ATIHPakBase : public AActor
 {
@@ -16,7 +18,7 @@ public:
 	ATIHPakBase();
 
 	UFUNCTION(BlueprintCallable)
-	void ConnectingStation() {};
+	void ConnectingStation();
 
 	UFUNCTION(BlueprintCallable)
 	virtual void InsertPak() {};
@@ -26,7 +28,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	FTIHStationBase* mStation;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

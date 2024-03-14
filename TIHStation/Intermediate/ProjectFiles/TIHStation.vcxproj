@@ -439,7 +439,13 @@
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHousingPakCore.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
+      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousingPak.h"/>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousingPakCore.h"/>
     <None Include="..\..\Source\TIHStation\TIHStation.Build.cs"/>
     <ClCompile Include="..\..\Source\TIHStation\TIHStation.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_2)</AdditionalIncludeDirectories>

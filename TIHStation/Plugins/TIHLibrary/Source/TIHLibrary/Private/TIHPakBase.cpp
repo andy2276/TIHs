@@ -1,13 +1,23 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
+// Fill out your copyright notice in the Description page of Project Settings
 #include "TIHPakBase.h"
+#include "TIHStationCore.h"
 
 // Sets default values
 ATIHPakBase::ATIHPakBase()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+}
+
+void ATIHPakBase::ConnectingStation()
+{
+	TIHReturn64 reValue = 0;
+	mStation = &TIHSTATION;
+
+	reValue = TIHSTATION.PrepareStation();
+	
+
 
 }
 

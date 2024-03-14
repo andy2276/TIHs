@@ -709,7 +709,8 @@ namespace TIHNameSpaceCommandType
 		const int8 StMeshPathListLoadByImbeding = StMeshPathListLoadBySpecial + 1;
 		const int8 StMeshesLoadBySlidingWindow = StMeshPathListLoadByImbeding + 1;
 		const int8 StMeshesLoadByList = StMeshesLoadBySlidingWindow + 1;
-		const int8 StMeshesLoadAll = StMeshesLoadByList + 1;
+		const int8 StMeshesLoadByCategory = StMeshesLoadByList + 1;
+		const int8 StMeshesLoadAll = StMeshesLoadByCategory + 1;
 		const int8 StMeshQuery = StMeshesLoadAll + 1;
 		const int8 StMeshModifyMeshes = StMeshQuery + 1;
 		const int8 DefaultMaxCount = StMeshModifyMeshes + 1;

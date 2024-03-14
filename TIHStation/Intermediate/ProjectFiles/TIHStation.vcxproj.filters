@@ -160,10 +160,16 @@
     <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHousingPak.cpp">
       <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHousingPakCore.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
     <Filter Include="Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public">
       <UniqueIdentifier>{1A985A8A-FBEC-38E5-A33A-63BDDB7D14C8}</UniqueIdentifier>
     </Filter>
     <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousingPak.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousingPakCore.h">
       <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
     </ClInclude>
     <Filter Include="Source\TIHStation">
