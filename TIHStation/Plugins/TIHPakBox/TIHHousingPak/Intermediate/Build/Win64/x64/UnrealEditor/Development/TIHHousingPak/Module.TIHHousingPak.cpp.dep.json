@@ -6,13 +6,15 @@
         "PCH": "e:\\uegit\\unrealengine\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
         "Includes": [
             "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\tihhousingpak\\definitions.tihhousingpak.h",
-            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\source\\tihhousingpak\\private\\tihhousingpak.cpp",
-            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\source\\tihhousingpak\\public\\tihhousingpak.h",
-            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\source\\tihhousingpak\\private\\tihhousingpakcore.cpp",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\unrealeditor\\inc\\tihhousingpak\\uht\\tihhousingpak.init.gen.cpp",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\unrealeditor\\inc\\tihhousingpak\\uht\\tihhousingpakcore.gen.cpp",
             "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\source\\tihhousingpak\\public\\tihhousingpakcore.h",
             "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\source\\tihlibrary\\public\\tihpakbase.h",
             "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihlibrary\\intermediate\\build\\win64\\unrealeditor\\inc\\tihlibraryentry\\uht\\tihpakbase.generated.h",
-            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\unrealeditor\\inc\\tihhousingpak\\uht\\tihhousingpakcore.generated.h"
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\unrealeditor\\inc\\tihhousingpak\\uht\\tihhousingpakcore.generated.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\source\\tihhousingpak\\private\\tihhousingpak.cpp",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\source\\tihhousingpak\\public\\tihhousingpak.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\source\\tihhousingpak\\private\\tihhousingpakcore.cpp"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

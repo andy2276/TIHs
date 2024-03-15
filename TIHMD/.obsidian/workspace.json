@@ -25,13 +25,14 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "childrenActorComponent.md",
+                "file": "HousingParser.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
         ],
+        "currentTab": 1,
         "stacked": true
       }
     ],
@@ -159,15 +160,15 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "4adefb5e7acb7da5",
+  "active": "54ef2f3e2619b0d0",
   "lastOpenFiles": [
+    "Command.md",
     "childrenActorComponent.md",
-    "HousingParser.md",
     "할일 정리.md",
     "헬퍼만들어야할때.md",
-    "앞으로 해야할것 기록.md",
-    "Command.md",
     "하우징설계.md",
+    "HousingParser.md",
+    "앞으로 해야할것 기록.md",
     "TIH Library.md",
     "Template/기능설계.md",
     "생각정리.md",

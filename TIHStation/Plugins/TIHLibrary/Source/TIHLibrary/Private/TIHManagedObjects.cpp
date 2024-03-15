@@ -11,7 +11,14 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 {
 	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
 	static FTIHMngObjFactory& managedObjectFactory = TIHSTATION.GetManagedObjectPoolCenter().GetFactory();
-
+	static FTIHTickTock& tickTock = TIHSTATION.GetTickTock();
+	if(mIsStartPipeLining == true)
+	{
+		mStartTick = tickTock.GetTick();
+		mIsStartPipeLining = false;
+		mGenStartCallBack.CheckCallable();
+		mGenStartCallBack();
+	}
 	managedObjectFactory.SetManagedObjectPool(targetPool);
 
 	const FTIHMngObjPoolConfigure& targetPoolConfig = targetPool->GetConfigure();
@@ -144,6 +151,8 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 		break;
 	case ETIHReturn32Semantic::Success:
 		targetPool->OnCompleteCreateNewAlloc();
+		mGenEndCallBack.CheckCallable();
+		mGenEndCallBack();
 		break;
 	}
 	
@@ -488,8 +497,13 @@ TIHReturn64 FTIHMngObjPool::ReserveWholeObjectPool(int16 maxCount)
 void FTIHMngObjPool::AddNewManagedObject(FTIHMngObj* newManagedObject)
 {
 	int16 addIndex = mWholeManagedObjects.Add(newManagedObject);
+	int8 allocSpaceIndex = newManagedObject->GetManagedObjectAlloactionSpace();
+
 	newManagedObject->SetSelfIndexInWholeArray(addIndex);
-}
+
+	newManagedObject->GetManagedUObject()->SetTIHData0(allocSpaceIndex);
+	newManagedObject->GetManagedUObject()->SetTIHData1(addIndex);
+};
 
 void FTIHMngObjPool::OnSortManagedStates()
 {
@@ -555,10 +569,6 @@ void FTIHMngObjPool::OnChangeStateAllocateToReady()
 		{
 			PushBackReadyMngObj(mngObj);
 		}
-		else
-		{
-
-		}
 	}
 }
 
@@ -568,6 +578,7 @@ void FTIHMngObjPool::OnCompleteCreateNewAlloc()
 	/*
 		0314 여기서 호출해주자.
 	*/
+
 }
 
 
@@ -622,6 +633,18 @@ void FTIHMngObj::SetManagedObjectParent(int16 parentIndex)
 
 }
 
+void FTIHMngObj::InitMngObj(AActor* targetActor, int16 parentIndex, int8 allocationSpace)
+{
+	static FTIHTickTock& genTick = TIHSTATION.GetTickTock();
+	SetGenerateTick(genTick.GetTick());
+	SetManagedUObject(targetActor);
+	SetManagedObjectParent(parentIndex);
+	ChainManagedObjectHeader()
+		.SetProtocol(TIHNameSpaceManagedObject::UEClassBaseType::ActorBase)
+		.SetManagedObjectState((int8)ETIHManagedObjectStepState::ENotUse);
+	SetAllocSpace(allocationSpace);
+}
+
 FTIHMngObjPool* FTIHMngObj::GetMyManagedPool()
 {
 	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
@@ -631,6 +654,14 @@ FTIHMngObjPool* FTIHMngObj::GetMyManagedPool()
 	check(reValue != nullptr);
 
 	return reValue;
+}
+
+void FTIHMngObj::SettingLeafTable()
+{
+	for(FTIHMngObjComposite* composite : mCompositeArray)
+	{
+		mHashTable.Union(composite->SettingLeafTable());
+	}
 }
 
 void FTIHMngObjComposite::AddLeaf(FTIHMngObjLeaf* leaf)
@@ -658,6 +689,7 @@ FTIHMngObj* FTIHMngObjComposite::GetOwnerManagedObject()
 	return FTIHMngObjPoolCenter::GetSingle().GetManagedObjectPool(GetManagedObjectComponentHeader().AllocationSpace)->GetWholeManagedObjectArray()[GetOwnerIndex()];
 	return nullptr;
 }
+
 
 FTIHMngObjLeafMovement* FTIHMngObjComposite::TryGetLeafForMovement()
 {

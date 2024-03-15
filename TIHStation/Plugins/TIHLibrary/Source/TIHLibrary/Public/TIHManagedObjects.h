@@ -2056,9 +2056,12 @@ public:
 
 	virtual void GenerateManagedObjectLeafArray(FTIHMngObjGenerateQueues& genereteQueues);
 private:
-
-
+	TIHTick32 mStartTick;
+	bool mIsStartPipeLining;
 	FTIHMngObjPool* mCurrManagedObjectPool;
+
+	TFunction<void()> mGenStartCallBack;
+	TFunction<void()> mGenEndCallBack;
 
 };
 /*
@@ -2213,6 +2216,13 @@ public:
 		{
 			reValue = mLeafMap[checkHash];
 		}
+		return reValue;
+	}
+	
+	const TSet<TIHHash64> SettingLeafTable()
+	{
+		TSet<TIHHash64> reValue;
+		mLeafMap.GetKeys(reValue);
 		return reValue;
 	}
 	FTIHMngObjLeafMovement* TryGetLeafForMovement();
@@ -2406,16 +2416,7 @@ public:
 	{
 		mManagedObjectHeader.AllocationSpace = allocationSpace;
 	}
-	void InitMngObj(AActor* targetActor, int16 parentIndex, int8 allocationSpace)
-	{
-		SetManagedUObject(targetActor);
-		SetManagedObjectParent(parentIndex);
-		ChainManagedObjectHeader()
-			.SetProtocol(TIHNameSpaceManagedObject::UEClassBaseType::ActorBase)
-			.SetManagedObjectState((int8)ETIHManagedObjectStepState::ENotUse);
-		SetAllocSpace(allocationSpace);
-		
-	}
+	void InitMngObj(AActor* targetActor, int16 parentIndex, int8 allocationSpace);
 	void UnionHashTable(const TSet<TIHHash64>& otherSet)
 	{
 		mHashTable.Union(otherSet);
@@ -2463,6 +2464,19 @@ public:
 		return reValue;
 	}
 
+	void SettingLeafTable();
+
+
+	bool QueryLeaf(TIHHash64 tihHash)
+	{
+		bool reValue = false;
+		if(mHashTable.Contains(tihHash) == true)
+		{
+			reValue = true;
+		}
+		return reValue;
+	}
+
 
 	template<typename TIHTemplateType>
 	TIHTemplateType* TryGetCastedLeaf(int16 compositeIndex)
@@ -2474,6 +2488,18 @@ public:
 			reValue = static_cast<TIHTemplateType*>(leaf);
 		}
 		return reValue;
+	}
+
+	void QueryLeafActorMove(int16 compositeIndex,const FTransform& transform);
+	void QueryLeafActorMoveRoot(const FTransform& transform);
+
+	void SetGenerateTick(TIHTick32 tick)
+	{
+		mGenerateTick = tick;
+	}
+	TIHTick32 GetGenerateTick() const
+	{
+		return mGenerateTick;
 	}
 
 private:
@@ -2488,6 +2514,8 @@ private:
 
 	TArray<FTIHMngObjComposite*> mCompositeArray;	//	add
 	TSet<TIHHash64> mHashTable;
+
+	TIHTick32 mGenerateTick;
 };
 FTIHMngObjPoolCenter* FTIHMngObj::gPoolCenter = nullptr;
 #pragma endregion Managed Object
