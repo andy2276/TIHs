@@ -46,10 +46,13 @@ void EmptyLinkFunctionForGeneratedCodeTIHGameInstance() {}
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UTIHGameInstance_Statics::Class_MetaDataParams[] = {
 #if !UE_BUILD_SHIPPING
-		{ "Comment", "/**\n * \n */" },
+		{ "Comment", "/**\n * to-do\n\x09\xec\x97\xac\xea\xb8\xb0\xec\x97\x90\xeb\x8b\xa4\xea\xb0\x80 \xec\xb4\x88\xea\xb8\xb0\xed\x99\x94 \xec\x8b\x9c\xec\xbc\x9c\xec\x95\xbc\xed\x95\x98\xeb\x8a\x94\xeb\x8d\xb0 \xed\x9d\xa0...\n */" },
 #endif
 		{ "IncludePath", "TIHGameInstance.h" },
 		{ "ModuleRelativePath", "Public/TIHGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "to-do\n       \xec\x97\xac\xea\xb8\xb0\xec\x97\x90\xeb\x8b\xa4\xea\xb0\x80 \xec\xb4\x88\xea\xb8\xb0\xed\x99\x94 \xec\x8b\x9c\xec\xbc\x9c\xec\x95\xbc\xed\x95\x98\xeb\x8a\x94\xeb\x8d\xb0 \xed\x9d\xa0..." },
+#endif
 	};
 #endif
 #if WITH_METADATA
@@ -107,9 +110,9 @@ void EmptyLinkFunctionForGeneratedCodeTIHGameInstance() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHGameInstance_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_UTIHGameInstance, UTIHGameInstance::StaticClass, TEXT("UTIHGameInstance"), &Z_Registration_Info_UClass_UTIHGameInstance, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UTIHGameInstance), 1137434766U) },
+		{ Z_Construct_UClass_UTIHGameInstance, UTIHGameInstance::StaticClass, TEXT("UTIHGameInstance"), &Z_Registration_Info_UClass_UTIHGameInstance, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UTIHGameInstance), 1438310253U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHGameInstance_h_1768547298(TEXT("/Script/TIHLibraryEntry"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHGameInstance_h_2918533154(TEXT("/Script/TIHLibraryEntry"),
 		Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHGameInstance_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHGameInstance_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

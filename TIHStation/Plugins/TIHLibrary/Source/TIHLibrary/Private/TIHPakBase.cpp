@@ -8,6 +8,8 @@ ATIHPakBase::ATIHPakBase()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+
+
 }
 
 void ATIHPakBase::ConnectingStation()
@@ -35,3 +37,17 @@ void ATIHPakBase::Tick(float DeltaTime)
 
 }
 
+ENGINE_API void ATIHPakBase::BeginDestroy()
+{
+	Super::BeginDestroy();
+	
+}
+
+void FTIHIntellisense::Tick(float DeltaTime)
+{
+	if (LastFrameNumberWeTicked != GFrameCounter)
+	{
+
+		LastFrameNumberWeTicked = GFrameCounter;
+	}
+}

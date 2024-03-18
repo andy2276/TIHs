@@ -583,7 +583,8 @@ public:
 	TTIHMeshCapsule(TIHTick32 tick, const FString& path)
 		:
 		mSelfTick(tick),
-		mMeshPathData(path)
+		mMeshPathData(path),
+		mMeshData(nullptr)
 	{}
 	void SetSelfTick(TIHTick32 tick)
 	{
@@ -678,7 +679,7 @@ struct FTIHMeshPoolConfigure
 		CreateCategoryHash(copyCtor.CreateCategoryHash)
 	{
 	}
-	FTIHMeshPoolConfigure(FTIHMeshPoolConfigure&& moveCtor)
+	FTIHMeshPoolConfigure(FTIHMeshPoolConfigure&& moveCtor) noexcept
 		:
 		SlidingWindowType(std::move(moveCtor.SlidingWindowType)),
 		SlidingWindowSplitType(std::move(moveCtor.SlidingWindowSplitType)),
@@ -704,7 +705,7 @@ struct FTIHMeshPoolConfigure
 		CreateCategoryHash = copyOper.CreateCategoryHash;
 		return *this;
 	}
-	FTIHMeshPoolConfigure& operator=(FTIHMeshPoolConfigure&& moveOper)
+	FTIHMeshPoolConfigure& operator=(FTIHMeshPoolConfigure&& moveOper) noexcept
 	{
 		SlidingWindowType = std::move(moveOper.SlidingWindowType);
 		SlidingWindowSplitType=std::move(moveOper.SlidingWindowSplitType);
@@ -849,7 +850,7 @@ struct FTIHQueryMeshPool
 		IntData(copyCtor.IntData)
 	{
 	}
-	FTIHQueryMeshPool(FTIHQueryMeshPool&& moveCtor)
+	FTIHQueryMeshPool(FTIHQueryMeshPool&& moveCtor) noexcept
 		:
 		InnerQueryType(moveCtor.InnerQueryType),
 		LoadState(moveCtor.LoadState),
@@ -868,7 +869,7 @@ struct FTIHQueryMeshPool
 		IntData = copyOper.IntData;
 		return *this;
 	}
-	FTIHQueryMeshPool& operator=(FTIHQueryMeshPool&& moveOper)
+	FTIHQueryMeshPool& operator=(FTIHQueryMeshPool&& moveOper) noexcept
 	{
 		InnerQueryType = std::move(moveOper.InnerQueryType);
 		LoadState = std::move(moveOper.LoadState);
@@ -1031,13 +1032,6 @@ private:
 	TArray<int16> mCandidateArray;
 
 	FTIHMeshPoolConfigure mMeshPoolConfig;
-
-
-	/*
-		category 단위로 저장을 한다면
-			1. 키만알면 사실 load 하기 편하다.
-				그럼 staging 된것들만
-	*/
 
 	TFunction<void()> mMeshLoadingDone;
 	/*
@@ -1257,7 +1251,7 @@ struct TTIHMngObjTempDataPair
 		HashValueType(copyCtor.HashValueType), UEValueType(copyCtor.UEValueType)
 	{}
 
-	TTIHMngObjTempDataPair(TTIHMngObjTempDataPair&& moveCtor)
+	TTIHMngObjTempDataPair(TTIHMngObjTempDataPair&& moveCtor) noexcept
 		:
 		HashValueType(std::move(moveCtor.HashValueType)), UEValueType(std::move(moveCtor.UEValueType))
 	{}
@@ -1284,7 +1278,7 @@ struct FTIHGenerateCandidateLeaves
 	FTIHGenerateCandidateLeaves(const FTIHGenerateCandidateLeaves& copyCtor)
 		: GenerateTags(copyCtor.GenerateTags)
 	{}
-	FTIHGenerateCandidateLeaves(FTIHGenerateCandidateLeaves&& moveCtor)
+	FTIHGenerateCandidateLeaves(FTIHGenerateCandidateLeaves&& moveCtor) noexcept
 		:GenerateTags(moveCtor.GenerateTags)
 	{}
 
@@ -1300,7 +1294,7 @@ struct FTIHGenerateCandidateLeaves
 	{
 		GenerateTags = copyOper;
 	}
-	FTIHGenerateCandidateLeaves& operator=(FTIHGenerateCandidateLeaves&& moveOper)
+	FTIHGenerateCandidateLeaves& operator=(FTIHGenerateCandidateLeaves&& moveOper) noexcept
 	{
 		GenerateTags = std::move(moveOper.GenerateTags);
 	}
@@ -1328,7 +1322,7 @@ struct FTIHManagedObjectGenerateCompositeOutData
 		:
 		UESceneComponent(copyCtor.UESceneComponent), TIHManagedObject(copyCtor.TIHManagedObject)
 	{}
-	FTIHManagedObjectGenerateCompositeOutData(FTIHManagedObjectGenerateCompositeOutData&& moveCtor)
+	FTIHManagedObjectGenerateCompositeOutData(FTIHManagedObjectGenerateCompositeOutData&& moveCtor) noexcept
 		:
 		UESceneComponent(moveCtor.UESceneComponent), TIHManagedObject(moveCtor.TIHManagedObject)
 	{
@@ -1342,7 +1336,7 @@ struct FTIHManagedObjectGenerateCompositeOutData
 		TIHManagedObject = copyOper.TIHManagedObject;
 		return *this;
 	}
-	FTIHManagedObjectGenerateCompositeOutData& operator=(FTIHManagedObjectGenerateCompositeOutData&& moveOper)
+	FTIHManagedObjectGenerateCompositeOutData& operator=(FTIHManagedObjectGenerateCompositeOutData&& moveOper) noexcept
 	{
 
 		UESceneComponent = std::move(moveOper.UESceneComponent);
@@ -1406,7 +1400,7 @@ struct FTIHMngObjGenerateCompositeBFSData
 		TIHManagedObject(copyCtor.TIHManagedObject)
 	{
 	}
-	FTIHMngObjGenerateCompositeBFSData(FTIHMngObjGenerateCompositeBFSData&& moveCtor)
+	FTIHMngObjGenerateCompositeBFSData(FTIHMngObjGenerateCompositeBFSData&& moveCtor) noexcept
 	{
 		StepValue = std::move(moveCtor.StepValue);
 		ParentCompositeIndex = std::move(moveCtor.ParentCompositeIndex);
@@ -1423,7 +1417,7 @@ struct FTIHMngObjGenerateCompositeBFSData
 		return *this;
 	}
 
-	FTIHMngObjGenerateCompositeBFSData& operator=(FTIHMngObjGenerateCompositeBFSData&& moveValue)
+	FTIHMngObjGenerateCompositeBFSData& operator=(FTIHMngObjGenerateCompositeBFSData&& moveValue) noexcept
 	{
 		StepValue = std::move(moveValue.StepValue);
 		ParentCompositeIndex = std::move(moveValue.ParentCompositeIndex);
@@ -1490,6 +1484,11 @@ public:
 		}
 		return reValue;
 	}
+	/*
+		to-do
+		해쉬가 리턴되었는데 0 일경우에는 무시하는 코드를 넣거나, 관련된 값을 명시적으로 보여줘야한다.
+		무시하도록 코딩을 하자
+	*/
 	UEObjectHash64 GetUESceneComponentHashByUClass(UClass* ucls)
 	{
 		UEObjectHash64 reValue = 0;//	noRegist
@@ -1509,7 +1508,10 @@ public:
 		}
 		return reValue;
 	}
-
+	/*
+		to-do
+		로그를 띄워야한다. 겹침이 일어난것에 대한 로그를 띄우자.
+	*/
 	void RegistUEActorByUClass(UEObjectHash64 ueHash, UClass* ueActorUcls)
 	{
 		mRegistedActorByUEHash;
@@ -1528,7 +1530,8 @@ public:
 	}
 
 	/*
-		이거 이관해야함
+	
+		이거 이관해야하는데 어디로 이관해야하냐면 사실 이거 없애도 괜찮을듯, 오브젝트 풀 센터로 모두 옮겨갔거든.
 	*/
 	void RegistGenerateFunc(TIHHash64 tihHash, TFunction<FTIHMngObjLeaf* ()> genFunc)
 	{
@@ -1544,6 +1547,10 @@ public:
 			mRegistedGenerateFuncByTIHHash[tihHash] = genFunc;
 		}
 	}
+	/*
+			to-do
+			로그만들기
+	*/
 	FTIHMngObjLeaf* GenerateTIHManagedObjectLeaf(TIHHash64 tihHash)
 	{
 		FTIHMngObjLeaf* reValue = nullptr;
@@ -1554,7 +1561,7 @@ public:
 		else
 		{
 			/*
-
+				to-do
 				logging.noregistedFunc
 
 			*/
@@ -1749,6 +1756,8 @@ struct FTIHNewAllocPrepareData
 	TIHMACRO_CHAINBUILDER_SETTER(TargetClassHash);
 
 	/*
+		to-do
+		이 내용이 이것의 전체에 대한 설명인데, 이거 어디다가 정리해서 올리기
 		지금 고민되는게 이제 prepare 을 설정해야하는데, 이걸 유저 로컬에서 가져와야한다.
 		TargetClassType 어떤것 베이스인가. actorBase 인가 ui 인가 를 결정
 		AllocationSpace 어디에 놓을것인가. admin 인가 시스템인가 글로벌인가.
@@ -2024,6 +2033,7 @@ private:
 class FTIHMngObjFactory
 {
 	/*
+		memo
 		매니지드 오브젝트는 무조건 tickable 로 만든다.
 	*/
 public:
@@ -2070,7 +2080,6 @@ private:
 		즉 composite 를 상속받게 만들거나 혹은 음...아 시발 아니면 팩토리를 새롭게 만들까?
 		그게 더 빠를거 같기도 한데 어차피 시발 virtual 해도 이게 매번 불리는게 아니잖아. 그럼 배제 배제고릴라.
 		이거 custom component 를 만들면 하자.
-
 */
 
 
@@ -2082,9 +2091,7 @@ private:
 class FTIHMngObjComposite :public FTIHMngObjComponent
 {
 public:
-	/*
-		이녀석의 selfHash 는 그냥 컴포지트를 넘겨준다. 즉
-	*/
+	
 	/*
 
 		GetLeaf
@@ -2152,27 +2159,36 @@ public:
 	*/
 	void InitMngObjComposite(int8 allocationSpace, USceneComponent* targetScene, int16 parentIndex, int16 stepValue)
 	{
+		//	allocation space 설정
 		ChainManagedObjectComponentHeader()
 			.SetAllocationSpace(allocationSpace);
-
+		//	타겟 컴포넌트 설정
 		SetTargetUeSceneComponent(targetScene);
+		//	매니지드 컴포지트 부모 설정
 		SetManagedObjectCompositeParent(parentIndex);
+		//	매니지드 컴포지트 cibling 설정
 		SetManagedObjectCompositeStep(stepValue);
 	}
+	/*
+		to-do
+		부모를 가질때와 아닐대의 처리를 다르게 해야할경우에 여기서 처리해준다.
+		물론 지금은 의미없음.
+		부모를 설정하는데 컴포지트의 연관관계가 이루어질 경우 여기서 처리해주면 된다는거임. 언젠간 필요할거임
+	*/
 	void SetManagedObjectCompositeParent(int16 parent)
 	{
-		if (-1 < parent)
-		{
-			/*
-				hasParent
-			*/
-		}
-		else
-		{
-			/*
-				root
-			*/
-		}
+		//if (-1 < parent)
+		//{
+		//	/*
+		//		hasParent
+		//	*/
+		//}
+		//else
+		//{
+		//	/*
+		//		root
+		//	*/
+		//}
 		mParentIndex = parent;
 	}
 	int16 GetManagedObjectCompositeParent()
@@ -2193,22 +2209,15 @@ public:
 
 	}
 	/*
+		to-do
+		중요한건 query 해서 런타임상에 못찾더라도 넘어가야한다는거임.
+		if 지만 hash 로 찾는 방식이고 const 면 병렬 처리도 가능함.
 		1안 전략에서 수정
 			그럼  composite 든 mngObj 든 해당 기능을 try 로 가져올 수 있어야함.
 			근데 나는 composite 를 추천 근데 접근 인터페이스는 mng  에 있어야함.,
-
+			
 	*/
-	//template<typename TIHTemplateType>
-	//TIHTemplateType* TryGetCastedLeaf()
-	//{
-	//	TIHTemplateType* reValue = nullptr;
-	//	TIHHash64 checkHash = TIHTemplateType::TIHClassNameHash();
-	//	if(mLeafMap.Contains(checkHash) == true)
-	//	{
-	//		reValue = static_cast<TIHTemplateType*>(mLeafMap[checkHash]);
-	//	}
-	//	return reValue;
-	//}
+	
 	FTIHMngObjLeaf* TryGetLeafByHash(TIHHash64 checkHash)
 	{
 		FTIHMngObjLeaf* reValue = nullptr;
@@ -2225,16 +2234,21 @@ public:
 		mLeafMap.GetKeys(reValue);
 		return reValue;
 	}
+	/*
+		to-do
+		주요한 처리는 여기서 해준다.
+		기타 추가적인 처리를 해주는 녀석도 만들어야함. 그거는 인터페이스가 달라야함.
+	*/
 	FTIHMngObjLeafMovement* TryGetLeafForMovement();
 	FTIHMngObjLeafPretty* TryGetLeafForPretty();
 	FTIHMngObjLeafStMesh* TryGetLeafForStMesh();
 	FTIHMngObjLeafSkMesh* TryGetLeafForSkMesh();
 	/*
+		to-do
 		그냥 결정하다
 		한번 물어봤으면 캐싱을 하자.
 		그니깐 Query 를 할건데 컴포지트에서 리프들에게 물어볼거임. 해당 기능이 되는가?
 		그럼 query 를 좀더 상세히 해야함. 즉 처음에 물어보고 배치할때만 좀 버벅이면된다.
-
 	*/
 protected:
 	int16 mParentIndex;
@@ -2268,7 +2282,8 @@ public:
 	virtual USceneComponent* GetManagedSceneComponent()
 	{
 		/*
-			반드시 구현을 해야한다
+			to-do
+			반드시 구현을 해야한다 그러나 강제할 순 없고 그냥 TTIManagedObjectLeaf 여기에서 만들어준다.
 		*/
 		check(false);
 		return nullptr;
@@ -2403,8 +2418,8 @@ public:
 	void UnLinkManagedObjectParent()
 	{
 		/*
-			말하고 나면 머리가 멍해....
-			언링크 할때 주의할게 있나?
+			to-do
+			언링크시 추가해줘야하는 내용이 있다면 여기에...
 		*/
 		mParentIndexInWholeArray = -1;
 	}
@@ -2584,6 +2599,11 @@ public:
 	{
 		mManagedObjectPoolConfigure.PoolDatas.AllocationSpace = managedSpace;
 	}
+	/*
+		to-do
+		config 를 받아서 처리해야하는것은 처리하는 함수가 있어야함.
+		그리고 스트라테지에서 그걸로 바꿔줘야함.
+	*/
 
 	const FTIHMngObjPoolConfigure& GetConfigure()
 	{
@@ -2623,9 +2643,10 @@ public:
 	void OnErrorCallCreateNewAlloc(TIHReturn64 errCode);
 
 	/*
+		to-do
 		개별 매니지드 오브젝트 가져오는 함수만들기
 		매니지드 오브젝트 상태확인을 바로하는 거 만들기
-
+		-> 이건 완료함
 	*/
 
 	FTIHMngObj* GetMngObj(int16 index)
@@ -2662,31 +2683,41 @@ public:
 protected:
 	FTIHMngObjPoolCenter& mPoolCenter;
 
+	/*
+		to-do
+		reserve 가 반드시 필요하다.
+		-> 위에 config 를 받는곳에서 해줄건데, 따로 이것만 reserve 해주는 함수가 필요함.
+		-> 그러나 일단은 config 를 받아서 reserve 하는 것만 만들고 나중에 분할
+	*/
 	TArray< FTIHMngObj*> mWholeManagedObjects;
-	//	reserve 가 반드시 필요하다.
 
 	/*
 		reserve
 		merge
 		IsValid
+		to-do
+		need reserve
 	*/
-	FTIHUnionFind mUnionFind;//	need reserve
+	FTIHUnionFind mUnionFind;//	
 
 	/*
 		setWorldTarget
+		to-do
+		need setting ->config 에서!
 	*/
-	AActor* mGenerateTargetWorld;	//	need setting
+	AActor* mGenerateTargetWorld;	//	
 	/*
 		setWorldTarget
+		to-do
+		need setting ->config 에서!
 	*/
-	AActor* mGenerateOwner;//	need setting
+	AActor* mGenerateOwner;//	
 
 	/*
+		to-do
 		setManagedObjectConfigure 내부 setter 함수들
 	*/
 	FTIHMngObjPoolConfigure mManagedObjectPoolConfigure;
-
-
 
 	TDeque< FTIHNewAllocPrepareData> mPrepareManagedObjects;
 
@@ -2694,6 +2725,9 @@ protected:
 
 	TMap<int8, TMap< TIHHash64, TSet<int16> > > mManagedObjectStateRunningIndices;
 	/*
+		to-do
+		계층으로 나뉘어진 오브젝트 풀링 매니지드
+		-> 이건 완료
 		base
 			managedHash
 					selfIndex
@@ -2702,7 +2736,10 @@ protected:
 
 	FTIHMngObjGenerateQueues mTempDatasForNewAlloc;
 
-	//	0314
+	/*
+		to-do
+		0314 시발 이거 뭐였지?
+	*/
 	//TFunction<void()> 
 };
 /*

@@ -664,6 +664,11 @@ void FTIHMngObj::SettingLeafTable()
 	}
 }
 
+void FTIHMngObj::QueryLeafActorMove(int16 compositeIndex, const FTransform& transform)
+{
+
+}
+
 void FTIHMngObjComposite::AddLeaf(FTIHMngObjLeaf* leaf)
 {
 	check(leaf != nullptr);

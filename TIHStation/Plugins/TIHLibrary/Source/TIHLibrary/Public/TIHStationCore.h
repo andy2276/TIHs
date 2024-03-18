@@ -152,7 +152,7 @@ struct FTIHCommandDataRefParameter
 	int16 DataRefIndex;
 };
 /*
-	빌더를 만들어야한다.->만듬
+	빌더를 만들어야한다.->만듦
 
 	결과를 통합해야한다 자꾸 이거 다른곳으로 뻗는거같음
 		생성
@@ -179,6 +179,8 @@ struct FTIHCommandDataRefParameter
 	이게 있으면 좋은점
 		상태에 대한 추적이 가능하다
 		상태에 따른 다른 처리가 가능하다.
+		-> 이거는 안만들었는데, 어찌할까...
+		to-do 로 넘기자
 */
 
 class FTIHCommandMethodAdditionalManager
@@ -192,7 +194,7 @@ private:
 		{
 		TFunction<TIHReturn64()> ExecuteFunc;
 		TFunction<TIHReturn64()> DoneFunc;
-	
+		이거 안쓰는거 같은데... 일단 나중에 사용처 나올때까지 to-do
 	*/
 
 };
@@ -218,16 +220,6 @@ struct FTIHCommandReferenceData
 	UPROPERTY()
 	TArray<FString> StringArray;
 };
-
-#pragma region CommandReferenceBoards
-
-/*
-	여기에 빠르게 접근할 수 있게 CRTP나 staticPolymorph 를 적용한 클래스를 통해 만들던가
-	인터페이스 정도는 만들어주자.
-
-*/
-
-#pragma endregion
 
 /*
 	그전에 
@@ -281,8 +273,7 @@ public:
 	자원의 메모리는 board 에 기록이 된다. r 인지 w 인지
 	쉐이더는 strategy 를 사용한다.
 	명령은 command 로 하고 기능은 leaf 로 처리한다.
-	더 정확하게는
-		특정 컴포지트에 명령을 내기러가 매니지드 오브젝트에 명령을 내리면
+		strategy 에서는 처리를 담당한다.
 
 */
 
@@ -340,7 +331,7 @@ public:
 	}
 	virtual bool IsTickableInEditor() const
 	{
-		return false;
+		return true;
 	}
 private:
 	uint32 LastFrameNumberWeTicked = INDEX_NONE;
@@ -366,19 +357,6 @@ private:
 										 여기 아래서 부터 다시한다
 =================================================================================================================================================
 */
-/*
-	이게 실시간으로 확인을 할거임
-		예를 들자면 지금 스테이션의 상태를 보고 tickable 을 실행해야할지 혹은 지금 mng 에 있는 오브젝트를 줄여야할지
-
-
-*/
-class FTIHStationIntellisense
-{
-public:
-
-private:
-
-};
 
 class FTIHSettingHelper
 {
@@ -487,6 +465,5 @@ public:
 	virtual ~FTIHDefaultStation();
 
 	TIHMACRO_STATION_HELPER_LIFECYCLE_FUNCTIONS(FTIHDefaultStation);
-
 };
 

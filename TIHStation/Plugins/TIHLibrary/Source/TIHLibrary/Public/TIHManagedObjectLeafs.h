@@ -85,6 +85,11 @@ public:
 		mCastedComponent->SetStaticMesh(stMesh);
 	}
 };
+
+/*
+	to-do
+	skeletonMeshComponent 에 필요한 기능을 여기에서 만들어야한다.
+*/
 class FTIHMngObjLeafSkMesh : public TTIManagedObjectLeaf<USkeletalMeshComponent>
 {
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafSkMesh)

@@ -182,9 +182,8 @@ public:
 		return 0;
 	}
 	/*
-		strategy 에 데이터를 넣고 이걸 처리할거임.
-		단순하게 header 와 method 만 보고 해당 부분으로 데이터를 넘길거고
-		strategy 에서
+		to-do
+		커맨드의 상태가 필요한거 같다.
 	*/
 protected:
 	FTIHCommandHeader mCmdHeader;
@@ -316,7 +315,10 @@ public:
 		ChainPtrsQueue.Empty();
 	}
 };
-
+/*
+	to-do
+	이거 안쓸듯...그냥 직접 커맨드를 가져와서 쓸듯하네
+*/
 struct FTIHCommandFactoryBuilders
 {
 	FTIHChainBuilderBase* CommandHeaderBuilder;
@@ -570,8 +572,15 @@ public:
 						이제 모든 접근이 자유로워졌다.
 						커맨더 헤더와 메소드는 여러개 만들어 놓고 다른곳에서 관리 안해도 괜찮다.
 						data 도 만약 해당 typeid 에해당하는 hash 가 없을경우
-
+					-> 이거 찾아보니 reserve 가 이루어지면 카피가 이루어 져서 이걸 생각할 필요가 없엇음
 			rw이슈
+			근데 추가적으로 해야할일이있음
+			to-do
+			커맨드도 재사용하고 싶을때가 있을거임. 그럼 그러한 커맨드들을 모아두는 곳도 필요하고
+			그러한 커맨드를 재 설정하는것과 새롭게 생성하는게 같아야하고,
+			이거 사용설명서가 필요하다.
+			결국 이게 뭐흘 하는거냐면 커맨드를 만들때 사용하는건데, 지금 이거를 쓰는가 생각해보면
+			지금 안쓸거같음. 꼭 이걸 통해서 뭐를 하는게 아니라서 그런듯
 	*/
 	TIHReturn64 BeginChainBuild();
 	TIHReturn64 PrevBuilders();
@@ -718,6 +727,15 @@ union FUnionTIHCommandListResult
 	}ReserveDetail;
 	TIHReturn64 WholeData;
 };
+/*
+	to-do
+	검증이 필요함. 제대로 된건지. 그리고 커맨드를 보관하고 그걸 불러오는 과정을 해야할듯.
+	그걸 원래 커맨드 팩토리에서 하려고 했는데, 그냥 커맨드를 만들때 규격화만 진행한듯
+	그것도 너무 어렵게 만들어서 지금은 못사용할 것 같다. 명확하지도 않고.
+	-> 근데 밑에 helper 보니깐 왜 만들었는지는 알거같음. 다른 영역을 모르니깐 당연하게 썼음
+	-> 이걸 바로 접근해서 값을 넣을수있게 해야겠다.
+	-> 그럼 커맨더를 어디다가 저장하지? 시발.... 이럼 state
+*/
 class FTIHCommandList
 {
 public:
@@ -726,9 +744,6 @@ public:
 	TDeque<FTIHCommandBase*> mCommandQueue;
 
 	TArray< FTIHCommandBase*> mDeleteCandidates;
-
-
-
 
 	FTIHCommandBase* operator[](int32 index)
 	{
@@ -741,7 +756,6 @@ public:
 
 		reValue.ReserveDetail.Protocol = (int8)ETIHResultDetailProtocols::EReserve;
 		reValue.ReserveDetail.PreMax = mCommandQueue.Max();
-
 
 		return reValue.WholeData;
 	}
@@ -842,6 +856,12 @@ public:
 		return reValue;
 	}
 private:
+	/*
+		to-do
+		mCommandListClearanceCount 이거를 설정해줘야하는 함수가 없음.
+		이걸 먼저 설정해야하는데 그냥 막만든듯.
+		config 를 통해 설정하자.
+	*/
 	int32 mCommandListClearanceCount;
 	/*!
 	*	@brief 삭제목록이 꽉차면 그걸 정해진 수만큼 제거한다.
@@ -861,7 +881,14 @@ private:
 	}
 };
 
-
+/*
+	to-do
+	여기 이하는 함수를 실행하는 것이나 뭐 그런것들을 담아놓는곳인데,
+	이게 지금은 필요가 없어졌음. 처음에는 데이터를 모두 자료형단위로 넣어놓고 
+	그걸 커맨드가 참조하는 형태로 하려고 했는데, 생각을 해보니깐 그러면 안됨. 왜냐하면 참조하는게 같으면 
+	빠르긴할텐데...흠...참조 영역이 뭔지 그데이터가 뭔지를 직접 저장하고 사용하는게 더 나은거 같음.
+	원래는 참조만 가지려했는데...이거도 아직 나쁘지 않은 형태같긴한데... 이건 추후에 더 생각해보자.
+*/
 USTRUCT()
 struct FTIHCommandFunctorHeader
 {
@@ -1136,6 +1163,13 @@ public:
 
 	FTIHCommandDataBoard mBoard;
 };
+
+
+/*
+	to-do
+	아 시발 이걸 못만드니깐 factory 를 만들었구나...
+	이제 알았다. 하여튼 이거 용도가 커맨더를 빠르게 만들어주기 위함인데, 지금 필요없을듯.
+*/
 class FTIHCommandHelper
 {
 public:

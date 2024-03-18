@@ -288,7 +288,11 @@ TIHReturn64 FTIHStrategyLoadMesh::ExecuteCommandStaticPolymorph(FTIHCommandBase*
 	}
 	else if(TIHNameSpaceCommandType::OptionMeshLoad::StMeshPathListLoadByServer == cmdHeader.ProtocolOption)
 	{
-		
+		/*
+			to-do
+			여기에는 서버에서 경로리스트를 받을때 써주면 되는곳이다.
+			참고로 기본적으로 서버에서 받는것은 repeat임
+		*/
 	}
 	else if (TIHNameSpaceCommandType::OptionMeshLoad::StMeshPathListLoadByImbeding == cmdHeader.ProtocolOption)
 	{
@@ -301,12 +305,22 @@ TIHReturn64 FTIHStrategyLoadMesh::ExecuteCommandStaticPolymorph(FTIHCommandBase*
 	}
 	else if (TIHNameSpaceCommandType::OptionMeshLoad::StMeshPathListLoadByConfigObject == cmdHeader.ProtocolOption)
 	{
-
+		/*
+			to-do
+			컨피규 에서 들고오는건데 이걸 나중에 만들자...나중에
+		*/
 	}
 	else if (TIHNameSpaceCommandType::OptionMeshLoad::StMeshPathListLoadBySpecial == cmdHeader.ProtocolOption)
 	{
-
+		/*
+			to-do
+			특수하게 처리해야하는경우에 사용한다. 커맨드안에 넣는게 아니라 특수 처리 를 여기다 넣는데 일단 
+			보류
+		*/
 	}
-
+	/*
+		to-do
+		이제 추가적으로 stmeshload 시에 해야할걸 해야함 이거 로드하는거라 경로뿐만아니라 메쉬도 해야함
+	*/
 	return reValue;
 }

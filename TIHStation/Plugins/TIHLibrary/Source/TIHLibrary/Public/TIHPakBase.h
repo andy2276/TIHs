@@ -8,6 +8,33 @@
 
 class FTIHStationBase;
 
+class FTIHIntellisense : public FTickableGameObject
+{
+public:
+	virtual void Tick(float DeltaTime) override;
+	virtual ETickableTickType GetTickableTickType() const override
+	{
+		return ETickableTickType::Always;
+	}
+	virtual TStatId GetStatId() const override
+	{
+		RETURN_QUICK_DECLARE_CYCLE_STAT(FTIHCommandTickableScheduler, STATGROUP_Tickables);
+	}
+	virtual bool IsTickableWhenPaused() const
+	{
+		return true;
+	}
+	virtual bool IsTickableInEditor() const
+	{
+		return false;
+	}
+private:
+	uint32 LastFrameNumberWeTicked = INDEX_NONE;
+};
+
+
+
+
 UCLASS()
 class TIHLIBRARYENTRY_API ATIHPakBase : public AActor
 {
@@ -29,8 +56,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	FTIHStationBase* mStation;
+	FTIHIntellisense* mIntellisense;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+public:
+	void BeginDestroy() override;
 
 };

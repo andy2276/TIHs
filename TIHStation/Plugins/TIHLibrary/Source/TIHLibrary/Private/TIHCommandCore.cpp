@@ -293,6 +293,8 @@ TIHReturn64 FTIHCommander::CheckCallingCompleteFunctions(FTIHCommandBase* primit
 
 TIHReturn64 FTIHCommander::CheckCallingErrorFunctions(FTIHCommandBase* primitiveCmd)
 {
+
+
 	return 0;
 }
 
@@ -330,8 +332,9 @@ TIHReturn64 FTIHCommandFactory::NextBuilders()
 	reValue.WholeData = 0;
 	int32 nextIndex = 0;
 	/*
+		to-do
 		move 와 절대 index 가 일치하는지 확인
-
+		근데 이거 쓰나?
 	*/
 
 

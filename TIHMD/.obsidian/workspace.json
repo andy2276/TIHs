@@ -30,9 +30,21 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "7979b3323bec28d9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "to-do list.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
         ],
-        "currentTab": 1,
+        "currentTab": 2,
         "stacked": true
       }
     ],
@@ -99,7 +111,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "HousingParser.md",
+                "file": "to-do list.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -116,7 +128,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "HousingParser.md",
+                "file": "to-do list.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -139,7 +151,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "HousingParser.md"
+                "file": "to-do list.md"
               }
             }
           }
@@ -160,14 +172,15 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "54ef2f3e2619b0d0",
+  "active": "7979b3323bec28d9",
   "lastOpenFiles": [
+    "HousingParser.md",
+    "to-do list.md",
     "Command.md",
     "childrenActorComponent.md",
     "할일 정리.md",
     "헬퍼만들어야할때.md",
     "하우징설계.md",
-    "HousingParser.md",
     "앞으로 해야할것 기록.md",
     "TIH Library.md",
     "Template/기능설계.md",
@@ -189,7 +202,6 @@
     "DevelopLog/Logs/24-01_23.md",
     "DevelopLog/Logs/24-01_22.md",
     "Ideas/MangagedObjectPipeline.md",
-    "Ideas/GenerateManagedObjectByActor.md",
     "Ideas",
     "TIH",
     "DevelopLog/Template",

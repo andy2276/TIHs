@@ -1767,25 +1767,11 @@ private:
 	TMap<FString, int16> mPathTable;
 	TArray<FString> mPathArray;
 };
-//	차라리 레벨에 넣어놓자.
-//	station 은 만들어진 상태일거고
-//	
-//UCLASS(Blueprintable)
-//class ATIHPakBase : public AActor
-//{
-//	GENERATED_BODY()
-//
-//public:
-//	UFUNCTION(BlueprintCallable)
-//	void ConnectingStation() {};
-//
-//	UFUNCTION(BlueprintCallable)
-//	virtual void InsertThisPak() {};	//	팩을 낄때 사용. 사용하면 station을 콜하고 
-//	UFUNCTION(BlueprintCallable)
-//	virtual void DropThisPak() {};	//	팩을 뺄때 사용.
-//};
 
-
+/*
+	to-do
+	언젠간 하겠지. 이거는 하는역할은 당연히 staticPolyMorph 임
+*/ 
 class FTIHPakStaticPolymorphInterface
 {
 public:

@@ -9,7 +9,8 @@
 class FTIHDefaultStation;
 
 /**
- * 
+ * to-do
+	여기에다가 초기화 시켜야하는데 흠...
  */
 UCLASS()
 class TIHLIBRARYENTRY_API UTIHGameInstance : public UGameInstance
@@ -35,6 +36,7 @@ private:
 		해당 언리얼 오브젝트의 인서트 팩실행
 		인서트 팩에는 station 에게 지금 자신이 가지고 있는 pack 을 전달하는역할. 그럼 인서터는 무조건 팩마다하나.
 
+		-> 이거 정리해서 팩은 액터로 만들고, 그 액터는 레벨에서 호출이 되게 했음. 
 	*/
 	
 
