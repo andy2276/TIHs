@@ -669,6 +669,11 @@ void FTIHMngObj::QueryLeafActorMove(int16 compositeIndex, const FTransform& tran
 
 }
 
+void FTIHMngObj::QueryLeafActorMoveRoot(const FTransform& transform)
+{
+
+}
+
 void FTIHMngObjComposite::AddLeaf(FTIHMngObjLeaf* leaf)
 {
 	check(leaf != nullptr);
