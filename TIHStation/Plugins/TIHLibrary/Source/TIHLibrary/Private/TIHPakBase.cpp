@@ -37,7 +37,7 @@ void ATIHPakBase::Tick(float DeltaTime)
 
 }
 
-ENGINE_API void ATIHPakBase::BeginDestroy()
+void ATIHPakBase::BeginDestroy()
 {
 	Super::BeginDestroy();
 	

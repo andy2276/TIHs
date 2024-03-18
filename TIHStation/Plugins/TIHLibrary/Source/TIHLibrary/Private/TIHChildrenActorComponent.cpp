@@ -34,12 +34,12 @@ void UTIHChildrenActorComponent::TickComponent(float DeltaTime, ELevelTick TickT
 
 int16 UTIHChildrenActorComponent::PoolingChildMngObj()
 {
-
+	return 0;
 }
 
 FTIHMngObj* UTIHChildrenActorComponent::GetChildMngObjByIndex(int16 mngObjIndex)
 {
-
+	return nullptr;
 }
 
 void UTIHChildrenActorComponent::UpdateTransformToChild()
