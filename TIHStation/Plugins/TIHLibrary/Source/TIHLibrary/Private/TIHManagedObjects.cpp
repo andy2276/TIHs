@@ -188,9 +188,9 @@ void FTIHMngObjFactory::GenerateManagedObjectByActorArray(FTIHMngObjGenerateQueu
 	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
 
 	int32 actorArrayNum = generateQueues.GetNumInActorQueue();
+	//	to-do
 	//	나중에 업데이트 할때 해주자
 	//	액터도 같은 수끼리 묶어주는 작업해놓으면 됨. 그리고 prepare 만들어서 넣어주면 된다.
-
 
 	FTIHMngObjPool& currMngObjPool = *GetCurrentManagedObjectPool();
 
@@ -209,7 +209,15 @@ void FTIHMngObjFactory::GenerateManagedObjectByActorArray(FTIHMngObjGenerateQueu
 
 		if (rootScene != nullptr)
 		{
-			generateQueues.PushBackPrepareDataForComposite({ 0 , -1, rootScene ,newManagedObject });
+			generateQueues.PushBackPrepareDataForComposite
+			(
+				{ 
+					0 ,					/* Step */
+					-1, 				/* ParentCompositeIndex */
+					rootScene ,			/* UE SceneComponent Pointer */
+					newManagedObject 	/* TIHManagedObject Pointer */
+				}
+			);
 		}
 		else
 		{
@@ -219,7 +227,11 @@ void FTIHMngObjFactory::GenerateManagedObjectByActorArray(FTIHMngObjGenerateQueu
 
 		currMngObjPool.AddNewManagedObject(newManagedObject);
 
-		newManagedObject->UpdateStateByManagedObjectHeader();//	여기를 뒤로 미루자. 나중에 한번에 해주면 된다. 그냥 여기서 해
+		/*
+			to-do
+			업데이트 해주는부분이 여기가 맞는지.
+		*/
+		newManagedObject->UpdateStateByManagedObjectHeader();
 	}
 }
 
@@ -238,8 +250,8 @@ void FTIHMngObjFactory::GenerateManagedObjectCompositeArray(FTIHMngObjGenerateQu
 			break;
 		}
 		FTIHMngObjGenerateCompositeBFSData&& currGenData = generateQueues.GetTopAndPopPrepareDataForCompositeQueue();
-		int16 StepValue = currGenData.StepValue;
-		int16 ParentCompositeIndex = currGenData.ParentCompositeIndex;
+		int16 stepValue = currGenData.StepValue;
+		int16 parentCompositeIndex = currGenData.ParentCompositeIndex;
 		FTIHMngObj* currManagedObject = currGenData.TIHManagedObject;
 		USceneComponent* currScene = currGenData.UESceneComponent;
 
@@ -250,7 +262,7 @@ void FTIHMngObjFactory::GenerateManagedObjectCompositeArray(FTIHMngObjGenerateQu
 		//	그냥 여기에 childrenActorComponent 를 추가하자.
 
 		FTIHMngObjComposite* newComposite = new FTIHMngObjComposite();
-		newComposite->InitMngObjComposite(currAllocationSpace, currScene, ParentCompositeIndex, StepValue);
+		newComposite->InitMngObjComposite(currAllocationSpace, currScene, parentCompositeIndex, stepValue);
 		currManagedObject->AddComposite(newComposite);
 
 		const TArray<TObjectPtr<USceneComponent>>& childScenes = currScene->GetAttachChildren();
@@ -260,7 +272,7 @@ void FTIHMngObjFactory::GenerateManagedObjectCompositeArray(FTIHMngObjGenerateQu
 			generateQueues.PushBackPrepareDataForComposite
 			(
 				{ 
-					StepValue + 1 ,	//	level
+					stepValue + 1 ,	//	level
 					newComposite->GetIndexInManagedObjectCompositeArray(),	//	parentIndex == curCompositeIndex
 					childScene ,	//	attachScenes
 					currManagedObject	//	managedObject
@@ -578,19 +590,30 @@ void FTIHMngObjPool::OnCompleteCreateNewAlloc()
 	/*
 		0314 여기서 호출해주자.
 	*/
+	for (FTIHMngObj* mngObj : mWholeManagedObjects)
+	{
 
+	}
 }
 
 
 
 void FTIHMngObjPool::OnRepeatCreateNewAlloc(int32 currPhase)
 {
-
+	/*
+		to-do
+		이걸 콜하는 곳은 OnGeneratePipelining 인데, 그곳에서 void 를 호출했을때 콜된다
+		여기에다가 함수포인터 만들어도 괜찮음
+	*/
 }
 
 void FTIHMngObjPool::OnErrorCallCreateNewAlloc(TIHReturn64 errCode)
 {
-
+	/*
+		to-do
+		이걸 콜하는 곳은 OnGeneratePipelining 인데, 그곳에서 error 를 호출했을때 콜된다
+		함수포인터를 만들어서 넣어주자. 기본은 내부에서 그냥 콜해주는걸로가자.
+	*/
 }
 
 void FTIHMngObjGenerateHelper::GenerateLeavesByUEHash(UEObjectHash64 ueHash, FTIHMngObjComposite& out)
@@ -643,6 +666,9 @@ void FTIHMngObj::InitMngObj(AActor* targetActor, int16 parentIndex, int8 allocat
 		.SetProtocol(TIHNameSpaceManagedObject::UEClassBaseType::ActorBase)
 		.SetManagedObjectState((int8)ETIHManagedObjectStepState::ENotUse);
 	SetAllocSpace(allocationSpace);
+
+	std::vector<int> a;
+	
 }
 
 FTIHMngObjPool* FTIHMngObj::GetMyManagedPool()
@@ -664,12 +690,32 @@ void FTIHMngObj::SettingLeafTable()
 	}
 }
 
-void FTIHMngObj::QueryLeafActorMove(int16 compositeIndex, const FTransform& transform)
+void FTIHMngObj::QueryLeafActorMove(int16 compositeIndex, const FTransform& transform) 
 {
 
 }
 
 void FTIHMngObj::QueryLeafActorMoveRoot(const FTransform& transform)
+{
+	/*
+		to-do
+		TEXT root 를 담은 리스트를 어딘가에 만들기
+	*/
+	if(mSpecialCompositetIndex.Contains(TEXT("root")) == true)
+	{
+		FTIHMngObjComposite* composite = mCompositeArray[mSpecialCompositetIndex[TEXT("root")]];
+		FTIHMngObjLeafMovement* movementLeaf = composite->TryGetLeafForMovement();
+		if(movementLeaf != nullptr)
+		{
+			movementLeaf->SetAddWorldTransform(transform);
+		}
+		/*
+			query 들을 위한 로그 남기기
+		*/
+	}
+}
+
+void FTIHMngObj::CompleteGenerateFunc()
 {
 
 }
@@ -694,12 +740,41 @@ FTIHMngObjLeaf* FTIHMngObjComposite::GetLeaf(TIHHash64 tihHash)
 	return reValue;
 }
 
-FTIHMngObj* FTIHMngObjComposite::GetOwnerManagedObject()
+FTIHMngObj* FTIHMngObjComposite::GetOwnerMngObj()
 {
-	return FTIHMngObjPoolCenter::GetSingle().GetManagedObjectPool(GetManagedObjectComponentHeader().AllocationSpace)->GetWholeManagedObjectArray()[GetOwnerIndex()];
-	return nullptr;
+	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+	FTIHMngObj* reValue = nullptr;
+	FTIHMngObjPool* mngObjPool = poolCenter.GetManagedObjectPool(GetManagedObjectComponentHeader().AllocationSpace);
+	if(mngObjPool != nullptr)
+	{
+		reValue = mngObjPool->GetMngObj(GetOwnerIndex());
+	}
+	return reValue;
 }
 
+
+void FTIHMngObjComposite::SetParent(int16 parent)
+{
+	TIHSTATION_TYPE& station = TIHSTATION;
+	if (-1 < parent)
+	{
+		/*
+			hasParent
+		*/
+
+
+	}
+	else
+	{
+		/*
+			root
+			이제 여기에서 GetOwnerMngObj 이거쓰고 해당 매니지드 오브젝트에게 등록해주면 되는데, 어떻게 할까?
+
+		*/
+		
+	}
+	mParentIndex = parent;
+}
 
 FTIHMngObjLeafMovement* FTIHMngObjComposite::TryGetLeafForMovement()
 {

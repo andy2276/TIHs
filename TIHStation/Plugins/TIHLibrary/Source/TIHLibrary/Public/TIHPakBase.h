@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TIHStationCore.h"
+#include "TIHStationCoreDefines.h"
+
 #include "TIHPakBase.generated.h"
 
 class FTIHStationBase;
@@ -11,6 +14,9 @@ class FTIHStationBase;
 class FTIHIntellisense : public FTickableGameObject
 {
 public:
+	FTIHIntellisense();
+	virtual ~FTIHIntellisense();
+
 	virtual void Tick(float DeltaTime) override;
 	virtual ETickableTickType GetTickableTickType() const override
 	{
@@ -28,8 +34,17 @@ public:
 	{
 		return false;
 	}
+protected:
+	TIHSTATION_TYPE* mStation;
+	FTIHMngObjPoolCenter* mMngObjCenter;
+	FTIHMeshPool* mMeshPool;
+	FTIHTickTock* mTickTock;
+	FTIHCommander* mCommander;
+	FTIHCommandList* mCommandList;
+
+
+	uint32 LastFrameNumberWeTicked;
 private:
-	uint32 LastFrameNumberWeTicked = INDEX_NONE;
 };
 
 

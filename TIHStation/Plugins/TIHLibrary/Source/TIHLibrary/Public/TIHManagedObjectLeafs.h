@@ -62,6 +62,17 @@ public:
 		check(mCastedComponent != nullptr);
 		mCastedComponent->AddRelativeRotation(value.ToOrientationQuat());
 	}
+	//mCastedComponent->AddLocalTransform(value)
+	void SetAddLocalTransform(const FTransform& value)
+	{
+		check(mCastedComponent != nullptr);
+		mCastedComponent->AddLocalTransform(value);
+	}
+	void SetAddWorldTransform(const FTransform& value)
+	{
+		check(mCastedComponent != nullptr);
+		mCastedComponent->AddWorldTransform(value);
+	}
 };
 
 class FTIHMngObjLeafPretty : public TTIManagedObjectLeaf<UMeshComponent>

@@ -96,6 +96,11 @@ public:
 	여기에서 처리하는거임.
 	근데 종류를 좀더 줄여야할거같음.
 */
+class FTIHStrategyInitStation :public TTIHCommandStrategyCRTP<FTIHStrategyInitStation>
+{
+public:
+	TIHReturn64 ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase);
+};
 class FTIHStrategyCmdMngObj :public TTIHCommandStrategyCRTP<FTIHStrategyCmdMngObj>
 {
 public:

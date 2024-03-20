@@ -1355,7 +1355,7 @@ struct FTIHMngObjGenerateCompositeBFSData
 	USceneComponent* UESceneComponent;
 	FTIHMngObj* TIHManagedObject;
 
-	FTIHMngObjGenerateCompositeBFSData()
+	FTIHMngObjGenerateCompositeBFSData() 
 		:
 		StepValue(-1),
 		ParentCompositeIndex(-1),
@@ -1363,7 +1363,13 @@ struct FTIHMngObjGenerateCompositeBFSData
 		TIHManagedObject(nullptr)
 	{
 	}
-
+	~FTIHMngObjGenerateCompositeBFSData()
+	{
+		StepValue = -1;
+		ParentCompositeIndex = -1;
+		UESceneComponent = nullptr;
+		TIHManagedObject = nullptr;
+	}
 
 	FTIHMngObjGenerateCompositeBFSData
 	(
@@ -1379,6 +1385,7 @@ struct FTIHMngObjGenerateCompositeBFSData
 		TIHManagedObject(tihManagedObject)
 	{
 	}
+
 	FTIHMngObjGenerateCompositeBFSData
 	(
 		int16 stepValue,
@@ -1392,6 +1399,7 @@ struct FTIHMngObjGenerateCompositeBFSData
 		TIHManagedObject(prepareDataForComposite.TIHManagedObject)
 	{
 	}
+
 	FTIHMngObjGenerateCompositeBFSData(const FTIHMngObjGenerateCompositeBFSData& copyCtor)
 		:
 		StepValue(copyCtor.StepValue),
@@ -1400,6 +1408,7 @@ struct FTIHMngObjGenerateCompositeBFSData
 		TIHManagedObject(copyCtor.TIHManagedObject)
 	{
 	}
+
 	FTIHMngObjGenerateCompositeBFSData(FTIHMngObjGenerateCompositeBFSData&& moveCtor) noexcept
 	{
 		StepValue = std::move(moveCtor.StepValue);
@@ -1408,23 +1417,23 @@ struct FTIHMngObjGenerateCompositeBFSData
 		moveCtor.TIHManagedObject = nullptr;
 	}
 
-	FTIHMngObjGenerateCompositeBFSData& operator=(const FTIHMngObjGenerateCompositeBFSData& assignValue)
+	FTIHMngObjGenerateCompositeBFSData& operator=(const FTIHMngObjGenerateCompositeBFSData& copyOper)
 	{
-		StepValue = assignValue.StepValue;
-		ParentCompositeIndex = assignValue.ParentCompositeIndex;
-		UESceneComponent = assignValue.UESceneComponent;
-		TIHManagedObject = assignValue.TIHManagedObject;
+		StepValue = copyOper.StepValue;
+		ParentCompositeIndex = copyOper.ParentCompositeIndex;
+		UESceneComponent = copyOper.UESceneComponent;
+		TIHManagedObject = copyOper.TIHManagedObject;
 		return *this;
 	}
 
-	FTIHMngObjGenerateCompositeBFSData& operator=(FTIHMngObjGenerateCompositeBFSData&& moveValue) noexcept
+	FTIHMngObjGenerateCompositeBFSData& operator=(FTIHMngObjGenerateCompositeBFSData&& moveOper) noexcept
 	{
-		StepValue = std::move(moveValue.StepValue);
-		ParentCompositeIndex = std::move(moveValue.ParentCompositeIndex);
-		UESceneComponent = std::move(moveValue.UESceneComponent);
-		TIHManagedObject = std::move(moveValue.TIHManagedObject);
-		moveValue.UESceneComponent = nullptr;
-		moveValue.TIHManagedObject = nullptr;
+		StepValue = std::move(moveOper.StepValue);
+		ParentCompositeIndex = std::move(moveOper.ParentCompositeIndex);
+		UESceneComponent = std::move(moveOper.UESceneComponent);
+		TIHManagedObject = std::move(moveOper.TIHManagedObject);
+		moveOper.UESceneComponent = nullptr;
+		moveOper.TIHManagedObject = nullptr;
 		return *this;
 	}
 };
@@ -1958,6 +1967,8 @@ private:
 								managedObject Component base
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
+
+
 class FTIHMngObjComponent
 {
 public:
@@ -2008,9 +2019,9 @@ public:
 	}
 	/*
 		case managedComposite
-			mOwnerIndex is my managedObject's index in WholeDatas in ManagedPool
+			매니지드오브젝트의 인덱스임
 		case managedLeaf
-			mOwnerIndex is my managedObject's index in WholeDatas in ManagedPool
+			컴포넌트의 인덱스임
 	*/
 	void SetOwnerIndex(int16 index)
 	{
@@ -2088,40 +2099,40 @@ private:
 								managedObject Composite base
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
+
 class FTIHMngObjComposite :public FTIHMngObjComponent
 {
 public:
-	
 	/*
-
-		GetLeaf
-		UnionTagTable()
-		GetTagTable
-		set parentindex
-		get parentindex
-
-		get selfindex
-
-		LinkScene
-
-		AddLeaf
-		GetLeaf
-		GetOwnerManagedObject
+		Self	: 자신이 최종적으로 들어가있는 곳에서의 인덱스
+		Owner	: 자신을 소유하는 최종 매니지드 오브젝트
+		Parent	: 계층적으로 자신의 부모가 되는 컴포지트
 	*/
+
 	void AddLeaf(FTIHMngObjLeaf* leaf);
 	FTIHMngObjLeaf* GetLeaf(TIHHash64 tihHash);
-	void SetManagedObjectIndex(int16 idx)
+
+	/*
+		SetOwnerIndex 의 Wrapper
+	*/
+	void SetOwnerMngObjIndex(int16 idx)
 	{
 		SetOwnerIndex(idx);
 	}
-	int16 GetManagedObjectIndex()
+	int16 GetOwnerMngObjIndex()
 	{
 		return GetOwnerIndex();
 	}
+	/*
+		오브젝트풀에 있는 자신을 소유하는 최종 매니지드 오브젝트를 들고옴
+		부모는 아님.
+	*/
+	FTIHMngObj* GetOwnerMngObj();
 
-	FTIHMngObj* GetOwnerManagedObject();
-
-	void SetIndexInManagedObjectCompositeArray(int16 index)
+	/*
+		SetSelfIndex 의 warpper 
+	*/
+	void SetIndexInCompositeArray(int16 index)
 	{
 		SetSelfIndex(index);
 	}
@@ -2130,7 +2141,7 @@ public:
 		return GetSelfIndex();
 	}
 
-	const TSet<TIHHash64>& GetManagedObjectCompositeTagTable()
+	const TSet<TIHHash64>& GetCompositeTagTable()
 	{
 		TSet<TIHHash64> reValue;
 		mLeafMap.GetKeys(reValue);
@@ -2165,9 +2176,9 @@ public:
 		//	타겟 컴포넌트 설정
 		SetTargetUeSceneComponent(targetScene);
 		//	매니지드 컴포지트 부모 설정
-		SetManagedObjectCompositeParent(parentIndex);
+		SetParent(parentIndex);
 		//	매니지드 컴포지트 cibling 설정
-		SetManagedObjectCompositeStep(stepValue);
+		SetSiblingStep(stepValue);
 	}
 	/*
 		to-do
@@ -2175,38 +2186,26 @@ public:
 		물론 지금은 의미없음.
 		부모를 설정하는데 컴포지트의 연관관계가 이루어질 경우 여기서 처리해주면 된다는거임. 언젠간 필요할거임
 	*/
-	void SetManagedObjectCompositeParent(int16 parent)
-	{
-		//if (-1 < parent)
-		//{
-		//	/*
-		//		hasParent
-		//	*/
-		//}
-		//else
-		//{
-		//	/*
-		//		root
-		//	*/
-		//}
-		mParentIndex = parent;
-	}
-	int16 GetManagedObjectCompositeParent()
+	void SetParent(int16 parent);
+	int16 GetParent()
 	{
 		return mParentIndex;
 	}
-	void SetManagedObjectCompositeStep(int16 steps)
+	void SetSiblingStep(int16 steps)
 	{
 		mStep = steps;
 	}
-	int16 GetManagedObjectCompositeStep()
+	int16 GetSiblingStep()
 	{
 		return mStep;
 	}
 	void TransmissionHashSetToManagedObject()
 	{
-		GetOwnerManagedObject();
-
+		/*
+			to-do
+			transmission 해야할때 사용하는데, 
+		*/
+		GetOwnerMngObj();
 	}
 	/*
 		to-do
@@ -2267,7 +2266,7 @@ class FTIHMngObjLeaf :public FTIHMngObjComponent
 {
 public:
 	/*
-		이녀석의 selfHash 는 typeEraser 로 만들어진 Node 들의 clssHash 이다.
+		자신의 리프의 인덱스인데, 매니지드 오브젝트안에 있는 인덱스를 가진다
 	*/
 	void SetManagedObjectCompositeIndex(int16 index)
 	{
@@ -2342,6 +2341,12 @@ private:
 */
 #pragma region Managed Object
 
+USTRUCT()
+struct FTIHMngObjConfigure
+{
+	GENERATED_BODY()
+
+};
 
 class FTIHMngObj
 {
@@ -2380,10 +2385,22 @@ public:
 	//	여기에서 SetSelfIndex 와 SetManagedObjectIndex 를해준다. 
 	int16 AddComposite(FTIHMngObjComposite* composite)
 	{
+		/*
+			to-do
+			여기에서 자신이 뭐인지 설정해줄 수 있다. 
+			여기에서 뭘추가해야할까
+				지금 필요한게 루트 씬인지 알수 있는거는 알겟는데, 
+		*/
 		int16 reValue = 0;
 		reValue = mCompositeArray.Add(composite);
-		composite->SetIndexInManagedObjectCompositeArray(reValue);
-		composite->SetManagedObjectIndex(mSelfIndexInWholeArray);
+		composite->SetSelfIndex(reValue);
+		composite->SetOwnerIndex(mSelfIndexInWholeArray);
+		
+		if(composite->GetParent() < 0)
+		{
+			mSpecialCompositetIndex.Add(TEXT("root"), reValue);
+		}
+
 		return reValue;
 	}
 
@@ -2423,7 +2440,6 @@ public:
 		*/
 		mParentIndexInWholeArray = -1;
 	}
-
 
 	TArray<int16> GetChildMngObjIndices();
 
@@ -2517,6 +2533,23 @@ public:
 		return mGenerateTick;
 	}
 
+	void CompleteGenerateFunc();
+
+	void SetSpecialComponent(const FName& cat,int16 indexInCompositeArray)
+	{
+		if(mSpecialCompositetIndex.Contains(cat) == false)
+		{
+			mSpecialCompositetIndex.Add(cat, indexInCompositeArray);
+		}
+		else
+		{
+			/*
+				to-do
+				변경되었다고 알림. 혹은 삭제 후 다시 넣는걸로 해야한다든가.
+			*/
+			mSpecialCompositetIndex[cat] = indexInCompositeArray;
+		}
+	}
 private:
 	FTIHMngObjHeader mManagedObjectHeader;
 	UObject* mManagedUEObect;
@@ -2529,8 +2562,21 @@ private:
 
 	TArray<FTIHMngObjComposite*> mCompositeArray;	//	add
 	TSet<TIHHash64> mHashTable;
-
+	/*
+		지금 고민하는게 캐싱을 어떻게 해야할까하는거임.
+		메모리를 가볍게 만들까 아니면 어떻게할까
+		일단 root 는 저장을 하는게 맞는거같은데 나머지들은 어떻게 할까...
+		1안 큐
+		2안 스택
+		3안 하나만 저장.
+		4안 배열을 sort 하고 그럼 이거 어디다 해야하나. 
+		5안 매니지드 오브젝트에 add Composite 를 수행할때 카테고리로 넣기?
+			5안의1 특수한건 자동으로 넣기 예로 들자면 root?
+	*/
+	TMap<FName, int16> mSpecialCompositetIndex;
 	TIHTick32 mGenerateTick;
+
+	FTIHMngObjConfigure mMngObjPoolConfig;
 };
 FTIHMngObjPoolCenter* FTIHMngObj::gPoolCenter = nullptr;
 #pragma endregion Managed Object
@@ -2618,7 +2664,11 @@ public:
 		mManagedObjectPoolConfigure.PoolDatas = datas;
 	}
 
-	//	여기에서 SetSelfIndexInWholeArray 를 해준다.
+	/*
+		오브젝트 풀의 wholeManagedObjects 에서의 인덱스 설정
+		UObject 의 할당 인덱스 설정
+		UObject 의 할당 인덱스 설정
+	*/
 	void AddNewManagedObject(FTIHMngObj* newManagedObject);
 
 
@@ -2641,14 +2691,21 @@ public:
 
 	void OnRepeatCreateNewAlloc(int32 currPhase);
 	void OnErrorCallCreateNewAlloc(TIHReturn64 errCode);
-
 	/*
 		to-do
 		개별 매니지드 오브젝트 가져오는 함수만들기
 		매니지드 오브젝트 상태확인을 바로하는 거 만들기
 		-> 이건 완료함
+		-> mngobjCenter 에서 찾는방법을 만들자.
 	*/
 
+
+
+
+	/*
+		그냥 오브젝트 풀에 있는 매니지드 오브젝트를 들고오는거임
+		상태는 확인하지 않음.
+	*/
 	FTIHMngObj* GetMngObj(int16 index)
 	{
 		FTIHMngObj* reValue = nullptr;
@@ -2656,26 +2713,9 @@ public:
 		return reValue;
 	}
 
-	FTIHMngObj* GetMngObjFaster(int16 index)
-	{
-		FTIHMngObj* reValue = nullptr;
-		reValue = *(mWholeManagedObjects.GetData() + (int32)index);
-		return reValue;
-	}
-
-	FTIHMngObj* GetMngObjFast(int16 index)
-	{
-		FTIHMngObj* reValue = nullptr;
-		if (index < mWholeManagedObjects.Num())
-		{
-			reValue = GetMngObjFaster(index);
-		}
-		return reValue;
-	}
-
 	const FTIHState& GetMngObjState(int16 index)
 	{
-		FTIHMngObj* target = GetMngObjFast(index);
+		FTIHMngObj* target = GetMngObj(index);
 		check(target != nullptr);
 		return target->GetState();
 	}
@@ -2804,7 +2844,16 @@ public:
 		const int8 ifAddCapacityCount = int8(127)
 	);
 	FTIHMngObj* PoolingManagedObject(int8 allocationSpace, int8 ueObjBase, TIHObjectHash64 ueObjHash);
-
+	FTIHMngObj* GetMngObj(int16 allocationSpace,int16 mngObjIndex)
+	{
+		FTIHMngObj* reValue = nullptr;
+		FTIHMngObjPool* objPool = GetManagedObjectPool(allocationSpace);
+		if(objPool != nullptr)
+		{
+			reValue = objPool->GetMngObj(mngObjIndex);
+		}
+		return reValue;
+	}
 private:
 	FTIHMngObjFactory* mManagedObjectFactory;
 	TMap<FName, UEObjectHash64> mClassNameToUeClassHash;

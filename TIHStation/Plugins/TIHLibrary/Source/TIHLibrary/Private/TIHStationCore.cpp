@@ -46,6 +46,7 @@ TIHReturn64 FTIHDefaultStation::DestroyStation()
 {
 	TIHReturn64 reValue = 0;
 
+	
 
 	return reValue;
 }
@@ -109,6 +110,18 @@ TIHReturn64 FTIHDefaultStation::InstantiateStation()
 	
 	mPoolCenter = new FTIHMngObjPoolCenter;
 	mPathCenter = new FTIHPathCenter;
+	mMeshPool = new FTIHMeshPool;
+
+	mTickTock.UpdataTick();
+	/*
+		to-do
+		pakbox 에 넣는 함수 만들기
+		지금 pak 만들기
+			-> 팩의 header 만들기
+		여기서 초기화를 진행하지 않음. 기본 초기화인 내부 초기화만 진행이됨
+		왜냐하면 command 를 써야하기때문에.
+	
+	*/
 
 	return reValue;
 }

@@ -1,4 +1,4 @@
-\
+
 #include "TIHStrategies.h"
 #include "TIHManagedObjects.h"
 #include "TIHManagedObjectLeafs.h"
@@ -322,5 +322,23 @@ TIHReturn64 FTIHStrategyLoadMesh::ExecuteCommandStaticPolymorph(FTIHCommandBase*
 		to-do
 		이제 추가적으로 stmeshload 시에 해야할걸 해야함 이거 로드하는거라 경로뿐만아니라 메쉬도 해야함
 	*/
+	return reValue;
+}
+
+TIHReturn64 FTIHStrategyInitStation::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
+{
+	TIHReturn64 reValue = 0;
+	/*
+		to-do
+
+		먼저 서버 접속부터 처리
+
+		서버 접속 햇으면
+		
+		서버에서 받아와야 할 정보들 목록 
+			여기에 사전 설정 값들이 있을거임.
+		
+	*/
+
 	return reValue;
 }

@@ -47,10 +47,10 @@
 											Naming Rule
 	└──────────────────────────────────────────────────────────────────────────────────┘
 	## Naming Rule
-	+ 최대 32자를 넘지 말아야한다
+	+ 최대 64자를 넘지 말아야한다
 		+ 축약형은 되도록이면 지양한다.
 			+ 가독성과 유지보수성이 떨어지기 때문이다.
-			+ 하지만 32자를 넘을거 같으면 공통되어진 내용을 축약형으로 만든다.
+			+ 하지만 64자를 넘을거 같으면 공통되어진 내용을 축약형으로 만든다.
 			+ 그리고 그것에 대한 내용을 꼭 기록한다
 				+ 기록 한 곳은 '' 에 있다
 				+ 만약 해당 경로에 없다면 여기 아래를 본다. 물론 최신화는 잘안된다.
@@ -73,7 +73,6 @@
 	+ 언리얼의 이름 규칙을 되도록이면 따르도록 한다.
 	## 축약된 이름들
 		+ ManagedObject == MngObj
-
 */
 #pragma endregion Read_Me_Template
 /*
@@ -1489,21 +1488,11 @@ public:
 
 protected:
 	FTIHNetwork* mNetwork;
-	/*!
-	*	@brief 명령을 위한
-	*	@detail
-	*/
-	
 
 	int64 mTickTime;
 	int64 mTickTimeRunning;
 	int64 mTickTimeStarted;
 
-	//FTIHCommandFactory* mCommandFactory;
-
-	//	시발 이거 합칠까
-	//TUniquePtr<FTIHMngObjGenerateHelper> mMngObjGenerateHelper;
-	//TUniquePtr<FTIHSettingHelper> mSettingHelper;
 
 	FTIHTickTock mTickTock;
 
@@ -1512,13 +1501,14 @@ protected:
 
 	class FTIHCommandFactory* mCommandFactory;
 	class FTIHCommander* mCommander;
+
 	class FTIHMngObjPoolCenter* mPoolCenter;
 	class FTIHPathCenter* mPathCenter;
+	class FTIHMeshPool* mMeshPool;
 
 	TMap<FString, ATIHPakBase*> mPakBox;
 	class ATIHPakBase* mCurrPak;
 
-	class FTIHMeshPool* mMeshPool;
 	//TMap <FString, FTIHPakInfra* > mPaks;
 private:
 };
@@ -1544,7 +1534,10 @@ public:
 	{
 		return static_cast<TIHTemplateType*>(mSelfPointer);
 	}
-
+	/*
+		memo
+		해당 스테이션이 가져야할 것들을 여기서 초기화 해준다.
+	*/
 	TIHReturn64 InstantiateStation()
 	{
 		return 0;

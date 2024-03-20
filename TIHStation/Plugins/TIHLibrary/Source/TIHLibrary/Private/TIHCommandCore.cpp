@@ -585,6 +585,7 @@ TIHReturn64 FTIHCommandFactory::InstantiateCommandsInMetaArray(FTIHCommander& co
 		else
 		{
 			/*
+				to-do
 				custom command 를 실행시키는 곳
 			*/
 		}
@@ -595,6 +596,8 @@ TIHReturn64 FTIHCommandFactory::InstantiateCommandsInMetaArray(FTIHCommander& co
 			cmdBase->SetCommandMethod(cmdMethod);
 
 			/*
+				to-do
+				이게 뭔지 생각
 				if(cmdList.IsPossiblePush() == true)
 				{
 					cmdList.PushBackCommandPtr(cmdBase);
@@ -661,7 +664,7 @@ bool FTIHCommandFunctorWrapperBase::IsValidFunctor()
 
 		FTIHMngObjPool* objectPool = objectPoolCenter.GetManagedObjectPool(poolAllocationSpace);
 		check(objectPool != nullptr);
-		FTIHMngObj* mngObj = objectPool->GetMngObjFast(mngObjIndex);
+		FTIHMngObj* mngObj = objectPool->GetMngObj(mngObjIndex);
 		check(mngObj != nullptr);
 		if (mngObj->GetState().IsStateReady() || mngObj->GetState().IsRunning())
 		{
