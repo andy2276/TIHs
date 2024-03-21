@@ -358,6 +358,15 @@ private:
 =================================================================================================================================================
 */
 
+/*
+	이게 하는 역할이 regist 를 위해서 하는거임.
+
+	역할은 여러가지이다.
+	1. GenerateHelper 를 위한 Regist help func 지원 -> 결국 MngObj 를위한것
+	2. 기타 다른 셋팅을 위한 모든게 여기 들어가있음.
+	to-do
+	3. Command 라든지 태그나 기타 필요한것들을 '도와주는 함수들' 을 여기에 넣자.
+*/
 class FTIHSettingHelper
 {
 	class FTIHManagedObjectSettings;
@@ -381,7 +390,6 @@ private:
 		{
 			RegistUEActorByUEHash(TIHTemplateType::StaticClass());
 		}
-
 		void RegistTIHMngObjLeafGenerateFunc(TIHHash64 tihHash, TFunction < FTIHMngObjLeaf* ()> generateFunc);
 		template<typename TIHTemplateType>
 		void RegistTIHMngObjLeafGenerateFuncTemplate()
@@ -465,5 +473,10 @@ public:
 	virtual ~FTIHDefaultStation();
 
 	TIHMACRO_STATION_HELPER_LIFECYCLE_FUNCTIONS(FTIHDefaultStation);
+
+	/*
+		MngObj 를 셋팅하기 위한곳.
+	*/
+	void RegistForTIHMngObj();
 };
 

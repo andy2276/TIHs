@@ -299,6 +299,21 @@ TIHReturn64 FTIHCommander::CheckCallingErrorFunctions(FTIHCommandBase* primitive
 }
 
 
+void FTIHCommander::OnReserveCommander()
+{
+	mCommandLists.Reserve(TIHNameSpaceCommandType::CommanderListType::DefaultCommandListCount);
+	mCommandLists.AddDefaulted(TIHNameSpaceCommandType::CommanderListType::DefaultCommandListCount);
+
+	const int32 cmdCapacity = static_cast<int32>(mCommanderConfig.CommandCapacity);
+
+	mCompleteFunctions.Reserve(cmdCapacity);
+	for(FTIHCommandList& cmdList : mCommandLists)
+	{
+		cmdList.ReserveCommandList(cmdCapacity);
+	}
+
+}
+
 TIHReturn64 FTIHCommandFactory::BeginChainBuild()
 {
 	FUnionTIHCommandFactoryResult reValue;

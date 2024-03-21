@@ -743,6 +743,14 @@ namespace TIHNameSpaceCommandType
 		const int8 OnPopBack = 1 << 3;
 		const int8 CallingCompleteFunction = 1 << 4;
 	}
+	namespace CommanderListType
+	{
+		const int32 MainCommandList = 0;
+		const int32 TimerCommandList = 1;
+		const int32 SystemCommandList = 2;
+		const int32 CustomCommandList = 3;
+		const int32 DefaultCommandListCount = CustomCommandList + 1;
+	}
 };
 namespace TIHNameSpaceManagedObject
 {
@@ -1711,10 +1719,35 @@ protected:
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 */
 
+USTRUCT()
+struct FTIHPathCenterConfigure
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int32 UrlArrayCapacityCount;
+	UPROPERTY()
+	int32 PathArrayCapacityCount;
+};
+
+
 class FTIHPathCenter
 {
 public:
 	static FTIHPathCenter& GetSingle();
+
+	void SetPathCenterConfig(const FTIHPathCenterConfigure& value)
+	{
+		mPathCenterConfig = value;
+	}
+	const FTIHPathCenterConfigure& GetPathCenterConfig()
+	{
+		return mPathCenterConfig;
+	}
+
+	void InstantiateThis();
+	
+	void InitiateThis();
 
 	void ReserveUrlArray(int16 value)
 	{
@@ -1754,6 +1787,8 @@ public:
 		return reValue;
 	}
 private:
+	FTIHPathCenterConfigure mPathCenterConfig;
+
 	TMap<FString, int16> mUrlTable;
 	TArray<FString> mUrlArray;
 

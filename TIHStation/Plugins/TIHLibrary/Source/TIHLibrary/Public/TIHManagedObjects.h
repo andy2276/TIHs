@@ -879,6 +879,7 @@ struct FTIHQueryMeshPool
 	}
 };
 
+
 class FTIHMeshPool
 {
 public:
@@ -889,7 +890,11 @@ public:
 	}
 	TTIHMeshCapsule<UStaticMesh>* GenerateStaticMeshCapsules(const FString& path);
 
-	void InitMeshPool();
+	void InstantiateThis();
+
+	void InitiateThis();
+
+
 
 	void PrepareStaticMeshDataByPath(const FString& meshPath)
 	{
@@ -1150,6 +1155,18 @@ struct FTIHMngObjComponentHeader
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
 USTRUCT()
+struct FTIHMngObjPoolCenterConfigure
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int16 PrepareDataQueCapacityCount;
+	
+	UPROPERTY()
+	int16 Padding;
+};
+
+USTRUCT()
 struct FTIHMngObjPoolConfigureDatas
 {
 	GENERATED_BODY()
@@ -1171,6 +1188,7 @@ struct FTIHMngObjPoolConfigureDatas
 
 	UPROPERTY()
 	int8 Option1;
+
 
 	FTIHMngObjPoolConfigureDatas& operator=(const FTIHMngObjPoolConfigureDatas& otherDatas)
 	{
@@ -1446,6 +1464,18 @@ struct FTIHMngObjGenerateCompositeBFSData
 */
 class FTIHMngObjGenerateHelper
 {
+	/*
+		memo
+		### 사전에 해야하는것들
+		- [x] reserve
+		- [v] uehash로 컴포넌트의 uclass 등록 : mRegistedUESceneComponenBytUEHash
+		- [v] uclass 로 uehash 등록 : mRegistedSwapUESceneToUEHash
+		- [v] uehash 로 genCandidate 등록 : mRegistedGenCandidates
+		- [v] tihHash 로 리프 생성 함수 등록 : mRegistedGenerateFuncByTIHHash
+		- [v] uehash 로 생성할 액터 uclass 등록 : mRegistedActorByUEHash
+		- [v] uclass 로 uehash 등록 : mSwapActorHashByUClass
+	
+	*/
 public:
 	static FTIHMngObjGenerateHelper& GetSingle()
 	{
@@ -1533,7 +1563,8 @@ public:
 		else
 		{
 			/*
-				겹침
+				to-do
+				겹침, 로그 만들어야하는데 하하하.
 			*/
 		}
 	}
@@ -1541,6 +1572,7 @@ public:
 	/*
 	
 		이거 이관해야하는데 어디로 이관해야하냐면 사실 이거 없애도 괜찮을듯, 오브젝트 풀 센터로 모두 옮겨갔거든.
+		-> 노노 이거 제대로 쓰는거임. 반대로 풀센터에 있는걸 옮긴거임.
 	*/
 	void RegistGenerateFunc(TIHHash64 tihHash, TFunction<FTIHMngObjLeaf* ()> genFunc)
 	{
@@ -1551,6 +1583,7 @@ public:
 		else
 		{
 			/*
+				to-do
 				logging.changeGenFunc
 			*/
 			mRegistedGenerateFuncByTIHHash[tihHash] = genFunc;
@@ -1636,7 +1669,6 @@ private:
 	//TMap< UClass*, UEObjectHash64> mRegistedSwap
 	TMap<UEObjectHash64, FTIHGenerateCandidateLeaves> mRegistedGenCandidates;	//	이녀석은 uclass 를 넣으면 그에 해당하는 generateFunc목록에 관한 해쉬를 넘겨줌
 	TMap < TIHHash64, TFunction<FTIHMngObjLeaf* ()> > mRegistedGenerateFuncByTIHHash;//	tih 해쉬를 넣으면 그에 해당하는 함수를 호출해줌.
-
 
 	TMap< UEObjectHash64, UClass*> mRegistedActorByUEHash;//	for Actor
 	TMap< UClass*, UEObjectHash64 > mSwapActorHashByUClass;//	for Actor
@@ -2047,7 +2079,14 @@ class FTIHMngObjFactory
 		memo
 		매니지드 오브젝트는 무조건 tickable 로 만든다.
 	*/
+
 public:
+	/*
+		to-do
+		이거 나중에 공통으로 묶자.
+	*/
+	DECLARE_MULTICAST_DELEGATE(FTIHDelegateGenCallBack);
+
 
 	FTIHMngObjPool* GetCurrentManagedObjectPool()
 	{
@@ -2076,14 +2115,31 @@ public:
 	virtual void GenerateUEChildActorBy(UChildActorComponent* childActorScene, FTIHMngObj* currManagedObject, FTIHMngObjGenerateQueues& tempDatas);
 
 	virtual void GenerateManagedObjectLeafArray(FTIHMngObjGenerateQueues& genereteQueues);
+
+	void BindAddFunctionForGenStartCallBack(const FTIHDelegateGenCallBack::FDelegate& value)
+	{
+		mGenStartCallBack.Add(value);
+	}
+	void BindAddFunctionForGenEndCallBack(const FTIHDelegateGenCallBack::FDelegate& value)
+	{
+		mGenEndCallBack.Add(value);
+	}
 private:
 	TIHTick32 mStartTick;
 	bool mIsStartPipeLining;
 	FTIHMngObjPool* mCurrManagedObjectPool;
 
-	TFunction<void()> mGenStartCallBack;
-	TFunction<void()> mGenEndCallBack;
-
+	/*
+		to-do
+		앞으로는 
+		Instantiate -> 실체화 혹은 실체화시 실행되어야 하는 함수이름
+		Prepare		->
+		Initiate
+		Running{}
+	
+	*/
+	FTIHDelegateGenCallBack mGenStartCallBack;
+	FTIHDelegateGenCallBack mGenEndCallBack;
 };
 /*
 	GenerateManagedObjectCompositeArray 의 237 라인에서 특수처리할건지 선택하게 하는 코드를 넣을것이다.
@@ -2787,6 +2843,19 @@ protected:
 								Managed Object Pool Center
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
+
+/*
+	memo
+	### 사전에 미리 해야하는일
+	- [ ] mManagedObjectFactory 이거 생성
+	- [ ] mPrepareDatas 이거 reserve
+	- [-] FTIHMngObjFactory 의 mGenStartCallBack 를 설정 -> 델리게이트화 하면서 변경
+	- [-] FTIHMngObjFactory 의 mGenEndCallBack 를 설정 -> 델리게이트화 하면서 변경
+	- [v] FTIHMngObjFactory 이거를 위해서 차라리 델리게이트쓸까? ->완료
+	- [ ] FTIHMngObjGenerateQueues 이거 늘리는 reserve 써야함. -> 이거 factory 에서 해주는데, 이거 어케하지 config 만들어야할듯
+*/
+
+
 class FTIHMngObjPoolCenter
 {
 	/*
@@ -2796,6 +2865,10 @@ class FTIHMngObjPoolCenter
 public:
 	static FTIHMngObjPoolCenter& GetSingle();
 	void MergeSamePrepareDatas();
+
+	void InstantiateThis();
+	void InitiateThis();
+
 
 	TDeque<FTIHNewAllocPrepareData>& GetPrepareDataQueue()
 	{
@@ -2831,8 +2904,19 @@ public:
 	bool IsUeHashValid(UEObjectHash64 ueHash);
 	const FTIHGenerateCandidateLeaves& GetTIHHashArrayByUEHash(UEObjectHash64 ueHash);
 	FTIHMngObjLeaf* GenerateManagedComponentByTIHHash(TIHObjectHash64 ueHash);
-	/*
 
+	void SetMngObjPoolCenterConfig(const FTIHMngObjPoolCenterConfigure& poolCenterConfig)
+	{
+		mPoolCenterConfig = poolCenterConfig;
+	}
+
+	const FTIHMngObjPoolCenterConfigure& GetMngObjPoolCenterConfig()
+	{
+		return mPoolCenterConfig;
+	};
+	/*
+		to-do
+		이거 만들어야 하는데 ㅋㅋㅋㅋ
 	*/
 	FTIHMngObjPool* CreateManagedObjectPool(
 		int8 allocationSpace,
@@ -2864,6 +2948,8 @@ private:
 	TMap<UEObjectHash64, UClass*> mUeClassHashToUClass;
 
 	TMap<int8, FTIHMngObjPool*> mManagedObjectPools;
+
+	FTIHMngObjPoolCenterConfigure mPoolCenterConfig;
 };
 #pragma endregion Managed Object Pools
 /*

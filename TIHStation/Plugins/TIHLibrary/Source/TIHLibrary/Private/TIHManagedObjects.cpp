@@ -16,8 +16,8 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 	{
 		mStartTick = tickTock.GetTick();
 		mIsStartPipeLining = false;
-		mGenStartCallBack.CheckCallable();
-		mGenStartCallBack();
+
+		mGenStartCallBack.Broadcast();
 	}
 	managedObjectFactory.SetManagedObjectPool(targetPool);
 
@@ -74,6 +74,12 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 		bool isChildActor = false;
 		wholeObjNum = wholeArray.Num();
 
+		/*
+			to-do
+			다시 만들기 
+			중요한건 공간을 늘리게 할건지 혹은 어떻게 할지 근데 대부분 일어나지 않을일이지만 에러처리부분인지라.
+			extention 과 stop 으로 나눠서 
+		*/
 		if (wholeObjMax < wholeObjNum + currAllocateCount)
 		{
 			/*
@@ -91,7 +97,11 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 				{
 					if (targetPoolConfig.PoolDatas.AddWholeCapasityWhenFullWhole + wholeObjMax < INT16_MAX)
 					{
-
+						/*
+							to-do
+							currAllocateCount 를 사용해서 공간 늘리기
+							이게 전체에서 남은 공간을 얻어오는거임.
+						*/
 					}
 					else
 					{
@@ -141,6 +151,7 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 
 		}
 	}
+	
 	switch (currPipeliningState)
 	{
 	case ETIHReturn32Semantic::Fail:
@@ -151,8 +162,7 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 		break;
 	case ETIHReturn32Semantic::Success:
 		targetPool->OnCompleteCreateNewAlloc();
-		mGenEndCallBack.CheckCallable();
-		mGenEndCallBack();
+		mGenEndCallBack.Broadcast();
 		break;
 	}
 	
@@ -336,6 +346,16 @@ FTIHMngObjPoolCenter& FTIHMngObjPoolCenter::GetSingle()
 	return SelfObject;
 }
 
+void FTIHMngObjPoolCenter::InstantiateThis()
+{
+
+}
+
+void FTIHMngObjPoolCenter::InitiateThis()
+{
+
+}
+
 void FTIHMngObjPoolCenter::EmplaceAddMngObjPrepareData(int8 TargetClassType, UEObjectHash64 TargetClassHash, int16 CallParentIndex, int16 AllocateCount)
 {
 	//mPrepareDatas.EmplaceLast(FTIHNewAllocPrepareData( TargetClassType ,AllocateCount ,CallParentIndex ,TargetClassHash ));
@@ -393,6 +413,7 @@ UEObjectHash64 FTIHMngObjPoolCenter::RegistUEClassForGenerate(UClass* ucls)
 	else
 	{
 		/*
+			to-do
 			중복! 에대한 로그를 넘긴다.
 		*/
 		
@@ -411,6 +432,7 @@ void FTIHMngObjPoolCenter::RegistFunctionForManagedComponentGeneration(TIHReturn
 	else
 	{
 		/*
+			to-do
 			log.changeDelegateFunc
 		*/
 		mTIHClassHashToGenerateFunction[managedCompHash] = func;
@@ -804,7 +826,7 @@ TTIHMeshCapsule<UStaticMesh>* FTIHMeshPool::GenerateStaticMeshCapsules(const FSt
 	return capsule;
 }
 
-void FTIHMeshPool::InitMeshPool()
+void FTIHMeshPool::InitiateThis()
 {
 	mDefaultCategories.Add(0, TEXT("NotAllocCategory"));
 	mDefaultCategories.Add(1, TEXT("Default0"));

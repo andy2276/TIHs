@@ -5,6 +5,7 @@
 #include "Engine/StreamableManager.h"
 #include "Components/Widget.h"
 #include "TIHCommandCore.h"
+#include "TIHManagedObjectLeafs.h"
 
 
 #pragma region DefaultStation Functions
@@ -16,6 +17,41 @@ FTIHDefaultStation::FTIHDefaultStation()
 FTIHDefaultStation::~FTIHDefaultStation()
 {
 }
+
+void FTIHDefaultStation::RegistForTIHMngObj()
+{
+	mSettingHelper->MngObjSetting().RegistTIHMngObjLeafGenerateFuncTemplate<FTIHMngObjLeafMovement>();
+	mSettingHelper->MngObjSetting().RegistTIHMngObjLeafGenerateFuncTemplate<FTIHMngObjLeafStMesh>();
+	mSettingHelper->MngObjSetting().RegistTIHMngObjLeafGenerateFuncTemplate<FTIHMngObjLeafSkMesh>();
+	mSettingHelper->MngObjSetting().RegistTIHMngObjLeafGenerateFuncTemplate<FTIHMngObjLeafPretty>();
+
+	mSettingHelper->MngObjSetting().RegistUESceneAndTIHMngObjLeafListTemplate
+		<USceneComponent>
+		(
+			{
+				FTIHMngObjLeafMovement::TIHClassNameHash()
+			}
+	);
+	mSettingHelper->MngObjSetting().RegistUESceneAndTIHMngObjLeafListTemplate
+		<UStaticMeshComponent>
+		(
+			{
+				FTIHMngObjLeafMovement::TIHClassNameHash(),
+				FTIHMngObjLeafStMesh::TIHClassNameHash(),
+				FTIHMngObjLeafPretty::TIHClassNameHash()
+			}
+	);
+	mSettingHelper->MngObjSetting().RegistUESceneAndTIHMngObjLeafListTemplate
+		<USkeletalMeshComponent>
+		(
+			{
+				FTIHMngObjLeafMovement::TIHClassNameHash(),
+				FTIHMngObjLeafSkMesh::TIHClassNameHash(),
+				FTIHMngObjLeafPretty::TIHClassNameHash()
+			}
+	);
+}
+
 /*!
 *	@brief 전부 멈추는 기능이다.
 *	@detail 
@@ -105,8 +141,12 @@ TIHReturn64 FTIHDefaultStation::InstantiateStation()
 	mMngObjGenerateHelper = new FTIHMngObjGenerateHelper;
 	mSettingHelper = new FTIHSettingHelper;
 
+	/*
+		to-do
+		mCommandFactory 이걸 안쓸거같음 
+	*/
 	mCommandFactory = new FTIHCommandFactory;
-	mCommander = new FTIHCommander;
+	mCommander = new FTIHCommander;			
 	
 	mPoolCenter = new FTIHMngObjPoolCenter;
 	mPathCenter = new FTIHPathCenter;
@@ -133,11 +173,46 @@ TIHReturn64 FTIHDefaultStation::PrepareStation()
 {
 	TIHReturn64 reValue = 0;
 
+	RegistForTIHMngObj();
+
+
+	FTIHCommanderConfigure commandConfig;
+	commandConfig.InitType = 1;
+	commandConfig.CommandCapacity = 256;
+
+	/*
+		to-do
+		InstantiateThis 와
+		InitiateThis 이거 만들어야함
+	*/
+	mCommander->SetCommanderConfig(commandConfig);
+	mCommander->OnReserveCommander();
+
+	mPoolCenter->InstantiateThis();
+	FTIHMngObjPoolCenterConfigure poolCenterConfig;
+	poolCenterConfig.PrepareDataQueCapacityCount = 512;
+	mPoolCenter->SetMngObjPoolCenterConfig(poolCenterConfig);
+	mPoolCenter->InitiateThis();
+
+	mPathCenter->InstantiateThis();
+	FTIHPathCenterConfigure pathConfig;
+	pathConfig.PathArrayCapacityCount = 768;
+	pathConfig.UrlArrayCapacityCount = 32;
+	mPathCenter->SetPathCenterConfig(pathConfig);
+	mPathCenter->InitiateThis();
+
+	mMeshPool->InstantiateThis();
+	FTIHMeshPoolConfigure meshPoolConfig;
+	mMeshPool->SetMeshPoolConfig(meshPoolConfig);
+	mMeshPool->InitiateThis();
+
+	
+
 	/*
 		외부 서버와 먼저 연결을 하기 전에 사전준비를 한다. 해당부분은 프로세서가 실행되고 로고 창이 뜰때 로딩이 될것이다.
 		로딩이 
 	*/
-
+	
 	FTIHState::SetManagedObjectPoolCenter(mPoolCenter);
 	FTIHMngObj::SetManagedObjectPoolCenter(mPoolCenter);
 

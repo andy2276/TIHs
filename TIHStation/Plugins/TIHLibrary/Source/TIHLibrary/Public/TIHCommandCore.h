@@ -482,6 +482,11 @@ union FUnionTIHCommandFactoryResult
 	TIHReturn64 WholeData;
 };
 
+/*
+	to-do
+	여기에 커맨드 팩토리 만들기
+	이거 안쓸거같음.
+*/
 class FTIHCommandFactory
 {
 public:
@@ -759,6 +764,12 @@ public:
 
 		return reValue.WholeData;
 	}
+	void ReserveCommandList(int32 cmdCapacity)
+	{
+		ReserveCommandQueue(cmdCapacity);
+		mDeleteCandidates.Reserve(cmdCapacity);
+	}
+
 	TIHReturn64 ClearCommandForcefully(int32 itorIndex)
 	{
 		FUnionTIHCommandListResult reValue;
@@ -1183,15 +1194,42 @@ public:
 
 	
 };
+USTRUCT()
+struct FTIHCommanderConfigure
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int8 InitType;
+	UPROPERTY()
+	int8 Padding0;
+	UPROPERTY()
+	int16 CommandCapacity;
+
+	FTIHCommanderConfigure()
+		:
+		InitType(0),
+		Padding0(0),
+		CommandCapacity(128)
+	{
+	}
+};
 
 
+/*
+	memo
+	### 사전에 해야하는것들
+		- [v] reserve : function array -> 이거 생일 문제임
+		- [v] reserve : FTIHCommandList::mDeleteCandidates 이거도 크기가 커맨드와 같아야하지 않을까
+		- [v] reserve : FTIHCommandList::mCommandQueue 이거도 크기가 커맨드와 같아야하지 않을까
+
+*/
 class FTIHCommander
 {
 public:
 	FTIHCommander()
 	{
-		mCommandLists.Reserve(4);
-		mCommandLists.AddDefaulted(4);
+		
 	}
 
 	void TestSettingCommandList();
@@ -1217,9 +1255,10 @@ public:
 		return reValue;
 	}
 
-
-
-	//	이거 리절브 해야함.
+	/*
+		to-do
+		이거 커맨드 양만큼 리절브 해야하는거임.
+	*/
 	TArray<TTIHCommandFunctorWrapper< TIHReturn64(FTIHCommandBase*) > > mCompleteFunctions;
 
 	TIHReturn64 ExecuteCommandByCmdProtocolEnum(FTIHCommandBase* primitiveCmd);
@@ -1233,27 +1272,6 @@ public:
 
 	TIHReturn64 CheckCallingErrorFunctions(FTIHCommandBase* primitiveCmd);
 
-
-	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyTestDelay, mStrategyTestDelay);
-	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyCreateNewAlloc, mStrategyCreateNewAlloc);
-	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyCreateAssignPool, mStrategyCreateAssignPool);
-	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyServerConnect, mStrategyServerConnect);
-	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyServerSend, mStrategyServerSend);
-	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyServerListen, mStrategyServerListen);
-	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyServerDisConnect, mStrategyServerDisConnect);
-	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyDeleteRejectPool, mStrategyDeleteRejectPool);
-	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyDeleteDestory, mStrategyDeleteDestory);
-	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyModifyTransform, mStrategyModifyTransform);
-	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyModifyValue, mStrategyModifyValue);
-	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyInOutReadAndSave, mStrategyInOutReadAndSave);
-	//TIHMACRO_CHAINBUILDER_SETTER_AUTO_FUNCNAME(StrategyInOutWriteAndModify, mStrategyInOutWriteAndModify);
-
-	//decltype(auto) SetStrategyTestDelay(auto value)
-	//{
-	//	SafeDeletePtr(mStrategyTestDelay);
-	//	mStrategyTestDelay = value;
-	//	return *this;
-	//}
 	decltype(auto) SetStrategyCreateNewAlloc(auto value)
 	{
 		SafeDeletePtr(mStrategyCreateNewAlloc);
@@ -1320,6 +1338,18 @@ public:
 		mStrategyInOutWriteAndModify = value;
 		return *this;
 	}
+	
+	void SetCommanderConfig(const FTIHCommanderConfigure& value)
+	{
+		mCommanderConfig = value;
+	}
+	FTIHCommanderConfigure GetCommanderConfig() const
+	{
+		return mCommanderConfig;
+	}
+
+	void OnReserveCommander();
+	
 
 private:
 	int32 mCurrentCommandListIndex;
@@ -1354,6 +1384,8 @@ private:
 	FTIHCommanderStrategyInOutWriteAndModify*	mStrategyInOutWriteAndModify;
 
 	FTIHCommanderExtentionForExeCmdStrategy*	mStrategyExention;
+
+	FTIHCommanderConfigure mCommanderConfig;
 };
 
 class FTIHTickableScheduler : public FTickableGameObject
