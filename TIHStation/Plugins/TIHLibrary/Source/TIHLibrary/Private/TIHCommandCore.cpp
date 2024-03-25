@@ -3,10 +3,6 @@
 #include "TIHStrategies.h"
 #include "TIHStationCore.h"
 
-
-
-
-
 void FTIHCommander::TestSettingCommandList()
 {
 

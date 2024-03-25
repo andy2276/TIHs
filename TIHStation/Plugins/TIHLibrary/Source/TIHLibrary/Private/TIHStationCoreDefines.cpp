@@ -1,8 +1,8 @@
-#include "TIHCommands.h"
+
+#include "TIHStationCoreDefines.h"
 #include "TIHStationCore.h"
+#include "TIHCommands.h"
 #include "TIHCommandCore.h"
-
-
 
 FTIHStationBase::FTIHStationBase()
 	:
