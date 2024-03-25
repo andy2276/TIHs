@@ -1,4 +1,3 @@
-#include "TIHStationCoreDefines.h"
 #include "TIHCommands.h"
 #include "TIHStationCore.h"
 #include "TIHCommandCore.h"

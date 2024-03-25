@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+#include "TIHCommandCore.h"
 #include "TIHStationCore.h"
 #include "Engine/StreamableManager.h"
 #include "Components/Widget.h"
-#include "TIHCommandCore.h"
 #include "TIHManagedObjectLeafs.h"
 
 

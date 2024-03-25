@@ -1,6 +1,5 @@
 #include "TIHManagedObjects.h"
 #include "TIHCommands.h"
-#include "TIHStationCoreDefines.h"
 #include "TIHStationCore.h"
 #include "TIHManagedObjectLeafs.h"
 
