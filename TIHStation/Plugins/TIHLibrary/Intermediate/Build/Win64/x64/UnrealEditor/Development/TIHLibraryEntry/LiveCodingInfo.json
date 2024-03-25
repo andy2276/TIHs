@@ -19,10 +19,10 @@
 			"TIHManagedObjectLeafs.cpp.obj",
 			"TIHManagedObjects.cpp.obj",
 			"TIHNetworks.cpp.obj",
-			"TIHPakBase.cpp.obj",
 			"TIHStationCore.cpp.obj",
 			"TIHStationCoreDefines.cpp.obj",
-			"TIHStrategies.cpp.obj"
+			"TIHStrategies.cpp.obj",
+			"TIHPakBase.cpp.obj"
 		]
 	}
 }

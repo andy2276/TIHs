@@ -95,6 +95,16 @@ FTIHIntellisense::FTIHIntellisense()
 	}
 }
 
+FTIHIntellisense::~FTIHIntellisense()
+{
+	mStation=nullptr;
+	mMngObjCenter=nullptr;
+	mMeshPool=nullptr;
+	mTickTock=nullptr;
+	mCommander=nullptr;
+	mCommandList = nullptr;
+}
+
 void FTIHIntellisense::Tick(float DeltaTime)
 {
 	if (LastFrameNumberWeTicked != GFrameCounter)
