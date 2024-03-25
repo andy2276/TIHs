@@ -16,7 +16,11 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 	{
 		mStartTick = tickTock.GetTick();
 		mIsStartPipeLining = false;
-
+		const FTIHMngObjPoolCenterConfigure& centerConfig = poolCenter.GetMngObjPoolCenterConfig();
+		/*
+			미리 큐의 공간을 늘려준다.
+		*/
+		targetPool->GetGenerateQueues().Reserve(centerConfig.ForActorQueueCount, centerConfig.ForCompositeCount, centerConfig.ForLeafCount);
 		mGenStartCallBack.Broadcast();
 	}
 	managedObjectFactory.SetManagedObjectPool(targetPool);
@@ -26,7 +30,7 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 	TDeque<FTIHNewAllocPrepareData>& prepareQueue = poolCenter.GetPrepareDataQueue();
 	int32 prepareNum = prepareQueue.Num();
 	const TArray<FTIHMngObj*>& wholeArray = targetPool->GetWholeManagedObjectArray();
-	FTIHMngObjGenerateQueues& GenerateQues = targetPool->GetTempDatas();
+	FTIHMngObjGenerateQueues& GenerateQues = targetPool->GetGenerateQueues();
 
 	int32 wholeObjNum = 0;
 	const int32 wholeObjMax = wholeArray.Max();
@@ -34,14 +38,7 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 	int32 endPhaseCount = targetPoolConfig.PoolDatas.MaxPhase;//	한번을 돌릴때 while 을 몇번돌릴지에 대한것임.
 	int32 currPhaseCount = 0;
 
-	//	config 동기화 하는곳임
-	if (targetPoolConfig.PoolDatas.WholeManagedObjectMaxCount < wholeObjMax)
-	{
-		/*
-			이전에 어떤것에 의해서 늘어났다는 소리임.
-		*/
-		targetPool->ReserveWholeObjectPool(targetPoolConfig.PoolDatas.WholeManagedObjectMaxCount);//	리절브를 해주는데, 이건 에러를 고치는 용도이지 
-	}
+	targetPool->ReserveWholeObjectPool(targetPoolConfig.PoolDatas.WholeManagedObjectMaxCount);
 
 	ETIHReturn32Semantic currPipeliningState = ETIHReturn32Semantic::Success;
 
@@ -162,6 +159,10 @@ void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
 		break;
 	case ETIHReturn32Semantic::Success:
 		targetPool->OnCompleteCreateNewAlloc();
+		/*
+			이제 끝났으니 정리해주는 코드임
+		*/
+		targetPool->GetGenerateQueues().OnEmpty();
 		mGenEndCallBack.Broadcast();
 		break;
 	}
@@ -348,12 +349,63 @@ FTIHMngObjPoolCenter& FTIHMngObjPoolCenter::GetSingle()
 
 void FTIHMngObjPoolCenter::InstantiateThis()
 {
-
+	mManagedObjectFactory = new FTIHMngObjFactory;
 }
 
 void FTIHMngObjPoolCenter::InitiateThis()
 {
 
+}
+
+void FTIHMngObjPoolCenter::GenerateDefaultMngObjPools()
+{
+	FTIHMngObjPoolConfigure tempConfig;
+	FTIHMngObjPool* tempMngPool = nullptr;
+
+	tempConfig.Reset();
+	tempConfig.PoolDatas.AllocationSpace = TIHNameSpaceManagedObject::AllocationSpaceType::AdminSpace;
+	tempConfig.PoolDatas.WholeManagedObjectMaxCount = 128;
+	tempConfig.PoolDatas.AddWholeCapasityWhenFullWhole = 16;
+	tempConfig.PoolDatas.MaxPhase = 256;
+	tempConfig.PoolDatas.Option0 = 0;
+
+	tempMngPool = GenerateMngObjPoolByConfigure(tempConfig);
+
+	mManagedObjectPools.Add
+	(
+		tempConfig.PoolDatas.AllocationSpace,
+		tempMngPool
+	);
+
+	tempConfig.Reset();
+	tempConfig.PoolDatas.AllocationSpace = TIHNameSpaceManagedObject::AllocationSpaceType::SystemSpace;
+	tempConfig.PoolDatas.WholeManagedObjectMaxCount = 256;
+	tempConfig.PoolDatas.AddWholeCapasityWhenFullWhole = 16;
+	tempConfig.PoolDatas.MaxPhase = 256;
+	tempConfig.PoolDatas.Option0 = 0;
+
+	tempMngPool = GenerateMngObjPoolByConfigure(tempConfig);
+
+	mManagedObjectPools.Add
+	(
+		tempConfig.PoolDatas.AllocationSpace,
+		tempMngPool
+	);
+
+	tempConfig.Reset();
+	tempConfig.PoolDatas.AllocationSpace = TIHNameSpaceManagedObject::AllocationSpaceType::GlobalSpace;
+	tempConfig.PoolDatas.WholeManagedObjectMaxCount = 512;
+	tempConfig.PoolDatas.AddWholeCapasityWhenFullWhole = 8;
+	tempConfig.PoolDatas.MaxPhase = 256;
+	tempConfig.PoolDatas.Option0 = 0;
+
+	tempMngPool = GenerateMngObjPoolByConfigure(tempConfig);
+
+	mManagedObjectPools.Add
+	(
+		tempConfig.PoolDatas.AllocationSpace,
+		tempMngPool
+	);
 }
 
 void FTIHMngObjPoolCenter::EmplaceAddMngObjPrepareData(int8 TargetClassType, UEObjectHash64 TargetClassHash, int16 CallParentIndex, int16 AllocateCount)
@@ -511,6 +563,41 @@ FTIHMngObjPool* FTIHMngObjPoolCenter::CreateManagedObjectPool(
 	return nullptr;
 }
 
+FTIHMngObjPool* FTIHMngObjPoolCenter::GenerateMngObjPoolByConfigure(FTIHMngObjPoolConfigure config)
+{
+	FTIHMngObjPool* reValue = nullptr;
+	/*
+		마냥 생성하는게 아니라 메모리에 접근해야함. 
+	
+	*/
+	if(mManagedObjectPools.Contains(config.PoolDatas.AllocationSpace) == false)
+	{
+		/*
+			WholeManagedObjectMaxCount;
+			MaxPhase;
+			AddWholeCapasityWhenFullWhole;
+			AllocationSpace;
+			Option0;//{bitmask : isSet  WholeManagedObjectMaxCount,MaxPhase,AddWholeCapasityWhenFullWhole}
+			Option1;
+		*/
+		reValue = new FTIHMngObjPool(*this);
+		config.PoolDatas.Option0 =
+			1 << 0 | 1 << 1 | 1 << 2 | 1 << 3;
+		reValue->SetMngObjPoolConfig(config);
+		reValue->UpdateConfig();
+	}
+	else
+	{
+		/*
+			to-do
+			이미 있으니 새롭게 만들어라라는 로그를 띄운다.
+		*/
+
+	}
+
+	return reValue;
+}
+
 FTIHMngObj* FTIHMngObjPoolCenter::PoolingManagedObject(int8 allocationSpace, int8 ueObjBase, TIHObjectHash64 ueObjHash)
 {
 	FTIHMngObj* reValue = nullptr;
@@ -523,9 +610,13 @@ FTIHMngObj* FTIHMngObjPoolCenter::PoolingManagedObject(int8 allocationSpace, int
 
 TIHReturn64 FTIHMngObjPool::ReserveWholeObjectPool(int16 maxCount)
 {
-
-
-	return 0;
+	TIHReturn64 reValue = 0;
+	if(mWholeManagedObjects.Max() < maxCount)
+	{
+		reValue = mWholeManagedObjects.Max();
+		mWholeManagedObjects.Reserve(maxCount);
+	}
+	return reValue;
 }
 
 void FTIHMngObjPool::AddNewManagedObject(FTIHMngObj* newManagedObject)
@@ -819,6 +910,12 @@ FTIHMngObjLeafSkMesh* FTIHMngObjComposite::TryGetLeafForSkMesh()
 	return static_cast<FTIHMngObjLeafSkMesh*>(TryGetLeafByHash(FTIHMngObjLeafSkMesh::TIHClassNameHash()));
 }
 
+FTIHMeshPool* FTIHMeshPool::GetSingle()
+{
+	static FTIHMeshPool* reValue = &TIHSTATION.GetMeshPool();
+	return reValue;
+}
+
 TTIHMeshCapsule<UStaticMesh>* FTIHMeshPool::GenerateStaticMeshCapsules(const FString& path)
 {
 	static FTIHTickTock& tickTock = TIHSTATION.GetTickTock();
@@ -924,7 +1021,7 @@ void FTIHMeshPool::PrepareStMeshPathsByList(const TArray<FString>& stMeshList)
 {
 	if(mCategoryQueue.IsEmpty() == true)
 	{
-		mCategoryQueue.PushLast(mDefaultCategories[mMeshPoolConfig.CreateCategoryHash]);
+		mCategoryQueue.PushLast(mDefaultCategories[mMeshPoolConfig.CreateCategoryHashDefaultIndex]);
 	}
 	const FString& topCat = mCategoryQueue.First();
 	

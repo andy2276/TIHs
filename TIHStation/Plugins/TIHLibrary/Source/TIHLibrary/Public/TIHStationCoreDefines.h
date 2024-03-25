@@ -931,6 +931,8 @@ public:
 		}
 		int64 reValue = static_cast<int64>(hashValue);
 		
+		//	to-do 
+		//	충돌 처리
 		//	베제고릴라
 		//if(IsCollision(reValue) == true)
 		//{

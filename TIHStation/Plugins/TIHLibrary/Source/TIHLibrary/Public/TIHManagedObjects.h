@@ -633,26 +633,66 @@ struct FTIHMeshPoolConfigure
 {
 	GENERATED_BODY()
 
+	/*
+		슬라이딩 윈도우 타입이다.
+		EStuckEnd,	EInfiniteEnd,ESlackEnd,ECircling,
+	*/
 	UPROPERTY()
 	int8 SlidingWindowType;
+	/*
+
+	*/
 	UPROPERTY()
 	int8 SlidingWindowSplitType;
+	/*
+		한번에 얼마씩 슬라이딩을 할지를 정한다. 즉 한번의 범위이며, count 이다.
+	*/
 	UPROPERTY()
 	int16 SlidingWindowSplitValue;
-
+	/*
+		슬라이딩 방향 left = -1 , right = 1
+	*/
 	UPROPERTY()
 	int8 SlindingWindowDirection;
+	/*
+		매쉬를 얻어낼때 어떻게 얻어낼지를 정한다.
+		startEnd 는 0 과 1 이 범위를 뜻하며
+		perElement 는 그냥 각 인덱스이다.
+		UnknownType = 0,StartEnd = 1,PerElement = 2
+	*/
 	UPROPERTY()
 	int8 PrepareLoadPathType;
+	/*
+		to-do
+		이거 사용하는곳 차기 만든 이유는 있는데 기억이 안남.
+	*/
 	UPROPERTY()
 	int16 PrepareLoadPathDataIndex;
-
+	/*
+		startEnd 는 0 과 1 이 범위를 뜻하며
+		perElement 는 그냥 각 인덱스이다.
+		UnknownType = 0,StartEnd = 1,PerElement = 2
+	*/
 	UPROPERTY()
 	int8 CreateInnerQueryType;
+	/*
+		카테고리 큐를 팝할건지 아닌지를 정한다.
+		보통 하나의 카테고리가 하나의 매쉬를 뜻하는지 아니면 범위를 정하는지를 정할때 사용한다.
+	*/
 	UPROPERTY()
 	int8 CreateCategoryPop;
+	/*
+		mDefaultCategories.Add(0, TEXT("NotAllocCategory"));
+		mDefaultCategories.Add(1, TEXT("Default0"));
+		mDefaultCategories.Add(2, TEXT("Default1"));
+		mDefaultCategories.Add(3, TEXT("Default2"));
+		mDefaultCategories.Add(4, TEXT("Default3"));
+		mDefaultCategories.Add(5, TEXT("StMeshDefault"));
+		mDefaultCategories.Add(6, TEXT("SkMeshDefault"));
+		이게 디폴트 카테고리임.
+	*/
 	UPROPERTY()
-	int16 CreateCategoryHash;
+	int16 CreateCategoryHashDefaultIndex;
 
 	FTIHMeshPoolConfigure()
 		:
@@ -664,7 +704,7 @@ struct FTIHMeshPoolConfigure
 		PrepareLoadPathDataIndex(TIHNameSpaceCommon::Common::Int8s::NotYetValue),
 		CreateInnerQueryType(TIHNameSpaceCommon::QueryType::UnknownType),
 		CreateCategoryPop(TIHNameSpaceCommon::Common::Int8s::TrueValue),
-		CreateCategoryHash(TIHNameSpaceCommon::Common::Int8s::ZeroValue)
+		CreateCategoryHashDefaultIndex(TIHNameSpaceCommon::Common::Int8s::ZeroValue)
 	{}
 	FTIHMeshPoolConfigure(const FTIHMeshPoolConfigure& copyCtor)
 		:
@@ -676,7 +716,7 @@ struct FTIHMeshPoolConfigure
 		PrepareLoadPathDataIndex(copyCtor.PrepareLoadPathDataIndex),
 		CreateInnerQueryType(copyCtor.CreateInnerQueryType),
 		CreateCategoryPop(copyCtor.CreateCategoryPop),
-		CreateCategoryHash(copyCtor.CreateCategoryHash)
+		CreateCategoryHashDefaultIndex(copyCtor.CreateCategoryHashDefaultIndex)
 	{
 	}
 	FTIHMeshPoolConfigure(FTIHMeshPoolConfigure&& moveCtor) noexcept
@@ -689,7 +729,7 @@ struct FTIHMeshPoolConfigure
 		PrepareLoadPathDataIndex(std::move(moveCtor.PrepareLoadPathDataIndex)),
 		CreateInnerQueryType(std::move(moveCtor.CreateInnerQueryType)),
 		CreateCategoryPop(std::move(moveCtor.CreateCategoryPop)),
-		CreateCategoryHash(std::move(moveCtor.CreateCategoryHash))
+		CreateCategoryHashDefaultIndex(std::move(moveCtor.CreateCategoryHashDefaultIndex))
 	{
 	}
 	FTIHMeshPoolConfigure& operator=(const FTIHMeshPoolConfigure& copyOper)
@@ -702,7 +742,7 @@ struct FTIHMeshPoolConfigure
 		PrepareLoadPathDataIndex = copyOper.PrepareLoadPathDataIndex;
 		CreateInnerQueryType = copyOper.CreateInnerQueryType;
 		CreateCategoryPop = copyOper.CreateCategoryPop;
-		CreateCategoryHash = copyOper.CreateCategoryHash;
+		CreateCategoryHashDefaultIndex = copyOper.CreateCategoryHashDefaultIndex;
 		return *this;
 	}
 	FTIHMeshPoolConfigure& operator=(FTIHMeshPoolConfigure&& moveOper) noexcept
@@ -715,7 +755,7 @@ struct FTIHMeshPoolConfigure
 		PrepareLoadPathDataIndex=std::move(moveOper.PrepareLoadPathDataIndex);
 		CreateInnerQueryType=std::move(moveOper.CreateInnerQueryType);
 		CreateCategoryPop=std::move(moveOper.CreateCategoryPop);
-		CreateCategoryHash=std::move(moveOper.CreateCategoryHash);
+		CreateCategoryHashDefaultIndex=std::move(moveOper.CreateCategoryHashDefaultIndex);
 		return *this;
 	}
 
@@ -723,7 +763,7 @@ struct FTIHMeshPoolConfigure
 	{
 		CreateInnerQueryType = copyValue.CreateInnerQueryType;
 		CreateCategoryPop = copyValue.CreateCategoryPop;
-		CreateCategoryHash = copyValue.CreateCategoryHash;
+		CreateCategoryHashDefaultIndex = copyValue.CreateCategoryHashDefaultIndex;
 	}
 
 };
@@ -812,10 +852,19 @@ struct FTIHMeshPoolCenterConfigure	//	이거는 결국 매쉬풀을 만들기위
 //	int16 mPrepareLoadPathDataIndex;
 //};
 
+/*
+	query 에 대한 정보를 담고있고, 
+	내부에 해당 매쉬캡슐에 대한 인덱스를 담고있다.
 
+*/
 struct FTIHQueryMeshPool
 {
-	int8 InnerQueryType; // {startEndIndex = 0,PerIndex = 1}
+	/*
+		startEnd 는 0 과 1 이 범위를 뜻하며
+		perElement 는 그냥 각 인덱스이다.
+		UnknownType = 0,StartEnd = 1,PerElement = 2
+	*/
+	int8 InnerQueryType;
 	int8 LoadState;
 	int16 Padding0;
 	TArray<int16> IntData;
@@ -883,14 +932,14 @@ struct FTIHQueryMeshPool
 class FTIHMeshPool
 {
 public:
-	static FTIHMeshPool* GetSingle()
-	{
-		static FTIHMeshPool meshPool;
-		return &meshPool;
-	}
+	/*
+		to-do
+	*/
+	static FTIHMeshPool* GetSingle();
+	
 	TTIHMeshCapsule<UStaticMesh>* GenerateStaticMeshCapsules(const FString& path);
 
-	void InstantiateThis();
+	void InstantiateThis() {};
 
 	void InitiateThis();
 
@@ -955,9 +1004,12 @@ public:
 
 	void OnLoadStMeshsBySlidingWindow();
 
+
+
 	UStaticMesh* GetLoadedStaticMeshByIndex(int16 index)
 	{
 		UStaticMesh* reValue = nullptr;
+		// 이거 어떻게 하지. 2번검사하는데.
 		if (mStagingStMeshs.IsValidIndex(index) == true)
 		{
 			if (mStagingStMeshs[index]->IsLoadedMesh() == true)
@@ -988,6 +1040,7 @@ public:
 		reValue = GetLoadedStaticMeshByIndex(mStagingStMeshTable[meshPath]);
 		return reValue;
 	}
+	FTIHQueryMeshPool
 
 
 	void GetPrepareSkeletalMeshByPath(const FString& meshPath);
@@ -1014,7 +1067,43 @@ public:
 
 	ATIHMeshPoolPathLoadImbeding* GetMeshPoolPathLoadImbeding();
 
+
+	/*
+		어떻게 만들까. 
+		만들고 보니깐
+		메쉬 경로를 로드하고
+			개별로드와 리스트 로드
+		메쉬를 로드하고
+		카테고리로 저장하고
+
+		메쉬들을 들고있다.
+
+		st나 sk 매쉬를 저장하고있는 캡슐이 필요하다.
+		매쉬가 로드되어진 상태인지 아닌지 확인하는 게 필요하다.
+
+		카테고리로 검색하는 것은 애초에 리스트를 얻어내는것이라 생각하자.
+		경로로 검색하는 것은 개별을 가져온다 생각하자.
+		
+		경로를 검색하면 해당 캡슐의 인덱스가 나오고
+		카테고리를 검색하면 해당캡슐들의 인덱스들이 나온다.
+
+		인덱스를 가지고 st메쉬를 로드하는기능이 있어야한다.
+
+		지금 생각하는게 해당 캡슐은 인덱스를 가지는데 해당 캡슐가지고 경로를 검색할 수 잇을까?
+	*/
+	//void StoreStMeshPath(const FString& cat, const FString& path);
+	//void StoreStMeshPathList(const FString& cat, const TArray<FString>& pathList);
+	//
+	//void LoadStMeshByPath(const FString& path);
+	//void LoadStMeshesByCategory(const FString& cat);
+	//
+	//UStaticMesh* QueryGetStMeshByPath(const FString& path);
+	//TArray<UStaticMesh*> QueryGetStMeshesByCategory(const FString& cat);
+	
+
 private:
+	TArray< TSharedPtr< TTIHMeshCapsule<UStaticMesh>>> mStMeshArray;
+	
 	/*
 		1.  요청이 들어오면 그걸 전부 스테이징 테이블에 넣는다
 		2.	넣으면서 해당 경로를 저장해놓는다
@@ -1154,6 +1243,11 @@ struct FTIHMngObjComponentHeader
 								ManagedObject Configures
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
+/*
+	to-do
+	무조건 스테이션을 시작하기전에 설정해줘야한다.
+*/
+
 USTRUCT()
 struct FTIHMngObjPoolCenterConfigure
 {
@@ -1163,7 +1257,11 @@ struct FTIHMngObjPoolCenterConfigure
 	int16 PrepareDataQueCapacityCount;
 	
 	UPROPERTY()
-	int16 Padding;
+	int16 ForActorQueueCount;
+	UPROPERTY()
+	int16 ForCompositeCount;
+	UPROPERTY()
+	int16 ForLeafCount;
 };
 
 USTRUCT()
@@ -1225,6 +1323,16 @@ struct FTIHMngObjPoolConfigureDatas
 		}
 		return *this;
 	}
+
+	void Reset()
+	{
+		WholeManagedObjectMaxCount = 0;
+		MaxPhase = 0;
+		AddWholeCapasityWhenFullWhole = 0;
+		AllocationSpace = 0;
+		Option0 = 0;//{bitmask : isSet  WholeManagedObjectMaxCount,MaxPhase,AddWholeCapasityWhenFullWhole = 0;
+		Option1 = 0;
+	}
 };
 USTRUCT()
 struct FTIHMngObjPoolConfigure
@@ -1242,6 +1350,21 @@ struct FTIHMngObjPoolConfigure
 
 	UPROPERTY()
 	FTransform DefaultTransform;
+
+	void Reset()
+	{
+		PoolDatas.Reset();
+		SpawnSpace = nullptr;
+		OwnerActor = nullptr;
+		DefaultTransform = FTransform::Identity;
+	}
+	FTIHMngObjPoolConfigure& operator=(const FTIHMngObjPoolConfigure& value)
+	{
+		PoolDatas = value.PoolDatas;
+		SpawnSpace = value.SpawnSpace;
+		OwnerActor = value.OwnerActor;
+		DefaultTransform = value.DefaultTransform;
+	}
 };
 /*
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐
@@ -1969,12 +2092,22 @@ public:
 		mEmptyComposites.PopFirst();
 		return reValue;
 	}
-
+	/*
+		to-do
+		void Reserve(int16 forActorQueue, int16 forComposite, int16 forLeaf)
+		이게 만들때 사용하는건데 언제 reseve 해야할지 모르겠음. 그냥 음...언제하지?
+	*/
 	void Reserve(int16 forActorQueue, int16 forComposite, int16 forLeaf)
 	{
 		mActorQueue.Reserve(forActorQueue);
 		mPrepareDatasForComposite.Reserve(forComposite);
 		mEmptyComposites.Reserve(forLeaf);
+	}
+	void OnEmpty()
+	{
+		mActorQueue.Empty();
+		mPrepareDatasForComposite.Empty();
+		mEmptyComposites.Empty();
 	}
 
 private:
@@ -2667,6 +2800,15 @@ private:
 								Managed Object Pool
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
+/*
+	memo
+	### 사전에 설정해야하는 
+	TArray< FTIHMngObj*> mWholeManagedObjects;
+	mGenerateTargetWorld
+	mGenerateOwner
+	FTIHMngObjPool::mPrepareManagedObjects
+
+*/
 class FTIHMngObjPool
 {
 	/*
@@ -2715,9 +2857,15 @@ public:
 	{
 		return mManagedObjectPoolConfigure;
 	}
+	void SetMngObjPoolConfig(const FTIHMngObjPoolConfigure& value)
+	{
+		mManagedObjectPoolConfigure = value;
+
+	}
 	void SetObjectPoolConfigure(const FTIHMngObjPoolConfigureDatas& datas)
 	{
 		mManagedObjectPoolConfigure.PoolDatas = datas;
+
 	}
 
 	/*
@@ -2732,7 +2880,7 @@ public:
 	{
 		return mWholeManagedObjects;
 	}
-	FTIHMngObjGenerateQueues& GetTempDatas()
+	FTIHMngObjGenerateQueues& GetGenerateQueues()
 	{
 		return mTempDatasForNewAlloc;
 	}
@@ -2776,6 +2924,13 @@ public:
 		return target->GetState();
 	}
 
+	void UpdateConfig()
+	{
+		ReserveWholeObjectPool(mManagedObjectPoolConfigure.PoolDatas.WholeManagedObjectMaxCount);
+
+
+	}
+
 protected:
 	FTIHMngObjPoolCenter& mPoolCenter;
 
@@ -2815,7 +2970,10 @@ protected:
 	*/
 	FTIHMngObjPoolConfigure mManagedObjectPoolConfigure;
 
-	TDeque< FTIHNewAllocPrepareData> mPrepareManagedObjects;
+	/*
+		이거 안씀
+	*/
+//	TDeque< FTIHNewAllocPrepareData> mPrepareManagedObjects;
 
 	//TMap<int8,TMap<int8, TMap<TIHHash64,TSet<int16>>>> mManagedObjectStateBaseTypeIndices;
 
@@ -2869,6 +3027,11 @@ public:
 	void InstantiateThis();
 	void InitiateThis();
 
+	/*
+		초기화시 사용할거
+	*/
+	void GenerateDefaultMngObjPools();
+
 
 	TDeque<FTIHNewAllocPrepareData>& GetPrepareDataQueue()
 	{
@@ -2916,7 +3079,7 @@ public:
 	};
 	/*
 		to-do
-		이거 만들어야 하는데 ㅋㅋㅋㅋ
+		대충 만듦.
 	*/
 	FTIHMngObjPool* CreateManagedObjectPool(
 		int8 allocationSpace,
@@ -2927,6 +3090,11 @@ public:
 		const FTransform& defaultTransform = FTransform::Identity,
 		const int8 ifAddCapacityCount = int8(127)
 	);
+	FTIHMngObjPool* GenerateMngObjPoolByConfigure
+	(
+		FTIHMngObjPoolConfigure config
+	);
+
 	FTIHMngObj* PoolingManagedObject(int8 allocationSpace, int8 ueObjBase, TIHObjectHash64 ueObjHash);
 	FTIHMngObj* GetMngObj(int16 allocationSpace,int16 mngObjIndex)
 	{

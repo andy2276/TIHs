@@ -175,7 +175,6 @@ TIHReturn64 FTIHDefaultStation::PrepareStation()
 
 	RegistForTIHMngObj();
 
-
 	FTIHCommanderConfigure commandConfig;
 	commandConfig.InitType = 1;
 	commandConfig.CommandCapacity = 256;
@@ -203,6 +202,8 @@ TIHReturn64 FTIHDefaultStation::PrepareStation()
 
 	mMeshPool->InstantiateThis();
 	FTIHMeshPoolConfigure meshPoolConfig;
+	meshPoolConfig.CreateInnerQueryType = TIHNameSpaceCommon::QueryType::StartEnd;
+	
 	mMeshPool->SetMeshPoolConfig(meshPoolConfig);
 	mMeshPool->InitiateThis();
 
