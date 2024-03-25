@@ -9,6 +9,7 @@
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeTIHCommandCore() {}
 // Cross Module References
+	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHCommanderConfigure();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHCommandFunctorHeader();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHCommandHeader();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHCommandMethod();
@@ -313,6 +314,94 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHCommandFunctorHea
 		}
 		return Z_Registration_Info_UScriptStruct_TIHCommandFunctorHeader.InnerSingleton;
 	}
+	static FStructRegistrationInfo Z_Registration_Info_UScriptStruct_TIHCommanderConfigure;
+class UScriptStruct* FTIHCommanderConfigure::StaticStruct()
+{
+	if (!Z_Registration_Info_UScriptStruct_TIHCommanderConfigure.OuterSingleton)
+	{
+		Z_Registration_Info_UScriptStruct_TIHCommanderConfigure.OuterSingleton = GetStaticStruct(Z_Construct_UScriptStruct_FTIHCommanderConfigure, (UObject*)Z_Construct_UPackage__Script_TIHLibraryEntry(), TEXT("TIHCommanderConfigure"));
+	}
+	return Z_Registration_Info_UScriptStruct_TIHCommanderConfigure.OuterSingleton;
+}
+template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHCommanderConfigure>()
+{
+	return FTIHCommanderConfigure::StaticStruct();
+}
+	struct Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics
+	{
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam Struct_MetaDataParams[];
+#endif
+		static void* NewStructOps();
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_InitType_MetaData[];
+#endif
+		static const UECodeGen_Private::FInt8PropertyParams NewProp_InitType;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_Padding0_MetaData[];
+#endif
+		static const UECodeGen_Private::FInt8PropertyParams NewProp_Padding0;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_CommandCapacity_MetaData[];
+#endif
+		static const UECodeGen_Private::FInt16PropertyParams NewProp_CommandCapacity;
+		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+		static const UECodeGen_Private::FStructParams ReturnStructParams;
+	};
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::Struct_MetaDataParams[] = {
+		{ "ModuleRelativePath", "Public/TIHCommandCore.h" },
+	};
+#endif
+	void* Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewStructOps()
+	{
+		return (UScriptStruct::ICppStructOps*)new UScriptStruct::TCppStructOps<FTIHCommanderConfigure>();
+	}
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_InitType_MetaData[] = {
+		{ "ModuleRelativePath", "Public/TIHCommandCore.h" },
+	};
+#endif
+	const UECodeGen_Private::FInt8PropertyParams Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_InitType = { "InitType", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int8, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHCommanderConfigure, InitType), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_InitType_MetaData), Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_InitType_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_Padding0_MetaData[] = {
+		{ "ModuleRelativePath", "Public/TIHCommandCore.h" },
+	};
+#endif
+	const UECodeGen_Private::FInt8PropertyParams Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_Padding0 = { "Padding0", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int8, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHCommanderConfigure, Padding0), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_Padding0_MetaData), Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_Padding0_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_CommandCapacity_MetaData[] = {
+		{ "ModuleRelativePath", "Public/TIHCommandCore.h" },
+	};
+#endif
+	const UECodeGen_Private::FInt16PropertyParams Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_CommandCapacity = { "CommandCapacity", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int16, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHCommanderConfigure, CommandCapacity), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_CommandCapacity_MetaData), Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_CommandCapacity_MetaData) };
+	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::PropPointers[] = {
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_InitType,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_Padding0,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewProp_CommandCapacity,
+	};
+	const UECodeGen_Private::FStructParams Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::ReturnStructParams = {
+		(UObject* (*)())Z_Construct_UPackage__Script_TIHLibraryEntry,
+		nullptr,
+		&NewStructOps,
+		"TIHCommanderConfigure",
+		Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::PropPointers,
+		UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::PropPointers),
+		sizeof(FTIHCommanderConfigure),
+		alignof(FTIHCommanderConfigure),
+		RF_Public|RF_Transient|RF_MarkAsNative,
+		EStructFlags(0x00000001),
+		METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::Struct_MetaDataParams), Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::Struct_MetaDataParams)
+	};
+	static_assert(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::PropPointers) < 2048);
+	UScriptStruct* Z_Construct_UScriptStruct_FTIHCommanderConfigure()
+	{
+		if (!Z_Registration_Info_UScriptStruct_TIHCommanderConfigure.InnerSingleton)
+		{
+			UECodeGen_Private::ConstructUScriptStruct(Z_Registration_Info_UScriptStruct_TIHCommanderConfigure.InnerSingleton, Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::ReturnStructParams);
+		}
+		return Z_Registration_Info_UScriptStruct_TIHCommanderConfigure.InnerSingleton;
+	}
 	struct Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommandCore_h_Statics
 	{
 		static const FStructRegisterCompiledInInfo ScriptStructInfo[];
@@ -321,8 +410,9 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHCommandFunctorHea
 		{ FTIHCommandHeader::StaticStruct, Z_Construct_UScriptStruct_FTIHCommandHeader_Statics::NewStructOps, TEXT("TIHCommandHeader"), &Z_Registration_Info_UScriptStruct_TIHCommandHeader, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHCommandHeader), 1148537544U) },
 		{ FTIHCommandMethod::StaticStruct, Z_Construct_UScriptStruct_FTIHCommandMethod_Statics::NewStructOps, TEXT("TIHCommandMethod"), &Z_Registration_Info_UScriptStruct_TIHCommandMethod, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHCommandMethod), 645103139U) },
 		{ FTIHCommandFunctorHeader::StaticStruct, Z_Construct_UScriptStruct_FTIHCommandFunctorHeader_Statics::NewStructOps, TEXT("TIHCommandFunctorHeader"), &Z_Registration_Info_UScriptStruct_TIHCommandFunctorHeader, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHCommandFunctorHeader), 1441424144U) },
+		{ FTIHCommanderConfigure::StaticStruct, Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics::NewStructOps, TEXT("TIHCommanderConfigure"), &Z_Registration_Info_UScriptStruct_TIHCommanderConfigure, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHCommanderConfigure), 2012197380U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommandCore_h_1546959175(TEXT("/Script/TIHLibraryEntry"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommandCore_h_2544891903(TEXT("/Script/TIHLibraryEntry"),
 		nullptr, 0,
 		Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommandCore_h_Statics::ScriptStructInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommandCore_h_Statics::ScriptStructInfo),
 		nullptr, 0);

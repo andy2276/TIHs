@@ -28,12 +28,19 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<struct FTIHCommandHea
 
 template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<struct FTIHCommandMethod>();
 
-#define FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommandCore_h_895_GENERATED_BODY \
+#define FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommandCore_h_906_GENERATED_BODY \
 	friend struct Z_Construct_UScriptStruct_FTIHCommandFunctorHeader_Statics; \
 	TIHLIBRARYENTRY_API static class UScriptStruct* StaticStruct();
 
 
 template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<struct FTIHCommandFunctorHeader>();
+
+#define FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommandCore_h_1200_GENERATED_BODY \
+	friend struct Z_Construct_UScriptStruct_FTIHCommanderConfigure_Statics; \
+	TIHLIBRARYENTRY_API static class UScriptStruct* StaticStruct();
+
+
+template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<struct FTIHCommanderConfigure>();
 
 #undef CURRENT_FILE_ID
 #define CURRENT_FILE_ID FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHCommandCore_h

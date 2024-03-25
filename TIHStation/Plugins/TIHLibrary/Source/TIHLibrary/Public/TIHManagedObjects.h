@@ -1040,7 +1040,6 @@ public:
 		reValue = GetLoadedStaticMeshByIndex(mStagingStMeshTable[meshPath]);
 		return reValue;
 	}
-	FTIHQueryMeshPool
 
 
 	void GetPrepareSkeletalMeshByPath(const FString& meshPath);
@@ -1364,6 +1363,7 @@ struct FTIHMngObjPoolConfigure
 		SpawnSpace = value.SpawnSpace;
 		OwnerActor = value.OwnerActor;
 		DefaultTransform = value.DefaultTransform;
+		return *this;
 	}
 };
 /*

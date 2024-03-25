@@ -19,7 +19,9 @@ void EmptyLinkFunctionForGeneratedCodeTIHManagedObjects() {}
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHMeshPoolConfigure();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHMngObjComponentHeader();
+	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHMngObjConfigure();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHMngObjHeader();
+	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHMngObjPoolConfigure();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHMngObjPoolConfigureDatas();
 	TIHLIBRARYENTRY_API UScriptStruct* Z_Construct_UScriptStruct_FTIHNewAllocPrepareData();
@@ -77,9 +79,9 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHMeshPoolConfigure
 #endif
 		static const UECodeGen_Private::FInt8PropertyParams NewProp_CreateCategoryPop;
 #if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam NewProp_CreateCategoryHash_MetaData[];
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_CreateCategoryHashDefaultIndex_MetaData[];
 #endif
-		static const UECodeGen_Private::FInt16PropertyParams NewProp_CreateCategoryHash;
+		static const UECodeGen_Private::FInt16PropertyParams NewProp_CreateCategoryHashDefaultIndex;
 		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const UECodeGen_Private::FStructParams ReturnStructParams;
 	};
@@ -94,58 +96,109 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHMeshPoolConfigure
 	}
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlidingWindowType_MetaData[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/*\n\x09\x09\xec\x8a\xac\xeb\x9d\xbc\xec\x9d\xb4\xeb\x94\xa9 \xec\x9c\x88\xeb\x8f\x84\xec\x9a\xb0 \xed\x83\x80\xec\x9e\x85\xec\x9d\xb4\xeb\x8b\xa4.\n\x09\x09""EStuckEnd,\x09""EInfiniteEnd,ESlackEnd,ECircling,\n\x09*/" },
+#endif
 		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "\xec\x8a\xac\xeb\x9d\xbc\xec\x9d\xb4\xeb\x94\xa9 \xec\x9c\x88\xeb\x8f\x84\xec\x9a\xb0 \xed\x83\x80\xec\x9e\x85\xec\x9d\xb4\xeb\x8b\xa4.\nEStuckEnd,      EInfiniteEnd,ESlackEnd,ECircling," },
+#endif
 	};
 #endif
 	const UECodeGen_Private::FInt8PropertyParams Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlidingWindowType = { "SlidingWindowType", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int8, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMeshPoolConfigure, SlidingWindowType), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlidingWindowType_MetaData), Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlidingWindowType_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlidingWindowSplitType_MetaData[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/*\n\n\x09*/" },
+#endif
 		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
 	};
 #endif
 	const UECodeGen_Private::FInt8PropertyParams Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlidingWindowSplitType = { "SlidingWindowSplitType", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int8, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMeshPoolConfigure, SlidingWindowSplitType), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlidingWindowSplitType_MetaData), Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlidingWindowSplitType_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlidingWindowSplitValue_MetaData[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/*\n\x09\x09\xed\x95\x9c\xeb\xb2\x88\xec\x97\x90 \xec\x96\xbc\xeb\xa7\x88\xec\x94\xa9 \xec\x8a\xac\xeb\x9d\xbc\xec\x9d\xb4\xeb\x94\xa9\xec\x9d\x84 \xed\x95\xa0\xec\xa7\x80\xeb\xa5\xbc \xec\xa0\x95\xed\x95\x9c\xeb\x8b\xa4. \xec\xa6\x89 \xed\x95\x9c\xeb\xb2\x88\xec\x9d\x98 \xeb\xb2\x94\xec\x9c\x84\xec\x9d\xb4\xeb\xa9\xb0, count \xec\x9d\xb4\xeb\x8b\xa4.\n\x09*/" },
+#endif
 		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "\xed\x95\x9c\xeb\xb2\x88\xec\x97\x90 \xec\x96\xbc\xeb\xa7\x88\xec\x94\xa9 \xec\x8a\xac\xeb\x9d\xbc\xec\x9d\xb4\xeb\x94\xa9\xec\x9d\x84 \xed\x95\xa0\xec\xa7\x80\xeb\xa5\xbc \xec\xa0\x95\xed\x95\x9c\xeb\x8b\xa4. \xec\xa6\x89 \xed\x95\x9c\xeb\xb2\x88\xec\x9d\x98 \xeb\xb2\x94\xec\x9c\x84\xec\x9d\xb4\xeb\xa9\xb0, count \xec\x9d\xb4\xeb\x8b\xa4." },
+#endif
 	};
 #endif
 	const UECodeGen_Private::FInt16PropertyParams Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlidingWindowSplitValue = { "SlidingWindowSplitValue", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int16, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMeshPoolConfigure, SlidingWindowSplitValue), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlidingWindowSplitValue_MetaData), Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlidingWindowSplitValue_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlindingWindowDirection_MetaData[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/*\n\x09\x09\xec\x8a\xac\xeb\x9d\xbc\xec\x9d\xb4\xeb\x94\xa9 \xeb\xb0\xa9\xed\x96\xa5 left = -1 , right = 1\n\x09*/" },
+#endif
 		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "\xec\x8a\xac\xeb\x9d\xbc\xec\x9d\xb4\xeb\x94\xa9 \xeb\xb0\xa9\xed\x96\xa5 left = -1 , right = 1" },
+#endif
 	};
 #endif
 	const UECodeGen_Private::FInt8PropertyParams Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlindingWindowDirection = { "SlindingWindowDirection", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int8, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMeshPoolConfigure, SlindingWindowDirection), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlindingWindowDirection_MetaData), Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlindingWindowDirection_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_PrepareLoadPathType_MetaData[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/*\n\x09\x09\xeb\xa7\xa4\xec\x89\xac\xeb\xa5\xbc \xec\x96\xbb\xec\x96\xb4\xeb\x82\xbc\xeb\x95\x8c \xec\x96\xb4\xeb\x96\xbb\xea\xb2\x8c \xec\x96\xbb\xec\x96\xb4\xeb\x82\xbc\xec\xa7\x80\xeb\xa5\xbc \xec\xa0\x95\xed\x95\x9c\xeb\x8b\xa4.\n\x09\x09startEnd \xeb\x8a\x94 0 \xea\xb3\xbc 1 \xec\x9d\xb4 \xeb\xb2\x94\xec\x9c\x84\xeb\xa5\xbc \xeb\x9c\xbb\xed\x95\x98\xeb\xa9\xb0\n\x09\x09perElement \xeb\x8a\x94 \xea\xb7\xb8\xeb\x83\xa5 \xea\xb0\x81 \xec\x9d\xb8\xeb\x8d\xb1\xec\x8a\xa4\xec\x9d\xb4\xeb\x8b\xa4.\n\x09\x09UnknownType = 0,StartEnd = 1,PerElement = 2\n\x09*/" },
+#endif
 		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "\xeb\xa7\xa4\xec\x89\xac\xeb\xa5\xbc \xec\x96\xbb\xec\x96\xb4\xeb\x82\xbc\xeb\x95\x8c \xec\x96\xb4\xeb\x96\xbb\xea\xb2\x8c \xec\x96\xbb\xec\x96\xb4\xeb\x82\xbc\xec\xa7\x80\xeb\xa5\xbc \xec\xa0\x95\xed\x95\x9c\xeb\x8b\xa4.\nstartEnd \xeb\x8a\x94 0 \xea\xb3\xbc 1 \xec\x9d\xb4 \xeb\xb2\x94\xec\x9c\x84\xeb\xa5\xbc \xeb\x9c\xbb\xed\x95\x98\xeb\xa9\xb0\nperElement \xeb\x8a\x94 \xea\xb7\xb8\xeb\x83\xa5 \xea\xb0\x81 \xec\x9d\xb8\xeb\x8d\xb1\xec\x8a\xa4\xec\x9d\xb4\xeb\x8b\xa4.\nUnknownType = 0,StartEnd = 1,PerElement = 2" },
+#endif
 	};
 #endif
 	const UECodeGen_Private::FInt8PropertyParams Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_PrepareLoadPathType = { "PrepareLoadPathType", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int8, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMeshPoolConfigure, PrepareLoadPathType), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_PrepareLoadPathType_MetaData), Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_PrepareLoadPathType_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_PrepareLoadPathDataIndex_MetaData[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/*\n\x09\x09to-do\n\x09\x09\xec\x9d\xb4\xea\xb1\xb0 \xec\x82\xac\xec\x9a\xa9\xed\x95\x98\xeb\x8a\x94\xea\xb3\xb3 \xec\xb0\xa8\xea\xb8\xb0 \xeb\xa7\x8c\xeb\x93\xa0 \xec\x9d\xb4\xec\x9c\xa0\xeb\x8a\x94 \xec\x9e\x88\xeb\x8a\x94\xeb\x8d\xb0 \xea\xb8\xb0\xec\x96\xb5\xec\x9d\xb4 \xec\x95\x88\xeb\x82\xa8.\n\x09*/" },
+#endif
 		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "to-do\n\xec\x9d\xb4\xea\xb1\xb0 \xec\x82\xac\xec\x9a\xa9\xed\x95\x98\xeb\x8a\x94\xea\xb3\xb3 \xec\xb0\xa8\xea\xb8\xb0 \xeb\xa7\x8c\xeb\x93\xa0 \xec\x9d\xb4\xec\x9c\xa0\xeb\x8a\x94 \xec\x9e\x88\xeb\x8a\x94\xeb\x8d\xb0 \xea\xb8\xb0\xec\x96\xb5\xec\x9d\xb4 \xec\x95\x88\xeb\x82\xa8." },
+#endif
 	};
 #endif
 	const UECodeGen_Private::FInt16PropertyParams Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_PrepareLoadPathDataIndex = { "PrepareLoadPathDataIndex", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int16, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMeshPoolConfigure, PrepareLoadPathDataIndex), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_PrepareLoadPathDataIndex_MetaData), Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_PrepareLoadPathDataIndex_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateInnerQueryType_MetaData[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/*\n\x09\x09startEnd \xeb\x8a\x94 0 \xea\xb3\xbc 1 \xec\x9d\xb4 \xeb\xb2\x94\xec\x9c\x84\xeb\xa5\xbc \xeb\x9c\xbb\xed\x95\x98\xeb\xa9\xb0\n\x09\x09perElement \xeb\x8a\x94 \xea\xb7\xb8\xeb\x83\xa5 \xea\xb0\x81 \xec\x9d\xb8\xeb\x8d\xb1\xec\x8a\xa4\xec\x9d\xb4\xeb\x8b\xa4.\n\x09\x09UnknownType = 0,StartEnd = 1,PerElement = 2\n\x09*/" },
+#endif
 		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "startEnd \xeb\x8a\x94 0 \xea\xb3\xbc 1 \xec\x9d\xb4 \xeb\xb2\x94\xec\x9c\x84\xeb\xa5\xbc \xeb\x9c\xbb\xed\x95\x98\xeb\xa9\xb0\nperElement \xeb\x8a\x94 \xea\xb7\xb8\xeb\x83\xa5 \xea\xb0\x81 \xec\x9d\xb8\xeb\x8d\xb1\xec\x8a\xa4\xec\x9d\xb4\xeb\x8b\xa4.\nUnknownType = 0,StartEnd = 1,PerElement = 2" },
+#endif
 	};
 #endif
 	const UECodeGen_Private::FInt8PropertyParams Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateInnerQueryType = { "CreateInnerQueryType", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int8, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMeshPoolConfigure, CreateInnerQueryType), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateInnerQueryType_MetaData), Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateInnerQueryType_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryPop_MetaData[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/*\n\x09\x09\xec\xb9\xb4\xed\x85\x8c\xea\xb3\xa0\xeb\xa6\xac \xed\x81\x90\xeb\xa5\xbc \xed\x8c\x9d\xed\x95\xa0\xea\xb1\xb4\xec\xa7\x80 \xec\x95\x84\xeb\x8b\x8c\xec\xa7\x80\xeb\xa5\xbc \xec\xa0\x95\xed\x95\x9c\xeb\x8b\xa4.\n\x09\x09\xeb\xb3\xb4\xed\x86\xb5 \xed\x95\x98\xeb\x82\x98\xec\x9d\x98 \xec\xb9\xb4\xed\x85\x8c\xea\xb3\xa0\xeb\xa6\xac\xea\xb0\x80 \xed\x95\x98\xeb\x82\x98\xec\x9d\x98 \xeb\xa7\xa4\xec\x89\xac\xeb\xa5\xbc \xeb\x9c\xbb\xed\x95\x98\xeb\x8a\x94\xec\xa7\x80 \xec\x95\x84\xeb\x8b\x88\xeb\xa9\xb4 \xeb\xb2\x94\xec\x9c\x84\xeb\xa5\xbc \xec\xa0\x95\xed\x95\x98\xeb\x8a\x94\xec\xa7\x80\xeb\xa5\xbc \xec\xa0\x95\xed\x95\xa0\xeb\x95\x8c \xec\x82\xac\xec\x9a\xa9\xed\x95\x9c\xeb\x8b\xa4.\n\x09*/" },
+#endif
 		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "\xec\xb9\xb4\xed\x85\x8c\xea\xb3\xa0\xeb\xa6\xac \xed\x81\x90\xeb\xa5\xbc \xed\x8c\x9d\xed\x95\xa0\xea\xb1\xb4\xec\xa7\x80 \xec\x95\x84\xeb\x8b\x8c\xec\xa7\x80\xeb\xa5\xbc \xec\xa0\x95\xed\x95\x9c\xeb\x8b\xa4.\n\xeb\xb3\xb4\xed\x86\xb5 \xed\x95\x98\xeb\x82\x98\xec\x9d\x98 \xec\xb9\xb4\xed\x85\x8c\xea\xb3\xa0\xeb\xa6\xac\xea\xb0\x80 \xed\x95\x98\xeb\x82\x98\xec\x9d\x98 \xeb\xa7\xa4\xec\x89\xac\xeb\xa5\xbc \xeb\x9c\xbb\xed\x95\x98\xeb\x8a\x94\xec\xa7\x80 \xec\x95\x84\xeb\x8b\x88\xeb\xa9\xb4 \xeb\xb2\x94\xec\x9c\x84\xeb\xa5\xbc \xec\xa0\x95\xed\x95\x98\xeb\x8a\x94\xec\xa7\x80\xeb\xa5\xbc \xec\xa0\x95\xed\x95\xa0\xeb\x95\x8c \xec\x82\xac\xec\x9a\xa9\xed\x95\x9c\xeb\x8b\xa4." },
+#endif
 	};
 #endif
 	const UECodeGen_Private::FInt8PropertyParams Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryPop = { "CreateCategoryPop", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int8, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMeshPoolConfigure, CreateCategoryPop), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryPop_MetaData), Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryPop_MetaData) };
 #if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryHash_MetaData[] = {
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryHashDefaultIndex_MetaData[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/*\n\x09\x09mDefaultCategories.Add(0, TEXT(\"NotAllocCategory\"));\n\x09\x09mDefaultCategories.Add(1, TEXT(\"Default0\"));\n\x09\x09mDefaultCategories.Add(2, TEXT(\"Default1\"));\n\x09\x09mDefaultCategories.Add(3, TEXT(\"Default2\"));\n\x09\x09mDefaultCategories.Add(4, TEXT(\"Default3\"));\n\x09\x09mDefaultCategories.Add(5, TEXT(\"StMeshDefault\"));\n\x09\x09mDefaultCategories.Add(6, TEXT(\"SkMeshDefault\"));\n\x09\x09\xec\x9d\xb4\xea\xb2\x8c \xeb\x94\x94\xed\x8f\xb4\xed\x8a\xb8 \xec\xb9\xb4\xed\x85\x8c\xea\xb3\xa0\xeb\xa6\xac\xec\x9e\x84.\n\x09*/" },
+#endif
 		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "mDefaultCategories.Add(0, TEXT(\"NotAllocCategory\"));\nmDefaultCategories.Add(1, TEXT(\"Default0\"));\nmDefaultCategories.Add(2, TEXT(\"Default1\"));\nmDefaultCategories.Add(3, TEXT(\"Default2\"));\nmDefaultCategories.Add(4, TEXT(\"Default3\"));\nmDefaultCategories.Add(5, TEXT(\"StMeshDefault\"));\nmDefaultCategories.Add(6, TEXT(\"SkMeshDefault\"));\n\xec\x9d\xb4\xea\xb2\x8c \xeb\x94\x94\xed\x8f\xb4\xed\x8a\xb8 \xec\xb9\xb4\xed\x85\x8c\xea\xb3\xa0\xeb\xa6\xac\xec\x9e\x84." },
+#endif
 	};
 #endif
-	const UECodeGen_Private::FInt16PropertyParams Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryHash = { "CreateCategoryHash", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int16, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMeshPoolConfigure, CreateCategoryHash), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryHash_MetaData), Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryHash_MetaData) };
+	const UECodeGen_Private::FInt16PropertyParams Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryHashDefaultIndex = { "CreateCategoryHashDefaultIndex", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int16, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMeshPoolConfigure, CreateCategoryHashDefaultIndex), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryHashDefaultIndex_MetaData), Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryHashDefaultIndex_MetaData) };
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::PropPointers[] = {
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlidingWindowType,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_SlidingWindowSplitType,
@@ -155,7 +208,7 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHMeshPoolConfigure
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_PrepareLoadPathDataIndex,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateInnerQueryType,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryPop,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryHash,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewProp_CreateCategoryHashDefaultIndex,
 	};
 	const UECodeGen_Private::FStructParams Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::ReturnStructParams = {
 		(UObject* (*)())Z_Construct_UPackage__Script_TIHLibraryEntry,
@@ -545,6 +598,111 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHMngObjComponentHe
 		}
 		return Z_Registration_Info_UScriptStruct_TIHMngObjComponentHeader.InnerSingleton;
 	}
+	static FStructRegistrationInfo Z_Registration_Info_UScriptStruct_TIHMngObjPoolCenterConfigure;
+class UScriptStruct* FTIHMngObjPoolCenterConfigure::StaticStruct()
+{
+	if (!Z_Registration_Info_UScriptStruct_TIHMngObjPoolCenterConfigure.OuterSingleton)
+	{
+		Z_Registration_Info_UScriptStruct_TIHMngObjPoolCenterConfigure.OuterSingleton = GetStaticStruct(Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure, (UObject*)Z_Construct_UPackage__Script_TIHLibraryEntry(), TEXT("TIHMngObjPoolCenterConfigure"));
+	}
+	return Z_Registration_Info_UScriptStruct_TIHMngObjPoolCenterConfigure.OuterSingleton;
+}
+template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHMngObjPoolCenterConfigure>()
+{
+	return FTIHMngObjPoolCenterConfigure::StaticStruct();
+}
+	struct Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics
+	{
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam Struct_MetaDataParams[];
+#endif
+		static void* NewStructOps();
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_PrepareDataQueCapacityCount_MetaData[];
+#endif
+		static const UECodeGen_Private::FInt16PropertyParams NewProp_PrepareDataQueCapacityCount;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_ForActorQueueCount_MetaData[];
+#endif
+		static const UECodeGen_Private::FInt16PropertyParams NewProp_ForActorQueueCount;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_ForCompositeCount_MetaData[];
+#endif
+		static const UECodeGen_Private::FInt16PropertyParams NewProp_ForCompositeCount;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_ForLeafCount_MetaData[];
+#endif
+		static const UECodeGen_Private::FInt16PropertyParams NewProp_ForLeafCount;
+		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+		static const UECodeGen_Private::FStructParams ReturnStructParams;
+	};
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::Struct_MetaDataParams[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/*\n\x09to-do\n\x09\xeb\xac\xb4\xec\xa1\xb0\xea\xb1\xb4 \xec\x8a\xa4\xed\x85\x8c\xec\x9d\xb4\xec\x85\x98\xec\x9d\x84 \xec\x8b\x9c\xec\x9e\x91\xed\x95\x98\xea\xb8\xb0\xec\xa0\x84\xec\x97\x90 \xec\x84\xa4\xec\xa0\x95\xed\x95\xb4\xec\xa4\x98\xec\x95\xbc\xed\x95\x9c\xeb\x8b\xa4.\n*/" },
+#endif
+		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "to-do\n\xeb\xac\xb4\xec\xa1\xb0\xea\xb1\xb4 \xec\x8a\xa4\xed\x85\x8c\xec\x9d\xb4\xec\x85\x98\xec\x9d\x84 \xec\x8b\x9c\xec\x9e\x91\xed\x95\x98\xea\xb8\xb0\xec\xa0\x84\xec\x97\x90 \xec\x84\xa4\xec\xa0\x95\xed\x95\xb4\xec\xa4\x98\xec\x95\xbc\xed\x95\x9c\xeb\x8b\xa4." },
+#endif
+	};
+#endif
+	void* Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewStructOps()
+	{
+		return (UScriptStruct::ICppStructOps*)new UScriptStruct::TCppStructOps<FTIHMngObjPoolCenterConfigure>();
+	}
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_PrepareDataQueCapacityCount_MetaData[] = {
+		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+	};
+#endif
+	const UECodeGen_Private::FInt16PropertyParams Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_PrepareDataQueCapacityCount = { "PrepareDataQueCapacityCount", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int16, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMngObjPoolCenterConfigure, PrepareDataQueCapacityCount), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_PrepareDataQueCapacityCount_MetaData), Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_PrepareDataQueCapacityCount_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForActorQueueCount_MetaData[] = {
+		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+	};
+#endif
+	const UECodeGen_Private::FInt16PropertyParams Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForActorQueueCount = { "ForActorQueueCount", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int16, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMngObjPoolCenterConfigure, ForActorQueueCount), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForActorQueueCount_MetaData), Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForActorQueueCount_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForCompositeCount_MetaData[] = {
+		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+	};
+#endif
+	const UECodeGen_Private::FInt16PropertyParams Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForCompositeCount = { "ForCompositeCount", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int16, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMngObjPoolCenterConfigure, ForCompositeCount), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForCompositeCount_MetaData), Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForCompositeCount_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForLeafCount_MetaData[] = {
+		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+	};
+#endif
+	const UECodeGen_Private::FInt16PropertyParams Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForLeafCount = { "ForLeafCount", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Int16, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMngObjPoolCenterConfigure, ForLeafCount), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForLeafCount_MetaData), Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForLeafCount_MetaData) };
+	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::PropPointers[] = {
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_PrepareDataQueCapacityCount,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForActorQueueCount,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForCompositeCount,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewProp_ForLeafCount,
+	};
+	const UECodeGen_Private::FStructParams Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::ReturnStructParams = {
+		(UObject* (*)())Z_Construct_UPackage__Script_TIHLibraryEntry,
+		nullptr,
+		&NewStructOps,
+		"TIHMngObjPoolCenterConfigure",
+		Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::PropPointers,
+		UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::PropPointers),
+		sizeof(FTIHMngObjPoolCenterConfigure),
+		alignof(FTIHMngObjPoolCenterConfigure),
+		RF_Public|RF_Transient|RF_MarkAsNative,
+		EStructFlags(0x00000001),
+		METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::Struct_MetaDataParams), Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::Struct_MetaDataParams)
+	};
+	static_assert(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::PropPointers) < 2048);
+	UScriptStruct* Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure()
+	{
+		if (!Z_Registration_Info_UScriptStruct_TIHMngObjPoolCenterConfigure.InnerSingleton)
+		{
+			UECodeGen_Private::ConstructUScriptStruct(Z_Registration_Info_UScriptStruct_TIHMngObjPoolCenterConfigure.InnerSingleton, Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::ReturnStructParams);
+		}
+		return Z_Registration_Info_UScriptStruct_TIHMngObjPoolCenterConfigure.InnerSingleton;
+	}
 	static FStructRegistrationInfo Z_Registration_Info_UScriptStruct_TIHMngObjPoolConfigureDatas;
 class UScriptStruct* FTIHMngObjPoolConfigureDatas::StaticStruct()
 {
@@ -593,13 +751,7 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHMngObjPoolConfigu
 	};
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMngObjPoolConfigureDatas_Statics::Struct_MetaDataParams[] = {
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "/*\n\xe2\x94\x8c\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x90\n\x09\x09\x09\x09\x09\x09\x09\x09ManagedObject Configures\n\xe2\x94\x94\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x98\n*/" },
-#endif
 		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "\xe2\x94\x8c\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x90\n                                                               ManagedObject Configures\n\xe2\x94\x94\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80\xe2\x94\x98" },
-#endif
 	};
 #endif
 	void* Z_Construct_UScriptStruct_FTIHMngObjPoolConfigureDatas_Statics::NewStructOps()
@@ -730,7 +882,7 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHMngObjPoolConfigu
 		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
 	};
 #endif
-	const UECodeGen_Private::FStructPropertyParams Z_Construct_UScriptStruct_FTIHMngObjPoolConfigure_Statics::NewProp_PoolDatas = { "PoolDatas", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMngObjPoolConfigure, PoolDatas), Z_Construct_UScriptStruct_FTIHMngObjPoolConfigureDatas, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMngObjPoolConfigure_Statics::NewProp_PoolDatas_MetaData), Z_Construct_UScriptStruct_FTIHMngObjPoolConfigure_Statics::NewProp_PoolDatas_MetaData) }; // 1452902779
+	const UECodeGen_Private::FStructPropertyParams Z_Construct_UScriptStruct_FTIHMngObjPoolConfigure_Statics::NewProp_PoolDatas = { "PoolDatas", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FTIHMngObjPoolConfigure, PoolDatas), Z_Construct_UScriptStruct_FTIHMngObjPoolConfigureDatas, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMngObjPoolConfigure_Statics::NewProp_PoolDatas_MetaData), Z_Construct_UScriptStruct_FTIHMngObjPoolConfigure_Statics::NewProp_PoolDatas_MetaData) }; // 418133472
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMngObjPoolConfigure_Statics::NewProp_SpawnSpace_MetaData[] = {
 		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
@@ -1031,25 +1183,78 @@ template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHCommandCreateAssi
 		}
 		return Z_Registration_Info_UScriptStruct_TIHCommandCreateAssignPoolDatas.InnerSingleton;
 	}
+	static FStructRegistrationInfo Z_Registration_Info_UScriptStruct_TIHMngObjConfigure;
+class UScriptStruct* FTIHMngObjConfigure::StaticStruct()
+{
+	if (!Z_Registration_Info_UScriptStruct_TIHMngObjConfigure.OuterSingleton)
+	{
+		Z_Registration_Info_UScriptStruct_TIHMngObjConfigure.OuterSingleton = GetStaticStruct(Z_Construct_UScriptStruct_FTIHMngObjConfigure, (UObject*)Z_Construct_UPackage__Script_TIHLibraryEntry(), TEXT("TIHMngObjConfigure"));
+	}
+	return Z_Registration_Info_UScriptStruct_TIHMngObjConfigure.OuterSingleton;
+}
+template<> TIHLIBRARYENTRY_API UScriptStruct* StaticStruct<FTIHMngObjConfigure>()
+{
+	return FTIHMngObjConfigure::StaticStruct();
+}
+	struct Z_Construct_UScriptStruct_FTIHMngObjConfigure_Statics
+	{
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam Struct_MetaDataParams[];
+#endif
+		static void* NewStructOps();
+		static const UECodeGen_Private::FStructParams ReturnStructParams;
+	};
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FTIHMngObjConfigure_Statics::Struct_MetaDataParams[] = {
+		{ "ModuleRelativePath", "Public/TIHManagedObjects.h" },
+	};
+#endif
+	void* Z_Construct_UScriptStruct_FTIHMngObjConfigure_Statics::NewStructOps()
+	{
+		return (UScriptStruct::ICppStructOps*)new UScriptStruct::TCppStructOps<FTIHMngObjConfigure>();
+	}
+	const UECodeGen_Private::FStructParams Z_Construct_UScriptStruct_FTIHMngObjConfigure_Statics::ReturnStructParams = {
+		(UObject* (*)())Z_Construct_UPackage__Script_TIHLibraryEntry,
+		nullptr,
+		&NewStructOps,
+		"TIHMngObjConfigure",
+		nullptr,
+		0,
+		sizeof(FTIHMngObjConfigure),
+		alignof(FTIHMngObjConfigure),
+		RF_Public|RF_Transient|RF_MarkAsNative,
+		EStructFlags(0x00000001),
+		METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FTIHMngObjConfigure_Statics::Struct_MetaDataParams), Z_Construct_UScriptStruct_FTIHMngObjConfigure_Statics::Struct_MetaDataParams)
+	};
+	UScriptStruct* Z_Construct_UScriptStruct_FTIHMngObjConfigure()
+	{
+		if (!Z_Registration_Info_UScriptStruct_TIHMngObjConfigure.InnerSingleton)
+		{
+			UECodeGen_Private::ConstructUScriptStruct(Z_Registration_Info_UScriptStruct_TIHMngObjConfigure.InnerSingleton, Z_Construct_UScriptStruct_FTIHMngObjConfigure_Statics::ReturnStructParams);
+		}
+		return Z_Registration_Info_UScriptStruct_TIHMngObjConfigure.InnerSingleton;
+	}
 	struct Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_Statics
 	{
 		static const FStructRegisterCompiledInInfo ScriptStructInfo[];
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FStructRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_Statics::ScriptStructInfo[] = {
-		{ FTIHMeshPoolConfigure::StaticStruct, Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewStructOps, TEXT("TIHMeshPoolConfigure"), &Z_Registration_Info_UScriptStruct_TIHMeshPoolConfigure, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMeshPoolConfigure), 2007168826U) },
+		{ FTIHMeshPoolConfigure::StaticStruct, Z_Construct_UScriptStruct_FTIHMeshPoolConfigure_Statics::NewStructOps, TEXT("TIHMeshPoolConfigure"), &Z_Registration_Info_UScriptStruct_TIHMeshPoolConfigure, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMeshPoolConfigure), 2386625599U) },
 		{ FTIHMeshPoolCenterConfigure::StaticStruct, Z_Construct_UScriptStruct_FTIHMeshPoolCenterConfigure_Statics::NewStructOps, TEXT("TIHMeshPoolCenterConfigure"), &Z_Registration_Info_UScriptStruct_TIHMeshPoolCenterConfigure, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMeshPoolCenterConfigure), 4261091302U) },
 		{ FTIHMngObjHeader::StaticStruct, Z_Construct_UScriptStruct_FTIHMngObjHeader_Statics::NewStructOps, TEXT("TIHMngObjHeader"), &Z_Registration_Info_UScriptStruct_TIHMngObjHeader, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMngObjHeader), 3650520301U) },
 		{ FTIHMngObjComponentHeader::StaticStruct, Z_Construct_UScriptStruct_FTIHMngObjComponentHeader_Statics::NewStructOps, TEXT("TIHMngObjComponentHeader"), &Z_Registration_Info_UScriptStruct_TIHMngObjComponentHeader, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMngObjComponentHeader), 418840677U) },
-		{ FTIHMngObjPoolConfigureDatas::StaticStruct, Z_Construct_UScriptStruct_FTIHMngObjPoolConfigureDatas_Statics::NewStructOps, TEXT("TIHMngObjPoolConfigureDatas"), &Z_Registration_Info_UScriptStruct_TIHMngObjPoolConfigureDatas, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMngObjPoolConfigureDatas), 1452902779U) },
-		{ FTIHMngObjPoolConfigure::StaticStruct, Z_Construct_UScriptStruct_FTIHMngObjPoolConfigure_Statics::NewStructOps, TEXT("TIHMngObjPoolConfigure"), &Z_Registration_Info_UScriptStruct_TIHMngObjPoolConfigure, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMngObjPoolConfigure), 497407313U) },
+		{ FTIHMngObjPoolCenterConfigure::StaticStruct, Z_Construct_UScriptStruct_FTIHMngObjPoolCenterConfigure_Statics::NewStructOps, TEXT("TIHMngObjPoolCenterConfigure"), &Z_Registration_Info_UScriptStruct_TIHMngObjPoolCenterConfigure, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMngObjPoolCenterConfigure), 4294195490U) },
+		{ FTIHMngObjPoolConfigureDatas::StaticStruct, Z_Construct_UScriptStruct_FTIHMngObjPoolConfigureDatas_Statics::NewStructOps, TEXT("TIHMngObjPoolConfigureDatas"), &Z_Registration_Info_UScriptStruct_TIHMngObjPoolConfigureDatas, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMngObjPoolConfigureDatas), 418133472U) },
+		{ FTIHMngObjPoolConfigure::StaticStruct, Z_Construct_UScriptStruct_FTIHMngObjPoolConfigure_Statics::NewStructOps, TEXT("TIHMngObjPoolConfigure"), &Z_Registration_Info_UScriptStruct_TIHMngObjPoolConfigure, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMngObjPoolConfigure), 74255458U) },
 		{ FTIHNewAllocPrepareData::StaticStruct, Z_Construct_UScriptStruct_FTIHNewAllocPrepareData_Statics::NewStructOps, TEXT("TIHNewAllocPrepareData"), &Z_Registration_Info_UScriptStruct_TIHNewAllocPrepareData, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHNewAllocPrepareData), 3937283054U) },
 		{ FTIHCommandCreateAssignPoolDatas::StaticStruct, Z_Construct_UScriptStruct_FTIHCommandCreateAssignPoolDatas_Statics::NewStructOps, TEXT("TIHCommandCreateAssignPoolDatas"), &Z_Registration_Info_UScriptStruct_TIHCommandCreateAssignPoolDatas, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHCommandCreateAssignPoolDatas), 1400191168U) },
+		{ FTIHMngObjConfigure::StaticStruct, Z_Construct_UScriptStruct_FTIHMngObjConfigure_Statics::NewStructOps, TEXT("TIHMngObjConfigure"), &Z_Registration_Info_UScriptStruct_TIHMngObjConfigure, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FTIHMngObjConfigure), 3149738079U) },
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_Statics::ClassInfo[] = {
 		{ Z_Construct_UClass_UTIHMeshPoolConfigObject, UTIHMeshPoolConfigObject::StaticClass, TEXT("UTIHMeshPoolConfigObject"), &Z_Registration_Info_UClass_UTIHMeshPoolConfigObject, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UTIHMeshPoolConfigObject), 3340085010U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_1218540041(TEXT("/Script/TIHLibraryEntry"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_3377429161(TEXT("/Script/TIHLibraryEntry"),
 		Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_Statics::ClassInfo),
 		Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_Statics::ScriptStructInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Projects_Rapid_Project_TIH_20231011_TIHStation_Plugins_TIHLibrary_Source_TIHLibrary_Public_TIHManagedObjects_h_Statics::ScriptStructInfo),
 		nullptr, 0);

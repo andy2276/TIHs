@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Containers/Deque.h"
-//#include "TIHStationCoreDefines.generated.h"
+#include "TIHStationCoreDefines.generated.h"
 //--	----	----	----	----	----	----	----	----	----	----	----
 
 /*
