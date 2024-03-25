@@ -1747,9 +1747,9 @@ public:
 		return mPathCenterConfig;
 	}
 
-	void InstantiateThis();
+	void InstantiateThis() {};
 	
-	void InitiateThis();
+	void InitiateThis() {};
 
 	void ReserveUrlArray(int16 value)
 	{
