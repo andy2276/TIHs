@@ -325,20 +325,61 @@ TIHReturn64 FTIHStrategyLoadMesh::ExecuteCommandStaticPolymorph(FTIHCommandBase*
 	return reValue;
 }
 
-TIHReturn64 FTIHStrategyInitStation::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
+TIHReturn64 FTIHStrategySystem::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	TIHReturn64 reValue = 0;
+	
+	static TIHSTATION_TYPE& staion = TIHSTATION;
+	static FTIHStationPolymorphInterface stationStaticPolymorph;
+
+	const FTIHCommandHeader& cmdHeader = cmdBase->GetCommandHeader();
+	const FTIHCommandMethod& cmdMethod = cmdBase->GetCommandMethod();
+
 	/*
-		to-do
+		config 하던가
+		reserve
+		일단 station 실행을 여기다.
 
-		먼저 서버 접속부터 처리
-
-		서버 접속 햇으면
-		
-		서버에서 받아와야 할 정보들 목록 
-			여기에 사전 설정 값들이 있을거임.
-		
+		Instantiate 는 gameInstance 에서 해준다.
+		prepareStation
+		Initiate
+		이걸 stationExecute 라고 할까?
 	*/
+	if(0 == cmdHeader.ProtocolOption)//	stationExecute
+	{
+		if (0 == cmdHeader.Option0)//	prepareStation
+		{
+			reValue = stationStaticPolymorph.CarryOutPrepareStation(staion);
+		}
+		else if(1 == cmdHeader.Option1)//	init
+		{
+			reValue = stationStaticPolymorph.CarryOutInitializeStation(staion);
+		}
+		else if (3 == cmdHeader.Option1)//	wait
+		{
+			reValue = stationStaticPolymorph.CarryOutWaitStation(staion);
+		}
+		else if (3 == cmdHeader.Option1)//	suspend
+		{
+			reValue = stationStaticPolymorph.CarryOutSuspendStation(staion);
+		}
+		else if (4 == cmdHeader.Option1)//	refresh
+		{
+			reValue = stationStaticPolymorph.CarryOutRefreshStation(staion);
+		}
+		else if(5 == cmdHeader.Option1)//	finalize
+		{
+			reValue = stationStaticPolymorph.CarryOutFinalizeStation(staion);
+		}
+		else if (6 == cmdHeader.Option1)//	
+		{
+			reValue = stationStaticPolymorph.CarryOutDestroyStation(staion);
+		}
+	}
+	else if(1 == cmdHeader.ProtocolOption)
+	{
+
+	}
 
 	return reValue;
 }

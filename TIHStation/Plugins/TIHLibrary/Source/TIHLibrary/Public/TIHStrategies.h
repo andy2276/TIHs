@@ -93,7 +93,7 @@ public:
 	여기에서 처리하는거임.
 	근데 종류를 좀더 줄여야할거같음.
 */
-class FTIHStrategyInitStation :public TTIHCommandStrategyCRTP<FTIHStrategyInitStation>
+class FTIHStrategySystem :public TTIHCommandStrategyCRTP<FTIHStrategySystem>
 {
 public:
 	TIHReturn64 ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase);

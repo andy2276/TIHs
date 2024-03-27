@@ -174,7 +174,7 @@ typedef signed long long TIHHash64 ;
 typedef signed long long UEObjectHash64 ;
 typedef signed long long TIHObjectHash64 ;
 
-extern const uint32 TIHYear = 3784320000;
+extern const uint32 TIHYear ;
 
 
 #pragma endregion Type Defines
@@ -201,7 +201,7 @@ class FTIHHashClass;
 
 
 template<typename TIHTemplateType>
-TIHTemplateType FastAbsIntTemplate(TIHTemplateType x)
+inline TIHTemplateType FastAbsIntTemplate(TIHTemplateType x)
 {
 	TIHTemplateType reValue;
 	const int32 bitCount = (sizeof(TIHTemplateType) * 8) - 1;
@@ -210,19 +210,19 @@ TIHTemplateType FastAbsIntTemplate(TIHTemplateType x)
 	return reValue;
 }
 
-int8 FastAbs8(int8 x)
+inline int8 FastAbs8(int8 x)
 {
 	return FastAbsIntTemplate(x);
 }
-int16 FastAbs16(int16 x)
+inline int16 FastAbs16(int16 x)
 {
 	return FastAbsIntTemplate(x);
 }
-int32 FastAbs32(int32 x)
+inline int32 FastAbs32(int32 x)
 {
 	return FastAbsIntTemplate(x);
 }
-int64 FastAbs64(int64 x)
+inline int64 FastAbs64(int64 x)
 {
 	return FastAbsIntTemplate(x);
 }
@@ -718,9 +718,10 @@ namespace TIHNameSpaceCommandType
 	{
 		const int8 UnknownType = 0;
 		const int8 UseStrategy = 1;
-		const int8 UseDelegate = 2;
-		const int8 UseMultiThread = 3;
-		const int8 UseCommandSelfFunction = 4;
+		const int8 UseLookUpTable = 2;
+		const int8 UseDelegate = 3;
+		const int8 UseMultiThread = 4;
+		const int8 UseCommandSelfFunction = 5;
 		const int8 DefaultMaxCount = UseCommandSelfFunction + 1;
 	}
 	namespace MethodProgessionProtocol
@@ -750,6 +751,13 @@ namespace TIHNameSpaceCommandType
 		const int32 SystemCommandList = 2;
 		const int32 CustomCommandList = 3;
 		const int32 DefaultCommandListCount = CustomCommandList + 1;
+	}
+	namespace StrategyType
+	{
+		const int8 SystemStrategy = 0;
+		const int8 MeshStrategy = 1;
+		const int8 MngObjStrategy = 2;
+		const int8 InheritStrategy = 3;
 	}
 };
 namespace TIHNameSpaceManagedObject
@@ -960,7 +968,7 @@ inline TIHReturn64 ClassNameHashImplement(const TCHAR* clsName)
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
 template<typename TIHTemplateType>
-bool SafeDeletePtr(TIHTemplateType*& ptr)
+inline bool SafeDeletePtr(TIHTemplateType*& ptr)
 {
 	bool reValue = false;
 	if (ptr != nullptr)
@@ -972,7 +980,7 @@ bool SafeDeletePtr(TIHTemplateType*& ptr)
 	return reValue;
 }
 template<typename TIHTemplateType>
-bool SafeDeletePtrArray(TIHTemplateType*& ptrArray)
+inline bool SafeDeletePtrArray(TIHTemplateType*& ptrArray)
 {
 	bool reValue = false;
 	if (ptrArray != nullptr)
@@ -984,7 +992,7 @@ bool SafeDeletePtrArray(TIHTemplateType*& ptrArray)
 	return reValue;
 }
 template<typename TIHTemplateType>
-bool SafeDeletePtrConst(const TIHTemplateType*& ptrConst)
+inline bool SafeDeletePtrConst(const TIHTemplateType*& ptrConst)
 {
 	bool reValue = false;
 	TIHTemplateType* target = const_cast<TIHTemplateType*>(ptrConst);
@@ -993,7 +1001,7 @@ bool SafeDeletePtrConst(const TIHTemplateType*& ptrConst)
 	return reValue;
 }
 template<typename TIHTemplateType>
-bool SafeDeletePtrArrayConst(const TIHTemplateType*& ptrConst)
+inline bool SafeDeletePtrArrayConst(const TIHTemplateType*& ptrConst)
 {
 	bool reValue = false;
 	TIHTemplateType* target = const_cast<TIHTemplateType*>(ptrConst);
@@ -1046,7 +1054,7 @@ public:
 		:
 		mStateValueDetail(copyCtor.mStateValueDetail)
 	{}
-	FTIHState(FTIHState&& moveCtor)
+	FTIHState(FTIHState&& moveCtor) noexcept
 		:
 		mStateValueDetail(std::move(moveCtor.mStateValueDetail))
 	{}
@@ -1055,7 +1063,7 @@ public:
 	{
 		mStateValueDetail.WholeData = copyOper.mStateValueDetail.WholeData;
 	}
-	FTIHState& operator=(FTIHState&& moveOper)
+	FTIHState& operator=(FTIHState&& moveOper) noexcept
 	{
 		mStateValueDetail.WholeData = std::move(moveOper.mStateValueDetail.WholeData);
 	}
@@ -1519,6 +1527,8 @@ protected:
 	TMap<FString, ATIHPakBase*> mPakBox;
 	class ATIHPakBase* mCurrPak;
 
+	class FTIHIntellisense* mIntellisenese;
+
 	//TMap <FString, FTIHPakInfra* > mPaks;
 private:
 };
@@ -1697,7 +1707,7 @@ public:
 	{}
 	virtual ~TTIHCommandStrategyCRTP()
 	{
-		SafeDeletePtr(mSelfCRTP);
+		mSelfCRTP = nullptr;
 	};
 
 	TIHReturn64 ExecuteStrategy(FTIHCommandBase* cmdBase)
@@ -1749,7 +1759,7 @@ public:
 
 	void InstantiateThis() {};
 	
-	void InitiateThis() {};
+	void InitiateThis();
 
 	void ReserveUrlArray(int16 value)
 	{
@@ -1811,4 +1821,10 @@ public:
 	
 	}
 
+};
+
+class FTIHStrategyHelper
+{
+public:
+	//TIHReturn64(*Strategy)
 };

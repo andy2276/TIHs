@@ -434,6 +434,11 @@
     <None Include="..\..\Plugins\TIHPakBox\TIHHousingPak\TIHHousingPak.uplugin"/>
     <None Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Resources\Icon128.png"/>
     <None Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\TIHHousingPak.Build.cs"/>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TestingActor.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
+      <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHousingPak.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories_1)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
@@ -444,6 +449,7 @@
       <ForcedIncludeFiles>$(ClCompile_ForcedIncludeFiles_1)</ForcedIncludeFiles>
       <AdditionalOptions>$(ClCompile_AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TestingActor.h"/>
     <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousingPak.h"/>
     <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousingPakCore.h"/>
     <None Include="..\..\Source\TIHStation\TIHStation.Build.cs"/>

@@ -159,6 +159,7 @@ public:
 		return mCmdMethod;
 	}
 
+
 	TIHMACRO_CHAINBUILDER_SETTER_FUNCNAME(CommandHeader, mCmdHeader);
 	TIHMACRO_CHAINBUILDER_SETTER_FUNCNAME(CommandMethod, mCmdMethod);
 
@@ -856,6 +857,8 @@ public:
 		mCommandQueue.PushLast(cmdPtr);
 		return reValue;
 	}
+	
+
 	int32 GetCurrentCommandQueueIndex()
 	{
 		return mCurCommandQueueIndex;
@@ -866,6 +869,18 @@ public:
 		bool reValue = (mCommandQueue.Num() == mCurCommandQueueIndex);
 		return reValue;
 	}
+	bool IsEmptyCmdList() const
+	{
+		return mCommandQueue.IsEmpty();
+	}
+
+	/*
+		to-do
+		커맨드를 pooling 하는건 안될거같음. 
+		만들어야하는게, 커맨드 비우기 기능 flush
+		지금 커맨드가 들어왔는지 확인하는 기능
+	*/
+
 private:
 	/*
 		to-do
@@ -1222,7 +1237,25 @@ struct FTIHCommanderConfigure
 		- [v] reserve : function array -> 이거 생일 문제임
 		- [v] reserve : FTIHCommandList::mDeleteCandidates 이거도 크기가 커맨드와 같아야하지 않을까
 		- [v] reserve : FTIHCommandList::mCommandQueue 이거도 크기가 커맨드와 같아야하지 않을까
-
+	### 여기서 가능한 기능들
+		+ 커맨드 리스트에 접근가능
+		+ 전략 패턴이나 델리게이트 혹은 vtable 혹은 룩업테이블로 커맨더 처리가능
+		+ 전략 패턴 set 가능
+		+ 룩업테이블에 함수 등록가능
+		+ 틱커블 가능
+		+ 연속해서 커맨드를 실행하는것 가능
+		+ 커맨드 리스트의 영역을 나눠놨음
+		+ 특정 커맨드 리스트가 비었는지 안비었는지 확인가능
+		+ 커맨더의 환경설정 가능
+		+ 커맨더가 완료혹은 에러가 났을때 실행할 콜백할 기능있음.
+			-> 지금 커맨더 펑션부분보는데, 여기 만약에 매니지드 오브젝트 안에 잇는 함수를 실행시킬지 혹은 커맨드 펑션의 함수를 실행할지
+			-> 혹은 그냥 등록된걸 실행할지를 선택하는 부분같은데, 그냥 함수가 valid 한지 확인하고 아 매니지드 오브젝트가 죽었는데,
+			-> 풀링이라 살아있으니 안되는구나.근데 매니지드 오브젝트는 결국 그냥 wrapper 아닌가? 이거 왜 호출해주지? 
+				-> 매니지드 오브젝트를 위한 커맨드 혹은 스트라 테지에 액터나 뭐 위젯같은걸 넣어주면
+				-> 그걸 분석해서 그에 맞는 풀링이 있는지 확인하고, 없으면 새롭게 만드는 기능이 있어야한다.
+				-> 내가 원하는 유오브젝트를 설정하고 그걸 매이크 커맨드를 사용하면 이런작동이 되어야한다.
+				-> 여기에는 액터의 타입과 uclass 와 같은 해쉬만 있으면 된다. 그리고 그걸 몇개 만들지 하면된다.
+				-> 음...해당 유오브젝트를 등록
 */
 class FTIHCommander
 {
@@ -1261,7 +1294,7 @@ public:
 	*/
 	TArray<TTIHCommandFunctorWrapper< TIHReturn64(FTIHCommandBase*) > > mCompleteFunctions;
 
-	TIHReturn64 ExecuteCommandByCmdProtocolEnum(FTIHCommandBase* primitiveCmd);
+	TIHReturn64 ExecuteCommandByCmdProtocolEnum(const FTIHCommandHeader& cmdHeader, FTIHCommandBase* primitiveCmd);
 	TIHReturn64 SequenceCommand(TIHReturn64 result, FTIHCommandBase* primitiveCmd);
 
 	/*!
@@ -1272,6 +1305,11 @@ public:
 
 	TIHReturn64 CheckCallingErrorFunctions(FTIHCommandBase* primitiveCmd);
 
+
+	/*
+		to-do
+		삭제 혹은 변경예정
+	*/
 	decltype(auto) SetStrategyCreateNewAlloc(auto value)
 	{
 		SafeDeletePtr(mStrategyCreateNewAlloc);
@@ -1339,6 +1377,8 @@ public:
 		return *this;
 	}
 	
+
+
 	void SetCommanderConfig(const FTIHCommanderConfigure& value)
 	{
 		mCommanderConfig = value;
@@ -1350,6 +1390,64 @@ public:
 
 	void OnReserveCommander();
 	
+	void SwapCmdChain(int32 newListType)
+	{
+		if(mCommandLists.IsValidIndex(newListType) == true)
+		{
+			mCurrMainCmdListIndex = newListType;
+		}
+	}
+	/*
+		스왑체인 구현
+		해당 커맨드가 비었는지 아닌지 확인
+	*/
+	bool IsCurrentChainEmpty()
+	{
+		return mCommandLists[mCurrCommandListIndex].IsEmptyCmdList();
+	}
+	bool IsChainEmpty(int32 listIndex)
+	{
+		bool reValue = false;
+		if(mCommandLists.IsValidIndex(listIndex) == true)
+		{
+			reValue = mCommandLists[listIndex].IsEmptyCmdList();
+		}
+		return reValue;
+	}
+	/*
+		to-do
+		반드시 reserve 를 하고 regist 를 해야한다.
+	*/
+	void ReserveLookUpTable(int32 size)
+	{
+		if(mStrategyLookUpTable.Max() < size)
+		{
+			mStrategyLookUpTable.Reserve(size);
+		}
+	}
+	void RegistLookUpTable(TFunction < TIHReturn64(FTIHCommandBase*) > func)
+	{
+		mStrategyLookUpTable.Add(func);
+	}
+
+	TIHHash64 ExecuteCommandByLookUpTable(const FTIHCommandHeader& cmdHeader,FTIHCommandBase* primitiveCmd)
+	{
+		TIHHash64 reValue = 0;
+		reValue = mStrategyLookUpTable[cmdHeader.Protocol](primitiveCmd);
+		return reValue;
+	}
+	/*
+		to-do
+		시간 큐를 만들고 해당 타임큐로 만드는데 일단 무시
+	*/
+	void RegistTimeCommand(FTIHCommandBase* timeCommand);
+	void RegistNormalCommand(FTIHCommandBase* normalCommand);
+	void RegistSystemCommand(FTIHCommandBase* systemCommand);
+
+	int32 GetCurrMainCmdListIndex()
+	{
+		return mCurrMainCmdListIndex;
+	}
 
 private:
 	int32 mCurrentCommandListIndex;
@@ -1384,6 +1482,9 @@ private:
 	FTIHCommanderStrategyInOutWriteAndModify*	mStrategyInOutWriteAndModify;
 
 	FTIHCommanderExtentionForExeCmdStrategy*	mStrategyExention;
+
+	
+	TArray<TFunction<TIHReturn64(FTIHCommandBase*)>> mStrategyLookUpTable;
 
 	FTIHCommanderConfigure mCommanderConfig;
 };

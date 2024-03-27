@@ -1,3 +1,4 @@
+
 // Fill out your copyright notice in the Description page of Project Settings
 #include "TIHPakBase.h"
 
@@ -17,7 +18,12 @@ void ATIHPakBase::ConnectingStation()
 	TIHReturn64 reValue = 0;
 	mStation = &TIHSTATION;
 
-	reValue = TIHSTATION.PrepareStation();
+	/*
+		to-do
+		여기서 호출해주는 이유가 뭐야.
+
+	*/
+	//reValue = TIHSTATION.PrepareStation();
 	
 
 
@@ -46,8 +52,14 @@ void ATIHPakBase::BeginDestroy()
 FTIHIntellisense::FTIHIntellisense()
 	:
 	LastFrameNumberWeTicked(INDEX_NONE),
-	mStation(&TIHSTATION)
+	mStation(&TIHSTATION),
+	mMngObjCenter(nullptr),
+	mMeshPool(nullptr),
+	mTickTock(nullptr),
+	mCommander(nullptr),
+	mCommandList(nullptr)
 {
+
 	if(mStation != nullptr)
 	{
 		mMngObjCenter = &mStation->GetManagedObjectPoolCenter();
@@ -118,8 +130,61 @@ void FTIHIntellisense::Tick(float DeltaTime)
 			확인햇으면 tickable의 tickon
 
 		*/
+		/*
+			여기서 부터 일단 인텔리 센스가 비었는지를 확인한다.
+			시간을 확인한다
+			무조건 시간이 먼저이다.
+			시간을 먼저 확인하고 일반 커맨드 실행
+		
+		*/
+		//if(CheckTimeCommandList() == true)
+		//{
+		//	OnExecuteTimeCommandList();
+		//}
 
+		if(CheckNormalCommandList() == true)
+		{
+			OnExecuteNormalCommandList();
+		}
 
 		LastFrameNumberWeTicked = GFrameCounter;
 	}
+}
+
+bool FTIHIntellisense::CheckTimeCommandList()
+{
+	bool reValue = false;
+	if(mCommander->IsChainEmpty(TIHNameSpaceCommandType::CommanderListType::TimerCommandList) == false)
+	{
+		
+		reValue = true;
+	}
+	
+
+	return reValue;
+}
+
+void FTIHIntellisense::OnExecuteTimeCommandList()
+{
+
+}
+
+bool FTIHIntellisense::CheckNormalCommandList()
+{
+	bool reValue = false;
+	if(mCommander->GetCurrMainCmdListIndex() == TIHNameSpaceCommandType::CommanderListType::MainCommandList)
+	{
+		reValue = !mCommander->IsChainEmpty(TIHNameSpaceCommandType::CommanderListType::MainCommandList);
+	}
+	return reValue;
+}
+
+void FTIHIntellisense::OnExecuteNormalCommandList()
+{
+	TIHReturn64 reValue = 0;
+	reValue = mCommander->ExecuteCommands();
+	/*
+		to-do
+		로그
+	*/
 }

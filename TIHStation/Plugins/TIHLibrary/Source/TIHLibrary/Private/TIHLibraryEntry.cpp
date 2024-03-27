@@ -1,5 +1,4 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "TIHLibraryEntry.h"
 
 #define LOCTEXT_NAMESPACE "FTIHLibraryEntryModule"

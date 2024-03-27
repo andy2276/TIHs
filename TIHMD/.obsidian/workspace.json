@@ -8,24 +8,24 @@
         "type": "tabs",
         "children": [
           {
-            "id": "8f113485d80d2898",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "to-do list.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
             "id": "4adefb5e7acb7da5",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
                 "file": "TIH 코딩 스탠다드.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "c34851db6107ad49",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "재설계.md",
                 "mode": "source",
                 "source": false
               }
@@ -68,7 +68,7 @@
             }
           }
         ],
-        "currentTab": 4,
+        "currentTab": 1,
         "stacked": true
       }
     ],
@@ -135,7 +135,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "to-do list.md",
+                "file": "재설계.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -152,7 +152,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "to-do list.md",
+                "file": "재설계.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -175,7 +175,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "to-do list.md"
+                "file": "재설계.md"
               }
             }
           }
@@ -196,13 +196,14 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "e4c05b051baf5cc1",
+  "active": "c34851db6107ad49",
   "lastOpenFiles": [
+    "TIH 코딩 스탠다드.md",
+    "재설계.md",
+    "기타원신/원신 일퀘 히든 업적.md",
+    "to-do list.md",
     "HousingParser.md",
     "구현해야하는 기능.md",
-    "to-do list.md",
-    "TIH 코딩 스탠다드.md",
-    "기타원신/원신 일퀘 히든 업적.md",
     "기타원신",
     "구조.md",
     "Ideas/MangagedObjectPipeline.md",
@@ -226,7 +227,6 @@
     "설계/하우징 설계.md",
     "설계",
     "DevelopLog/Template/commandTemplate.md",
-    "TIH/combine-ExecuteStrategy.md",
     "Ideas",
     "TIH",
     "DevelopLog/Template",

@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "TIHStationCore.h"
 #include "TIHCommandCore.h"
 #include "Engine/StreamableManager.h"
 #include "Components/Widget.h"
 #include "TIHManagedObjectLeafs.h"
+#include "TIHPakBase.h"
 
 
 #pragma region DefaultStation Functions
@@ -94,6 +94,16 @@ TIHReturn64 FTIHDefaultStation::InitializeStation()
 {
 	TIHReturn64 reValue = 0;
 
+	mPoolCenter->InstantiateThis();
+	FTIHMngObjPoolCenterConfigure poolCenterConfig;
+	poolCenterConfig.PrepareDataQueCapacityCount = 512;
+	mPoolCenter->SetMngObjPoolCenterConfig(poolCenterConfig);
+	mPoolCenter->InitiateThis();
+	mMeshPool->InstantiateThis();
+	FTIHMeshPoolConfigure meshPoolConfig;
+	meshPoolConfig.CreateInnerQueryType = TIHNameSpaceCommon::QueryType::StartEnd;
+	mMeshPool->SetMeshPoolConfig(meshPoolConfig);
+	mMeshPool->InitiateThis();
 
 	return reValue;
 }
@@ -152,6 +162,8 @@ TIHReturn64 FTIHDefaultStation::InstantiateStation()
 	mPathCenter = new FTIHPathCenter;
 	mMeshPool = new FTIHMeshPool;
 
+	mIntellisenese = new FTIHIntellisense;
+
 	mTickTock.UpdataTick();
 	/*
 		to-do
@@ -160,18 +172,7 @@ TIHReturn64 FTIHDefaultStation::InstantiateStation()
 			-> 팩의 header 만들기
 		여기서 초기화를 진행하지 않음. 기본 초기화인 내부 초기화만 진행이됨
 		왜냐하면 command 를 써야하기때문에.
-	
 	*/
-
-	return reValue;
-}
-/*!
-*	@brief 
-*	@detail 
-*/
-TIHReturn64 FTIHDefaultStation::PrepareStation()
-{
-	TIHReturn64 reValue = 0;
 
 	RegistForTIHMngObj();
 
@@ -187,12 +188,6 @@ TIHReturn64 FTIHDefaultStation::PrepareStation()
 	mCommander->SetCommanderConfig(commandConfig);
 	mCommander->OnReserveCommander();
 
-	mPoolCenter->InstantiateThis();
-	FTIHMngObjPoolCenterConfigure poolCenterConfig;
-	poolCenterConfig.PrepareDataQueCapacityCount = 512;
-	mPoolCenter->SetMngObjPoolCenterConfig(poolCenterConfig);
-	mPoolCenter->InitiateThis();
-
 	mPathCenter->InstantiateThis();
 	FTIHPathCenterConfigure pathConfig;
 	pathConfig.PathArrayCapacityCount = 768;
@@ -200,24 +195,58 @@ TIHReturn64 FTIHDefaultStation::PrepareStation()
 	mPathCenter->SetPathCenterConfig(pathConfig);
 	mPathCenter->InitiateThis();
 
-	mMeshPool->InstantiateThis();
-	FTIHMeshPoolConfigure meshPoolConfig;
-	meshPoolConfig.CreateInnerQueryType = TIHNameSpaceCommon::QueryType::StartEnd;
-	
-	mMeshPool->SetMeshPoolConfig(meshPoolConfig);
-	mMeshPool->InitiateThis();
 
-	
+	//mIntellisenese->InitiateThis();
+	/*
+		to-do
+		background나 멀티쓰레드에서 돌아가는거 하나 만들까?
+
+	*/
 
 	/*
 		외부 서버와 먼저 연결을 하기 전에 사전준비를 한다. 해당부분은 프로세서가 실행되고 로고 창이 뜰때 로딩이 될것이다.
-		로딩이 
+		로딩이
 	*/
-	
+
 	FTIHState::SetManagedObjectPoolCenter(mPoolCenter);
 	FTIHMngObj::SetManagedObjectPoolCenter(mPoolCenter);
 
+
+	return reValue;
+}
+/*
+	to-do
+	만약 스테이션의 상태를 변경해야할일이 있다면 이게 호출이 될거다.
+	그럼 문제는 커맨드 리스트를 확인 못한다는건데,
+	이거는 어떻게 해결을 하나.
+	한단계가 더있어야하나?
+	아니지 prepare 의 목적은 station 에 필요한것들을 서버나 그런곳에서 받아오는게 목적이잖아.
+	근데 내가 지금 커맨드 리스트를 먼저 만들어야한다라고 생각을 하고있는데, 그럼 그걸 나눠야하는게 맞네
+	그럼 나눠야 하는내용에는 뭐가있나?
+		일단 커맨드 리스트와 서버는 있어야함.
+		mSettingHelper 이거도 있어야함.
+		mPathCenter 이거도 있어야함.
+		정리하자면 커맨드 부분은 있어야하는데, 커맨드 리스트는 어떻게 해야하나
+		이게 장치와 커맨드 큐나 리스트를 미리 만드는 이유구나
+		DXGI 를 생각하면 factory 와 스테이션은 존재해야함.  그리고 커맨드 리스트나 커맨더가 있어야 버퍼를 만듦
+		그럼 mngobj 와 mesh 풀만 init 나 prepare 로 넘기면 되는거아님?
+		아니면 prepare 단계에서 
+	일단 커맨드 리스트는 리셋이 가능하도록 해야해
+		근데 리셋을 하는데 기존의 실행되고있는 커맨드는 어떻게하나?
+		생각했을때는 
+			인텔리 센스가 티커블을 온할지 안할지를 결정하는건데, 그걸 매번 틱에서 해준단 말이지.
+			근데 인텔리 센스는 티커블을 온한다 안한다면 결정을 하는녀석이고 커맨더의 실행은 결국 티커블임
+			그럼 인텔리센스가 지금 커맨드를 초기화 혹은 리셋할때 알아야함. 
+			리셋은 왜 이루어지나?
+				커맨더에 특정 리스트에 쌓을수 잇게 해야함.
+
+*/
+TIHReturn64 FTIHDefaultStation::PrepareStation()
+{
+	TIHReturn64 reValue = 0;
+
 	
+
 	return reValue;
 	
 }

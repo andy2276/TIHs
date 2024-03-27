@@ -157,6 +157,9 @@
     <Filter Include="Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private">
       <UniqueIdentifier>{9D2CF71A-40B5-32FD-B71E-4162A777DE17}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TestingActor.cpp">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private\TIHHousingPak.cpp">
       <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Private</Filter>
     </ClCompile>
@@ -166,6 +169,9 @@
     <Filter Include="Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public">
       <UniqueIdentifier>{1A985A8A-FBEC-38E5-A33A-63BDDB7D14C8}</UniqueIdentifier>
     </Filter>
+    <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TestingActor.h">
+      <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public\TIHHousingPak.h">
       <Filter>Plugins\TIHPakBox\TIHHousingPak\Source\TIHHousingPak\Public</Filter>
     </ClInclude>

@@ -1,8 +1,9 @@
-
 #include "TIHStationCoreDefines.h"
 #include "TIHStationCore.h"
 #include "TIHCommands.h"
 #include "TIHCommandCore.h"
+
+const uint32 TIHYear = 3784320000;
 
 FTIHStationBase::FTIHStationBase()
 	:
@@ -35,4 +36,11 @@ FTIHPathCenter& FTIHPathCenter::GetSingle()
 {
 	static FTIHPathCenter& pathCenter = TIHSTATION.GetPathCenter();
 	return pathCenter;
+}
+
+void FTIHPathCenter::InitiateThis()
+{
+	mUrlArray.Reserve(mPathCenterConfig.UrlArrayCapacityCount);
+	mPathArray.Reserve(mPathCenterConfig.PathArrayCapacityCount);
+
 }

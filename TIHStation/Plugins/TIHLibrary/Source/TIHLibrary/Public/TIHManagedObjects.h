@@ -190,14 +190,9 @@ enum class ETIHSlidingWindowDoneStateTypes : int8
 
 
 
-void DefalutRightOverFunction()
-{
+void DefalutRightOverFunction();
+void DefaultLeftOverFunction();
 
-}
-void DefaultLeftOverFunction()
-{
-
-}
 class FTIHSlidingWindowBase
 {
 public:

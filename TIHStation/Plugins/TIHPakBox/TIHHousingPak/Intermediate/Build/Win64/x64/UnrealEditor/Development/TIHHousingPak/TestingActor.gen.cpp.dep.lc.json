@@ -1,0 +1,15 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\unrealeditor\\inc\\tihhousingpak\\uht\\testingactor.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "e:\\uegit\\unrealengine\\engine\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
+        "Includes": [
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\tihhousingpak\\definitions.tihhousingpak.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\source\\tihhousingpak\\public\\testingactor.h",
+            "e:\\projects_rapid\\project\\tih\\20231011\\tihstation\\plugins\\tihpakbox\\tihhousingpak\\intermediate\\build\\win64\\unrealeditor\\inc\\tihhousingpak\\uht\\testingactor.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

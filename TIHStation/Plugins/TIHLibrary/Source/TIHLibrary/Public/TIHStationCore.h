@@ -312,31 +312,31 @@ public:
 *	@brief 
 *	@detail https://benui.ca/unreal/tickable-object/
 */
-class FTIHCommandTickableScheduler : public FTickableGameObject
-{
-public:
-	// FTickableGameObject Begin
-	virtual void Tick(float DeltaTime) override;
-	virtual ETickableTickType GetTickableTickType() const override
-	{
-		return ETickableTickType::Conditional;
-	}
-	virtual TStatId GetStatId() const override
-	{
-		RETURN_QUICK_DECLARE_CYCLE_STAT(FTIHCommandTickableScheduler, STATGROUP_Tickables);
-	}
-	virtual bool IsTickableWhenPaused() const
-	{
-		return true;
-	}
-	virtual bool IsTickableInEditor() const
-	{
-		return true;
-	}
-private:
-	uint32 LastFrameNumberWeTicked = INDEX_NONE;
-
-};
+//class FTIHCommandTickableScheduler : public FTickableGameObject
+//{
+//public:
+//	// FTickableGameObject Begin
+//	virtual void Tick(float DeltaTime) override;
+//	virtual ETickableTickType GetTickableTickType() const override
+//	{
+//		return ETickableTickType::Conditional;
+//	}
+//	virtual TStatId GetStatId() const override
+//	{
+//		RETURN_QUICK_DECLARE_CYCLE_STAT(FTIHCommandTickableScheduler, STATGROUP_Tickables);
+//	}
+//	virtual bool IsTickableWhenPaused() const
+//	{
+//		return true;
+//	}
+//	virtual bool IsTickableInEditor() const
+//	{
+//		return true;
+//	}
+//private:
+//	uint32 LastFrameNumberWeTicked = INDEX_NONE;
+//
+//};
 
 /*
 	============================================================================================================================================================

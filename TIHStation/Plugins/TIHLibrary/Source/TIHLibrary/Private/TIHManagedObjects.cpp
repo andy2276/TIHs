@@ -3,6 +3,16 @@
 #include "TIHStationCore.h"
 #include "TIHManagedObjectLeafs.h"
 
+void DefalutRightOverFunction()
+{
+
+}
+
+void DefaultLeftOverFunction()
+{
+
+}
+
 FTIHGenerateCandidateLeaves FTIHGenerateCandidateLeaves::gErrorReference = {};
 
 //	정리를 한다면 이름들을 좀 통일하기

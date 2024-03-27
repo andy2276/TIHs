@@ -660,10 +660,21 @@ public:
 	virtual ~FTIHCmdStMeshModifyMeshes() {};
 };
 
-class FTIHCmdHelper
+USTRUCT()
+struct FTIHTestCommandDatas
 {
+	GENERATED_BODY()
+};
+
+class FTIHCmdTester: public TTIHCommand<FTIHTestCommandDatas>
+{
+	TIHMACRO_CLASS_STATIC_COMMAND_NAME_GENERATE_THIS(FTIHCmdTester);
 public:
-	
+	FTIHCmdTester() 
+	{
+		
+	};
+	virtual ~FTIHCmdTester() {};
 };
 
 
