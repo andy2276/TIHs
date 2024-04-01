@@ -374,22 +374,11 @@ TIHMACRO_CLASS_STATIC_NAME_HASH( thisClass )\
 static FTIHMngObjLeaf* GenerateLeaf()\
 { \
 	FTIHMngObjLeaf* reValue = new thisClass(); \
-	reValue->SetHashValue(thisClass::TIHClassNameHash());\
-	reValue->InitSetting();\
+	reValue->SetLeafHash(thisClass::TIHClassNameHash());\
+	reValue->InstantiateThis();\
 	return reValue;\
 }\
-void InitSetting() override;\
-void PostLinkTargetImplement();\
 private:
-
-#define TIHMACRO_MANAGEDOBJECT_COMPONENT_GENERATE_FUNCTION( thisClass )\
-TIHMACRO_CLASS_STATIC_NAME_HASH( thisClass )\
-static FTIHManagedObjectComponentBase* GenerateManagedObjectComponent()\
-{\
-	FTIHManagedObjectComponentBase* reValue = new thisClass();\
-	reValue->SetHashValue(thisClass::TIHClassNameHash());\
-	return reValue;\
-}\
 
 
 #define TIHMACRO_CLASS_STATIC_GENERIC_GENERATE_THIS( returnType , thisClass )\
@@ -783,6 +772,27 @@ namespace TIHNameSpaceManagedObject
 		const int8 SystemBase = 3;
 		const int8 AnyObject = 4;
 	}
+	namespace MngObjCompositeType
+	{
+		const int8 UnknownType = 0;
+		const int8 SceneComponentBase = 1;
+		const int8 WidgetBase = 2;
+	}
+	namespace MngObjState
+	{
+		const int8 OnContent = 1 << 0;
+		const int8 OnInitate = 1<<1;
+		const int8 OnStaging = 1<<2;
+		const int8 OnUsing = 1<<3;
+		const int8 OnDirty = 1<<4;
+	}
+	namespace FactoryState
+	{
+		const int8 StopFactory = 0;
+		const int8 SpawingActor = 1;
+		const int8 GenerateActorBaseMngObj = 2;
+		const int8 EndingFactory = 3;
+	}
 }
 namespace TIHNameSpaceMesh
 {
@@ -1034,231 +1044,8 @@ inline bool SafeDeletePtrArrayConst(const TIHTemplateType*& ptrConst)
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
 class FTIHMngObjPoolCenter;
-class FTIHState
-{
-	static FTIHMngObjPoolCenter* gPoolCenter;
-public:
-	FTIHState()
-	{
-		mStateValueDetail.WholeData = 0;
-	}
-	FTIHState(int32 turnValue)
-	{
-		mStateValueDetail.WholeData = turnValue;
-	}
-	FTIHState(FUnionTIHStateValue unionStateValue)
-		:
-		mStateValueDetail(unionStateValue)
-	{}
-	FTIHState(const FTIHState& copyCtor)
-		:
-		mStateValueDetail(copyCtor.mStateValueDetail)
-	{}
-	FTIHState(FTIHState&& moveCtor) noexcept
-		:
-		mStateValueDetail(std::move(moveCtor.mStateValueDetail))
-	{}
-
-	FTIHState& operator=(const FTIHState& copyOper)
-	{
-		mStateValueDetail.WholeData = copyOper.mStateValueDetail.WholeData;
-	}
-	FTIHState& operator=(FTIHState&& moveOper) noexcept
-	{
-		mStateValueDetail.WholeData = std::move(moveOper.mStateValueDetail.WholeData);
-	}
-
-	virtual ~FTIHState() {}
-
-	static void SetManagedObjectPoolCenter(FTIHMngObjPoolCenter* poolCenter)
-	{
-		gPoolCenter = poolCenter;
-	}
-
-	ETIHManagedObjectStepState GetStateStepEnum() const
-	{
-		ETIHManagedObjectStepState reValue = ETIHManagedObjectStepState::ETraceFail;
-		switch (mStateValueDetail.Datas.Details.LifeCycle)
-		{
-		case (int16)ETIHManagedObjectStepState::EAllocated:
-			reValue = ETIHManagedObjectStepState::EAllocated;
-			break;
-		case (int16)ETIHManagedObjectStepState::EReady:
-			reValue = ETIHManagedObjectStepState::EReady;
-			break;
-		case (int16)ETIHManagedObjectStepState::ERunning:
-			reValue = ETIHManagedObjectStepState::ERunning;
-			break;
-		case (int16)ETIHManagedObjectStepState::EWaiting:
-			reValue = ETIHManagedObjectStepState::EWaiting;
-			break;
-		case (int16)ETIHManagedObjectStepState::ETermination:
-			reValue = ETIHManagedObjectStepState::ETermination;
-			break;
-		default:
-			break;
-		}
-		return reValue;
-	}
-	int16 GetStateStepInt8() const
-	{
-		int16 reValue = (int16)ETIHManagedObjectStepState::ETraceFail;
-		switch (mStateValueDetail.Datas.Details.LifeCycle)
-		{
-		case (int16)ETIHManagedObjectStepState::EAllocated:
-			reValue = (int16)ETIHManagedObjectStepState::EAllocated;
-			break;
-		case (int16)ETIHManagedObjectStepState::EReady:
-			reValue = (int16)ETIHManagedObjectStepState::EReady;
-			break;
-		case (int16)ETIHManagedObjectStepState::ERunning:
-			reValue = (int16)ETIHManagedObjectStepState::ERunning;
-			break;
-		case (int16)ETIHManagedObjectStepState::EWaiting:
-			reValue = (int16)ETIHManagedObjectStepState::EWaiting;
-			break;
-		case (int16)ETIHManagedObjectStepState::ETermination:
-			reValue = (int16)ETIHManagedObjectStepState::ETermination;
-			break;
-		default:
-			break;
-		}
-		return reValue;
-	}
-	void StartStateTracing()
-	{
-		if (mStateValueDetail.Datas.Details.LifeCycle == (int16)ETIHManagedObjectStepState::ENotUse)
-		{
-			mStateValueDetail.Datas.Details.LifeCycle = (int16)ETIHManagedObjectStepState::EAllocated;
-		}
-		else
-		{
-			/*
-				이미 초기화가 이루어졌다라고 콜링한다.
-			*/
-		}
-	}
-	
-	bool IsStateAllocated() const
-	{
-		bool reValue = false;
-		if ((int16)ETIHManagedObjectStepState::EAllocated != mStateValueDetail.Datas.Details.LifeCycle)
-		{
-			reValue = true;
-		}
-		return reValue;
-	}
-	bool IsStateReady() const
-	{
-		bool reValue = false;
-		if ((int16)ETIHManagedObjectStepState::EReady != mStateValueDetail.Datas.Details.LifeCycle)
-		{
-			reValue = true;
-		}
-		return reValue;
-	}
-	bool IsRunning() const
-	{
-		bool reValue = false;
-		if ((int16)ETIHManagedObjectStepState::ERunning == mStateValueDetail.Datas.Details.LifeCycle)
-		{
-			reValue = true;
-		}
-		return reValue;
-	}
-
-	bool ChangeStateAllocatedToReady()
-	{
-		bool reValue = false;
-		if (ETIHManagedObjectStepState::EAllocated == GetStateStepEnum())
-		{
-			mStateValueDetail.Datas.Details.LifeCycle = (int16)ETIHManagedObjectStepState::EReady;
-			reValue = true;
-		}
-		/*
-			비운상태에서 init 를 하는것이다. 여기서 지워주거나 하지않는다. 즉 순환이 깨지면 에러다.
-			그래서 에러가 나면 해당 사유를 로그로 발사해준다.
-		*/
-		return reValue;
-	}
-	bool ChangeStateReadyToRunning()
-	{
-		bool reValue = false;
-		if (ETIHManagedObjectStepState::EReady == GetStateStepEnum())
-		{
-			mStateValueDetail.Datas.Details.LifeCycle = (int16)ETIHManagedObjectStepState::ERunning;
-			reValue = true;
-		}
-		/*
-			비운상태에서 init 를 하는것이다. 여기서 지워주거나 하지않는다. 즉 순환이 깨지면 에러다.
-			그래서 에러가 나면 해당 사유를 로그로 발사해준다.
-		*/
-		return reValue;
-	}
-	bool ChangeStateRunningToWaiting()
-	{
-		bool reValue = false;
-		if (ETIHManagedObjectStepState::ERunning == GetStateStepEnum())
-		{
-			mStateValueDetail.Datas.Details.LifeCycle = (int16)ETIHManagedObjectStepState::EWaiting;
-			reValue = true;
-		}
-		/*
-			비운상태에서 init 를 하는것이다. 여기서 지워주거나 하지않는다. 즉 순환이 깨지면 에러다.
-			그래서 에러가 나면 해당 사유를 로그로 발사해준다.
-		*/
-		return reValue;
-	}
-	bool ChangeStateRunningToTermination()
-	{
-		bool reValue = false;
-		if (ETIHManagedObjectStepState::ERunning == GetStateStepEnum())
-		{
-			mStateValueDetail.Datas.Details.LifeCycle = (int16)ETIHManagedObjectStepState::ETermination;
-			reValue = true;
-		}
-		/*
-			비운상태에서 init 를 하는것이다. 여기서 지워주거나 하지않는다. 즉 순환이 깨지면 에러다.
-			그래서 에러가 나면 해당 사유를 로그로 발사해준다.
-		*/
-		return reValue;
-	}
-	bool ChangeStateTerminationToAllocated()
-	{
-		bool reValue = false;
-		if (ETIHManagedObjectStepState::ETermination == GetStateStepEnum())
-		{
-			mStateValueDetail.Datas.Details.LifeCycle = (int16)ETIHManagedObjectStepState::EAllocated;
-			reValue = true;
-		}
-		/*
-			비운상태에서 init 를 하는것이다. 여기서 지워주거나 하지않는다. 즉 순환이 깨지면 에러다.
-			그래서 에러가 나면 해당 사유를 로그로 발사해준다.
-		*/
-		return reValue;
-	}
-	void ChangeErrorState()
-	{
-		if (ETIHManagedObjectStepState::ENotUse != GetStateStepEnum())
-		{
-			mStateValueDetail.Datas.Details.LifeCycle = (int16)ETIHManagedObjectStepState::ETraceFail;
-			/*
-				이전의 상태가 무엇이었는지에 따라서 로그를 출력하는 코드를 넣자.
-			*/
-		}
-		else
-		{
-			/*
-				아주 아주 큰 에러임. 그래서 log.BigError 이렇게 콜링해야함.
-			*/
-		}
-	}
 
 
-protected:
-	FUnionTIHStateValue mStateValueDetail;
-};
-FTIHMngObjPoolCenter* FTIHState::gPoolCenter = nullptr;
 /*
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐
 									TTIHChainBuilder

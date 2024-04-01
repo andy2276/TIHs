@@ -3,97 +3,98 @@
 #include "TIHStationCoreDefines.h"
 #include "TIHManagedObjects.h"
 
-class FTIHMngObjLeafMovement : public TTIManagedObjectLeaf<USceneComponent>
+class FTIHMngObjLeafMovement : public TTIManagedObjectActorLeaf<USceneComponent>
 {
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafMovement)
 public:
 	void SetWorldLocation(const FVector& value)
 	{
-		check(mCastedComponent != nullptr);
-		mCastedComponent->SetWorldLocation(value);
+		check(mUEObjectView != nullptr);
+		mUEObjectView->SetWorldLocation(value);
+		
 	}
 	void SetWorldRotation(const FVector& value)
 	{
-		check(mCastedComponent != nullptr);
-		mCastedComponent->SetWorldRotation(value.ToOrientationQuat());
+		check(mUEObjectView != nullptr);
+		mUEObjectView->SetWorldRotation(value.ToOrientationQuat());
 	}
 	void SetWorldTransform(const FTransform& value)
 	{
-		check(mCastedComponent != nullptr);
-		mCastedComponent->SetWorldTransform(value);
+		check(mUEObjectView != nullptr);
+		mUEObjectView->SetWorldTransform(value);
 	}
 	void SetRelativeLocation(const FVector& value)
 	{
-		check(mCastedComponent != nullptr);
-		mCastedComponent->SetRelativeLocation(value);
+		check(mUEObjectView != nullptr);
+		mUEObjectView->SetRelativeLocation(value);
 	}
 	void SetRelativeRotation(const FVector& value)
 	{
-		check(mCastedComponent != nullptr);
-		mCastedComponent->SetRelativeRotation(value.ToOrientationQuat());
+		check(mUEObjectView != nullptr);
+		mUEObjectView->SetRelativeRotation(value.ToOrientationQuat());
 	}
 	void SetRelativeTransform(const FTransform& value)
 	{
-		check(mCastedComponent != nullptr);
-		mCastedComponent->SetRelativeTransform(value);
+		check(mUEObjectView != nullptr);
+		mUEObjectView->SetRelativeTransform(value);
 	}
 	void SetAddLocalOffset(const FVector& value)
 	{
-		check(mCastedComponent != nullptr);
-		mCastedComponent->AddLocalOffset(value);
+		check(mUEObjectView != nullptr);
+		mUEObjectView->AddLocalOffset(value);
 	}
 	void SetAddLocalRotation(const FVector& value)
 	{
-		check(mCastedComponent != nullptr);
-		mCastedComponent->AddLocalRotation(value.ToOrientationQuat());
+		check(mUEObjectView != nullptr);
+		mUEObjectView->AddLocalRotation(value.ToOrientationQuat());
 	}
 	void SetAddLocalRotation(const FTransform& value)
 	{
-		check(mCastedComponent != nullptr);
-		mCastedComponent->AddLocalTransform(value);
+		check(mUEObjectView != nullptr);
+		mUEObjectView->AddLocalTransform(value);
 	}
 	void SetAddRelativeLocation(const FVector& value)
 	{
-		check(mCastedComponent != nullptr);
-		mCastedComponent->AddRelativeLocation(value);
+		check(mUEObjectView != nullptr);
+		mUEObjectView->AddRelativeLocation(value);
 	}
 	void SetAddRelativeRotation(const FVector& value)
 	{
-		check(mCastedComponent != nullptr);
-		mCastedComponent->AddRelativeRotation(value.ToOrientationQuat());
+		check(mUEObjectView != nullptr);
+		mUEObjectView->AddRelativeRotation(value.ToOrientationQuat());
 	}
 	//mCastedComponent->AddLocalTransform(value)
 	void SetAddLocalTransform(const FTransform& value)
 	{
-		check(mCastedComponent != nullptr);
-		mCastedComponent->AddLocalTransform(value);
+		check(mUEObjectView != nullptr);
+		mUEObjectView->AddLocalTransform(value);
 	}
 	void SetAddWorldTransform(const FTransform& value)
 	{
-		check(mCastedComponent != nullptr);
-		mCastedComponent->AddWorldTransform(value);
+		check(mUEObjectView != nullptr);
+		mUEObjectView->AddWorldTransform(value);
 	}
 };
 
-class FTIHMngObjLeafPretty : public TTIManagedObjectLeaf<UMeshComponent>
+class FTIHMngObjLeafPretty : public TTIManagedObjectActorLeaf<UMeshComponent>
 {
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafMovement)
 public:
 
 	void SetMaterial(int32 index,UMaterialInterface* materialInterface)
 	{
-		mCastedComponent->SetMaterial(index, materialInterface);
+		mUEObjectView->SetMaterial(index, materialInterface);
 	}
 };
 
 
-class FTIHMngObjLeafStMesh : public TTIManagedObjectLeaf<UStaticMeshComponent>
+class FTIHMngObjLeafStMesh : public TTIManagedObjectActorLeaf<UStaticMeshComponent>
 {
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafStMesh)
 public:
 	void SetStMesh(UStaticMesh* stMesh)
 	{
-		mCastedComponent->SetStaticMesh(stMesh);
+		mUEObjectView->SetStaticMesh(stMesh);
 	}
 };
 
@@ -101,13 +102,13 @@ public:
 	to-do
 	skeletonMeshComponent 에 필요한 기능을 여기에서 만들어야한다.
 */
-class FTIHMngObjLeafSkMesh : public TTIManagedObjectLeaf<USkeletalMeshComponent>
+class FTIHMngObjLeafSkMesh : public TTIManagedObjectActorLeaf<USkeletalMeshComponent>
 {
 	TIHMACRO_MANAGED_LEAF_FEATURES(FTIHMngObjLeafSkMesh)
 public:
 	void SetSkMesh(USkeletalMesh* skMesh)
 	{
-		mCastedComponent->SetSkeletalMesh(skMesh);
+		mUEObjectView->SetSkeletalMesh(skMesh);
 	}
 
 };

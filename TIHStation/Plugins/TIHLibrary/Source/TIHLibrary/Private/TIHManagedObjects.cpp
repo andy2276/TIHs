@@ -10,914 +10,16 @@ void DefalutRightOverFunction()
 
 void DefaultLeftOverFunction()
 {
-
-}
-
-FTIHGenerateCandidateLeaves FTIHGenerateCandidateLeaves::gErrorReference = {};
-
-//	정리를 한다면 이름들을 좀 통일하기
-void FTIHMngObjFactory::OnGeneratePipeLining(FTIHMngObjPool* targetPool)
-{
-	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
-	static FTIHMngObjFactory& managedObjectFactory = TIHSTATION.GetManagedObjectPoolCenter().GetFactory();
-	static FTIHTickTock& tickTock = TIHSTATION.GetTickTock();
-	if(mIsStartPipeLining == true)
-	{
-		mStartTick = tickTock.GetTick();
-		mIsStartPipeLining = false;
-		const FTIHMngObjPoolCenterConfigure& centerConfig = poolCenter.GetMngObjPoolCenterConfig();
-		/*
-			미리 큐의 공간을 늘려준다.
-		*/
-		targetPool->GetGenerateQueues().Reserve(centerConfig.ForActorQueueCount, centerConfig.ForCompositeCount, centerConfig.ForLeafCount);
-		mGenStartCallBack.Broadcast();
-	}
-	managedObjectFactory.SetManagedObjectPool(targetPool);
-
-	const FTIHMngObjPoolConfigure& targetPoolConfig = targetPool->GetConfigure();
-
-	TDeque<FTIHNewAllocPrepareData>& prepareQueue = poolCenter.GetPrepareDataQueue();
-	int32 prepareNum = prepareQueue.Num();
-	const TArray<FTIHMngObj*>& wholeArray = targetPool->GetWholeManagedObjectArray();
-	FTIHMngObjGenerateQueues& GenerateQues = targetPool->GetGenerateQueues();
-
-	int32 wholeObjNum = 0;
-	const int32 wholeObjMax = wholeArray.Max();
-
-	int32 endPhaseCount = targetPoolConfig.PoolDatas.MaxPhase;//	한번을 돌릴때 while 을 몇번돌릴지에 대한것임.
-	int32 currPhaseCount = 0;
-
-	targetPool->ReserveWholeObjectPool(targetPoolConfig.PoolDatas.WholeManagedObjectMaxCount);
-
-	ETIHReturn32Semantic currPipeliningState = ETIHReturn32Semantic::Success;
-
-	while (true)
-	{
-		if (prepareQueue.IsEmpty() == true)
-		{
-			/*
-				어찌되었든 간에 끝났다는 것이다.
-			*/
-			targetPool->OnCompleteCreateNewAlloc();
-			/*
-				완료시 커맨더에 있는 완료 함수를 호출해준다.
-			*/
-			break;
-		}
-		if (endPhaseCount <= currPhaseCount)
-		{
-			/*
-				반복해서 하겠다는 말임
-				반복시 콜해야하는것에 대한 것임. 만약 command 였다면 강제종료가 가능하도록 만들어야함.
-				그리고 다음 phase 가 들어오는곳임
-			*/
-			currPipeliningState = ETIHReturn32Semantic::Void;
-			break;
-		}
-
-		const FTIHNewAllocPrepareData& currPrepareData = prepareQueue.First();
-		int16 currAllocateCount = currPrepareData.AllocateCount;
-		bool isChildActor = false;
-		wholeObjNum = wholeArray.Num();
-
-		/*
-			to-do
-			다시 만들기 
-			중요한건 공간을 늘리게 할건지 혹은 어떻게 할지 근데 대부분 일어나지 않을일이지만 에러처리부분인지라.
-			extention 과 stop 으로 나눠서 
-		*/
-		if (wholeObjMax < wholeObjNum + currAllocateCount)
-		{
-			/*
-				만약 전체 캐퍼시티보다 지금 물체+ 할당해야하는 물체가 더클경우에
-				지금의 오브젝트 맥스 에서 지금의 물체를 빼준다. 그게 남은 공간일것이니깐.
-			*/
-			currAllocateCount = wholeObjMax - wholeObjNum;
-			/*
-				근데 남은 물체가 0일경우에 늘려줄 영역이 있는지 확인해보고 그것도 안된다 싶으면 에러를 콜해준다.
-				즉 여기는 메모리의 크기가 안남았을경우에 호출되는 영역이라는 것이다.
-			*/
-			if (currAllocateCount == 0)
-			{
-				if (0 < targetPoolConfig.PoolDatas.AddWholeCapasityWhenFullWhole)
-				{
-					if (targetPoolConfig.PoolDatas.AddWholeCapasityWhenFullWhole + wholeObjMax < INT16_MAX)
-					{
-						/*
-							to-do
-							currAllocateCount 를 사용해서 공간 늘리기
-							이게 전체에서 남은 공간을 얻어오는거임.
-						*/
-					}
-					else
-					{
-						/*
-							용량이 너무커서 더이상 진행하지 못한다.
-						*/
-						currPipeliningState = ETIHReturn32Semantic::Fail;
-						break;
-					}
-
-					/*
-						여기에 configure 업데이트가 들어갈자리임.
-					*/
-				}
-				else
-				{
-					/*
-						아니면 터트린다.
-						리턴에 정보를 넣고싶은데 이거 생각좀해봐라.
-					*/
-					currPipeliningState = ETIHReturn32Semantic::Fail;
-					break;
-				}
-			}
-		}
-		++currPhaseCount;
-
-		if (currPrepareData.TargetUEClassBase == (int8)ETIHMngObjHeaderProcotols::EActorBase)
-		{
-			managedObjectFactory.GenerateUEActorBaseByPrepareData(currAllocateCount, currPrepareData.TargetClassHash, GenerateQues, isChildActor);
-			managedObjectFactory.GenerateManagedObjectByActorArray(GenerateQues, currPrepareData.CallParentIndex);
-			managedObjectFactory.GenerateManagedObjectCompositeArray(GenerateQues);
-			managedObjectFactory.GenerateManagedObjectLeafArray(GenerateQues);
-
-			prepareQueue.PopFirst();
-		}
-		else if (currPrepareData.TargetUEClassBase == (int8)ETIHMngObjHeaderProcotols::EWidgetBase)
-		{
-
-		}
-		else if (currPrepareData.TargetUEClassBase == (int8)ETIHMngObjHeaderProcotols::ESystem)
-		{
-
-		}
-		else if (currPrepareData.TargetUEClassBase == (int8)ETIHMngObjHeaderProcotols::EAuto)
-		{
-
-		}
-	}
-	
-	switch (currPipeliningState)
-	{
-	case ETIHReturn32Semantic::Fail:
-		targetPool->OnErrorCallCreateNewAlloc(0);
-		break;
-	case ETIHReturn32Semantic::Void:
-		targetPool->OnRepeatCreateNewAlloc(currPhaseCount);
-		break;
-	case ETIHReturn32Semantic::Success:
-		targetPool->OnCompleteCreateNewAlloc();
-		/*
-			이제 끝났으니 정리해주는 코드임
-		*/
-		targetPool->GetGenerateQueues().OnEmpty();
-		mGenEndCallBack.Broadcast();
-		break;
-	}
 	
 }
 
-void FTIHMngObjFactory::GenerateUEActorBaseByPrepareData(int16 allocount, UEObjectHash64 ueObjHash, FTIHMngObjGenerateQueues& generateQueues, bool isChild)
-{
-	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
-	static FTIHMngObjGenerateHelper& tagHelper = TIHSTATION.GetGenerateHelper();
 
-	FTIHMngObjPool& currMngObjPool = *GetCurrentManagedObjectPool();
-	FTIHMngObjPoolConfigure& poolConfigu = currMngObjPool.GetConfigureNoConst();
 
-	if (isChild == false)
-	{
-		UWorld* spawnWorld = poolConfigu.SpawnSpace;
-		AActor* spawnOwner = poolConfigu.OwnerActor;
-		FTransform spawnTransform = poolConfigu.DefaultTransform;
-		UClass* spawnClass = tagHelper.GetUEActorClassByUEHash(ueObjHash);//	GetUEActorByHash 를 넣어주자.
 
-		for (int16 addCount = 0; addCount < allocount; ++addCount)
-		{
-			AActor* newActor = spawnWorld->SpawnActor(spawnClass, &spawnTransform);
-			ConvertPoolableActor(newActor);
-			generateQueues.PushBackActor(newActor, ueObjHash);
-		}
-	}
 
-}
 
-void FTIHMngObjFactory::GenerateManagedObjectByActorArray(FTIHMngObjGenerateQueues& generateQueues, int16 parentData)
-{
-	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
 
-	int32 actorArrayNum = generateQueues.GetNumInActorQueue();
-	//	to-do
-	//	나중에 업데이트 할때 해주자
-	//	액터도 같은 수끼리 묶어주는 작업해놓으면 됨. 그리고 prepare 만들어서 넣어주면 된다.
 
-	FTIHMngObjPool& currMngObjPool = *GetCurrentManagedObjectPool();
-
-	while (true)
-	{
-		if (generateQueues.IsEmptyActorQueue() == true)
-		{
-			break;
-		}
-		TTIHMngObjTempDataPair<UEObjectHash64, AActor*> currActor = generateQueues.GetTopAndPopActorPairQueue();
-		USceneComponent* rootScene = currActor.UEValueType->GetRootComponent();
-
-		FTIHMngObj* newManagedObject = new FTIHMngObj();
-		newManagedObject->InitMngObj(currActor.UEValueType, parentData, currMngObjPool.GetConfigure().PoolDatas.AllocationSpace);
-		newManagedObject->SetUEObjectHash(currActor.HashValueType);
-
-		if (rootScene != nullptr)
-		{
-			generateQueues.PushBackPrepareDataForComposite
-			(
-				{ 
-					0 ,					/* Step */
-					-1, 				/* ParentCompositeIndex */
-					rootScene ,			/* UE SceneComponent Pointer */
-					newManagedObject 	/* TIHManagedObject Pointer */
-				}
-			);
-		}
-		else
-		{
-			newManagedObject->ChainManagedObjectHeader()
-				.SetProtocol((int8)ETIHManagedObjectHeaderProtocols::ESystem);
-		}
-
-		currMngObjPool.AddNewManagedObject(newManagedObject);
-
-		/*
-			to-do
-			업데이트 해주는부분이 여기가 맞는지.
-		*/
-		newManagedObject->UpdateStateByManagedObjectHeader();
-	}
-}
-
-void FTIHMngObjFactory::GenerateManagedObjectCompositeArray(FTIHMngObjGenerateQueues& generateQueues)
-{
-	FTIHCommander& commander = TIHSTATION.GetCommander();
-
-	FTIHMngObjPool& currMngObjPool = *GetCurrentManagedObjectPool();
-	const int16 currAllocationSpace = currMngObjPool.GetConfigure().PoolDatas.AllocationSpace;
-	int16 currStep = 0;
-
-	while (true)
-	{
-		if (generateQueues.IsEmptyPrepareDataForCompositeQueue() == true)
-		{
-			break;
-		}
-		FTIHMngObjGenerateCompositeBFSData&& currGenData = generateQueues.GetTopAndPopPrepareDataForCompositeQueue();
-		int16 stepValue = currGenData.StepValue;
-		int16 parentCompositeIndex = currGenData.ParentCompositeIndex;
-		FTIHMngObj* currManagedObject = currGenData.TIHManagedObject;
-		USceneComponent* currScene = currGenData.UESceneComponent;
-
-		if(currScene->StaticClass() == UChildActorComponent::StaticClass())
-		{
-			GenerateUEChildActorBy(Cast<UChildActorComponent>(currScene), currManagedObject, generateQueues);
-		}
-		//	그냥 여기에 childrenActorComponent 를 추가하자.
-
-		FTIHMngObjComposite* newComposite = new FTIHMngObjComposite();
-		newComposite->InitMngObjComposite(currAllocationSpace, currScene, parentCompositeIndex, stepValue);
-		currManagedObject->AddComposite(newComposite);
-
-		const TArray<TObjectPtr<USceneComponent>>& childScenes = currScene->GetAttachChildren();
-
-		for (const TObjectPtr<USceneComponent>& childScene : childScenes)
-		{		
-			generateQueues.PushBackPrepareDataForComposite
-			(
-				{ 
-					stepValue + 1 ,	//	level
-					newComposite->GetIndexInManagedObjectCompositeArray(),	//	parentIndex == curCompositeIndex
-					childScene ,	//	attachScenes
-					currManagedObject	//	managedObject
-				}
-			);
-		}
-		generateQueues.PushBackEmptyComposite(newComposite);
-	}
-}
-
-void FTIHMngObjFactory::GenerateUEChildActorBy(UChildActorComponent* childActorScene, FTIHMngObj* currManagedObject, FTIHMngObjGenerateQueues& genereteQueues)
-{
-	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
-	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
-
-	check(childActorScene != nullptr);
-
-	AActor* childActor = childActorScene->GetChildActor();
-
-	check(childActor != nullptr);
-
-	UClass* childActorClass = childActor->StaticClass();
-	UEObjectHash64 ueChildActorCls = genHelper.GetUEHashByActorUClass(childActorClass);
-
-	check(ueChildActorCls != genHelper.GetNoRegistTag());
-
-	genereteQueues.PushBackActor(childActor, ueChildActorCls);
-	UEObjectHash64 chileActorHash = genHelper.GetUESceneComponentHashByUClass(childActorClass);
-	int16 parentIndex = currManagedObject->GetSelfIndexInWholeArray();
-	poolCenter.EmplaceAddMngObjPrepareDataForChildActor(chileActorHash, parentIndex);
-}
-
-void FTIHMngObjFactory::GenerateManagedObjectLeafArray(FTIHMngObjGenerateQueues& tempDatas)
-{
-	static FTIHMngObjPoolCenter& poolCenter = FTIHDefaultStation::GetSingle().GetManagedObjectPoolCenter();
-
-	while (true)
-	{
-		if (tempDatas.IsEmptyEmptyCompositeQueue() == true)
-		{
-			break;
-		}
-
-		FTIHMngObjComposite* currComposite = tempDatas.GetTopAndPopEmptyCompositeQueue();
-		UEObjectHash64 targetSceneComponentHash = currComposite->GetHashValue();
-		const FTIHGenerateCandidateLeaves& hashArray = poolCenter.GetTIHHashArrayByUEHash(targetSceneComponentHash);
-
-		for (const TIHHash64 managedComponentHash : hashArray.GenerateTags)
-		{
-			FTIHMngObjLeaf* leaf = poolCenter.GenerateManagedComponentByTIHHash(managedComponentHash);
-			//	여기에다가 leaf 가 nullptr 이면 넘어가게 해야하나?
-			leaf->SetManagedSceneComponentAndCasting(currComposite->GetTargetUeSceneComponent());
-			currComposite->AddLeaf(leaf);
-		}
-	}
-}
-
-FTIHMngObjPoolCenter& FTIHMngObjPoolCenter::GetSingle()
-{
-	static FTIHMngObjPoolCenter& SelfObject = TIHSTATION.GetManagedObjectPoolCenter();
-	return SelfObject;
-}
-
-void FTIHMngObjPoolCenter::InstantiateThis()
-{
-	mManagedObjectFactory = new FTIHMngObjFactory;
-}
-
-void FTIHMngObjPoolCenter::InitiateThis()
-{
-
-}
-
-void FTIHMngObjPoolCenter::GenerateDefaultMngObjPools()
-{
-	FTIHMngObjPoolConfigure tempConfig;
-	FTIHMngObjPool* tempMngPool = nullptr;
-
-	tempConfig.Reset();
-	tempConfig.PoolDatas.AllocationSpace = TIHNameSpaceManagedObject::AllocationSpaceType::AdminSpace;
-	tempConfig.PoolDatas.WholeManagedObjectMaxCount = 128;
-	tempConfig.PoolDatas.AddWholeCapasityWhenFullWhole = 16;
-	tempConfig.PoolDatas.MaxPhase = 256;
-	tempConfig.PoolDatas.Option0 = 0;
-
-	tempMngPool = GenerateMngObjPoolByConfigure(tempConfig);
-
-	mManagedObjectPools.Add
-	(
-		tempConfig.PoolDatas.AllocationSpace,
-		tempMngPool
-	);
-
-	tempConfig.Reset();
-	tempConfig.PoolDatas.AllocationSpace = TIHNameSpaceManagedObject::AllocationSpaceType::SystemSpace;
-	tempConfig.PoolDatas.WholeManagedObjectMaxCount = 256;
-	tempConfig.PoolDatas.AddWholeCapasityWhenFullWhole = 16;
-	tempConfig.PoolDatas.MaxPhase = 256;
-	tempConfig.PoolDatas.Option0 = 0;
-
-	tempMngPool = GenerateMngObjPoolByConfigure(tempConfig);
-
-	mManagedObjectPools.Add
-	(
-		tempConfig.PoolDatas.AllocationSpace,
-		tempMngPool
-	);
-
-	tempConfig.Reset();
-	tempConfig.PoolDatas.AllocationSpace = TIHNameSpaceManagedObject::AllocationSpaceType::GlobalSpace;
-	tempConfig.PoolDatas.WholeManagedObjectMaxCount = 512;
-	tempConfig.PoolDatas.AddWholeCapasityWhenFullWhole = 8;
-	tempConfig.PoolDatas.MaxPhase = 256;
-	tempConfig.PoolDatas.Option0 = 0;
-
-	tempMngPool = GenerateMngObjPoolByConfigure(tempConfig);
-
-	mManagedObjectPools.Add
-	(
-		tempConfig.PoolDatas.AllocationSpace,
-		tempMngPool
-	);
-}
-
-void FTIHMngObjPoolCenter::EmplaceAddMngObjPrepareData(int8 TargetClassType, UEObjectHash64 TargetClassHash, int16 CallParentIndex, int16 AllocateCount)
-{
-	//mPrepareDatas.EmplaceLast(FTIHNewAllocPrepareData( TargetClassType ,AllocateCount ,CallParentIndex ,TargetClassHash ));
-	//FTIHNewAllocPrepareData tempData(TargetClassType, AllocateCount, CallParentIndex, TargetClassHash);
-	mPrepareDatas.EmplaceLast((int8)TargetClassType, (int16)AllocateCount, (int16)CallParentIndex, (UEObjectHash64)TargetClassHash);
-}
-
-void FTIHMngObjPoolCenter::EmplaceAddMngObjPrepareDataForChildActor(UEObjectHash64 TargetClassHash, int16 CallParentIndex)
-{
-	EmplaceAddMngObjPrepareData((int8)ETIHMngObjHeaderProcotols::EActorBase, TargetClassHash, CallParentIndex, 1);
-}
-
-int8 FTIHMngObjPoolCenter::RegistManagedObjectPool(ETIHManagedObjectSpace managedObjectSpace, FTIHMngObjPool* managedObjectPool)
-{
-	int8 reValue = (int8)ETIHManagedObjectSpace::ENotRegistSpace;
-	int8 wantSpaceSlot = (int8)managedObjectSpace;
-	//	outBoundFTIHGenerateCandidateLeaves
-	int8 maxSpaceSlotOutBound = wantSpaceSlot + MaxObjectPoolSlotCount;//- (int8)ETIHManagedObjectSpace::ELoaclSpace;
-
-	for (; wantSpaceSlot < maxSpaceSlotOutBound; ++wantSpaceSlot)
-	{
-		if (mManagedObjectPools.Contains(wantSpaceSlot) == false)
-		{
-			reValue = wantSpaceSlot;
-			mManagedObjectPools.Add(wantSpaceSlot, managedObjectPool);
-			managedObjectPool->SetManagedPoolSpace(wantSpaceSlot);
-			break;
-		}
-	}
-	return reValue;
-}
-
-FTIHMngObjPool* FTIHMngObjPoolCenter::GetManagedObjectPool(int8 objectPoolSpace)
-{
-	FTIHMngObjPool* reValue = nullptr;
-
-	if (mManagedObjectPools.Contains(objectPoolSpace) == true)
-	{
-		reValue = mManagedObjectPools[objectPoolSpace];
-	}
-	return reValue;
-}
-
-UEObjectHash64 FTIHMngObjPoolCenter::RegistUEClassForGenerate(UClass* ucls)
-{
-	check(ucls != nullptr);
-	FName uclassName = ucls->GetClassPathName().GetAssetName();
-	//	여기에서  cstr 을 얻어내야한다.
-
-	TIHReturn64 newHash = ClassNameHashImplement(*(uclassName.ToString()));
-	if (mUeClassHashToUClass.Contains(newHash) == false)
-	{
-		mUeClassHashToUClass.Add(newHash, ucls);
-	}
-	else
-	{
-		/*
-			to-do
-			중복! 에대한 로그를 넘긴다.
-		*/
-		
-		check(false);
-	}
-	return newHash;
-}
-
-
-void FTIHMngObjPoolCenter::RegistFunctionForManagedComponentGeneration(TIHReturn64 managedCompHash, TFunction< FTIHMngObjLeaf* ()> func)
-{
-	if (mTIHClassHashToGenerateFunction.Contains(managedCompHash) == false)
-	{
-		mTIHClassHashToGenerateFunction.Add(managedCompHash, func);
-	}
-	else
-	{
-		/*
-			to-do
-			log.changeDelegateFunc
-		*/
-		mTIHClassHashToGenerateFunction[managedCompHash] = func;
-	}
-}
-
-FTIHMngObjFactory& FTIHMngObjPoolCenter::GetFactory()
-{
-	return *mManagedObjectFactory;
-}
-
-void FTIHMngObjPoolCenter::OnGeneratePipeLining(int8 allocationSpace)
-{
-	FTIHMngObjPool* mngObjPool = GetManagedObjectPool(allocationSpace);
-	check(mngObjPool != nullptr);
-	mManagedObjectFactory->OnGeneratePipeLining(mngObjPool);
-}
-
-void FTIHMngObjPoolCenter::OnSetObjectPoolConfigure(const FTIHMngObjPoolConfigureDatas& data)
-{
-
-}
-
-const FTIHGenerateCandidateLeaves& FTIHMngObjPoolCenter::GenerateManagedObjectComponentByUClass(UClass* ucls)
-{
-	check(ucls != nullptr);
-	const FName & compName = ucls->GetClassPathName().GetAssetName();
-	bool isContain = mClassNameToUeClassHash.Contains(compName);
-	/*
-		이걸 고치거나 지우자.
-	*/
-	if (isContain == true)
-	{
-		UEObjectHash64 ueHash = mClassNameToUeClassHash[compName];
-		return mUClassToClassHashs[ueHash];
-	}
-	else
-	{
-		return FTIHGenerateCandidateLeaves::gErrorReference;
-	}
-}
-
-UEObjectHash64 FTIHMngObjPoolCenter::GetUeHashByUClassInUEComponent(UClass* ucls)
-{
-	check(ucls != nullptr);
-	/*
-		이걸 고치거나 지우자.
-	*/
-	return 0;
-}
-
-bool FTIHMngObjPoolCenter::IsUeHashValid(UEObjectHash64 ueHash)
-{
-	bool reValue = mUClassToClassHashs.Contains(ueHash);
-	return reValue;
-}
-
-const FTIHGenerateCandidateLeaves& FTIHMngObjPoolCenter::GetTIHHashArrayByUEHash(UEObjectHash64 ueHash)
-{
-	return mUClassToClassHashs[ueHash];
-}
-
-FTIHMngObjLeaf* FTIHMngObjPoolCenter::GenerateManagedComponentByTIHHash(TIHObjectHash64 ueHash)
-{
-	FTIHMngObjLeaf* reValue = nullptr;
-
-	reValue = mTIHClassHashToGenerateFunction[ueHash]();
-
-	return reValue;
-}
-
-FTIHMngObjPool* FTIHMngObjPoolCenter::CreateManagedObjectPool(
-	int8 allocationSpace, int16 wholeMngObjCapacity, int16 processingPhaseCount, UWorld* spawnSpace, AActor* ownerActor,
-	const FTransform& defaultTransform /*= FTransform::Identity*/,const int8 ifAddCapacityCount /*= 256 */)
-{
-	return nullptr;
-}
-
-FTIHMngObjPool* FTIHMngObjPoolCenter::GenerateMngObjPoolByConfigure(FTIHMngObjPoolConfigure config)
-{
-	FTIHMngObjPool* reValue = nullptr;
-	/*
-		마냥 생성하는게 아니라 메모리에 접근해야함. 
-	
-	*/
-	if(mManagedObjectPools.Contains(config.PoolDatas.AllocationSpace) == false)
-	{
-		/*
-			WholeManagedObjectMaxCount;
-			MaxPhase;
-			AddWholeCapasityWhenFullWhole;
-			AllocationSpace;
-			Option0;//{bitmask : isSet  WholeManagedObjectMaxCount,MaxPhase,AddWholeCapasityWhenFullWhole}
-			Option1;
-		*/
-		reValue = new FTIHMngObjPool(*this);
-		config.PoolDatas.Option0 =
-			1 << 0 | 1 << 1 | 1 << 2 | 1 << 3;
-		reValue->SetMngObjPoolConfig(config);
-		reValue->UpdateConfig();
-	}
-	else
-	{
-		/*
-			to-do
-			이미 있으니 새롭게 만들어라라는 로그를 띄운다.
-		*/
-
-	}
-
-	return reValue;
-}
-
-FTIHMngObj* FTIHMngObjPoolCenter::PoolingManagedObject(int8 allocationSpace, int8 ueObjBase, TIHObjectHash64 ueObjHash)
-{
-	FTIHMngObj* reValue = nullptr;
-	if (mManagedObjectPools.Contains(allocationSpace) == true)
-	{
-		reValue = mManagedObjectPools[allocationSpace]->GetAnyReadyMngObj(ueObjBase, ueObjHash);
-	}
-	return reValue;
-}
-
-TIHReturn64 FTIHMngObjPool::ReserveWholeObjectPool(int16 maxCount)
-{
-	TIHReturn64 reValue = 0;
-	if(mWholeManagedObjects.Max() < maxCount)
-	{
-		reValue = mWholeManagedObjects.Max();
-		mWholeManagedObjects.Reserve(maxCount);
-	}
-	return reValue;
-}
-
-void FTIHMngObjPool::AddNewManagedObject(FTIHMngObj* newManagedObject)
-{
-	int16 addIndex = mWholeManagedObjects.Add(newManagedObject);
-	int8 allocSpaceIndex = newManagedObject->GetManagedObjectAlloactionSpace();
-
-	newManagedObject->SetSelfIndexInWholeArray(addIndex);
-
-	newManagedObject->GetManagedUObject()->SetTIHData0(allocSpaceIndex);
-	newManagedObject->GetManagedUObject()->SetTIHData1(addIndex);
-};
-
-void FTIHMngObjPool::OnSortManagedStates()
-{
-	for (int32 i = 0; i < mWholeManagedObjects.Num(); ++i)
-	{
-		if (mWholeManagedObjects[i] == nullptr)
-		{
-			continue;
-		}
-		if (mWholeManagedObjects[i]->GetStateNonConst().IsStateAllocated() == true)
-		{
-			mWholeManagedObjects[i]->GetStateNonConst().ChangeStateAllocatedToReady();
-
-
-		}
-	}
-}
-
-void FTIHMngObjPool::PushBackReadyMngObj(FTIHMngObj* target)
-{
-	int8 ueObjBase = target->GetManagedObjectUEObjectBase();
-	TIHHash64 ueObjHash = target->GetUEObjectHash();
-	int16 mngobjSelfIndex = target->GetSelfIndexInWholeArray();
-
-	if (mManagedObjectStateReadyIndices.Contains(ueObjBase) == false)
-	{
-		mManagedObjectStateReadyIndices.Add(ueObjBase, TMap< TIHHash64, TDeque<int16>>());
-	}
-	if (mManagedObjectStateReadyIndices[ueObjBase].Contains(ueObjHash) == false)
-	{
-		mManagedObjectStateReadyIndices[ueObjBase].Add(ueObjHash, TDeque<int16>());
-	}
-	mManagedObjectStateReadyIndices[ueObjBase][ueObjHash].PushLast(mngobjSelfIndex);
-}
-
-FTIHMngObj* FTIHMngObjPool::GetAnyReadyMngObj(int8 base, TIHHash64 ueHash)
-{
-	FTIHMngObj* reValue = nullptr;
-
-	if (mManagedObjectStateReadyIndices.Contains(base) == true)
-	{
-		if (mManagedObjectStateReadyIndices[base].Contains(ueHash) == true)
-		{
-			int16 candiateIndex = mManagedObjectStateReadyIndices[base][ueHash].First();
-			if (mWholeManagedObjects[candiateIndex]->GetStateNonConst().IsStateReady() == true)
-			{
-				mManagedObjectStateReadyIndices[base][ueHash].PopFirst();
-				reValue = mWholeManagedObjects[candiateIndex];
-			}
-		}
-	}
-	return reValue;
-}
-
-void FTIHMngObjPool::OnChangeStateAllocateToReady()
-{
-	for (FTIHMngObj* mngObj : mWholeManagedObjects)
-	{
-		bool isOk = false;
-		isOk = mngObj->GetStateNonConst().ChangeStateAllocatedToReady();
-
-		if (isOk == true)
-		{
-			PushBackReadyMngObj(mngObj);
-		}
-	}
-}
-
-void FTIHMngObjPool::OnCompleteCreateNewAlloc()
-{
-	OnChangeStateAllocateToReady();
-	/*
-		0314 여기서 호출해주자.
-	*/
-	for (FTIHMngObj* mngObj : mWholeManagedObjects)
-	{
-
-	}
-}
-
-
-
-void FTIHMngObjPool::OnRepeatCreateNewAlloc(int32 currPhase)
-{
-	/*
-		to-do
-		이걸 콜하는 곳은 OnGeneratePipelining 인데, 그곳에서 void 를 호출했을때 콜된다
-		여기에다가 함수포인터 만들어도 괜찮음
-	*/
-}
-
-void FTIHMngObjPool::OnErrorCallCreateNewAlloc(TIHReturn64 errCode)
-{
-	/*
-		to-do
-		이걸 콜하는 곳은 OnGeneratePipelining 인데, 그곳에서 error 를 호출했을때 콜된다
-		함수포인터를 만들어서 넣어주자. 기본은 내부에서 그냥 콜해주는걸로가자.
-	*/
-}
-
-void FTIHMngObjGenerateHelper::GenerateLeavesByUEHash(UEObjectHash64 ueHash, FTIHMngObjComposite& out)
-{
-	if (mRegistedGenCandidates.Contains(ueHash) == true)
-	{
-		const FTIHGenerateCandidateLeaves& hashArray = mRegistedGenCandidates[ueHash];
-		for (const TIHHash64& tihHash : hashArray.GenerateTags.Array())
-		{
-			out.AddLeaf(GenerateTIHManagedObjectLeaf(tihHash));
-		}
-	}
-}
-
-const FTIHGenerateCandidateLeaves& FTIHMngObjGenerateHelper::GetCandidateForManagedLeafByUEComponentHash(UEObjectHash64 ueHash)
-{
-	if (mRegistedGenCandidates.Contains(ueHash) == true)
-	{
-		return mRegistedGenCandidates[ueHash];
-	}
-	else
-	{
-		return FTIHGenerateCandidateLeaves::gErrorReference;
-	}
-}
-
-void FTIHMngObj::SetManagedObjectParent(int16 parentIndex)
-{
-	static FTIHMngObjGenerateHelper& tagHelper = TIHSTATION.GetGenerateHelper();
-	mParentIndexInWholeArray = parentIndex;
-	//if (-1 < parentIndex)
-	//{
-	//	//mHashTable.Add(HasParent);
-	//	//GetParent()->HasChild
-	//}
-	//else
-	//{
-	//	//mHashTable.Add(Root);
-	//}
-
-}
-
-void FTIHMngObj::InitMngObj(AActor* targetActor, int16 parentIndex, int8 allocationSpace)
-{
-	static FTIHTickTock& genTick = TIHSTATION.GetTickTock();
-	SetGenerateTick(genTick.GetTick());
-	SetManagedUObject(targetActor);
-	SetManagedObjectParent(parentIndex);
-	ChainManagedObjectHeader()
-		.SetProtocol(TIHNameSpaceManagedObject::UEClassBaseType::ActorBase)
-		.SetManagedObjectState((int8)ETIHManagedObjectStepState::ENotUse);
-	SetAllocSpace(allocationSpace);
-
-	std::vector<int> a;
-	
-}
-
-FTIHMngObjPool* FTIHMngObj::GetMyManagedPool()
-{
-	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
-
-	FTIHMngObjPool* reValue = nullptr;
-	reValue = poolCenter.GetManagedObjectPool(mManagedObjectHeader.AllocationSpace);
-	check(reValue != nullptr);
-
-	return reValue;
-}
-
-void FTIHMngObj::SettingLeafTable()
-{
-	for(FTIHMngObjComposite* composite : mCompositeArray)
-	{
-		mHashTable.Union(composite->SettingLeafTable());
-	}
-}
-
-void FTIHMngObj::QueryLeafActorMove(int16 compositeIndex, const FTransform& transform) 
-{
-
-}
-
-void FTIHMngObj::QueryLeafActorMoveRoot(const FTransform& transform)
-{
-	/*
-		to-do
-		TEXT root 를 담은 리스트를 어딘가에 만들기
-	*/
-	if(mSpecialCompositetIndex.Contains(TEXT("root")) == true)
-	{
-		FTIHMngObjComposite* composite = mCompositeArray[mSpecialCompositetIndex[TEXT("root")]];
-		FTIHMngObjLeafMovement* movementLeaf = composite->TryGetLeafForMovement();
-		if(movementLeaf != nullptr)
-		{
-			movementLeaf->SetAddWorldTransform(transform);
-		}
-		/*
-			query 들을 위한 로그 남기기
-		*/
-	}
-}
-
-void FTIHMngObj::CompleteGenerateFunc()
-{
-
-}
-
-void FTIHMngObjComposite::AddLeaf(FTIHMngObjLeaf* leaf)
-{
-	check(leaf != nullptr);
-
-	leaf->SetSelfIndex(mLeafMap.Num());
-	leaf->SetManagedObjectCompositeIndex(this->GetSelfIndex());
-
-	mLeafMap.Add(leaf->GetHashValue(), leaf);
-}
-
-FTIHMngObjLeaf* FTIHMngObjComposite::GetLeaf(TIHHash64 tihHash)
-{
-	FTIHMngObjLeaf* reValue = nullptr;
-	if (mLeafMap.Contains(tihHash) == true)
-	{
-		reValue = mLeafMap[tihHash];
-	}
-	return reValue;
-}
-
-FTIHMngObj* FTIHMngObjComposite::GetOwnerMngObj()
-{
-	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
-	FTIHMngObj* reValue = nullptr;
-	FTIHMngObjPool* mngObjPool = poolCenter.GetManagedObjectPool(GetManagedObjectComponentHeader().AllocationSpace);
-	if(mngObjPool != nullptr)
-	{
-		reValue = mngObjPool->GetMngObj(GetOwnerIndex());
-	}
-	return reValue;
-}
-
-
-void FTIHMngObjComposite::SetParent(int16 parent)
-{
-	TIHSTATION_TYPE& station = TIHSTATION;
-	if (-1 < parent)
-	{
-		/*
-			hasParent
-		*/
-
-
-	}
-	else
-	{
-		/*
-			root
-			이제 여기에서 GetOwnerMngObj 이거쓰고 해당 매니지드 오브젝트에게 등록해주면 되는데, 어떻게 할까?
-
-		*/
-		
-	}
-	mParentIndex = parent;
-}
-
-FTIHMngObjLeafMovement* FTIHMngObjComposite::TryGetLeafForMovement()
-{
-	return static_cast<FTIHMngObjLeafMovement*>(TryGetLeafByHash(FTIHMngObjLeafMovement::TIHClassNameHash()));
-}
-
-FTIHMngObjLeafPretty* FTIHMngObjComposite::TryGetLeafForPretty()
-{
-	return static_cast<FTIHMngObjLeafPretty*>(TryGetLeafByHash(FTIHMngObjLeafPretty::TIHClassNameHash()));
-}
-
-FTIHMngObjLeafStMesh* FTIHMngObjComposite::TryGetLeafForStMesh()
-{
-	return static_cast<FTIHMngObjLeafStMesh*>(TryGetLeafByHash(FTIHMngObjLeafStMesh::TIHClassNameHash()));
-}
-
-FTIHMngObjLeafSkMesh* FTIHMngObjComposite::TryGetLeafForSkMesh()
-{
-	
-	return static_cast<FTIHMngObjLeafSkMesh*>(TryGetLeafByHash(FTIHMngObjLeafSkMesh::TIHClassNameHash()));
-}
 
 FTIHMeshPool* FTIHMeshPool::GetSingle()
 {
@@ -1229,4 +331,478 @@ void FTIHSlidingWindowStuck::SlidingLeft(int16 value)
 			(int8)ETIHSlidingWindowDoneStateTypes::EWhenLeftAdd
 		);
 	}
+}
+
+int16 FTIHMngObj::PushBackComposite(FTIHMngObjComposite* composite)
+{
+	int16 addedIndex = mCompositeArray.Add(composite);
+
+	TIHHash64 compositeHash = composite->GetMngObjCompositeHash();
+
+	if(mCompositeTable.Contains(compositeHash) == false)
+	{
+		mCompositeTable.Add(compositeHash,TArray<int16>() );
+	}
+	mCompositeTable[compositeHash].Add(addedIndex);
+	composite->SetSelfIndex(addedIndex);
+	composite->SetOwnerIndex(GetSelfIndex());
+	composite->SetOwnerAllocationSpace(GetAllocationSpace());
+	composite->PostRegistCallBack(this);
+
+	return addedIndex;
+}
+
+void FTIHMngObj::DeleteContent()
+{
+	if(mContents != nullptr)
+	{
+		switch (mMngObjHeader.UObjectType)
+		{
+		case TIHNameSpaceManagedObject::UEClassBaseType::ActorBase:
+			DeleteActorBase(Cast<AActor>(mContents));
+			break;
+		case TIHNameSpaceManagedObject::UEClassBaseType::WidgetBase:
+			DeleteWidgetBase(Cast<UWidget>(mContents));
+			break;
+		}
+	}
+	mContents = nullptr;
+}
+
+void FTIHMngObj::SetContents(UObject* ueobj)
+{
+	DeleteContent();
+	mContents = ueobj;
+	ueobj->SetTIHData0(GetSelfIndex());
+	ueobj->SetTIHData1(GetAllocationSpace());
+}
+
+void FTIHMngObj::GenerateContentByHeader()
+{
+	/*
+		to-do 
+		generate 부분 만들기
+		근데 이거하려면 factory 부터 만들어야함
+		여기서 해주는게 뭐냐면 기존의 컨텐츠를 지우고 새롭게 언리얼 오브젝트를 만드는거임.
+		그리고 나서 이것저것 갱신해줘야함.
+	*/
+	if(mMngObjState.IsReGeneratePossible() == true)
+	{
+		DeleteContent();
+		mMngObjState.OnReset();
+		switch (mMngObjHeader.UObjectType)
+		{
+		case TIHNameSpaceManagedObject::UEClassBaseType::ActorBase:
+			GenerateActorByUclass();
+			break;
+		case TIHNameSpaceManagedObject::UEClassBaseType::WidgetBase:
+			GenerateWidgetByUclass();
+			break;
+			/*
+				to-do
+				system 만들기
+			*/
+		}
+		
+		
+	}
+	else if(mMngObjState.IsOnStaging() == true)
+	{
+		/*
+			to-do
+			지금 pooling 되었는데 사용하지는 않는 상황임. 즉 준비는 다되었다는소리
+		*/
+
+	}
+	else if(mMngObjState.IsOnUsing() == true)
+	{
+
+
+	}
+}
+
+
+
+void FTIHMngObj::SetMngObjHeader(const FTIHMngObjHeader& mngObjHeader)
+{
+	/*
+		여기서 해야하는건 헤더가 변경이 되면 모든걸 리셋해야한다는것이다.
+		리셋에는 엑터를 지우는 행위도 포함이 된다.
+		그리고 state 를 변경해야한다.
+		우선 이게 새롭게 만들어지는 과정과 같다
+	*/
+	if(mMngObjState.IsReGeneratePossible() == true)
+	{
+
+	}
+	mMngObjHeader = mngObjHeader;
+}
+
+FTIHMngObj* FTIHMngObj::QueryGetParent()
+{
+	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+	FTIHMngObj* reValue = nullptr;
+	FTIHMngObjPool* mngPool = poolCenter.GetMngObjPoolByIndex(mMngObjHeader.AllocationSpace);
+	reValue = mngPool->QueryGetMngObj(mParentIndex);
+	return reValue;
+}
+
+
+void FTIHMngObj::GenerateActorByUclass()
+{
+	/*
+		to-do
+		어느 월드인지 어디에 나올지 정해야함
+		그거는 Factory 에서 해주자. 즉 Factory 의 것에서 해줘야함.
+		물론 이거는 커맨드를 사용할게 아님.
+	
+	*/
+	mMngObjState.OnContent();
+}
+
+void FTIHMngObj::GenerateWidgetByUclass()
+{
+
+	mMngObjState.OnContent();
+}
+
+
+
+int16 FTIHMngObjComposite::PushBackLeaf(FTIHMngObjLeaf* value)
+{
+	TIHHash64 leafHash = value->GetLeafHash();
+	if(mLeafTable.Contains(leafHash) == false)
+	{
+		mLeafTable.Add(leafHash, TArray<int16>());
+	}
+	int16 leafIndex = mLeafs.Add(value);
+	value->SetOwnerIndex(GetSelfIndex());
+	value->SetSelfIndex(leafIndex);
+	value->SetUEObjectView(GetUEObject());
+	mLeafTable[leafHash].Add(leafIndex);
+	return leafIndex;
+}
+
+void FTIHMngObjComposite::PostRegistCallBack(FTIHMngObj* owner)
+{
+	mOwnerIndex = owner->GetSelfIndex();
+	mAllocationSpace = owner->GetMngObjHeader().AllocationSpace;
+}
+
+FTIHMngObj* FTIHMngObjComposite::GetOwnerMngObj()
+{
+	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+	FTIHMngObj* reValue = nullptr;
+
+	int8 allocSpace = GetOwnerAllocationSpace();
+	int16 ownerIndex = GetOwnerIndex();
+
+	reValue = poolCenter.QueryGetMngObj(allocSpace, ownerIndex);
+
+	return reValue;
+}
+
+void FTIHMngObjComposite::GenerateUESceneLeaves()
+{
+	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+	UObject* compUCls = GetUEObject();
+	const TArray<TIHHash64>& leafHashs = poolCenter.QueryUECompositeBindTIHLeavesByUClass(compUCls->StaticClass());
+	mLeafs.Reserve(leafHashs.Num());
+	for (const TIHHash64& leafHash : leafHashs)
+	{
+		FTIHMngObjLeaf* temp = nullptr;
+		temp = poolCenter.QueryGenerateLeafByLeafHash(leafHash);
+		if (temp != nullptr)
+		{
+			PushBackLeaf(temp);
+		}
+	}
+}
+
+FTIHMngObjPool* FTIHMngObjPoolCenter::CreateAdminSpaceMngObjPool(const FTIHMngObjPoolConfigure& poolConfig)
+{
+
+}
+
+FTIHMngObjPool* FTIHMngObjPoolCenter::CreateSystemSpaceMngObjPool(const FTIHMngObjPoolConfigure& poolConfig)
+{
+
+}
+
+FTIHMngObjPool* FTIHMngObjPoolCenter::CreateGlobalSpaceMngObjPool(const FTIHMngObjPoolConfigure& poolConfig)
+{
+
+}
+
+FTIHMngObjPool* FTIHMngObjPoolCenter::CreateShareSpaceMngObjPool(const FTIHMngObjPoolConfigure& poolConfig)
+{
+
+}
+
+FTIHMngObjPool* FTIHMngObjPoolCenter::CreateLocalSpaceMngObjPool(const FTIHMngObjPoolConfigure& poolConfig)
+{
+
+}
+
+void FTIHMngObjPoolCenter::GenerateMngObjPool(const FTIHMngObjPoolConfigure& poolConfig)
+{
+	using namespace TIHNameSpaceManagedObject;
+	FTIHMngObjPool* temp = nullptr;
+	switch (poolConfig.AllocationSpaceType)
+	{
+	case AllocationSpaceType::UnknownSpace:
+		break;
+	case AllocationSpaceType::AdminSpace:
+		temp = CreateAdminSpaceMngObjPool(poolConfig);
+		break;
+	case AllocationSpaceType::SystemSpace:
+		temp = CreateSystemSpaceMngObjPool(poolConfig);
+		break;
+	case AllocationSpaceType::GlobalSpace:
+		temp = CreateGlobalSpaceMngObjPool(poolConfig);
+		break;
+	case AllocationSpaceType::SharedSpace:
+		temp = CreateShareSpaceMngObjPool(poolConfig);
+		break;
+	case AllocationSpaceType::LocalSpace:
+		temp = CreateLocalSpaceMngObjPool(poolConfig);
+		break;
+	}
+	if (temp == nullptr)
+	{
+	}
+
+}
+
+FTIHMngObj* FTIHMngObjFactory::CreateActorBaseMngObj(FTIHMngObjPool* objPool,AActor* actor, const FTIHMngObjHeader& objHeader)
+{
+	FTIHMngObj* reValue = nullptr;
+
+	USceneComponent* rootScene =  actor->GetRootComponent();
+	TArray< USceneComponent*> children;
+	rootScene->GetChildrenComponents(true, children);
+	
+	reValue = new FTIHMngObj;
+	reValue->SetMngObjHeader(objHeader);
+	reValue->SetMngObjState
+	(
+		TIHNameSpaceManagedObject::MngObjState::OnContent |
+		TIHNameSpaceManagedObject::MngObjState::OnInitate
+	);
+	objPool->PushBackMngObj(reValue);
+	reValue->SetContents(actor);
+	reValue->ReserveCompositeArray(children.Num()+1);
+
+	GenerateActorBaseMngObjRootComposite(rootScene, reValue);
+
+	for(USceneComponent* childComp : children)
+	{
+		GenerateActorBaseMngObjComposite(childComp, reValue);
+	}
+
+	return reValue;
+}
+
+void FTIHMngObjFactory::GenerateActorBaseMngObjRootComposite(USceneComponent* rootComp,FTIHMngObj* mngObj)
+{
+	TTIHMngObjActorComposite<USceneComponent>* composite = new TTIHMngObjActorComposite<USceneComponent>;
+	UClass* compCls = rootComp->StaticClass();
+	FTIHMngObjCompositeHeader compHeader;
+	compHeader.CompositeType = TIHNameSpaceManagedObject::MngObjCompositeType::SceneComponentBase;
+	compHeader.CompositeOption0 = mPoolCenter->GetRegistedUEComponentHash16ByUEClass(compCls);
+	compHeader.CompositeOption1 = mPoolCenter->GetUECompositeBindTIHLeavesByUEClass(compCls).Num() + 1;
+	compHeader.CompositeOption2 = 1;
+	composite->SetCompositeHeader(compHeader);
+	int16 selfIndex =mngObj->PushBackComposite(composite);
+	composite->SetUESceneComponent(rootComp);
+
+	FTIHMngObjLeafMovement* moveComp = static_cast<FTIHMngObjLeafMovement*>(FTIHMngObjLeafMovement::GenerateLeaf());
+	composite->PushBackLeaf(moveComp);
+	composite->GenerateUESceneLeaves();
+}
+
+TTIHMngObjActorComposite<USceneComponent>* FTIHMngObjFactory::GenerateActorBaseMngObjComposite(USceneComponent* childComp, FTIHMngObj* mngObj)
+{
+	TTIHMngObjActorComposite<USceneComponent>* composite = new TTIHMngObjActorComposite<USceneComponent>;
+	UClass* compCls = childComp->StaticClass();
+	FTIHMngObjCompositeHeader compHeader;
+	compHeader.CompositeType = TIHNameSpaceManagedObject::MngObjCompositeType::SceneComponentBase;
+	compHeader.CompositeOption0 = mPoolCenter->GetRegistedUEComponentHash16ByUEClass(compCls);
+	compHeader.CompositeOption1 = mPoolCenter->GetUECompositeBindTIHLeavesByUEClass(compCls).Num();
+	compHeader.CompositeOption2 = 0;
+	composite->SetCompositeHeader(compHeader);
+	mngObj->PushBackComposite(composite);
+
+	composite->SetUESceneComponent(childComp);
+	composite->GenerateUESceneLeaves();
+	
+	return composite;
+}
+
+void FTIHMngObjFactory::CheckFactoryState()
+{
+	switch (mFactoryConfig.PipeliningState)
+	{
+	case TIHNameSpaceManagedObject::FactoryState::StopFactory:
+		if(CheckFactoryConfigure() ==true)
+		{
+			mFactoryConfig.PipeliningState = TIHNameSpaceManagedObject::FactoryState::SpawingActor;
+			mFactoryConfig.StartPipeliningCallBack.CheckCallable();
+			mCurrReturnValue = mFactoryConfig.StartPipeliningCallBack();
+			mPhaseMax = TIHSTATION.GetManagedObjectPoolCenter().GetPrepareDataActorBaseQueue().Num();
+			mPhaseCount = 0;
+		}
+		else
+		{
+			/*
+				to-do
+				invalid config
+			*/
+		}
+		break;
+	case TIHNameSpaceManagedObject::FactoryState::SpawingActor:
+
+		break;
+	case TIHNameSpaceManagedObject::FactoryState::GenerateActorBaseMngObj :
+
+		break;
+	case TIHNameSpaceManagedObject::FactoryState::EndingFactory:
+
+		break;
+	default:
+		break;
+	}
+}
+
+void FTIHMngObjFactory::OnPipelining()
+{
+	mPoolCenter = &TIHSTATION.GetManagedObjectPoolCenter();
+	bool changeOk = false;
+	
+	CheckFactoryState();
+	
+	/*
+		execute step
+	*/
+	switch (mFactoryConfig.PipeliningState)
+	{
+	case TIHNameSpaceManagedObject::FactoryState::StopFactory:
+		break;
+	case TIHNameSpaceManagedObject::FactoryState::SpawingActor:
+	{
+		SpawnActors();
+	}
+		break;
+	case TIHNameSpaceManagedObject::FactoryState::GenerateActorBaseMngObj:
+	{
+		GenerateActorBaseMngObjs();
+	}
+		break;
+	case TIHNameSpaceManagedObject::FactoryState::EndingFactory:
+		mFactoryConfig.EndPipeliningCallBack.CheckCallable();
+		mCurrReturnValue = mFactoryConfig.EndPipeliningCallBack();
+		mFactoryConfig.PipeliningState = TIHNameSpaceManagedObject::FactoryState::StopFactory;
+		break;
+	default:
+		break;
+	}
+
+}
+
+void FTIHMngObjFactory::SpawnActors()
+{
+	/*
+		지금 고민하는게, prepareData 에 이미 count 가 있음. 그럼 이거는 뭐라고 불러야할까
+
+	*/
+	TDeque<FTIHMngObjPrepareData>& prepareQue = mPoolCenter->GetPrepareDataActorBaseQueue();
+	int16 curPhaseCount = mFactoryConfig.ProcessingMax;
+	
+	FActorSpawnParameters actorSpawnParam;
+	actorSpawnParam.OverrideLevel = mFactoryConfig.SpawnOverrideLevel;
+	actorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	//actorSpawnParam
+	while(true)
+	{
+		if (prepareQue.IsEmpty() == true)
+		{
+			mFactoryConfig.PipeliningState = TIHNameSpaceManagedObject::FactoryState::GenerateActorBaseMngObj;
+			break;
+		}
+		if( curPhaseCount <= 0)
+		{
+			/*
+				한페이즈에 실행할수 있는것이 바닥났을경우.
+			*/
+			break;
+		}
+		FTIHMngObjPrepareData& curParepare = prepareQue.First();
+		
+		FTIHMngObjHeader& objHeader = mPoolCenter->GetRegistedUEObjectByIndex(curParepare.UEClassIndex);
+		//objHeader.UObjectType
+		UClass* ueCls = objHeader.UEClass;
+		/*
+			Defferd 못쓰는이유는 이거는 템플릿으로만 되어있기 때문이다.
+		*/
+		AActor* spawndActor = mFactoryConfig.SpawnWorld->SpawnActor(
+			ueCls,
+			&mFactoryConfig.DefaultSpawnTransform,
+			actorSpawnParam
+		);
+
+		SettingPoolingStateActor(spawndActor);
+
+		mCreatedUEObjects.PushLast(spawndActor);
+		
+		--curPhaseCount;
+		--curParepare.MngObjCount;
+		
+		if (curParepare.MngObjCount <= 0)
+		{
+			prepareQue.PopFirst();
+		}
+	}
+	
+
+}
+
+void FTIHMngObjFactory::GenerateActorBaseMngObjs()
+{
+	int16 curPhaseCount = mFactoryConfig.ProcessingMax;
+	while(true)
+	{
+		if(mCreatedUEObjects.IsEmpty() == true)
+		{
+			mFactoryConfig.PipeliningState = TIHNameSpaceManagedObject::FactoryState::EndingFactory;
+			break;
+		}
+		if(curPhaseCount <= 0)
+		{
+			
+			break;
+		}
+		--curPhaseCount;
+		FTIHMngObjPool* mngObjPool = mPoolCenter->GetMngObjPoolByIndex(mFactoryConfig.AlloactionSpace);
+		AActor* actor = static_cast<AActor*>(mCreatedUEObjects.First());
+		FTIHMngObjHeader& mngObjHeader = mPoolCenter->GetRegistedUEObjectByUEClass(actor->StaticClass());
+		CreateActorBaseMngObj(mngObjPool,actor, mngObjHeader);
+		mCreatedUEObjects.PopFirst();
+	}
+}
+
+FTIHMngObj* FTIHMngObjPool::GenerateMngObjByConfig(const FTIHMngObjHeader& config)
+{
+
+
+
+
+}
+
+int16 FTIHMngObjPool::PushBackMngObj(FTIHMngObj* mngObj)
+{
+	int16 reValue = mMngObjArray.Add(mngObj);
+	mngObj->SetSelfIndex(reValue);
+	mngObj->SetAllocationSpace(GetMngObjPoolConfig().AllocationSpace);
+	return reValue;
 }
