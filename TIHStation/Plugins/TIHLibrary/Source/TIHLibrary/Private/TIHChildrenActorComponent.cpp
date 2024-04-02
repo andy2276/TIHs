@@ -44,16 +44,7 @@ FTIHMngObj* UTIHChildrenActorComponent::GetChildMngObjByIndex(int16 mngObjIndex)
 void UTIHChildrenActorComponent::UpdateTransformToChild()
 {
 	static TIHSTATION_TYPE& tihStation = TIHSTATION;
-	const FTransform parentTransform = GetOwner()->GetActorTransform();
-	for(const int16 mngIndex : mMngObjIndices)
-	{
-		FTIHMngObj* mngObj = GetChildMngObjByIndex(mngIndex);
-		mngObj->QueryLeafActorMoveRoot(parentTransform);
-		/*
-			CommandHelper.
-		
-		*/
-	}
+	
 }
 
 void UTIHChildrenActorComponent::OnRegister()

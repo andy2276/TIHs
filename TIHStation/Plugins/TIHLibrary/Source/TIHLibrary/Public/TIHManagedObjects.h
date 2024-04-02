@@ -1404,7 +1404,11 @@ public:
 	);
 	virtual void CheckFactoryState();
 
-	//	EntryPoint
+	/*
+		이것 호출전에 설정해야할것
+		factoryConfig
+		ObjectPoolConfig
+	*/
 	virtual void OnPipelining();
 
 	FTIHMngObj* CreateActorBaseMngObj(FTIHMngObjPool* objPool,AActor* actor, FTIHMngObjHeader& objHeader);
@@ -2079,6 +2083,28 @@ struct FTIHMngObjPrepareData
 
 */
 
+class FTIHMngObjQuery
+{
+public:
+	FTIHMngObjQuery();
+	virtual ~FTIHMngObjQuery();
+
+
+protected:
+	FTIHMngObjPoolCenter* mPoolCenter;
+};
+class FTIHMngObjQueryActorBase : FTIHMngObjQuery
+{
+public:
+	bool QueryIsActorMovePossible(FTIHMngObj* target)
+	{
+		mPoolCenter->QueryGenerateLeavesByLeafHash()
+	}
+
+
+};
+
+
 class FTIHMngObj
 {
 public:
@@ -2243,7 +2269,6 @@ public:
 	void PostRegistCallBack(int16 index);
 	void ResetMngObj();
 	
-
 	/*
 		state
 	*/
@@ -2259,6 +2284,8 @@ public:
 	{
 		mMngObjState.OnStaging();
 	}
+
+	
 
 private:
 	/*
@@ -2378,7 +2405,10 @@ struct FTIHMngObjPoolConfigure
 	}
 };
 
-
+/*
+	to-do
+	이거에서 state 에 따라 관리하는거 만들어야한다.
+*/
 class FTIHMngObjPool
 {
 public:
@@ -2408,7 +2438,7 @@ public:
 	{
 		if(mMngObjArray.Max() < size)
 		{
-			mMngObjArray.reserve(size);
+			mMngObjArray.Reserve(size);
 		}
 	}
 	/*
@@ -2444,12 +2474,111 @@ struct FTIHMngObjPoolCenterConfigure
 	GENERATED_BODY()
 };
 
+struct FTIHMngObjRegistLeaf
+{
+	TIHHash64 LeafHash;
+	TFunction<FTIHMngObjLeaf* ()> LeafGenerateFunc;
+
+	FTIHMngObjRegistLeaf(TIHHash64 leafHash, TFunction<FTIHMngObjLeaf*()> leafGenerateFunc)
+		:
+		LeafHash(leafHash), LeafGenerateFunc(leafGenerateFunc)
+	{}
+
+	FTIHMngObjRegistLeaf(const FTIHMngObjRegistLeaf& copyCtor)
+		:
+		LeafHash(copyCtor.LeafHash), LeafGenerateFunc(copyCtor.LeafGenerateFunc)
+	{}
+	FTIHMngObjRegistLeaf( FTIHMngObjRegistLeaf&& moveCtor) noexcept
+		:
+		LeafHash(std::move(moveCtor.LeafHash)), LeafGenerateFunc(std::move(moveCtor.LeafGenerateFunc))
+	{}
+
+	FTIHMngObjRegistLeaf& operator=(const FTIHMngObjRegistLeaf& copyOper)
+	{
+		LeafHash = copyOper.LeafHash;
+		LeafGenerateFunc = copyOper.LeafGenerateFunc;
+	}
+	FTIHMngObjRegistLeaf& operator=(FTIHMngObjRegistLeaf&& moveOper) noexcept
+	{
+		LeafHash = std::move(moveOper.LeafHash);
+		LeafGenerateFunc = std::move(moveOper.LeafGenerateFunc);
+	}
+
+};
+
+#define TIHMACRO_MNG_OBJ_REGIST_LEAF( clsName )\
+FTIHMngObjRegistLeaf(clsName::TIHClassNameHash(),clsName::GenerateLeaf)
+template<typename TIHTemplateType>
+class FTIHMngObjRegistLeafTemplate
+{
+public:
+	FTIHMngObjRegistLeafTemplate()
+		:
+		mTIHLeafHash(TIHTemplateType::TIHClassNameHash()),
+		mTIHLeafGenFunc(TIHTemplateType::GenerateLeaf)
+	{
+	}
+	FTIHMngObjRegistLeafTemplate(const FTIHMngObjRegistLeafTemplate& copyCtor)
+		:
+		mTIHLeafHash(copyCtor.mTIHLeafHash),
+		mTIHLeafGenFunc(copyCtor.mTIHLeafGenFunc)
+	{
+	}
+	FTIHMngObjRegistLeafTemplate( FTIHMngObjRegistLeafTemplate&& moveCtor)
+		:
+		mTIHLeafHash(std::move(moveCtor.mTIHLeafHash)),
+		mTIHLeafGenFunc(std::move(moveCtor.mTIHLeafGenFunc))
+	{
+	}
+
+	FTIHMngObjRegistLeafTemplate& operator=(const FTIHMngObjRegistLeafTemplate& copyOper)
+	{
+		mTIHLeafHash= copyOper.mTIHLeafHash;
+		mTIHLeafGenFunc= copyOper.mTIHLeafGenFunc;
+	}
+	FTIHMngObjRegistLeafTemplate& operator=( FTIHMngObjRegistLeafTemplate&& moveOper)
+	{
+		mTIHLeafHash =std::move( moveOper.mTIHLeafHash);
+		mTIHLeafGenFunc = std::move(moveOper.mTIHLeafGenFunc);
+	}
+
+	TIHHash64 GetLeafHash() const
+	{
+		return mTIHLeafHash;
+	}
+	TFunction<FTIHMngObjLeaf* ()> GetLeafGenerateFunc() const
+	{
+		return mTIHLeafGenFunc;
+	}
+private:
+	TIHHash64 mTIHLeafHash;
+	TFunction<FTIHMngObjLeaf* ()> mTIHLeafGenFunc;
+};
+
+/*
+		memo
+		1. RegistUEObjectByMngObjHeader 를 통해서 uclass 와 type 을 먼저정한다.
+		2. RegistUEComponent 를 통해서 uSceneComponent 들을 등록한다.
+			2.1  위젯도 비슷한데, 위젯은 RegistUEObjectByMngObjHeader 의 계층이 더큼
+		3. RegistUEComponentBindTIHLeaves 를 통해서 leaf 들을 연결해준다.
+	*/
 class FTIHMngObjPoolCenter
 {
 public:
+	/*
+		기본적인 FTIHMngObjPoolCenter 함수 사용예시와 설명
+	*/
+	void HowToUseMngObjPoolCenter();
+
 	void InstantiateThis();
 	void InitiateThis();
 
+	/*
+		memo
+		prepare 또는 mngobj 를 생산하기 위한 FTIHMngObjHeader 를 등록하는
+		기초함수
+		참고로 FTIHMngObjHeader 의 allocationspace 와 indexInPool 은 무시된다.
+	*/
 	int16 RegistUEObjectByMngObjHeader(const FTIHMngObjHeader& value)
 	{
 		int16 reValue = -1;
@@ -2460,6 +2589,32 @@ public:
 		}
 		return reValue;
 	}
+	/*
+		memo
+		RegistUEObjectByMngObjHeader 를 심플하게 필요한 것만 등록하는 함수
+		레지스트 테이블까지 등록을 해준다.
+	*/
+	int16 RegistUEObjectByMngObjHeaderSimple
+	(
+		int8 uObjectType, UClass* ueClass
+	)
+	{
+		int16 reValue = -1;
+		FTIHMngObjHeader tempHeader;
+		tempHeader.UObjectType = uObjectType;
+		tempHeader.UEClass = ueClass;
+		if (mRegistedUEObjectTable.Contains(ueClass) == false)
+		{
+			reValue = mRegistedUEObjectArray.Add(tempHeader);
+			mRegistedUEObjectTable.Add(ueClass, reValue);
+		}
+		return reValue;
+	}
+	/*
+		memo
+		심플 버전보다 더 많은것을 쓸 수 있게 해준다.
+		하지만 삭제 예정임
+	*/
 	int16 RegistUEObjectByParams(int8 uObjectType, int8 allocationSpace,
 		int16 indexInPool, UClass* ueClass)
 	{
@@ -2473,7 +2628,12 @@ public:
 		}
 		return reValue;
 	}
-
+	/*
+		memo
+		UEScene 을 등록하기 위한 용도
+		액터베이스 뿐만아니라 위젯에도 사용이 가능하다.
+		지금은 위젯은 안만들었지만
+	*/
 	int16 RegistUEComponent(UClass* ueScene)
 	{
 		int16 reValue = -1;
@@ -2483,8 +2643,16 @@ public:
 			mUEComponentTable.Add(ueScene, reValue);
 			mTIHCompositeTableForStruct.Add(reValue, ueScene);
 		}
+		else
+		{
+			reValue = mUEComponentTable[ueScene];
+		}
 		return reValue;
 	}
+	/*
+		memo
+		등록되어진 언리얼 컴포넌트에 연결되어야할 leaf 들을을 등록하는과정
+	*/
 	void RegistUEComponentBindTIHLeaves(UClass* ueScene,const TArray<TIHHash64>& leaves)
 	{
 		int16 ueCompHash = mUEComponentTable.Contains(ueScene) ? 
@@ -2502,6 +2670,67 @@ public:
 			}
 		}
 	}
+
+	//	to-do 나중에 템플릿 버전으로 변경
+	//void RegistUEComponentSimpleTemplate
+	//	( 
+	//		UClass* ueScene, 
+	//		const TArray<FTIHMngObjRegistLeafTemplate>& registArray
+	//	)
+	//{
+	//	int16 registedUEComp = RegistUEComponent(ueScene);
+	//
+	//	if (mUECompositeBindTIHLeaves.Contains(registedUEComp) == false)
+	//	{
+	//		mUECompositeBindTIHLeaves.Add(registedUEComp, TArray<TIHHash64>());
+	//	}
+	//
+	//	for (const FTIHMngObjRegistLeafTemplate& src : registArray)
+	//	{
+	//		TIHHash64 leafHash = src.GetLeafHash();
+	//		mUECompositeBindTIHLeaves[registedUEComp].Add(leafHash);
+	//
+	//		if (mTIHLeafGenerateFuncTable.Contains(leafHash) == false)
+	//		{
+	//			mTIHLeafGenerateFuncTable.Add(leafHash, src.GetLeafGenerateFunc());
+	//		}
+	//	}
+	//}
+
+	/*
+		memo
+		간단하게 언리얼 컴포넌트와 그에 관련된 leaf 들을 등록할 수 있게 해주는 
+		함수이다.
+		사용법은 RegistForTIHMngObj 나 exampe 를 참고
+	*/
+	void RegistUEComponentSimple
+	(
+		UClass* ueScene,
+		const TArray< FTIHMngObjRegistLeaf>& registArray 
+	)
+	{
+		int16 registedUEComp = RegistUEComponent(ueScene);
+
+		if (mUECompositeBindTIHLeaves.Contains(registedUEComp) == false)
+		{
+			mUECompositeBindTIHLeaves.Add(registedUEComp, TArray<TIHHash64>());
+		}
+
+		for (const FTIHMngObjRegistLeaf& src : registArray)
+		{
+			mUECompositeBindTIHLeaves[registedUEComp].Add(src.LeafHash);
+
+			if(mTIHLeafGenerateFuncTable.Contains(src.LeafHash) == false)
+			{
+				mTIHLeafGenerateFuncTable.Add(src.LeafHash, src.LeafGenerateFunc);
+			}
+		}
+
+	}
+	/*
+		memo
+		단일로 leafHash 와 leafgenFunc 을 등록하는 함수
+	*/
 	void RegistTIHLeafGenerateFunc(const TIHHash64& leafHash, TFunction<FTIHMngObjLeaf* ()> genFunc)
 	{
 		if(mTIHLeafGenerateFuncTable.Contains(leafHash) == false)
@@ -2513,18 +2742,11 @@ public:
 			mTIHLeafGenerateFuncTable[leafHash] = genFunc;
 		}
 	}
-
 	/*
-		to-do
-		일단 보류
+		memo
+		해당 UEComponent 가 존재하는지 물어보는 함수.
 	*/
-	void RegistMngObjSettings(
-		UClass* ueScene,
-		const TArray<TIHHash64>& leaves,
-		TArray< TFunction<FTIHMngObjLeaf* ()> > genFuncs 
-	);
-
-	int16 QueryUECompositeHash(UClass* ueCls)
+	int16 QueryUEComponentHash(UClass* ueCls)
 	{
 		int16 reValue = -1;
 		if(mUEComponentTable.Contains(ueCls) == true)
@@ -2533,7 +2755,13 @@ public:
 		}
 		return reValue;
 	}
-	const TArray<TIHHash64>& QueryUECompositeBindTIHLeavesByIndex(int16 index)
+	/*
+		memo
+		해당 bind 되어진 component 가 존재하는지 그에 따른 leaf 들은 무엇인지
+		물어보는 함수
+		없으면 num 이 0 인 배열을 리턴한다.
+	*/
+	const TArray<TIHHash64>& QueryUEComponentBindTIHLeavesByIndex(int16 index)
 	{
 		static TArray< TIHHash64> wrongAns;
 		TArray< TIHHash64>* reValue = &wrongAns;
@@ -2543,10 +2771,13 @@ public:
 		}
 		return *reValue;
 	}
-
-	const TArray<TIHHash64>& QueryUECompositeBindTIHLeavesByUClass(UClass* ueCls)
+	/*
+		memo
+		QueryUEComponentBindTIHLeavesByIndex 를 uclass 로 물어보는 버전
+	*/
+	const TArray<TIHHash64>& QueryUEComponentBindTIHLeavesByUClass(UClass* ueCls)
 	{
-		int16 ans = QueryUECompositeHash(ueCls);
+		int16 ans = QueryUEComponentHash(ueCls);
 		if (-1 < ans)
 		{
 			/*
@@ -2554,8 +2785,13 @@ public:
 				log.등록된 ue컴포넌트가 없음
 			*/
 		}
-		return QueryUECompositeBindTIHLeavesByIndex(ans);
+		return QueryUEComponentBindTIHLeavesByIndex(ans);
 	}
+	/*
+		memo
+		해당 leaf 를 leafHash 로 생성하는 함수
+		없다면 nullptr 을 반환한다
+	*/
 	FTIHMngObjLeaf* QueryGenerateLeafByLeafHash(TIHHash64 leafHash)
 	{
 		FTIHMngObjLeaf* reValue = nullptr;
@@ -2565,11 +2801,16 @@ public:
 		}
 		return reValue;
 	}
+	/*
+		memo
+		QueryGenerateLeafByLeafHash 인데 등록된 ueComonent 의 int16 해쉬를 넘겨서 생성
+		하는 함수
+	*/
 	TArray<FTIHMngObjLeaf*> QueryGenerateLeavesByLeafHash(int16 ueCompHash16)
 	{
 		TArray<FTIHMngObjLeaf*> reValue;
 		const TArray<TIHHash64>& leafHashs = 
-			QueryUECompositeBindTIHLeavesByIndex(ueCompHash16);
+			QueryUEComponentBindTIHLeavesByIndex(ueCompHash16);
 		reValue.Reserve(leafHashs.Num());
 
 		for (const TIHHash64& leafHash : leafHashs)
@@ -2583,11 +2824,29 @@ public:
 		}
 		return reValue;
 	}
+	/*
+		memo
+		ueComponent 가 등록되었는지를 UClass 로 찾는 함수
+	*/
+	bool QueryExistRegistedComponent(UClass* ueCls)
+	{
+		bool reValue = false;
+		if(mRegistedUEObjectTable.Contains(ueCls) == true)
+		{
+
+
+		}
+		return reValue;
+	}
+	/*
+		memo
+		uclass 에 맞는 등록되어진 leave 들을 만들어서 배열에 리턴해주는 함수
+	*/
 	TArray<FTIHMngObjLeaf*> QueryGenerateLeavesByUClass(UClass* ueCls)
 	{
 		TArray<FTIHMngObjLeaf*> reValue;
 		const TArray<TIHHash64>& leafHashs =
-			QueryUECompositeBindTIHLeavesByUClass(ueCls);
+			QueryUEComponentBindTIHLeavesByUClass(ueCls);
 		reValue.Reserve(leafHashs.Num());
 
 		for (const TIHHash64& leafHash : leafHashs)
@@ -2601,6 +2860,12 @@ public:
 		}
 		return reValue;
 	}
+	/*
+		memo
+		영역과 매니지드 오브젝트의 인덱스를 넣으면 해당 mngObj 를 리턴해주는함수
+		pooling 이 아닌 직접 호출이라 수정요구
+		to-do
+	*/
 	FTIHMngObj* QueryGetMngObj(int8 allocationSpace,int16 mngObjIndex)
 	{
 		FTIHMngObj* reValue = nullptr;
@@ -2624,12 +2889,20 @@ public:
 			mMngObjPoolArray.Reserve(size);
 		}
 	}
+	/*
+		memo
+		오브젝트 풀을 인덱스로 찾는 함수
+	*/
 	FTIHMngObjPool* GetMngObjPoolByIndex(int32 index)
 	{
 		FTIHMngObjPool* reValue = nullptr;
 		reValue = mMngObjPoolArray[index];
 		return reValue;
 	}
+	/*
+		memo
+		현재 사용하고 있는 오브젝트 풀을 가져온다.
+	*/
 	FTIHMngObjPool* GetCurrentMngObjPool(int32 index)
 	{
 		FTIHMngObjPool* reValue = nullptr;
@@ -2637,7 +2910,10 @@ public:
 		return reValue;
 	}
 	
-
+	/*
+		memo
+		오브젝프 풀을 종류별로 구현해놓음
+	*/
 	/*
 		to-do
 		이거 만들어야함!
@@ -2648,18 +2924,29 @@ public:
 	FTIHMngObjPool* CreateShareSpaceMngObjPool(const FTIHMngObjPoolConfigure& poolConfig);
 	FTIHMngObjPool* CreateLocalSpaceMngObjPool(const FTIHMngObjPoolConfigure& poolConfig);
 
+	
 	void GenerateMngObjPool(const FTIHMngObjPoolConfigure& poolConfig);
 
-	
+	/*
+		memo
+		액터 베이스의 mngobj 를 만들기 위한 prepareQueue 를 들고오는 함수
+	*/
 	TDeque<FTIHMngObjPrepareData>& GetPrepareDataActorBaseQueue()
 	{
 		return mPrepareDataActorBaseQueue;
 	}
+	/*
+		memo
+		위젯 베이스의 mngobj 를 만들기 위한 prepareQueue 를 들고오는 함수
+	*/
 	TDeque<FTIHMngObjPrepareData>& GetPrepareDataWidgetBaseQueue()
 	{
 		return mPrepareDataWidgetBaseQueue;
 	}
-	
+	/*
+		memo
+		액터 베이스의 mngobj 를 만들기 위한 prepareQueue 의 사이즈를 예약하는 함수
+	*/
 	void ReservePrepareDataActorBaseQueue(int32 size)
 	{
 		if (mPrepareDataActorBaseQueue.Max() < size)
@@ -2667,6 +2954,10 @@ public:
 			mPrepareDataActorBaseQueue.Reserve(size);
 		}
 	}
+	/*
+		memo
+		위젯 베이스의 mngobj 를 만들기 위한 prepareQueue 의 사이즈를 예약하는 함수
+	*/
 	void ReservePrepareDataWidgetBaseQueue(int32 size)
 	{
 		if (mPrepareDataWidgetBaseQueue.Max() < size)
@@ -2674,6 +2965,13 @@ public:
 			mPrepareDataWidgetBaseQueue.Reserve(size);
 		}
 	}
+	/*
+		memo
+		FTIHMngObjPrepareData 를 준비하기 위한 함수
+		내부의 objHeader 에따라서 소팅한다
+		to-do
+		system 용도 따로 만들어야함.
+	*/
 	void RegistPrepareData(const FTIHMngObjPrepareData& value)
 	{
 		const FTIHMngObjHeader* objHeader = &mRegistedUEObjectArray[value.UEClassIndex];
@@ -2691,6 +2989,12 @@ public:
 			break;
 		}
 	}
+	/*
+		memo
+		등록되어진 UEObject 를 UClass 로 찾아서 들고온다.
+		table 에 잇는 것을 들고온다.
+		참고로 앞에 query 를 붙여야하는데 안붙였음
+	*/
 	int16 GetRegistedUEObjectByUClass(UClass* ueClass)
 	{
 		int16 reValue = -1;
@@ -2700,17 +3004,25 @@ public:
 		}
 		return reValue;
 	}
+	/*
+		memo
+		FTIHMngObjHeader 안의 UEClass 로 들고온다.
+	*/
 	int16 GetRegistedUEObjectByMngObjHeader(const FTIHMngObjHeader& mngHeader)
 	{
 		return GetRegistedUEObjectByUClass(mngHeader.UEClass);
 	}
 	/*
-		오브젝트 풀을 확인해줌
+		memo
+		오브젝트 풀이 유효한지 확인한다.
+		allocationSpace 이게 unknown 이거나 인덱스 범위를 넘었거나, 그안에 있는게
+		nullptr 이거나하면 false 를 리턴한다.
 	*/
 	bool IsValidObjectPool(int8 allocationSpace)
 	{
 		bool reValue = true;
-		if(allocationSpace == 0 
+		if(
+			allocationSpace == 0 
 			|| mMngObjPoolArray.IsValidIndex(allocationSpace) == false
 			|| mMngObjPoolArray[allocationSpace] == nullptr
 			)
@@ -2719,29 +3031,10 @@ public:
 		}
 		return reValue;
 	}
-	TArray< FTIHMngObjActorStructureNode*>& GetMngObjActorStructNodes()
-	{
-		return mStructureNodeArray;
-	}
-	FTIHMngObjActorStructureNode* GetMngObjActorStructNode(UClass* actorCls)
-	{
-		FTIHMngObjActorStructureNode* reValue = nullptr;
-		if(mUEActorsStructureActorRootTable.Contains(actorCls) == true)
-		{
-			int16 idx = mUEActorsStructureActorRootTable[actorCls];
-			reValue = mStructureNodeArray[idx];
-		}
-		return reValue;
-	}
-	bool IsExistMngObjActorStructNode(UClass* uclss)
-	{
-		bool reValue = true;
-		if(mUEActorsStructureActorRootTable.Contains(uclss) == false)
-		{
-			reValue = false;
-		}
-		return reValue;
-	}
+	/*
+		memo
+		등록되어진 UEComponent 를 인덱스로 들고온다.
+	*/
 	UClass* GetRegistedUEComponentByIndex(int16 index)
 	{
 		UClass* reValue = nullptr;
@@ -2752,6 +3045,11 @@ public:
 		reValue = mUEComponentArray[index];
 		return reValue;
 	}
+	/*
+		memo
+		등록되어진 UEComponent 에 해당하는 LeafHash 배열을 들고온다.
+		사용하는건 UEComponent 를 등록할때 리턴되어진 인덱스. 그게 해쉬임
+	*/
 	const TArray<TIHHash64>& GetUECompositeBindTIHLeaves(int16 ueCompIndex)
 	{
 		/*
@@ -2760,6 +3058,11 @@ public:
 		*/
 		return mUECompositeBindTIHLeaves[ueCompIndex];
 	}
+	/*
+		memo
+		등록되어진 UEComponent 에 해당하는 LeafHash 을들고온다
+		사용하는건 UEComponent 를 등록할때 사용한 UClass
+	*/
 	const TArray<TIHHash64>& GetUECompositeBindTIHLeavesByUEClass(UClass* ueCls)
 	{
 		/*
@@ -2768,10 +3071,20 @@ public:
 		*/
 		return mUECompositeBindTIHLeaves[mUEComponentTable[ueCls]];
 	}
+	/*
+		memo
+		등록되어진 UEComponent 의 index 즉 등록된 해쉬를 들고온다.
+		사용하는건 UClass
+	*/
 	int16 GetRegistedUEComponentHash16ByUEClass(UClass* ueCls)
 	{
 		return mUEComponentTable[ueCls];
 	}
+	/*
+		memo
+		등록되어진 FTIHMngObjHeader 를 들고온다.
+		사용하는건 해당 내용을 등록할때 사용한 인덱스
+	*/
 	FTIHMngObjHeader& GetRegistedUEObjectByIndex(int16 index)
 	{
 		/*
@@ -2780,26 +3093,27 @@ public:
 		*/
 		return mRegistedUEObjectArray[index];
 	}
+	/*
+		memo
+		등록되어진 FTIHMngObjHeader 를 들고온다.
+		사용하는건 해당 내용을 등록할때 사용한 UClass 
+	*/
 	FTIHMngObjHeader& GetRegistedUEObjectByUEClass(UClass* ueCls)
 	{
 		int16 idx = mRegistedUEObjectTable[ueCls];
 		return mRegistedUEObjectArray[idx];
 	}
-
 private:
 	/*
-		Uclass 를 composite 를 위해 등록해야하고
-		그 composite 에 leaf 들의 생성 함수를 등록해야하고
-		액터는 안해도 되던가? 근데 하나 더 추가된건데, 구조
-		음...액터는 그냥 uclass 로 처리하나
-		아니지 컴포지트의 구조로 판단하지
-		컴포지트 구조를 어떻게 해쉬화 하지?
-	
+		이거 prepare 할때 사용하는거임. 미리 등록하지 않아도 괜찮음.
 	*/
-
 	TArray<FTIHMngObjHeader> mRegistedUEObjectArray;
 	TMap<UClass*,int16> mRegistedUEObjectTable;
 
+	/*
+		여기가 핵심인데, UEScene 과 그것과 연결되어진 composite 와 leaf 를 등록하는 
+		곳임.
+	*/
 	TArray<UClass*> mUEComponentArray;
 	TMap < UClass*, int16> mUEComponentTable;
 	TMap<int16, UClass*> mTIHCompositeTableForStruct;

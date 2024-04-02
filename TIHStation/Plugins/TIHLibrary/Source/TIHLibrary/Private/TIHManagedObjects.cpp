@@ -506,7 +506,7 @@ void FTIHMngObjComposite::GenerateUESceneLeaves()
 {
 	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
 	UObject* compUCls = GetUEObject();
-	const TArray<TIHHash64>& leafHashs = poolCenter.QueryUECompositeBindTIHLeavesByUClass(compUCls->StaticClass());
+	const TArray<TIHHash64>& leafHashs = poolCenter.QueryUEComponentBindTIHLeavesByUClass(compUCls->StaticClass());
 	mLeafs.Reserve(leafHashs.Num());
 	for (const TIHHash64& leafHash : leafHashs)
 	{
@@ -548,7 +548,7 @@ void FTIHMngObjPoolCenter::GenerateMngObjPool(const FTIHMngObjPoolConfigure& poo
 {
 	using namespace TIHNameSpaceManagedObject;
 	FTIHMngObjPool* temp = nullptr;
-	switch (poolConfig.AllocationSpaceType)
+	switch (poolConfig.AllocationSpace)
 	{
 	case AllocationSpaceType::UnknownSpace:
 		break;
@@ -574,7 +574,45 @@ void FTIHMngObjPoolCenter::GenerateMngObjPool(const FTIHMngObjPoolConfigure& poo
 
 }
 
-FTIHMngObj* FTIHMngObjFactory::CreateActorBaseMngObj(FTIHMngObjPool* objPool,AActor* actor, const FTIHMngObjHeader& objHeader)
+void FTIHMngObjPoolCenter::HowToUseMngObjPoolCenter()
+{
+	/*
+		만약 	FTIHMngObjPoolCenter 를 불러와야한다면
+		TIHSTATION 을 통해 불러오면된다.
+		무조건 StationInstantiate 이후에 진행해야한다.
+	*/
+	static TIHSTATION_TYPE& station = TIHSTATION;
+	static FTIHMngObjPoolCenter& station = TIHSTATION.GetManagedObjectPoolCenter();
+
+	/*
+		만약 내가 만든 액터를 등록해야한다면로 등록해준다.
+		무조건 PrepareData 이전에 등록시켜줘야한다.
+	*/
+
+	RegistUEObjectByMngObjHeaderSimple
+	(
+		TIHNameSpaceManagedObject::UEClassBaseType::ActorBase,
+		AActor::StaticClass()
+	);
+	/*
+		만약 내가 만든 UScene 이 있다면 RegistUEComponentSimple 
+		이걸 써준다.
+		해당 Scene 이 검색이 된다면 해당 Leaf 들을 담은 composite 를 만들고
+		해당 composite 를 활용하여 컨트롤 할 수 있다.
+	*/
+	RegistUEComponentSimple
+	(
+		USceneComponent::StaticClass(),
+		{
+			TIHMACRO_MNG_OBJ_REGIST_LEAF(FTIHMngObjLeafMovement),
+			TIHMACRO_MNG_OBJ_REGIST_LEAF(FTIHMngObjLeafStMesh),
+			TIHMACRO_MNG_OBJ_REGIST_LEAF(FTIHMngObjLeafPretty)
+		}
+	);
+
+}
+
+FTIHMngObj* FTIHMngObjFactory::CreateActorBaseMngObj(FTIHMngObjPool* objPool,AActor* actor, FTIHMngObjHeader& objHeader)
 {
 	FTIHMngObj* reValue = nullptr;
 
@@ -711,10 +749,6 @@ void FTIHMngObjFactory::OnPipelining()
 
 void FTIHMngObjFactory::SpawnActors()
 {
-	/*
-		지금 고민하는게, prepareData 에 이미 count 가 있음. 그럼 이거는 뭐라고 불러야할까
-
-	*/
 	TDeque<FTIHMngObjPrepareData>& prepareQue = mPoolCenter->GetPrepareDataActorBaseQueue();
 	int16 curPhaseCount = mFactoryConfig.ProcessingMax;
 	
@@ -740,11 +774,8 @@ void FTIHMngObjFactory::SpawnActors()
 		FTIHMngObjPrepareData& curParepare = prepareQue.First();
 		
 		FTIHMngObjHeader& objHeader = mPoolCenter->GetRegistedUEObjectByIndex(curParepare.UEClassIndex);
-		//objHeader.UObjectType
 		UClass* ueCls = objHeader.UEClass;
-		/*
-			Defferd 못쓰는이유는 이거는 템플릿으로만 되어있기 때문이다.
-		*/
+		
 		AActor* spawndActor = mFactoryConfig.SpawnWorld->SpawnActor(
 			ueCls,
 			&mFactoryConfig.DefaultSpawnTransform,
@@ -803,6 +834,21 @@ int16 FTIHMngObjPool::PushBackMngObj(FTIHMngObj* mngObj)
 {
 	int16 reValue = mMngObjArray.Add(mngObj);
 	mngObj->SetSelfIndex(reValue);
+	/*
+		만약 매니지드 오브젝트가 unknown 이다 하면 
+		아니 애초에 이걸 호출하는곳이 factory 임. 그럼 팩토리를 따르면 되는거아님?
+		
+	*/
 	mngObj->SetAllocationSpace(GetMngObjPoolConfig().AllocationSpace);
 	return reValue;
+}
+
+FTIHMngObjQuery::FTIHMngObjQuery()
+{
+	mPoolCenter = &TIHSTATION.GetManagedObjectPoolCenter();
+}
+
+FTIHMngObjQuery::~FTIHMngObjQuery()
+{
+	mPoolCenter = nullptr;
 }

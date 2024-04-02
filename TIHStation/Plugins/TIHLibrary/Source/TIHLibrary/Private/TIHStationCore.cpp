@@ -6,6 +6,7 @@
 #include "Components/Widget.h"
 #include "TIHManagedObjectLeafs.h"
 #include "TIHPakBase.h"
+#include "TIHChildrenActorComponent.h"
 
 
 #pragma region DefaultStation Functions
@@ -20,35 +21,46 @@ FTIHDefaultStation::~FTIHDefaultStation()
 
 void FTIHDefaultStation::RegistForTIHMngObj()
 {
-	mSettingHelper->MngObjSetting().RegistTIHMngObjLeafGenerateFuncTemplate<FTIHMngObjLeafMovement>();
-	mSettingHelper->MngObjSetting().RegistTIHMngObjLeafGenerateFuncTemplate<FTIHMngObjLeafStMesh>();
-	mSettingHelper->MngObjSetting().RegistTIHMngObjLeafGenerateFuncTemplate<FTIHMngObjLeafSkMesh>();
-	mSettingHelper->MngObjSetting().RegistTIHMngObjLeafGenerateFuncTemplate<FTIHMngObjLeafPretty>();
-
-	mSettingHelper->MngObjSetting().RegistUESceneAndTIHMngObjLeafListTemplate
-		<USceneComponent>
-		(
-			{
-				FTIHMngObjLeafMovement::TIHClassNameHash()
-			}
+	/*
+		예제용도로 냅둔거임.
+	mPoolCenter->RegistUEObjectByMngObjHeaderSimple
+	(
+		TIHNameSpaceManagedObject::UEClassBaseType::ActorBase,
+		AActor::StaticClass()
 	);
-	mSettingHelper->MngObjSetting().RegistUESceneAndTIHMngObjLeafListTemplate
-		<UStaticMeshComponent>
-		(
-			{
-				FTIHMngObjLeafMovement::TIHClassNameHash(),
-				FTIHMngObjLeafStMesh::TIHClassNameHash(),
-				FTIHMngObjLeafPretty::TIHClassNameHash()
-			}
+	*/
+	
+	mPoolCenter->RegistUEComponentSimple
+	(
+		USceneComponent::StaticClass(),
+		{
+			TIHMACRO_MNG_OBJ_REGIST_LEAF(FTIHMngObjLeafMovement)
+		}
 	);
-	mSettingHelper->MngObjSetting().RegistUESceneAndTIHMngObjLeafListTemplate
-		<USkeletalMeshComponent>
-		(
-			{
-				FTIHMngObjLeafMovement::TIHClassNameHash(),
-				FTIHMngObjLeafSkMesh::TIHClassNameHash(),
-				FTIHMngObjLeafPretty::TIHClassNameHash()
-			}
+	mPoolCenter->RegistUEComponentSimple
+	(
+		UStaticMeshComponent::StaticClass(),
+		{
+			TIHMACRO_MNG_OBJ_REGIST_LEAF(FTIHMngObjLeafMovement),
+			TIHMACRO_MNG_OBJ_REGIST_LEAF(FTIHMngObjLeafStMesh),
+			TIHMACRO_MNG_OBJ_REGIST_LEAF(FTIHMngObjLeafPretty)
+		}
+	);
+	mPoolCenter->RegistUEComponentSimple
+	(
+		USkeletalMeshComponent::StaticClass(),
+		{
+			TIHMACRO_MNG_OBJ_REGIST_LEAF(FTIHMngObjLeafMovement),
+			TIHMACRO_MNG_OBJ_REGIST_LEAF(FTIHMngObjLeafSkMesh),
+			TIHMACRO_MNG_OBJ_REGIST_LEAF(FTIHMngObjLeafPretty)
+		}
+	);
+	mPoolCenter->RegistUEComponentSimple
+	(
+		UTIHChildrenActorComponent::StaticClass(),
+		{
+			TIHMACRO_MNG_OBJ_REGIST_LEAF(FTIHMngObjLeafMovement)
+		}
 	);
 }
 
