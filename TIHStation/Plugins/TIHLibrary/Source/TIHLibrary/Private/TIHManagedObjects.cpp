@@ -510,6 +510,13 @@ FTIHMngObj* FTIHMngObjComposite::GetOwnerMngObj()
 	return reValue;
 }
 
+FTIHMngObjComposite* FTIHMngObjComposite::QueryGetParentComposite()
+{
+	FTIHMngObjComposite* reValue = nullptr;
+	reValue = GetOwnerMngObj()->GetCompositeByIndex(mParentIndex);
+	return reValue;
+}
+
 void FTIHMngObjComposite::GenerateUESceneLeaves()
 {
 	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
@@ -529,27 +536,27 @@ void FTIHMngObjComposite::GenerateUESceneLeaves()
 
 FTIHMngObjPool* FTIHMngObjPoolCenter::CreateAdminSpaceMngObjPool(const FTIHMngObjPoolConfigure& poolConfig)
 {
-
+	return nullptr;
 }
 
 FTIHMngObjPool* FTIHMngObjPoolCenter::CreateSystemSpaceMngObjPool(const FTIHMngObjPoolConfigure& poolConfig)
 {
-
+	return nullptr;
 }
 
 FTIHMngObjPool* FTIHMngObjPoolCenter::CreateGlobalSpaceMngObjPool(const FTIHMngObjPoolConfigure& poolConfig)
 {
-
+	return nullptr;
 }
 
 FTIHMngObjPool* FTIHMngObjPoolCenter::CreateShareSpaceMngObjPool(const FTIHMngObjPoolConfigure& poolConfig)
 {
-
+	return nullptr;
 }
 
 FTIHMngObjPool* FTIHMngObjPoolCenter::CreateLocalSpaceMngObjPool(const FTIHMngObjPoolConfigure& poolConfig)
 {
-
+	return nullptr;
 }
 
 void FTIHMngObjPoolCenter::GenerateMngObjPool(const FTIHMngObjPoolConfigure& poolConfig)
@@ -590,7 +597,7 @@ void FTIHMngObjPoolCenter::HowToUseMngObjPoolCenter()
 		무조건 StationInstantiate 이후에 진행해야한다.
 	*/
 	static TIHSTATION_TYPE& station = TIHSTATION;
-	static FTIHMngObjPoolCenter& station = TIHSTATION.GetManagedObjectPoolCenter();
+	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
 
 	/*
 		만약 내가 만든 액터를 등록해야한다면로 등록해준다.
@@ -617,6 +624,16 @@ void FTIHMngObjPoolCenter::HowToUseMngObjPoolCenter()
 			TIHMACRO_MNG_OBJ_REGIST_LEAF(FTIHMngObjLeafPretty)
 		}
 	);
+
+}
+
+void FTIHMngObjPoolCenter::InstantiateThis()
+{
+
+}
+
+void FTIHMngObjPoolCenter::InitiateThis()
+{
 
 }
 
@@ -651,12 +668,30 @@ FTIHMngObj* FTIHMngObjFactory::CreateActorBaseMngObj(FTIHMngObjPool* objPool,AAc
 
 TIHReturn64 FTIHMngObjFactory::DefaultStartPipeliningCallback()
 {
-
+	return 0;
 }
 
 TIHReturn64 FTIHMngObjFactory::DefaultEndPipeliningCallback()
 {
+	return 0;
+}
 
+bool FTIHMngObjFactory::CheckFactoryConfigure()
+{
+	bool reValue = true;
+	if (mPoolCenter == nullptr)
+	{
+		reValue = false;
+	}
+	else if (mPoolCenter->IsValidObjectPool(mFactoryConfig.AlloactionSpace) == false)
+	{
+		reValue = false;
+	}
+	else if (mFactoryConfig.SpawnWorld == nullptr)
+	{
+		reValue = false;
+	}
+	return reValue;
 }
 
 void FTIHMngObjFactory::GenerateActorBaseMngObjRootComposite(USceneComponent* rootComp,FTIHMngObj* mngObj)
@@ -845,7 +880,7 @@ FTIHMngObj* FTIHMngObjPool::GenerateMngObjByConfig(const FTIHMngObjHeader& confi
 {
 
 
-
+	return nullptr;
 
 }
 

@@ -235,14 +235,14 @@ TIHReturn64 FTIHStrategyCmdMngObj::ExecuteCommandStaticPolymorph(FTIHCommandBase
 	{
 		FTIHCmdMngObjAllocOnGenerate* createNewAlloc = static_cast<FTIHCmdMngObjAllocOnGenerate*>(cmdBase);
 
-		const FTIHMngObjPoolConfigureDatas& onGenerateData = createNewAlloc->GetCommandFeature();
-
-		int8 allocationSpace = onGenerateData.AllocationSpace;
-		if (onGenerateData.Option0 != 0)
-		{
-			poolCenter.GetManagedObjectPool(allocationSpace)->SetObjectPoolConfigure(onGenerateData);
-		}
-		poolCenter.OnGeneratePipeLining(allocationSpace);
+		//const FTIHMngObjPoolConfigureDatas& onGenerateData = createNewAlloc->GetCommandFeature();
+		//
+		//int8 allocationSpace = onGenerateData.AllocationSpace;
+		//if (onGenerateData.Option0 != 0)
+		//{
+		//	poolCenter.GetManagedObjectPool(allocationSpace)->SetObjectPoolConfigure(onGenerateData);
+		//}
+		//poolCenter.OnGeneratePipeLining(allocationSpace);
 	}
 
 	return reValue;

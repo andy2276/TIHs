@@ -107,15 +107,19 @@ TIHReturn64 FTIHDefaultStation::InitializeStation()
 	TIHReturn64 reValue = 0;
 
 	mPoolCenter->InstantiateThis();
-	FTIHMngObjPoolCenterConfigure poolCenterConfig;
-	poolCenterConfig.PrepareDataQueCapacityCount = 512;
-	mPoolCenter->SetMngObjPoolCenterConfig(poolCenterConfig);
-	mPoolCenter->InitiateThis();
-	mMeshPool->InstantiateThis();
-	FTIHMeshPoolConfigure meshPoolConfig;
-	meshPoolConfig.CreateInnerQueryType = TIHNameSpaceCommon::QueryType::StartEnd;
-	mMeshPool->SetMeshPoolConfig(meshPoolConfig);
-	mMeshPool->InitiateThis();
+	//FTIHMngObjPoolCenterConfigure poolCenterConfig;
+	/*
+		to-do
+		여기 다시 고치기
+	*/
+	//poolCenterConfig.PrepareDataQueCapacityCount = 512;
+	//mPoolCenter->SetMngObjPoolCenterConfig(poolCenterConfig);
+	//mPoolCenter->InitiateThis();
+	//mMeshPool->InstantiateThis();
+	//FTIHMeshPoolConfigure meshPoolConfig;
+	//meshPoolConfig.CreateInnerQueryType = TIHNameSpaceCommon::QueryType::StartEnd;
+	//mMeshPool->SetMeshPoolConfig(meshPoolConfig);
+	//mMeshPool->InitiateThis();
 
 	return reValue;
 }
@@ -170,11 +174,16 @@ TIHReturn64 FTIHDefaultStation::InstantiateStation()
 	mCommandFactory = new FTIHCommandFactory;
 	mCommander = new FTIHCommander;			
 	
+	mIntellisenese = new FTIHIntellisense;
+	/*
+		to-do
+		이녀석들은 prepare 이후 init 부분에서 초기화 해준다.
+		그말인 즉슨 변경이 가능하다는뜻
+	*/
 	mPoolCenter = new FTIHMngObjPoolCenter;
 	mPathCenter = new FTIHPathCenter;
 	mMeshPool = new FTIHMeshPool;
 
-	mIntellisenese = new FTIHIntellisense;
 
 	mTickTock.UpdataTick();
 	/*
@@ -206,23 +215,6 @@ TIHReturn64 FTIHDefaultStation::InstantiateStation()
 	pathConfig.UrlArrayCapacityCount = 32;
 	mPathCenter->SetPathCenterConfig(pathConfig);
 	mPathCenter->InitiateThis();
-
-
-	//mIntellisenese->InitiateThis();
-	/*
-		to-do
-		background나 멀티쓰레드에서 돌아가는거 하나 만들까?
-
-	*/
-
-	/*
-		외부 서버와 먼저 연결을 하기 전에 사전준비를 한다. 해당부분은 프로세서가 실행되고 로고 창이 뜰때 로딩이 될것이다.
-		로딩이
-	*/
-
-	//FTIHState::SetManagedObjectPoolCenter(mPoolCenter);
-	//FTIHMngObj::SetManagedObjectPoolCenter(mPoolCenter);
-	
 
 	return reValue;
 }
@@ -310,34 +302,34 @@ TIHReturn64 FTIHCommandFactoryForDefaultStation::InstantiateCommandsInMetaArray(
 //}
 
 
-void FTIHSettingHelper::FTIHManagedObjectSettings::RegistUEActorByUEHash(UClass* ueActorUcls)
-{
-	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
-	UEObjectHash64 ueHash = genHelper.ConvertUClassToHash(ueActorUcls);
-	genHelper.RegistUEActorByUClass(ueHash, ueActorUcls);
-}
-
-void FTIHSettingHelper::FTIHManagedObjectSettings::RegistTIHMngObjLeafGenerateFunc(TIHHash64 tihHash, TFunction < FTIHMngObjLeaf* ()> generateFunc)
-{
-	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
-	genHelper.RegistGenerateFunc(tihHash, generateFunc);
-}
-
-void FTIHSettingHelper::FTIHManagedObjectSettings::RegistUESceneAndTIHMngObjLeafList(UClass* ueSceneCls,const FTIHGenerateCandidateLeaves& tihLeafList)
-{
-	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
-	UEObjectHash64 ueHash = genHelper.ConvertUClassToHash(ueSceneCls);
-
-	genHelper.RegistGenerateCandidateHashArrayByUEHash(ueHash, tihLeafList);
-}
-
-void FTIHSettingHelper::FTIHManagedObjectSettings::RegistPrepareDataForNewAlloc(ETIHMngObjHeaderProcotols targetClsType, UClass* targetCls, int16 allocCount)
-{
-	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
-	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
-
-	UEObjectHash64 ueHash = genHelper.ConvertUClassToHash(targetCls);
-
-	poolCenter.EmplaceAddMngObjPrepareData((int8)targetClsType, ueHash, -1, allocCount );
-}
+//void FTIHSettingHelper::FTIHManagedObjectSettings::RegistUEActorByUEHash(UClass* ueActorUcls)
+//{
+//	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
+//	//UEObjectHash64 ueHash = genHelper.ConvertUClassToHash(ueActorUcls);
+//	//genHelper.RegistUEActorByUClass(ueHash, ueActorUcls);
+//}
+//
+//void FTIHSettingHelper::FTIHManagedObjectSettings::RegistTIHMngObjLeafGenerateFunc(TIHHash64 tihHash, TFunction < FTIHMngObjLeaf* ()> generateFunc)
+//{
+//	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
+//	//genHelper.RegistGenerateFunc(tihHash, generateFunc);
+//}
+//
+//void FTIHSettingHelper::FTIHManagedObjectSettings::RegistUESceneAndTIHMngObjLeafList(UClass* ueSceneCls,const FTIHGenerateCandidateLeaves& tihLeafList)
+//{
+//	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
+//	//UEObjectHash64 ueHash = genHelper.ConvertUClassToHash(ueSceneCls);
+//	//
+//	//genHelper.RegistGenerateCandidateHashArrayByUEHash(ueHash, tihLeafList);
+//}
+//
+//void FTIHSettingHelper::FTIHManagedObjectSettings::RegistPrepareDataForNewAlloc(ETIHMngObjHeaderProcotols targetClsType, UClass* targetCls, int16 allocCount)
+//{
+//	static FTIHMngObjPoolCenter& poolCenter = TIHSTATION.GetManagedObjectPoolCenter();
+//	static FTIHMngObjGenerateHelper& genHelper = TIHSTATION.GetGenerateHelper();
+//
+//	//UEObjectHash64 ueHash = genHelper.ConvertUClassToHash(targetCls);
+//	//
+//	//poolCenter.EmplaceAddMngObjPrepareData((int8)targetClsType, ueHash, -1, allocCount );
+//}
 

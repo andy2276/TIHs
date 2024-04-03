@@ -508,7 +508,7 @@ public:
 	*/
 };
 
-using FTIHCmdMngObjAllocOnGenerateDatas = FTIHMngObjPoolConfigureDatas;
+using FTIHCmdMngObjAllocOnGenerateDatas = FTIHMngObjPoolConfigure;
 
 class FTIHCmdMngObjAllocOnGenerate : public TTIHCommand<FTIHCmdMngObjAllocOnGenerateDatas>
 {

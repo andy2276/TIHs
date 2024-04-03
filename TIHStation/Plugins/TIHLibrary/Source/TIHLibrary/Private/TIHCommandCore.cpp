@@ -694,4 +694,143 @@ void FTIHTickableScheduler::Tick(float DeltaTime)
 	*/
 	
 }
+/*
+====----====----====----====----====----====----====----====----====----====----
+								FTIHIntellisense
+----====----====----====----====----====----====----====----====----====----====
+*/
+FTIHIntellisense::FTIHIntellisense()
+	:
+	LastFrameNumberWeTicked(INDEX_NONE),
+	mStation(&TIHSTATION),
+	mMngObjCenter(nullptr),
+	mMeshPool(nullptr),
+	mTickTock(nullptr),
+	mCommander(nullptr),
+	mCommandList(nullptr),
+	mTickableScheduler(nullptr)
+{
 
+	if (mStation != nullptr)
+	{
+		mMngObjCenter = &mStation->GetManagedObjectPoolCenter();
+		mMeshPool = &mStation->GetMeshPool();
+		mTickTock = &mStation->GetTickTock();
+		mCommander = &mStation->GetCommander();
+		mCommandList = &mCommander->GetCommandList();
+
+		mTickableScheduler = new FTIHTickableScheduler;
+		mTickableScheduler->OffTick();
+		if (mMngObjCenter == nullptr)
+		{
+			/*
+				to-do
+				TIHLog.Out.Err(Nullptr,"mMngObjCenter is nullptr");
+			*/
+		}
+		if (mMeshPool == nullptr)
+		{
+			/*
+				to-do
+				TIHLog.Out.Err(Nullptr,"mMeshPool is nullptr");
+			*/
+		}
+		if (mTickTock == nullptr)
+		{
+			/*
+				to-do
+				TIHLog.Out.Err(Nullptr,"mTickTock is nullptr");
+			*/
+		}
+		if (mCommander == nullptr)
+		{
+			/*
+				to-do
+				TIHLog.Out.Err(Nullptr,"mCommander is nullptr");
+			*/
+		}
+		if (mCommandList == nullptr)
+		{
+			/*
+				to-do
+				TIHLog.Out.Err(Nullptr,"mCommandList is nullptr");
+			*/
+		}
+
+	}
+}
+
+FTIHIntellisense::~FTIHIntellisense()
+{
+	mStation = nullptr;
+	mMngObjCenter = nullptr;
+	mMeshPool = nullptr;
+	mTickTock = nullptr;
+	mCommander = nullptr;
+	mCommandList = nullptr;
+
+	SafeDeletePtr(mTickableScheduler);
+}
+
+void FTIHIntellisense::Tick(float DeltaTime)
+{
+	if (LastFrameNumberWeTicked != GFrameCounter)
+	{
+		mStation->UpdateTickTock();
+
+		if (CheckNormalCommandList() == true)
+		{
+			OnExecuteNormalCommandList();
+		}
+
+		LastFrameNumberWeTicked = GFrameCounter;
+	}
+}
+
+bool FTIHIntellisense::CheckTimeCommandList()
+{
+	bool reValue = false;
+	if (mCommander->IsChainEmpty(TIHNameSpaceCommandType::CommanderListType::TimerCommandList) == false)
+	{
+
+		reValue = true;
+	}
+
+
+	return reValue;
+}
+
+void FTIHIntellisense::OnExecuteTimeCommandList()
+{
+
+}
+
+bool FTIHIntellisense::CheckNormalCommandList()
+{
+	bool reValue = false;
+	if (mCommander->GetCurrMainCmdListIndex() == TIHNameSpaceCommandType::CommanderListType::MainCommandList)
+	{
+		reValue = !mCommander->IsChainEmpty(TIHNameSpaceCommandType::CommanderListType::MainCommandList);
+	}
+	return reValue;
+}
+
+void FTIHIntellisense::OnExecuteNormalCommandList()
+{
+	TIHReturn64 reValue = 0;
+	reValue = mCommander->ExecuteCommands();
+	/*
+		to-do
+		로그
+	*/
+}
+
+void FTIHIntellisense::InstantiateThis()
+{
+
+}
+
+void FTIHIntellisense::InitiateThis()
+{
+
+}

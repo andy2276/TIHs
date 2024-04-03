@@ -21,17 +21,17 @@
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
 struct FTIHMngObjHeader;
-struct FTIHMngObjPoolConfigureDatas;
+//struct FTIHMngObjPoolConfigureDatas;
 struct FTIHMngObjPoolConfigure;
-struct FTIHNewAllocPrepareData;
-struct FTIHCommandCreateAssignPoolDatas;
-struct FTIHMngObjComponentHeader;
-struct FTIHGenerateDataPairForManagedObjectLeaf;
-struct FTIHManagedObjectGenerateCompositeOutData;
-struct FTIHGenerateCandidateLeaves;
-template<typename TIHTemplateTypeA, typename TIHTemplateTypeB>struct TTIHMngObjTempDataPair;
-struct FTIHMngObjGenerateCompositeBFSData;
-
+//struct FTIHNewAllocPrepareData;
+//struct FTIHCommandCreateAssignPoolDatas;
+//struct FTIHMngObjComponentHeader;
+struct FTIHMngObjCompositeHeader;
+//struct FTIHGenerateDataPairForManagedObjectLeaf;
+//struct FTIHManagedObjectGenerateCompositeOutData;
+//struct FTIHGenerateCandidateLeaves;
+//template<typename TIHTemplateTypeA, typename TIHTemplateTypeB>struct TTIHMngObjTempDataPair;
+//struct FTIHMngObjGenerateCompositeBFSData;
 /*
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐
 										Class
@@ -46,7 +46,9 @@ class FTIHMngObjComponent;
 class FTIHMngObjLeaf;
 class FTIHMngObjComposite;
 
+template<typename TIHTemplateType>class TTIHMngObjActorComposite;
 template<typename TIHTemplateType>class TTIManagedObjectLeaf;
+class FTIHMngObjPoolCenter;
 class FTIHMngObjLeafMovement;
 class FTIHMngObjLeafPretty;
 class FTIHMngObjLeafStMesh;
@@ -188,6 +190,63 @@ enum class ETIHSlidingWindowDoneStateTypes : int8
 	EWhenRightAdd = 1 << 4,
 	EWhenLeftAdd = 1 << 5
 };
+
+USTRUCT()
+struct FTIHMngObjCompositeHeader
+{
+	GENERATED_BODY()
+	
+	/*
+		{SceneComponent,UserWidget}
+	*/
+	UPROPERTY()
+	int16 CompositeType;
+
+	/*
+		if SceneComponent 
+			해당 씬 컴포넌트의 16 해쉬
+		if UserWidget
+			
+	*/
+	UPROPERTY()
+	int16 CompositeOption0;
+
+	/*
+		if SceneComponent 
+			해당 컴포넌트에 기본적으로 달린 리프수
+		if UserWidget
+
+	*/
+	UPROPERTY()
+	int16 CompositeOption1;
+	/*
+		if SceneComponent 
+			버전
+		if UserWidget
+			
+	*/
+	UPROPERTY()
+	int16 CompositeOption2;
+};
+/*
+	이 구조는 레지스트 되어있는 UE 컴포턴트
+
+*/
+USTRUCT()
+struct FTIHMngObjActorStructureNode
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int16 RegistedUEComponentIndex;
+
+	UPROPERTY()
+	int16 TreeStep;
+
+	UPROPERTY()
+	TArray<int16> ChildStructureNodeArray;
+};
+//	
 
 
 
@@ -1285,6 +1344,7 @@ union FUnionTIHCompositeHeaderHash
 		Detail.CompositeOption0 = compHeader.CompositeOption0;
 		Detail.CompositeOption1 = compHeader.CompositeOption1;
 		Detail.CompositeOption2 = compHeader.CompositeOption2;
+		return *this;
 	}
 
 	TIHHash64 WholeData;
@@ -1374,23 +1434,7 @@ public:
 		return mFactoryConfig;
 	}
 
-	bool CheckFactoryConfigure()
-	{
-		bool reValue = true;
-		if (mPoolCenter == nullptr)
-		{
-			reValue = false;
-		}
-		else if (mPoolCenter->IsValidObjectPool(mFactoryConfig.AlloactionSpace) == false)
-		{
-			reValue = false;
-		}
-		else if (mFactoryConfig.SpawnWorld == nullptr)
-		{
-			reValue = false;
-		}
-		return reValue;
-	}
+	bool CheckFactoryConfigure();
 	void GenerateActorBaseMngObjRootComposite
 	(
 		USceneComponent* rootComp,
@@ -1468,63 +1512,6 @@ protected:
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 */
 
-USTRUCT()
-struct FTIHMngObjCompositeHeader
-{
-	GENERATED_BODY()
-	
-	/*
-		{SceneComponent,UserWidget}
-	*/
-	UPROPERTY()
-	int16 CompositeType;
-
-	/*
-		if SceneComponent 
-			해당 씬 컴포넌트의 16 해쉬
-		if UserWidget
-			
-	*/
-	UPROPERTY()
-	int16 CompositeOption0;
-
-	/*
-		if SceneComponent 
-			해당 컴포넌트에 기본적으로 달린 리프수
-		if UserWidget
-
-	*/
-	UPROPERTY()
-	int16 CompositeOption1;
-	/*
-		if SceneComponent 
-			버전
-		if UserWidget
-			
-	*/
-	UPROPERTY()
-	int16 CompositeOption2;
-};
-/*
-	이 구조는 레지스트 되어있는 UE 컴포턴트
-
-*/
-USTRUCT()
-struct FTIHMngObjActorStructureNode
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	int16 RegistedUEComponentIndex;
-
-	UPROPERTY()
-	int16 TreeStep;
-
-	UPROPERTY()
-	TArray<int16> ChildStructureNodeArray;
-};
-//	
-
 
 /*
 	이녀석 
@@ -1590,12 +1577,7 @@ public:
 	}
 	FTIHMngObj* GetOwnerMngObj();
 	
-	FTIHMngObjComposite* QueryGetParentComposite()
-	{
-		FTIHMngObjComposite* reValue = nullptr;
-		reValue = GetOwnerMngObj()->GetCompositeByIndex(mParentIndex);
-		return reValue;
-	}
+	FTIHMngObjComposite* QueryGetParentComposite();
 
 	void SetParentIndex(int16 index)
 	{
@@ -1667,7 +1649,7 @@ public:
 	{
 		mUESceneComponent = sceneComponent;
 		GetUEObject()->SetTIHData0(GetSelfIndex());
-		GetUEObject()->SetTIHData1(GetAllocationSpace());
+		GetUEObject()->SetTIHData1(GetOwnerAllocationSpace());
 	}
 	TIHTemplatType* GetUESceneComponent()
 	{
@@ -1707,8 +1689,8 @@ private:
 class FTIHMngObjLeaf :public FTIHMngObjComponent
 {
 public:
-	virtual void InstantiateThis();
-	virtual void InitiateThis();
+	virtual void InstantiateThis() {};
+	virtual void InitiateThis() {};
 
 	virtual void OnLinkingCallback(FTIHMngObjComposite* owner);
 
@@ -2030,7 +2012,7 @@ struct FTIHMngObjHeader
 		UEClass(copyCtor.UEClass)
 	{}
 	FTIHMngObjHeader(
-		const FTIHMngObjHeader& moveCtor
+		FTIHMngObjHeader&& moveCtor
 	) noexcept :
 		UObjectType(std::move(moveCtor.UObjectType)),
 		AllocationSpace(std::move(moveCtor.AllocationSpace)),
@@ -2117,10 +2099,10 @@ protected:
 class FTIHMngObjQueryActorBase : FTIHMngObjQuery
 {
 public:
-	bool QueryIsActorMovePossible(FTIHMngObj* target)
+	/*bool QueryIsActorMovePossible(FTIHMngObj* target)
 	{
 		mPoolCenter->QueryGenerateLeavesByLeafHash()
-	}
+	}*/
 
 
 };
@@ -2449,7 +2431,7 @@ public:
 	FTIHMngObj* QueryGetMngObj(int16 mngObjIndex)
 	{
 		FTIHMngObj* reValue = nullptr;
-		if(mMngObjArray.Contains(mngObjIndex) == true)
+		if(mMngObjArray.IsValidIndex(mngObjIndex) == true)
 		{
 			reValue = mMngObjArray[mngObjIndex];
 		}

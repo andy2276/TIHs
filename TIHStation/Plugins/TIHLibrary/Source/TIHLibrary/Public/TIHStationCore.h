@@ -384,30 +384,34 @@ private:
 	class FTIHManagedObjectSettings
 	{
 	public:
-		void RegistUEActorByUEHash(UClass* ueActorUcls);
-		template<typename TIHTemplateType = AActor>
-		void RegistUEActorTemplate()
-		{
-			RegistUEActorByUEHash(TIHTemplateType::StaticClass());
-		}
-		void RegistTIHMngObjLeafGenerateFunc(TIHHash64 tihHash, TFunction < FTIHMngObjLeaf* ()> generateFunc);
-		template<typename TIHTemplateType>
-		void RegistTIHMngObjLeafGenerateFuncTemplate()
-		{
-			RegistTIHMngObjLeafGenerateFunc(TIHTemplateType::TIHClassNameHash(), &TIHTemplateType::GenerateLeaf);
-		}
-		void RegistUESceneAndTIHMngObjLeafList(UClass* ueSceneCls, const FTIHGenerateCandidateLeaves& tihLeafList);
-		template<typename TIHTemplateType = USceneComponent>
-		void RegistUESceneAndTIHMngObjLeafListTemplate(const FTIHGenerateCandidateLeaves& tihLeafList)
-		{
-			RegistUESceneAndTIHMngObjLeafList(TIHTemplateType::StaticClass(), tihLeafList);
-		}
-		void RegistPrepareDataForNewAlloc(ETIHMngObjHeaderProcotols targetClsType, UClass* targetCls, int16 allocCount);
-		template<typename TIHTemplateType = AActor>
-		void RegistPrepareDataForNewAllocTemplateActorBase(int16 allocCount)
-		{
-			RegistPrepareDataForNewAlloc(ETIHMngObjHeaderProcotols::EActorBase, TIHTemplateType::StaticClass(), allocCount);
-		}
+		/*
+			to-do
+			여기 변경되어진 내용대로 바꾸기
+		*/
+		//void RegistUEActorByUEHash(UClass* ueActorUcls);
+		//template<typename TIHTemplateType = AActor>
+		//void RegistUEActorTemplate()
+		//{
+		//	RegistUEActorByUEHash(TIHTemplateType::StaticClass());
+		//}
+		//void RegistTIHMngObjLeafGenerateFunc(TIHHash64 tihHash, TFunction < FTIHMngObjLeaf* ()> generateFunc);
+		//template<typename TIHTemplateType>
+		//void RegistTIHMngObjLeafGenerateFuncTemplate()
+		//{
+		//	RegistTIHMngObjLeafGenerateFunc(TIHTemplateType::TIHClassNameHash(), &TIHTemplateType::GenerateLeaf);
+		//}
+		//void RegistUESceneAndTIHMngObjLeafList(UClass* ueSceneCls, const FTIHGenerateCandidateLeaves& tihLeafList);
+		//template<typename TIHTemplateType = USceneComponent>
+		//void RegistUESceneAndTIHMngObjLeafListTemplate(const FTIHGenerateCandidateLeaves& tihLeafList)
+		//{
+		//	RegistUESceneAndTIHMngObjLeafList(TIHTemplateType::StaticClass(), tihLeafList);
+		//}
+		//void RegistPrepareDataForNewAlloc(ETIHMngObjHeaderProcotols targetClsType, UClass* targetCls, int16 allocCount);
+		//template<typename TIHTemplateType = AActor>
+		//void RegistPrepareDataForNewAllocTemplateActorBase(int16 allocCount)
+		//{
+		//	RegistPrepareDataForNewAlloc(ETIHMngObjHeaderProcotols::EActorBase, TIHTemplateType::StaticClass(), allocCount);
+		//}
 	};
 	FTIHManagedObjectSettings mManagedObjectSettingHelper;
 };
