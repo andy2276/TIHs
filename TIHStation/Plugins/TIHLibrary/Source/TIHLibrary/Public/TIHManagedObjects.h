@@ -995,8 +995,11 @@ public:
 
 	void PrepareStMeshPathsByList(const TArray<FString>& stMeshList);//	이거도 스테이션의prepare 부분에서 해주자.
 
-	void PrepareStMeshDatasByLocal();
-	void PrepareStMeshDatasByServer();
+	/*
+		to-do
+	*/
+	//void PrepareStMeshDatasByLocal();
+	//void PrepareStMeshDatasByServer();
 
 	void OnLoadStMeshsBySlidingWindow();
 
@@ -1416,6 +1419,9 @@ public:
 	{
 		return mCurrReturnValue;
 	}
+	TIHReturn64 DefaultStartPipeliningCallback();
+	TIHReturn64 DefaultEndPipeliningCallback();
+
 protected:
 
 	void SettingPoolingStateActor(AActor* spawndActor)
@@ -1523,6 +1529,8 @@ public:
 	*/
 	int16 PushBackLeaf(FTIHMngObjLeaf* value);
 	
+	virtual void OnLinkingCallback(FTIHMngObj* owner);
+
 	FTIHMngObjLeaf* GetLeafByIndex(int16 index)
 	{
 		FTIHMngObjLeaf* reValue = nullptr;
@@ -1691,6 +1699,8 @@ public:
 	virtual void InstantiateThis();
 	virtual void InitiateThis();
 
+	virtual void OnLinkingCallback(FTIHMngObjComposite* owner);
+
 	void SetLeafHash(const TIHHash64& value)
 	{
 		mLeafHash = value;
@@ -1711,7 +1721,7 @@ template<typename TIHTemplateType = USceneComponent>
 class TTIManagedObjectActorLeaf : public FTIHMngObjLeaf
 {
 public:
-	TIHTemplateType* GetUEObjectView()
+	TIHTemplateType* GetUESceneComponent()
 	{
 		return mUEObjectView;
 	}
@@ -2910,6 +2920,8 @@ public:
 		return reValue;
 	}
 	
+
+
 	/*
 		memo
 		오브젝프 풀을 종류별로 구현해놓음
@@ -2992,7 +3004,7 @@ public:
 	/*
 		memo
 		등록되어진 UEObject 를 UClass 로 찾아서 들고온다.
-		table 에 잇는 것을 들고온다.
+		table 에 있는 것을 들고온다.
 		참고로 앞에 query 를 붙여야하는데 안붙였음
 	*/
 	int16 GetRegistedUEObjectByUClass(UClass* ueClass)

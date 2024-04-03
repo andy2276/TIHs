@@ -349,6 +349,8 @@ int16 FTIHMngObj::PushBackComposite(FTIHMngObjComposite* composite)
 	composite->SetOwnerAllocationSpace(GetAllocationSpace());
 	composite->PostRegistCallBack(this);
 
+	composite->OnLinkingCallback(this);
+
 	return addedIndex;
 }
 
@@ -480,7 +482,13 @@ int16 FTIHMngObjComposite::PushBackLeaf(FTIHMngObjLeaf* value)
 	value->SetSelfIndex(leafIndex);
 	value->SetUEObjectView(GetUEObject());
 	mLeafTable[leafHash].Add(leafIndex);
+	value->OnLinkingCallback(this);
 	return leafIndex;
+}
+
+void FTIHMngObjComposite::OnLinkingCallback(FTIHMngObj* owner)
+{
+
 }
 
 void FTIHMngObjComposite::PostRegistCallBack(FTIHMngObj* owner)
@@ -639,6 +647,16 @@ FTIHMngObj* FTIHMngObjFactory::CreateActorBaseMngObj(FTIHMngObjPool* objPool,AAc
 	}
 
 	return reValue;
+}
+
+TIHReturn64 FTIHMngObjFactory::DefaultStartPipeliningCallback()
+{
+
+}
+
+TIHReturn64 FTIHMngObjFactory::DefaultEndPipeliningCallback()
+{
+
 }
 
 void FTIHMngObjFactory::GenerateActorBaseMngObjRootComposite(USceneComponent* rootComp,FTIHMngObj* mngObj)
@@ -851,4 +869,11 @@ FTIHMngObjQuery::FTIHMngObjQuery()
 FTIHMngObjQuery::~FTIHMngObjQuery()
 {
 	mPoolCenter = nullptr;
+}
+
+void FTIHMngObjLeaf::OnLinkingCallback(FTIHMngObjComposite* owner)
+{
+
+
+
 }

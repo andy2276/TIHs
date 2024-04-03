@@ -57,7 +57,8 @@ FTIHIntellisense::FTIHIntellisense()
 	mMeshPool(nullptr),
 	mTickTock(nullptr),
 	mCommander(nullptr),
-	mCommandList(nullptr)
+	mCommandList(nullptr),
+	mTickableScheduler(nullptr)
 {
 
 	if(mStation != nullptr)
@@ -68,6 +69,8 @@ FTIHIntellisense::FTIHIntellisense()
 		mCommander = &mStation->GetCommander();
 		mCommandList = &mCommander->GetCommandList();
 
+		mTickableScheduler = new FTIHTickableScheduler;
+		mTickableScheduler->OffTick();
 		if(mMngObjCenter == nullptr)
 		{
 			/*
@@ -115,32 +118,15 @@ FTIHIntellisense::~FTIHIntellisense()
 	mTickTock=nullptr;
 	mCommander=nullptr;
 	mCommandList = nullptr;
+
+	SafeDeletePtr(mTickableScheduler);
 }
 
 void FTIHIntellisense::Tick(float DeltaTime)
 {
 	if (LastFrameNumberWeTicked != GFrameCounter)
 	{
-		/*
-			to-do
-			시간 타임확인
-			지금 틱이 제대로 들어와잇는지 확인-> 이거때문에라도 state 만들어야겠네.
-			
-			커맨더에 커맨드가 들어가있는지 확인하는 함수
-			확인햇으면 tickable의 tickon
-
-		*/
-		/*
-			여기서 부터 일단 인텔리 센스가 비었는지를 확인한다.
-			시간을 확인한다
-			무조건 시간이 먼저이다.
-			시간을 먼저 확인하고 일반 커맨드 실행
-		
-		*/
-		//if(CheckTimeCommandList() == true)
-		//{
-		//	OnExecuteTimeCommandList();
-		//}
+		mStation->UpdateTickTock();
 
 		if(CheckNormalCommandList() == true)
 		{

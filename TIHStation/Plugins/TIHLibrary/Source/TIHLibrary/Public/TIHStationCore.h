@@ -66,7 +66,7 @@ private:
 
 	FTIHProtocolHelper()
 	{
-		mManagedObjectHeaderForInit.Protocol = (int8)ETIHManagedObjectHeaderProtocols::ENotUse;
+		//mManagedObjectHeaderForInit.Protocol = (int8)ETIHManagedObjectHeaderProtocols::ENotUse;
 		//mManagedObjectHeaderForInit.ProtocolOption = (int8)ETIHManagedObjectHeaderProtocolOptions::ENotUse;
 		//mManagedObjectHeaderForInit.ComponentProtocol = (int8)ETIHManagedObjectHeaderComponentProtocols::ENotUse;
 		//mManagedObjectHeaderForInit.AllocatedSpace = (int8)ETIHManagedObjectSpace::ELoaclSpace;

@@ -1,5 +1,6 @@
 #include "TIHCommandCore.h"
 #include "TIHStrategies.h"
+#include "TIHStationCoreDefines.h"
 #include "TIHStationCore.h"
 
 void FTIHCommander::TestSettingCommandList()
@@ -642,11 +643,11 @@ bool FTIHCommandFunctorWrapperBase::IsValidFunctor()
 		int8 poolAllocationSpace = mFunctorHeader.OptionInt8;
 		int16 mngObjIndex = mFunctorHeader.OptionInt16;
 
-		FTIHMngObjPool* objectPool = objectPoolCenter.GetManagedObjectPool(poolAllocationSpace);
+		FTIHMngObjPool* objectPool = objectPoolCenter.GetMngObjPoolByIndex(poolAllocationSpace);
 		check(objectPool != nullptr);
-		FTIHMngObj* mngObj = objectPool->GetMngObj(mngObjIndex);
+		FTIHMngObj* mngObj = objectPool->QueryGetMngObj(mngObjIndex);
 		check(mngObj != nullptr);
-		if (mngObj->GetState().IsStateReady() || mngObj->GetState().IsRunning())
+		if (mngObj->GetMngObjState().IsRunning() == true)
 		{
 			reValue = true;
 		}
@@ -658,13 +659,35 @@ bool FTIHCommandFunctorWrapperBase::IsValidFunctor()
 	return reValue;
 }
 
+FTIHTickableScheduler::FTIHTickableScheduler()
+	:
+	mTIHStation(nullptr),
+	mMngObjCenter(nullptr),
+	mIsOnTick(false),
+	mIsOnPause(false)
+{
+	mTIHStation = &TIHSTATION;
+	mMngObjCenter = &mTIHStation->GetManagedObjectPoolCenter();
+}
+
+FTIHTickableScheduler::~FTIHTickableScheduler()
+{
+
+}
+
 void FTIHTickableScheduler::Tick(float DeltaTime)
 {
-	mTIHStation->UpdateTickTock();
+	if (LastFrameNumberWeTicked != GFrameCounter)
+	{
+
+
+		LastFrameNumberWeTicked = GFrameCounter;
+	}
+	
 	/*
 		여기를 한번 어떻게 할지 생각은 해보자. 
 		커맨더 리스트에서 이미 커맨더들을 처리한다. 그리고 나오는데, 나온 결과
 	*/
-	mStaticPolymorph.CarryOutExecuteStation(TIHSTATION);
+	
 }
 

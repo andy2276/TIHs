@@ -1492,9 +1492,12 @@ private:
 class FTIHTickableScheduler : public FTickableGameObject
 {
 public:
+	FTIHTickableScheduler();
+	virtual ~FTIHTickableScheduler();
+
 	void SetStation(FTIHStationBase* station)
 	{
-		mTIHStation = station;
+		mTIHStation = static_cast<TIHSTATION_TYPE*>(station);
 	}
 	virtual ETickableTickType GetTickableTickType() const override
 	{
@@ -1538,12 +1541,25 @@ public:
 	{
 		mIsOnPause = !mIsOnPause;
 	}
-
+	/*
+		to-do
+		일단은 커맨드리스트 하나만 컨트롤할까?
+		어떻게 해야할지 생각
+		일단 인텔리 센스가 계속해서 확인하다가 
+		커맨드 리스트중 하나에 커맨드가 쌓였거나
+		커맨드 스스로가 호출을 했다면 스케줄러를 온한다
+		이걸 온하면 애당 커맨드 리스트안에 있는걸 실행하는데,
+		실행하고 결과에 따라서 해당 틱을 멈출지 선택
+	*/
 protected:
-	FTIHStationBase* mTIHStation;
+	TIHSTATION_TYPE* mTIHStation;
 	FTIHStationPolymorphInterface mStaticPolymorph;
+	FTIHMngObjPoolCenter* mMngObjCenter;
+	FTIHCommander* mCommander;
+	FTIHCommandList* mCommandList;
 	bool mIsOnTick;
 	bool mIsOnPause;
+	uint32 LastFrameNumberWeTicked;
 };
 
 class	FTIHPakInfra
