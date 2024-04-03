@@ -703,8 +703,9 @@ void FTIHMngObjFactory::CheckFactoryState()
 		if(CheckFactoryConfigure() ==true)
 		{
 			mFactoryConfig.PipeliningState = TIHNameSpaceManagedObject::FactoryState::SpawingActor;
-			mFactoryConfig.StartPipeliningCallBack.CheckCallable();
-			mCurrReturnValue = mFactoryConfig.StartPipeliningCallBack();
+			mStartPipeliningCallBack.CheckCallable();
+			mCurrReturnValue = mStartPipeliningCallBack();
+
 			mPhaseMax = TIHSTATION.GetManagedObjectPoolCenter().GetPrepareDataActorBaseQueue().Num();
 			mPhaseCount = 0;
 		}
@@ -755,8 +756,8 @@ void FTIHMngObjFactory::OnPipelining()
 	}
 		break;
 	case TIHNameSpaceManagedObject::FactoryState::EndingFactory:
-		mFactoryConfig.EndPipeliningCallBack.CheckCallable();
-		mCurrReturnValue = mFactoryConfig.EndPipeliningCallBack();
+		mEndPipeliningCallBack.CheckCallable();
+		mCurrReturnValue = mEndPipeliningCallBack();
 		mFactoryConfig.PipeliningState = TIHNameSpaceManagedObject::FactoryState::StopFactory;
 		break;
 	default:

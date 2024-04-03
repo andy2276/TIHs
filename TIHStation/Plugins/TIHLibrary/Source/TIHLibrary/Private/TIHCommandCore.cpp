@@ -661,7 +661,6 @@ bool FTIHCommandFunctorWrapperBase::IsValidFunctor()
 
 FTIHTickableScheduler::FTIHTickableScheduler()
 	:
-	mTIHStation(nullptr),
 	mMngObjCenter(nullptr),
 	mIsOnTick(false),
 	mIsOnPause(false)
@@ -673,6 +672,11 @@ FTIHTickableScheduler::FTIHTickableScheduler()
 FTIHTickableScheduler::~FTIHTickableScheduler()
 {
 
+}
+
+void FTIHTickableScheduler::SetStation(FTIHStationBase* station)
+{
+	mTIHStation = static_cast<TIHSTATION_TYPE*>(station);
 }
 
 void FTIHTickableScheduler::Tick(float DeltaTime)

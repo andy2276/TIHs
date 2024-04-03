@@ -1495,10 +1495,7 @@ public:
 	FTIHTickableScheduler();
 	virtual ~FTIHTickableScheduler();
 
-	void SetStation(FTIHStationBase* station)
-	{
-		mTIHStation = static_cast<TIHSTATION_TYPE*>(station);
-	}
+	void SetStation(FTIHStationBase* station);
 	virtual ETickableTickType GetTickableTickType() const override
 	{
 		return ETickableTickType::Conditional;
@@ -1552,7 +1549,7 @@ public:
 		실행하고 결과에 따라서 해당 틱을 멈출지 선택
 	*/
 protected:
-	TIHSTATION_TYPE* mTIHStation;
+	class TIHSTATION_TYPE* mTIHStation;
 	FTIHStationPolymorphInterface mStaticPolymorph;
 	FTIHMngObjPoolCenter* mMngObjCenter;
 	FTIHCommander* mCommander;

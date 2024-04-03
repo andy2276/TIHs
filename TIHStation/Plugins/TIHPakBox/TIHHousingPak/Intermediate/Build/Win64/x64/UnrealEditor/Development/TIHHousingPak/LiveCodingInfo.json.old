@@ -2,10 +2,12 @@
 	"RemapUnityFiles": 
 	{
 		"Module.TIHHousingPak.cpp.obj": [
+			"TIHHousingPak.cpp.obj",
+			"TIHHousingPakCore.cpp.obj",
+			"TestingActor.gen.cpp.obj",
 			"TIHHousingPak.init.gen.cpp.obj",
 			"TIHHousingPakCore.gen.cpp.obj",
-			"TIHHousingPak.cpp.obj",
-			"TIHHousingPakCore.cpp.obj"
+			"TestingActor.cpp.obj"
 		]
 	}
 }

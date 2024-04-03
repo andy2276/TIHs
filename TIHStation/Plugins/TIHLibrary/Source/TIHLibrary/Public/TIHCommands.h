@@ -489,7 +489,7 @@ public:
 	virtual ~FTIHCmdMngObjAllocPoolReserve() {};
 };
 
-using FTIHCmdMngObjAllocPrepareDatasDatas = FTIHNewAllocPrepareData;
+using FTIHCmdMngObjAllocPrepareDatasDatas = FTIHMngObjPrepareData;
 
 class FTIHCmdMngObjAllocPrepareDatas : public TTIHCommand<FTIHCmdMngObjAllocPrepareDatasDatas>
 {

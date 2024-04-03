@@ -1354,11 +1354,7 @@ struct FTIHMngObjFactoryConfigure
 	UPROPERTY()
 	FTransform DefaultSpawnTransform;
 
-	UPROPERTY()
-	TFunction<TIHReturn64()> StartPipeliningCallBack;
 
-	UPROPERTY()
-	TFunction<TIHReturn64()> EndPipeliningCallBack;
 };
 
 class FTIHMngObjFactory
@@ -1377,19 +1373,19 @@ public:
 	{
 		return mFactoryConfig;
 	}
-	
+
 	bool CheckFactoryConfigure()
 	{
 		bool reValue = true;
-		if(mPoolCenter == nullptr)
+		if (mPoolCenter == nullptr)
 		{
 			reValue = false;
 		}
-		else if(mPoolCenter->IsValidObjectPool(mFactoryConfig.AlloactionSpace) == false)
+		else if (mPoolCenter->IsValidObjectPool(mFactoryConfig.AlloactionSpace) == false)
 		{
 			reValue = false;
 		}
-		else if(mFactoryConfig.SpawnWorld == nullptr)
+		else if (mFactoryConfig.SpawnWorld == nullptr)
 		{
 			reValue = false;
 		}
@@ -1414,13 +1410,22 @@ public:
 	*/
 	virtual void OnPipelining();
 
-	FTIHMngObj* CreateActorBaseMngObj(FTIHMngObjPool* objPool,AActor* actor, FTIHMngObjHeader& objHeader);
+	FTIHMngObj* CreateActorBaseMngObj(FTIHMngObjPool* objPool, AActor* actor, FTIHMngObjHeader& objHeader);
 	TIHReturn64 GetCurrentCallbackReturn()
 	{
 		return mCurrReturnValue;
 	}
 	TIHReturn64 DefaultStartPipeliningCallback();
 	TIHReturn64 DefaultEndPipeliningCallback();
+
+	void SetStartPipeliningCallBack(TFunction<TIHReturn64()> func)
+	{
+		mStartPipeliningCallBack = func;
+	}
+	void SetEndPipeliningCallBack(TFunction<TIHReturn64()> func)
+	{
+		mEndPipeliningCallBack = func;
+	}
 
 protected:
 
@@ -1443,6 +1448,10 @@ protected:
 	FTIHMngObjPoolCenter* mPoolCenter;
 	int32 mPhaseMax;
 	int32 mPhaseCount;
+
+	TFunction<TIHReturn64()> mStartPipeliningCallBack;
+
+	TFunction<TIHReturn64()> mEndPipeliningCallBack;
 };
 /*
 	GenerateManagedObjectCompositeArray 의 237 라인에서 특수처리할건지 선택하게 하는 코드를 넣을것이다.
@@ -1503,6 +1512,8 @@ struct FTIHMngObjCompositeHeader
 USTRUCT()
 struct FTIHMngObjActorStructureNode
 {
+	GENERATED_BODY()
+
 	UPROPERTY()
 	int16 RegistedUEComponentIndex;
 

@@ -66,8 +66,21 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "09e02d6ef867e11f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "기타원신/원신 일퀘 히든 업적.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
         ],
+        "currentTab": 5,
         "stacked": true
       }
     ],
@@ -195,7 +208,7 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "e4c05b051baf5cc1",
+  "active": "09e02d6ef867e11f",
   "lastOpenFiles": [
     "재설계.md",
     "기타원신/원신 일퀘 히든 업적.md",

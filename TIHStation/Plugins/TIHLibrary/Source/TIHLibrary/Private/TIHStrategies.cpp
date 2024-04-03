@@ -207,27 +207,6 @@ TIHReturn64 FTIHCommanderStrategyInOutWriteAndModify::ExecuteCommandStaticPolymo
 #pragma endregion
 
 
-void FTIHMngObjPoolCenter::MergeSamePrepareDatas()
-{
-	if (mPrepareDatas.Num() < 2)
-	{
-		return;
-	}
-	FTIHNewAllocPrepareData mergeDataA = mPrepareDatas.First();
-	mPrepareDatas.PopFirst();
-
-	int32 mergeCount = mPrepareDatas.Num();
-
-	for (int32 i = 0; i < mergeCount; ++i)
-	{
-
-
-	}
-
-	//mPrepareDatas.PushLast(mergeDataA);
-
-}
-
 TIHReturn64 FTIHStrategyCmdMngObj::ExecuteCommandStaticPolymorph(FTIHCommandBase* cmdBase)
 {
 	using namespace TIHNameSpaceCommandType;
@@ -242,7 +221,12 @@ TIHReturn64 FTIHStrategyCmdMngObj::ExecuteCommandStaticPolymorph(FTIHCommandBase
 		FTIHCmdMngObjAllocPrepareDatas* createNewAlloc = static_cast<FTIHCmdMngObjAllocPrepareDatas*>(cmdBase);
 
 		const FTIHCmdMngObjAllocPrepareDatasDatas& feature = createNewAlloc->GetCommandFeature();
-		poolCenter.EmplaceAddMngObjPrepareData(feature.TargetUEClassBase, feature.TargetClassHash, -1, feature.AllocateCount);
+		/*
+			to-do
+			여기 수정필요
+			용도는 prepare data 를 커맨드로 등록하는기능임
+		*/
+		//poolCenter.EmplaceAddMngObjPrepareData(feature.TargetUEClassBase, feature.TargetClassHash, -1, feature.AllocateCount);
 	}
 	else if (OptionManagedObject::PoolCenterSetConfigure == cmdHeader.ProtocolOption)
 	{
