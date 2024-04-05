@@ -14,6 +14,7 @@ void FTIHWebserver::InitiateThis()
 TIHReturn64 FTIHWebserver::PrepareServer()
 {
 	TIHReturn64 reValue = 0;
+	
 
 	/*
 		이녀석은 처음의 값을 들고오는 녀석이라 그런게 필요없다.
@@ -112,10 +113,10 @@ TIHReturn64 FTIHWebserver::StartServer()
 
 TIHReturn64 FTIHWebserver::PauseServer()
 {
-	ChangeServerResult(TIHNameSpaceServer::ServerSteps::OnPauseServer);
+	TIHReturn64 reValue = 0;
 
 
-	return mReturnResult.ReturnValue;
+	return reValue;
 }
 
 TIHReturn64 FTIHWebserver::AcceptConnectionServer()
@@ -212,8 +213,13 @@ void FTIHNetwork::GenerateServer()
 		if (mGenServerFunc.Contains(serverCat) == true)
 		{
 			newServer = mGenServerFunc[serverCat]();
-
-
+			RegistServer(serverCat, newServer);
+			newServer->SetServerHeader(curPrepare.ServerHeader);
+			newServer->SetServerConfig(curPrepare.ServerConfig);
+			/*
+				to-do
+				뭐 서버 인덱스라든가 그런거 설정
+			*/
 		}
 
 		mServerPrepareQueue.PopFirst();

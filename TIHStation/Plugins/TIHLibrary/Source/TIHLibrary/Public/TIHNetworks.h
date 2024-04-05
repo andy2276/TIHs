@@ -89,20 +89,32 @@ struct FTIHServerResult
 class FTIHServerBase
 {
 public:
+
+	virtual void InitiateThis()
+	{
+		
+	}
 	void SetServerHeader(const FTIHServerHeader& value)
 	{
 		mServerHeader = value;
 	}
-	const FTIHServerHeader& GetServerHeader()
+	const FTIHServerHeader& GetServerHeaderConst()
 	{
 		return mServerHeader;
 	}
-
+	FTIHServerHeader& GetServerHeader()
+	{
+		return mServerHeader;
+	}
 	void SetServerConfig(const FTIHServerConfigure& config)
 	{
 		mServerConfig = config;
 	}
-	const FTIHServerConfigure& GetServerConfig()
+	const FTIHServerConfigure& GetServerConfigConst()
+	{
+		return mServerConfig;
+	}
+	FTIHServerConfigure& GetServerConfig()
 	{
 		return mServerConfig;
 	}
@@ -140,56 +152,53 @@ template<typename TIHServerType>
 class FTIHServer : public FTIHServerBase
 {
 public:
-	virtual void InitiateThis()
-	{
-		mSelfPointer = this;
-	}
+	
 	TIHReturn64 PrepareServer()
 	{
 		ChangeServerResult(TIHNameSpaceServer::ServerSteps::OnPrepareServer);
-		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(mSelfPointer))->PrepareServer();
+		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(this))->PrepareServer();
 		return mReturnResult.ReturnValue;
 	};
 	TIHReturn64 StartServer()
 	{
 		ChangeServerResult(TIHNameSpaceServer::ServerSteps::OnStartServer);
-		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(mSelfPointer))->StartServer();
+		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(this))->StartServer();
 		return mReturnResult.ReturnValue;
 	}
 	TIHReturn64 PauseServer()
 	{
 		ChangeServerResult(TIHNameSpaceServer::ServerSteps::OnPauseServer);
-		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(mSelfPointer))->PauseServer();
+		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(this))->PauseServer();
 		return mReturnResult.ReturnValue;
 	}
 	TIHReturn64 AcceptConnectionServer()
 	{
 		ChangeServerResult(TIHNameSpaceServer::ServerSteps::OnAcceptConnectionServer);
-		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(mSelfPointer))->AcceptConnectionServer();
+		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(this))->AcceptConnectionServer();
 		return mReturnResult.ReturnValue;
 	}
 	TIHReturn64 BindServer()
 	{
 		ChangeServerResult(TIHNameSpaceServer::ServerSteps::OnBindServer);
-		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(mSelfPointer))->BindServer();
+		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(this))->BindServer();
 		return mReturnResult.ReturnValue;
 	}
 	TIHReturn64 ReceiveDataServer()
 	{
 		ChangeServerResult(TIHNameSpaceServer::ServerSteps::OnReceiveDataServer);
-		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(mSelfPointer))->ReceiveDataServer();
+		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(this))->ReceiveDataServer();
 		return mReturnResult.ReturnValue;
 	}
 	TIHReturn64 SendDataServer()
 	{
 		ChangeServerResult(TIHNameSpaceServer::ServerSteps::OnSendDataServer);
-		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(mSelfPointer))->SendDataServer();
+		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(this))->SendDataServer();
 		return mReturnResult.ReturnValue;
 	}
 	TIHReturn64 CloseServer()
 	{
 		ChangeServerResult(TIHNameSpaceServer::ServerSteps::OnCloseServer);
-		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(mSelfPointer))->CloseServer();
+		mReturnResult.ReturnValue = (static_cast<TIHServerType*>(this))->CloseServer();
 		return mReturnResult.ReturnValue;
 	}
 
@@ -347,10 +356,6 @@ public:
 			 int16 addIndex = mServerArray.Add(serverBase);
 			 mServerTable.Add(servercat, addIndex);
 		 }
-		 else
-		 {
-			
-		 }
 	 }
 	 void GenerateServer();
 	 
@@ -362,7 +367,6 @@ protected:
 
 	TDeque< FTIHServerPrepareData> mServerPrepareQueue;
 	TMap < int8, TFunction<FTIHServerBase* ()>> mGenServerFunc;
-
 
 	FTIHNetworkConfigure mNetworkConfig;
 	FString mLocalIp;
