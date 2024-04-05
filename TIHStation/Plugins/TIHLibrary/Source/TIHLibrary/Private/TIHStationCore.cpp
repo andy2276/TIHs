@@ -257,12 +257,6 @@ TIHReturn64 FTIHDefaultStation::PrepareStation()
 
 #pragma endregion
 
-TIHReturn64 FTIHStationPolymorphInterface::TIHErrEmplementFunc()
-{
-	
-	return -1;
-}
-
 #pragma region CommandFactory
 
 

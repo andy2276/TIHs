@@ -1,4 +1,5 @@
 /I "."
+/I "Runtime\Online\WebSockets\Private"
 /I "E:\Projects_Rapid\Project\TIH\20231011\TIHStation\Plugins\TIHLibrary\Source\TIHLibrary\Private"
 /I "..\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject\UHT"
 /I "Runtime\CoreUObject\Public"
@@ -258,6 +259,7 @@
 /I "..\Intermediate\Build\Win64\UnrealEditor\Inc\WidgetRegistration\UHT"
 /I "Developer\WidgetRegistration\Public"
 /I "E:\Projects_Rapid\Project\TIH\20231011\TIHStation\Plugins\TIHLibrary\Intermediate\Build\Win64\UnrealEditor\Inc\TIHLibraryEntry\UHT"
+/I "Runtime\Online\WebSockets\Public"
 /I "E:\Projects_Rapid\Project\TIH\20231011\TIHStation\Plugins\TIHLibrary\Source"
 /I "E:\Projects_Rapid\Project\TIH\20231011\TIHStation\Plugins\TIHLibrary\Source\TIHLibrary\Public"
 /external:W0

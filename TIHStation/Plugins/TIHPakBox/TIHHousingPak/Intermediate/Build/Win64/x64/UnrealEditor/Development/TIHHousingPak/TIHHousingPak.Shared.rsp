@@ -263,6 +263,7 @@
 /I "..\Plugins\EnhancedInput\Intermediate\Build\Win64\UnrealEditor\Inc\EnhancedInput\UHT"
 /I "..\Plugins\EnhancedInput\Source\EnhancedInput\Public"
 /I "E:\Projects_Rapid\Project\TIH\20231011\TIHStation\Plugins\TIHLibrary\Intermediate\Build\Win64\UnrealEditor\Inc\TIHLibraryEntry\UHT"
+/I "Runtime\Online\WebSockets\Public"
 /I "E:\Projects_Rapid\Project\TIH\20231011\TIHStation\Plugins\TIHLibrary\Source"
 /I "E:\Projects_Rapid\Project\TIH\20231011\TIHStation\Plugins\TIHLibrary\Source\TIHLibrary\Public"
 /external:W0

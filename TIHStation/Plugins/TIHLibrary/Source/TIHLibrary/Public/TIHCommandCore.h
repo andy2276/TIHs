@@ -1277,7 +1277,20 @@ public:
 	{
 		return mCommandLists[mCurrMainCmdListIndex];
 	}
+	bool IsRunning()
+	{
+		return false;
+	}
+	bool IsExecuteCmdPossible()
+	{
 
+		return false;
+	}
+
+	/*
+		이게 intellisence 에서 실행할 녀석임
+		정확하게는 외부에서 실행할 녀석임
+	*/
 	TIHReturn64 ExecuteCommands();
 	TIHReturn64 ExecuteCommandDirect(FTIHCommandBase* curCommand);
 
@@ -1377,8 +1390,6 @@ public:
 		mStrategyInOutWriteAndModify = value;
 		return *this;
 	}
-	
-
 
 	void SetCommanderConfig(const FTIHCommanderConfigure& value)
 	{
@@ -1482,12 +1493,13 @@ private:
 	FTIHCommanderStrategyInOutReadAndSave*		mStrategyInOutReadAndSave;
 	FTIHCommanderStrategyInOutWriteAndModify*	mStrategyInOutWriteAndModify;
 
+	class FTIHStrategySystem* mStrategySystem;
 	FTIHCommanderExtentionForExeCmdStrategy*	mStrategyExention;
 
-	
 	TArray<TFunction<TIHReturn64(FTIHCommandBase*)>> mStrategyLookUpTable;
 
 	FTIHCommanderConfigure mCommanderConfig;
+	TIHReturn64 mCurrReturnValue;
 };
 
 class FTIHTickableScheduler : public FTickableGameObject
@@ -1551,7 +1563,7 @@ public:
 	*/
 protected:
 	class TIHSTATION_TYPE* mTIHStation;
-	FTIHStationPolymorphInterface mStaticPolymorph;
+	FTIHStationInterface mStaticPolymorph;
 	FTIHMngObjPoolCenter* mMngObjCenter;
 	FTIHCommander* mCommander;
 	FTIHCommandList* mCommandList;
@@ -1559,6 +1571,7 @@ protected:
 	bool mIsOnPause;
 	uint32 LastFrameNumberWeTicked;
 };
+
 class FTIHIntellisense : public FTickableGameObject
 {
 public:
@@ -1616,12 +1629,3 @@ protected:
 private:
 };
 
-
-class	FTIHPakInfra
-{
-public:
-
-private:
-	FTIHStationBase* mStationPtr;
-	FTIHStationPolymorphInterface mStationPolymorph;
-};

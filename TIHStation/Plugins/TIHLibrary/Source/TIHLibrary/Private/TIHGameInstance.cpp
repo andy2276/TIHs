@@ -8,10 +8,10 @@ void UTIHGameInstance::Init()
 	Super::Init();
 	UE_LOG(LogTemp, Warning, TEXT("Gimochi"));
 
-	mTIHStation = new FTIHDefaultStation;
-	FTIHStationPolymorphInterface crtpStation;
-
-	crtpStation.CarryOutInstantiateStation(*mTIHStation);
+	//mTIHStation = new FTIHDefaultStation;
+	//FTIHStationPolymorphInterface crtpStation;
+	//
+	//crtpStation.CarryOutInstantiateStation(*mTIHStation);
 	//mTIHStation->InstantiateStation();
 	////mTIHStation->PrepareStation();
 

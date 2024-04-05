@@ -314,7 +314,7 @@ TIHReturn64 FTIHStrategySystem::ExecuteCommandStaticPolymorph(FTIHCommandBase* c
 	TIHReturn64 reValue = 0;
 	
 	static TIHSTATION_TYPE& staion = TIHSTATION;
-	static FTIHStationPolymorphInterface stationStaticPolymorph;
+	static FTIHStationInterface stationStaticPolymorph;
 
 	const FTIHCommandHeader& cmdHeader = cmdBase->GetCommandHeader();
 	const FTIHCommandMethod& cmdMethod = cmdBase->GetCommandMethod();
@@ -329,35 +329,36 @@ TIHReturn64 FTIHStrategySystem::ExecuteCommandStaticPolymorph(FTIHCommandBase* c
 		Initiate
 		이걸 stationExecute 라고 할까?
 	*/
+	
 	if(0 == cmdHeader.ProtocolOption)//	stationExecute
 	{
 		if (0 == cmdHeader.Option0)//	prepareStation
 		{
-			reValue = stationStaticPolymorph.CarryOutPrepareStation(staion);
+			reValue = stationStaticPolymorph.OnPrepareStation(staion);
 		}
 		else if(1 == cmdHeader.Option1)//	init
 		{
-			reValue = stationStaticPolymorph.CarryOutInitializeStation(staion);
+			reValue = stationStaticPolymorph.OnInitializeStation(staion);
 		}
 		else if (3 == cmdHeader.Option1)//	wait
 		{
-			reValue = stationStaticPolymorph.CarryOutWaitStation(staion);
+			reValue = stationStaticPolymorph.OnWaitStation(staion);
 		}
 		else if (3 == cmdHeader.Option1)//	suspend
 		{
-			reValue = stationStaticPolymorph.CarryOutSuspendStation(staion);
+			reValue = stationStaticPolymorph.OnSuspendStation(staion);
 		}
 		else if (4 == cmdHeader.Option1)//	refresh
 		{
-			reValue = stationStaticPolymorph.CarryOutRefreshStation(staion);
+			reValue = stationStaticPolymorph.OnRefreshStation(staion);
 		}
 		else if(5 == cmdHeader.Option1)//	finalize
 		{
-			reValue = stationStaticPolymorph.CarryOutFinalizeStation(staion);
+			reValue = stationStaticPolymorph.OnFinalizeStation(staion);
 		}
 		else if (6 == cmdHeader.Option1)//	
 		{
-			reValue = stationStaticPolymorph.CarryOutDestroyStation(staion);
+			reValue = stationStaticPolymorph.OnDestroyStation(staion);
 		}
 	}
 	else if(1 == cmdHeader.ProtocolOption)

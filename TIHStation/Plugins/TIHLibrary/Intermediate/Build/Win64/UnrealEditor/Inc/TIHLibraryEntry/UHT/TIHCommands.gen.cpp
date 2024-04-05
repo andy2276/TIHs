@@ -5,8 +5,8 @@
 ===========================================================================*/
 
 #include "UObject/GeneratedCppIncludes.h"
-#include "TIHLibrary/Public/TIHCommands.h"
-#include "TIHLibrary/Public/TIHManagedObjects.h"
+#include "../../../../../../../../Projects_Rapid/Project/TIH/20231011/TIHStation/Plugins/TIHLibrary/Source/TIHLibrary/Public/TIHCommands.h"
+#include "../../../../../../../../Projects_Rapid/Project/TIH/20231011/TIHStation/Plugins/TIHLibrary/Source/TIHLibrary/Public/TIHManagedObjects.h"
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeTIHCommands() {}
 // Cross Module References

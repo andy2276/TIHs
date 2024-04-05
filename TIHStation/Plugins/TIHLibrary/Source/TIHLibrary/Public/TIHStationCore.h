@@ -11,6 +11,7 @@
 #include "TIHStrategies.h"
 #include "TIHNetworks.h"
 
+
 #include "TIHStationCore.generated.h"
 
 
@@ -482,5 +483,9 @@ public:
 		MngObj 를 셋팅하기 위한곳.
 	*/
 	void RegistForTIHMngObj();
+
+
+private:
+	
 };
 

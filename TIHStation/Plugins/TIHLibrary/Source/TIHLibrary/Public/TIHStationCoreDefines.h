@@ -805,7 +805,26 @@ namespace TIHNameSpaceMesh
 		const int8 HasTickTime = 1 << 3;
 	}
 }
+namespace TIHNameSpaceServer
+{
+	namespace ServerSteps
+	{
+		const int8 UnknownServerStep = 0;
+		const int8 OnPrepareServer = UnknownServerStep+1;
+		const int8 OnStartServer = OnPrepareServer + 1;
+		const int8 OnPauseServer = OnStartServer + 1;
+		const int8 OnAcceptConnectionServer = OnPauseServer + 1;
+		const int8 OnBindServer = OnAcceptConnectionServer + 1;
+		const int8 OnReceiveDataServer = OnBindServer + 1;
+		const int8 OnSendDataServer = OnReceiveDataServer + 1;
+		const int8 OnCloseServer = OnSendDataServer + 1;
+		
 
+
+	}
+
+
+}
 
 enum class ETIHResultDetailProtocols : int8
 {
@@ -1240,6 +1259,7 @@ private:
 	TIHTick32 mTickTime;
 };
 class ATIHPakBase;
+
 class FTIHStationBase
 {
 public:
@@ -1284,6 +1304,10 @@ public:
 	{
 		return mTickTock.GetTick();
 	}
+	FTIHNetwork& GetNetwork()
+	{
+		return *mNetwork;
+	}
 	/*
 		스테이션에서 
 		애초에 다른 팩이 추가되면 그 팩에 있는 오브젝트에 접근을 해야하는데 어떻게 하지?
@@ -1292,7 +1316,7 @@ public:
 	
 
 protected:
-	FTIHNetwork* mNetwork;
+	class FTIHNetwork* mNetwork;
 
 	int64 mTickTime;
 	int64 mTickTimeRunning;
@@ -1347,106 +1371,192 @@ public:
 	*/
 	TIHReturn64 InstantiateStation()
 	{
-		return 0;
+		TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->InstantiateStation();
+		return reValue;
 	}
+	/*
+		memo
+		스테이션을 사용하기전에 준비해야하는 것들을 여기에서 들고와준다.
+	*/
 	TIHReturn64 PrepareStation()
 	{
-		return 0;
+		TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->PrepareStation();
+		return reValue;
 	}
 	TIHReturn64 InitializeStation()
 	{
-		return 0;
+		TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->InitializeStation();
+		return reValue;
 	}
 	TIHReturn64 RefreshStation()
 	{
-		return 0;
+		TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->RefreshStation();
+		return reValue;
 	}
 	TIHReturn64 ExecuteStation()
 	{
-		return 0;
+		TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->ExecuteStation();
+		return reValue;
 	}
 	TIHReturn64 SuspendStation()
 	{
-		return 0;
+		TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->SuspendStation();
+		return reValue;
 	}
 	TIHReturn64 WaitStation()
 	{
-		return 0;
+		TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->WaitStation();
+		return reValue;
 	}
 	TIHReturn64 FinalizeStation()
 	{
-		return 0;
+		TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->FinalizeStation();
+		return reValue;
 	}
 	TIHReturn64 DestroyStation()
 	{
-		return 0;
+		TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->DestroyStation();
+		return reValue;
 	}
 
-	TIHReturn64 CreateServer()
-	{
-		return 0;
-	}
-	TIHReturn64 PrepareServer(const TArray<FString>& params)
-	{
-		return 0;
-	}
-	TIHReturn64 InitServer(const TArray<FString>& params)
-	{
-		return 0;
-	}
-	TIHReturn64 ConnectServer(const TArray<FString>& params)
-	{
-		return 0;
-	}
-	TIHReturn64 WaitServer(const TArray<FString>& params)
-	{
-		return 0;
-	}
-	TIHReturn64 CheckServer(const TArray<FString>& params)
-	{
-		return 0;
-	}
-	TIHReturn64 DisConnectServer(const TArray<FString>& params)
-	{
-		return 0;
-	}
-	TIHReturn64 RequestServer(const TArray<FString>& params)
-	{
-		return 0;
-	}
-	TIHReturn64 ReceiveServer(const TArray<FString>& params)
-	{
-		return 0;
-	}
+	//TIHReturn64 CreateServer()
+	//{
+	//	TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->CreateServer();
+	//	return reValue;
+	//}
+	//TIHReturn64 PrepareServer()
+	//{
+	//	TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->PrepareServer();
+	//	return reValue;
+	//}
+	//TIHReturn64 InitServer()
+	//{
+	//	TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->InitServer();
+	//	return reValue;
+	//}
+	//TIHReturn64 ConnectServer()
+	//{
+	//	TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->ConnectServer();
+	//	return reValue;
+	//}
+	//TIHReturn64 WaitServer()
+	//{
+	//	TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->WaitServer();
+	//	return reValue;
+	//}
+	//TIHReturn64 CheckServer()
+	//{
+	//	TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->CheckServer();
+	//	return reValue;
+	//}
+	//TIHReturn64 DisConnectServer()
+	//{
+	//	TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->DisConnectServer();
+	//	return reValue;
+	//}
+	//TIHReturn64 RequestServer()
+	//{
+	//	TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->RequestServer();
+	//	return reValue;
+	//}
+	//TIHReturn64 ReceiveServer()
+	//{
+	//	TIHReturn64 reValue = (static_cast<TIHTemplateType*>(this))->ReceiveServer();
+	//	return reValue;
+	//}
 };
 
-
-TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_InstantiateStation, InstantiateStation);
-TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_PrepareStation, PrepareStation);
-TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_InitializeStation, InitializeStation);
-TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_RefreshStation, RefreshStation);
-TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_ExecuteStation, ExecuteStation);
-TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_WaitStation, WaitStation);
-TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_SuspendStation, SuspendStation);
-TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_FinalizeStation, FinalizeStation);
-TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_DestroyStation, DestroyStation);
-
-class FTIHStationPolymorphInterface
+//
+//TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_InstantiateStation, InstantiateStation);
+//TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_PrepareStation, PrepareStation);
+//TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_InitializeStation, InitializeStation);
+//TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_RefreshStation, RefreshStation);
+//TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_ExecuteStation, ExecuteStation);
+//TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_WaitStation, WaitStation);
+//TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_SuspendStation, SuspendStation);
+//TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_FinalizeStation, FinalizeStation);
+//TIHMACRO_GENERIC_TYPE_CHECK_FALSE_TRUE(TTIH_Has_Func_DestroyStation, DestroyStation);
+//
+//class FTIHStationPolymorphInterface
+//{
+//public:
+//	static TIHReturn64 TIHErrEmplementFunc();
+//
+//	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_InstantiateStation, InstantiateStation);
+//	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_PrepareStation, PrepareStation);
+//	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_InitializeStation, InitializeStation);
+//	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_RefreshStation, RefreshStation);
+//	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_ExecuteStation, ExecuteStation);
+//	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_WaitStation, WaitStation);
+//	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_SuspendStation, SuspendStation);
+//	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_FinalizeStation, FinalizeStation);
+//	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_DestroyStation, DestroyStation);
+//};
+/*
+	이걸 써야함.
+*/
+class FTIHStationInterface
 {
 public:
-	static TIHReturn64 TIHErrEmplementFunc();
+	template<typename TIHTemplateType>
+	TIHReturn64 OnInstantiateStation(TTIHStationCRTP<TIHTemplateType>& station)
+	{
+		TIHReturn64 reValue = station.InstantiateStation();
+		return reValue;
+	}
+	template<typename TIHTemplateType>
+	TIHReturn64 OnPrepareStation(TTIHStationCRTP<TIHTemplateType>& station)
+	{
+		TIHReturn64 reValue = station.PrepareStation();
+		return reValue;
+	}
+	template<typename TIHTemplateType>
+	TIHReturn64 OnInitializeStation(TTIHStationCRTP<TIHTemplateType>& station)
+	{
+		TIHReturn64 reValue = station.InitializeStation();
+		return reValue;
+	}
+	template<typename TIHTemplateType>
+	TIHReturn64 OnRefreshStation(TTIHStationCRTP<TIHTemplateType>& station)
+	{
+		TIHReturn64 reValue = station.RefreshStation();
+		return reValue;
+	}
+	template<typename TIHTemplateType>
+	TIHReturn64 OnExecuteStation(TTIHStationCRTP<TIHTemplateType>& station)
+	{
+		TIHReturn64 reValue = station.ExecuteStation();
+		return reValue;
+	}
+	template<typename TIHTemplateType>
+	TIHReturn64 OnWaitStation(TTIHStationCRTP<TIHTemplateType>& station)
+	{
+		TIHReturn64 reValue = station.WaitStation();
+		return reValue;
+	}
+	template<typename TIHTemplateType>
+	TIHReturn64 OnSuspendStation(TTIHStationCRTP<TIHTemplateType>& station)
+	{
+		TIHReturn64 reValue = station.SuspendStation();
+		return reValue;
+	}
 
-	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_InstantiateStation, InstantiateStation);
-	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_PrepareStation, PrepareStation);
-	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_InitializeStation, InitializeStation);
-	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_RefreshStation, RefreshStation);
-	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_ExecuteStation, ExecuteStation);
-	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_WaitStation, WaitStation);
-	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_SuspendStation, SuspendStation);
-	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_FinalizeStation, FinalizeStation);
-	TIHMACRO_SPECIFIC_TYPE_CHECK_CRPT_CARRYOUT(TTIH_Has_Func_DestroyStation, DestroyStation);
+	template<typename TIHTemplateType>
+	TIHReturn64 OnFinalizeStation(TTIHStationCRTP<TIHTemplateType>& station)
+	{
+		TIHReturn64 reValue = station.FinalizeStation();
+		return reValue;
+	}
+	template<typename TIHTemplateType>
+	TIHReturn64 OnDestroyStation(TTIHStationCRTP<TIHTemplateType>& station)
+	{
+		TIHReturn64 reValue = station.DestroyStation();
+		return reValue;
+	}
+
 
 };
+
 
 #define TIHMACRO_STATION_HELPER_LIFECYCLE_FUNCTIONS( className ) \
 public:\

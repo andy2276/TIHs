@@ -101,7 +101,10 @@ TIHReturn64 FTIHCommander::ExecuteCommands()
 			}
 		}
 	}//whileEnd
-
+	/*
+		커맨드 상태를 스스로 체그하기 위한것임.
+	*/
+	mCurrReturnValue = cmdResult.WholeData;
 	return cmdResult.WholeData;
 }
 
@@ -136,14 +139,16 @@ TIHReturn64 FTIHCommander::ExecuteCommandByCmdProtocolEnum(const FTIHCommandHead
 	switch (cmdHeader.Protocol)
 	{
 	case StrategyType::SystemStrategy:
-
+		//mStrategySystem->ExecuteCommandStaticPolymorph(primitiveCmd);
 		break;
 	case StrategyType::MeshStrategy:
 		break;
 	case StrategyType::MngObjStrategy:
 		break;
 	case StrategyType::InheritStrategy:
+		mStrategyExention->ExecuteCommandInheritance(primitiveCmd);
 		break;
+		
 	}
 	return reValue;
 }
